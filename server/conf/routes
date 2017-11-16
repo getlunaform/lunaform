@@ -13,30 +13,30 @@ GET     /public/*filepath                       Static.Serve("public")
 
 ## Modules
 
-GET     /api/tf/modules             Api.TF.ModuleController.List
+GET     /api/tf/modules             apitf\ModuleController.List
 
-POST    /api/tf/modules             Api.TF.ModuleController.Create
-GET     /api/tf/module/:id          Api.TF.ModuleController.Read
-PATCH   /api/tf/module/:id          Api.TF.ModuleController.Update
-DELETE  /api/tf/module/:id          Api.TF.ModuleController.Delete
+POST    /api/tf/modules             apitf\ModuleController.Create
+GET     /api/tf/module/:id          apitf.ModuleController.Read
+PATCH   /api/tf/module/:id          apitf.ModuleController.Update
+DELETE  /api/tf/module/:id          apitf.ModuleController.Delete
 
 ## Stacks
 
-GET     /api/tf/stacks              Api.TF.ModuleController.List
+GET     /api/tf/stacks              apitf\ModuleController.List
 
-POST    /api/tf/stacks              Api.TF.ModuleController.Create
-GET     /api/tf/stack/:id           Api.TF.ModuleController.Read
-PATCH   /api/tf/stack/:id           Api.TF.ModuleController.Update
-DELETE  /api/tf/stack/:id           Api.TF.ModuleController.Delete
+POST    /api/tf/stacks              apitf\ModuleController.Create
+GET     /api/tf/stack/:id           apitf\ModuleController.Read
+PATCH   /api/tf/stack/:id           apitf\ModuleController.Update
+DELETE  /api/tf/stack/:id           apitf\ModuleController.Delete
 
 ## State
 
-GET     /api/tf/state.managers      Api.TF.StateController.List
+GET     /api/tf/state.managers      apitf\StateController.List
 
-POST    /api/tf/state.managers      Api.TF.StateController.Create
-GET     /api/tf/state.manager/:id   Api.TF.StateController.Read
-PATCH   /api/tf/state.manager/:id   Api.TF.StateController.Update # Probably only used for disabling
-DELETE  /api/tf/state.manager/:id   Api.TF.StateController.Delete
+POST    /api/tf/state.managers      apitf\StateController.Create
+GET     /api/tf/state.manager/:id   apitf\StateController.Read
+PATCH   /api/tf/state.manager/:id   apitf\StateController.Update # Probably only used for disabling
+DELETE  /api/tf/state.manager/:id   apitf\StateController.Delete
 
 ## Workspaces
 
@@ -49,36 +49,36 @@ DELETE  /api/tf/workspace/:id       Api.TF.WorkspaceController.Delete
 
 ## Users
 
-GET     /api/identity/users         Api.Identity.UserController.List
+GET     /api/identity/users         apiidentity\UserController.List
 
-POST    /api/identity/users         Api.Identity.UserController.Create
-GET     /api/identity/user/:id      Api.Identity.UserController.Read
-PATCH   /api/identity/user/:id      Api.Identity.UserController.Update
-DELETE  /api/identity/user/:id      Api.Identity.UserController.Delete
+POST    /api/identity/users         apiidentity\UserController.Create
+GET     /api/identity/user/:id      apiidentity\UserController.Read
+PATCH   /api/identity/user/:id      apiidentity\UserController.Update
+DELETE  /api/identity/user/:id      apiidentity\UserController.Delete
 
 ## Groups
 
-GET     /api/identity/groups        Api.Identity.GroupController.List
+GET     /api/identity/groups        apiidentity\GroupController.List
 
-POST    /api/identity/groups        Api.Identity.GroupController.Create
-GET     /api/identity/group/:id     Api.Identity.GroupController.Read
-PATCH   /api/identity/group/:id     Api.Identity.GroupController.Update
-DELETE  /api/identity/group/:id     Api.Identity.GroupController.Delete
+POST    /api/identity/groups        apiidentity\GroupController.Create
+GET     /api/identity/group/:id     apiidentity\GroupController.Read
+PATCH   /api/identity/group/:id     apiidentity\GroupController.Update
+DELETE  /api/identity/group/:id     apiidentity\GroupController.Delete
 
 ## IdPs
 
-GET     /api/identity/providers     Api.Identity.ProviderController.List
+GET     /api/identity/providers     apiidentity\ProviderController.List
 
 ## VCSs
 
 GET     /api/vcs                    Api.VCSController.List
 
-GET     /api/vcs/git                Api.VCS.GitController.Read
+GET     /api/vcs/git                apivcs\GitController.Read
 
-GET     /api/vcs/git/roles          Api.VCS.GitRoleController.List
+GET     /api/vcs/git/roles          apivcs\GitRoleController.List
 
-POST    /api/vcs/git/roles          Api.VCS.GitRoleController.Create
-GET     /api/vcs/git/role/:id       Api.VCS.GitRoleController.Read
-PATCH   /api/vcs/git/role/:id       Api.VCS.GitRoleController.Update
-DELETE  /api/vcs/git/role/:id       Api.VCS.GitRoleController.Delete
+POST    /api/vcs/git/roles          apivcs\GitRoleController.Create
+GET     /api/vcs/git/role/:id       apivcs\GitRoleController.Read
+PATCH   /api/vcs/git/role/:id       apivcs\GitRoleController.Update
+DELETE  /api/vcs/git/role/:id       apivcs\GitRoleController.Delete
 
