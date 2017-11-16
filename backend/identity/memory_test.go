@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/drewsonne/terraform-server/backend"
+	"github.com/zeebox/terraform-server/backend"
 )
 
 func TestMemoryIdP(t *testing.T) {

@@ -5,7 +5,7 @@ A high-productivity web framework for the [Go language](http://www.golang.org/).
 
 ### Start the web server:
 
-   revel run github.com/drewsonne/terraform-server/server
+   revel run github.com/zeebox/terraform-server/server
 
 ### Go to http://localhost:9000/ and you'll see:
 

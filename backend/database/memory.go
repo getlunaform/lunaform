@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/drewsonne/terraform-server/backend"
+	"github.com/zeebox/terraform-server/backend"
 )
 
 func NewMemoryDatabase() MemoryDatabase {
