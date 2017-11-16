@@ -83,6 +83,6 @@ func (mip MemoryIdentityProvider) ChangePassword(user backend.User, password str
 }
 
 func (mip MemoryIdentityProvider) hashPassword(password string) (pwd string, err error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	return string(bytes), err
 }
