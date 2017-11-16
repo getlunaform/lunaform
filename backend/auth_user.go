@@ -10,6 +10,7 @@ type User struct {
 	Username   string
 	Password   string
 	ApiKeys    []*ApiKey
+	SSHKeys    []*SSHKey
 	Idp        IdentityProvider
 	loggedin   bool
 	groups     []Group
@@ -34,6 +35,14 @@ func (u *User) ChangePassword(password string) (err error) {
 	}
 
 	return u.Idp.ChangePassword(*u, password)
+}
+
+type SSHKey struct {
+	Public          []byte
+	Private         []byte
+	PublicPath      string
+	PrivatePath     string
+	ServerGenerated bool
 }
 
 type ApiKey struct {
