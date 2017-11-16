@@ -40,12 +40,12 @@ DELETE  /api/tf/state.manager/:id   apitf\StateController.Delete
 
 ## Workspaces
 
-GET     /api/tf/workspaces          Api.TF.WorkspaceController.List
+GET     /api/tf/workspaces          apitf\WorkspaceController.List
 
-POST    /api/tf/workspace/:id       Api.TF.WorkspaceController.Create
-GET     /api/tf/workspace/:id       Api.TF.WorkspaceController.Read
-PATCH   /api/tf/workspace/:id       Api.TF.WorkspaceController.Update
-DELETE  /api/tf/workspace/:id       Api.TF.WorkspaceController.Delete
+POST    /api/tf/workspace/:id       apitf\WorkspaceController.Create
+GET     /api/tf/workspace/:id       apitf\WorkspaceController.Read
+PATCH   /api/tf/workspace/:id       apitf\WorkspaceController.Update
+DELETE  /api/tf/workspace/:id       apitf\WorkspaceController.Delete
 
 ## Users
 
@@ -71,7 +71,7 @@ GET     /api/identity/providers     apiidentity\ProviderController.List
 
 ## VCSs
 
-GET     /api/vcs                    Api.VCSController.List
+GET     /api/vcs                    apivcs\Controller.List
 
 GET     /api/vcs/git                apivcs\GitController.Read
 
