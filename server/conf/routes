@@ -38,6 +38,15 @@ GET     /api/tf/state.manager/:id   Api.TF.StateController.Read
 PATCH   /api/tf/state.manager/:id   Api.TF.StateController.Update # Probably only used for disabling
 DELETE  /api/tf/state.manager/:id   Api.TF.StateController.Delete
 
+## Workspaces
+
+GET     /api/tf/workspaces          Api.TF.WorkspaceController.List
+
+POST    /api/tf/workspace/:id       Api.TF.WorkspaceController.Create
+GET     /api/tf/workspace/:id       Api.TF.WorkspaceController.Read
+PATCH   /api/tf/workspace/:id       Api.TF.WorkspaceController.Update
+DELETE  /api/tf/workspace/:id       Api.TF.WorkspaceController.Delete
+
 ## Users
 
 GET     /api/identity/users         Api.Identity.UserController.List
