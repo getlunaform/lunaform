@@ -36,6 +36,7 @@ func testMemoryDBInsert(t *testing.T) {
 
 	err = col.Create("test-key", "test-value")
 	assert.Nil(t, err)
+	assert.Equal(t, col.Count(), 1)
 
 	var result string
 	err = col.Read("test-key", &result)
