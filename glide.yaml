@@ -1,4 +1,4 @@
-package: github.com/drewsonne/terraform-server
+package: github.com/zeebox/terraform-server
 import:
 - package: github.com/revel/modules
   version: ^0.18.0
