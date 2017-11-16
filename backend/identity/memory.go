@@ -6,12 +6,16 @@ import (
 	"fmt"
 )
 
+//
 func NewMemoryIdentityProvider() MemoryIdentityProvider {
 	return MemoryIdentityProvider{
 		users: make(map[string]backend.User),
 	}
 }
 
+// Memory IdentityProvider will store user details in RAM. Once this
+//   struct is released, all data is lost. This is really only used for
+//   development and will probably be deprecated in time.
 type MemoryIdentityProvider struct {
 	users map[string]backend.User
 }
