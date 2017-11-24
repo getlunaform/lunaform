@@ -11,10 +11,12 @@ import (
 )
 
 var (
-	redTestType = "test-type"
-	redTestKey  = "test-key"
-	redTestDoc  = map[string]string{"hello": "world"}
-	redTestDocU = map[string]string{"jello": "whirled"}
+	redTestType       = "test-type"
+	redTestKey        = "test-key"
+	redDuplicateKey   = "duplicate"
+	redNonexistantKey = "no-such-key"
+	redTestDoc        = map[string]string{"hello": "world"}
+	redTestDocU       = map[string]string{"jello": "whirled"}
 )
 
 type stubRedis struct {
@@ -79,6 +81,18 @@ func TestRedisDatabase(t *testing.T) {
 		}
 	})
 
+	t.Run("I get an error adding a collection which exists", func(t *testing.T) {
+		err0 := db.Create(redTestType, redDuplicateKey, redTestDoc)
+		if err0 != nil {
+			t.Errorf("Unexpected error: %+v", err0)
+		}
+
+		err1 := db.Create(redTestType, redDuplicateKey, redTestDoc)
+		if err1 == nil {
+			t.Errorf("Expected an error:")
+		}
+	})
+
 	var i map[string]string
 	t.Run("I can read a collection", func(t *testing.T) {
 		i = nil
@@ -92,6 +106,15 @@ func TestRedisDatabase(t *testing.T) {
 			fmt.Printf("%T, %T", redTestDoc, i)
 			t.Errorf("expected %+v, received %+v", redTestDoc, i)
 		}
+	})
+
+	t.Run("I get an error reading a collection which doesn't exist", func(t *testing.T) {
+		i = nil
+		err := db.Read(redTestType, redNonexistantKey, &i)
+		if err == nil {
+			t.Errorf("Expected error")
+		}
+
 	})
 
 	t.Run("I can update a collection", func(t *testing.T) {
@@ -109,7 +132,13 @@ func TestRedisDatabase(t *testing.T) {
 		if !reflect.DeepEqual(i, redTestDocU) {
 			t.Errorf("expected %+v, received %+v", redTestDocU, i)
 		}
+	})
 
+	t.Run("I get an error updating a collection which doesn't exist", func(*testing.T) {
+		err := db.Update(redTestType, redNonexistantKey, redTestDocU)
+		if err == nil {
+			t.Errorf("Expected error")
+		}
 	})
 
 	t.Run("I can delete a collection", func(t *testing.T) {
