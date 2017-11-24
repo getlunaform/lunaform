@@ -74,6 +74,14 @@ func TestRedisDatabase(t *testing.T) {
 		collections: make(map[string]interface{}),
 	}
 
+	t.Run("I can ping my redis", func(*testing.T) {
+		_ = db.Ping()
+	})
+
+	t.Run("I can close my redis", func(*testing.T) {
+		_ = db.Close()
+	})
+
 	t.Run("I can add a collection", func(t *testing.T) {
 		err := db.Create(redTestType, redTestKey, redTestDoc)
 		if err != nil {
