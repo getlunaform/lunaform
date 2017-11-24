@@ -72,8 +72,10 @@ func TestMemoryDB(t *testing.T) {
 
 	})
 
+
 	t.Run("I can delete a collection", func(t *testing.T) {
 		l0 := len(db.collections)
+
 
 		err := db.Delete(memTestType, memTestKey)
 		if err != nil {
