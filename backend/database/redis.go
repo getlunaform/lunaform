@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -142,8 +141,4 @@ func (r RedisDatabase) set(key string, doc interface{}) error {
 
 func (r RedisDatabase) key(recordType, key string) string {
 	return fmt.Sprintf("%s%s%s%s%s", r.namespace, redisDelimeter, recordType, redisDelimeter, key)
-}
-
-func (r RedisDatabase) trimQuotes(s string) string {
-	return strings.TrimLeft(strings.TrimRight(s, `"`), `"`)
 }
