@@ -40,12 +40,12 @@ func (r *stubRedis) Del(s ...string) *redis.IntCmd {
 }
 
 func (r *stubRedis) Keys(s string) *redis.StringSliceCmd {
-	keys := make([]string, len(r.collections))
+	keys := []string{}
 
-	i := 0
 	for k := range r.collections {
-		keys[i] = k
-		i++
+		if s == "*" || k == s {
+			keys = append(keys, k)
+		}
 	}
 
 	return redis.NewStringSliceResult(keys, nil)
