@@ -1,7 +1,5 @@
 package backend
 
-import "encoding/json"
-
 // Record is an untyped, schemaless record type which all
 // record types embed and implement
 type Record map[string]interface{}
@@ -20,7 +18,7 @@ func (r Record) Type() string {
 // This is wrapped in the Database
 type Driver interface {
 	Create(recordType, key string, doc interface{}) error
-	Read(recordType, key string) (interface{}, error)
+	Read(recordType, key string, i interface{}) error
 	Update(recordType, key string, doc interface{}) error
 	Delete(recordType, key string) error
 

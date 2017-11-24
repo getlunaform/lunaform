@@ -1,9 +1,9 @@
 package identity
 
 import (
+	"fmt"
 	"github.com/zeebox/terraform-server/backend"
 	"golang.org/x/crypto/bcrypt"
-	"fmt"
 )
 
 //
