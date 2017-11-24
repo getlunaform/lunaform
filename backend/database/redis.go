@@ -61,7 +61,7 @@ func (r RedisDatabase) Create(recordType, key string, doc interface{}) error {
 	k := r.key(recordType, key)
 
 	if r.exists(k) {
-		return fmt.Errorf("%q %q already exists", recordType, key)
+		return fmt.Errorf("%q %q already exists at %q", recordType, key, k)
 	}
 
 	return r.set(k, doc)
