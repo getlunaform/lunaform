@@ -8,6 +8,7 @@ import:
   version: ^1.2.15
 - package: github.com/jessevdk/go-flags
   version: ^1.3.0
+- package: github.com/go-yaml/yaml
 testImport:
 - package: github.com/go-swagger/go-swagger
   version: ^0.13.0
