@@ -1,15 +1,5 @@
 package: github.com/zeebox/terraform-server
 import:
-- package: github.com/revel/modules
-  version: ^0.18.0
-  subpackages:
-  - static/app/controllers
-  - testrunner/app
-  - testrunner/app/controllers
-- package: github.com/revel/revel
-  version: ^0.18.0
-  subpackages:
-  - testing
 - package: golang.org/x/crypto
   subpackages:
   - bcrypt

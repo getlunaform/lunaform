@@ -21,4 +21,3 @@ terraform-server: validate-swagger
 	go build \
 		-o ./terraform-server \
 		github.com/zeebox/terraform-server/server/cmd/terraform-server-server
-
