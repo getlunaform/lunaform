@@ -1,51 +1,127 @@
 package database
 
 import (
+	"reflect"
 	"testing"
+)
 
-	"github.com/stretchr/testify/assert"
-	"github.com/zeebox/terraform-server/backend"
+var (
+	memTestType       = "test-type"
+	memTestKey        = "test-key"
+	memDuplicateKey   = "duplicate"
+	memNonExistantKey = "no-such-key"
+	memTestDoc        = map[string]string{"hello": "world"}
+	memTestDocU       = map[string]string{"jello": "whirled"}
 )
 
 func TestMemoryDB(t *testing.T) {
-	t.Run("Interface", testMemoryDBInterface)
-	t.Run("Insert", testMemoryDBInsert)
-}
+	db, err := NewMemoryDatabase()
+	t.Run("DB does not error", func(t *testing.T) {
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
+	})
 
-func testMemoryDBInterface(t *testing.T) {
-	var db backend.Database
-	db = MemoryDatabase{}
-	assert.NotNil(t, db)
-}
+	t.Run("I can ping my redis", func(*testing.T) {
+		_ = db.Ping()
+	})
 
-func testMemoryDBInsert(t *testing.T) {
-	var db backend.Database
+	t.Run("I can close my memory database", func(*testing.T) {
+		_ = db.Close()
+	})
 
-	db = NewMemoryDatabase()
-	err := db.Insert(
-		"test",
-		backend.NewCollection("test", db),
-	)
-	assert.Nil(t, err)
+	t.Run("I can add a collection", func(t *testing.T) {
+		l0 := len(db.collections)
 
-	col := db.Collection("test")
-	assert.NotNil(t, col)
+		err := db.Create(memTestType, memTestKey, memTestDoc)
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
 
-	assert.Equal(t, col.Name(), "test")
-	assert.Equal(t, col.Count(), 0)
+		l1 := len(db.collections)
+		if l1 != l0+1 {
+			t.Errorf("Create did not add to collections. Contents are: %+v", db.collections)
+		}
+	})
 
-	err = col.Create("test-key", "test-value")
-	assert.Nil(t, err)
-	assert.Equal(t, col.Count(), 1)
+	t.Run("I receive an error adding a collection which exists", func(t *testing.T) {
+		err := db.Create(memTestType, memDuplicateKey, memTestDoc)
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
 
-	var result string
-	err = col.Read("test-key", &result)
-	assert.Equal(t, "test-value", result)
+		err = db.Create(memTestType, memDuplicateKey, memTestDoc)
+		if err == nil {
+			t.Errorf("Expected error")
+		}
+	})
 
-	var result1 string
-	col.Delete("test-key")
-	err = col.Read("test-key", &result1)
-	assert.Empty(t, result1)
+	var i map[string]string
+	t.Run("I can read a collection", func(t *testing.T) {
+		i = nil
 
-	db.Close()
+		err := db.Read(memTestType, memTestKey, &i)
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
+
+		if !reflect.DeepEqual(i, memTestDoc) {
+			t.Errorf("expected %+v, received %+v", memTestDoc, i)
+		}
+	})
+
+	t.Run("I get an error reading a collection which does not exist", func(t *testing.T) {
+		i = nil
+
+		err := db.Read(memTestType, memNonExistantKey, &i)
+		if err == nil {
+			t.Errorf("Expected error")
+		}
+	})
+
+	t.Run("I can update a collection", func(t *testing.T) {
+		l0 := len(db.collections)
+
+		err := db.Update(memTestType, memTestKey, memTestDocU)
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
+
+		l1 := len(db.collections)
+		if l0 != l1 {
+			t.Errorf("Update did not update collections. Contents are: %+v", db.collections)
+		}
+
+		i := make(map[string]string)
+		err = db.Read(memTestType, memTestKey, &i)
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
+
+		if !reflect.DeepEqual(i, memTestDocU) {
+			t.Errorf("expected %+v, received %+v", memTestDoc, i)
+		}
+	})
+
+	t.Run("I get an error updating a collection which does not exist", func(t *testing.T) {
+		err := db.Update(memTestType, memNonExistantKey, memTestDocU)
+		if err == nil {
+			t.Errorf("Expected error")
+		}
+	})
+
+	t.Run("I can delete a collection", func(t *testing.T) {
+		l0 := len(db.collections)
+
+		err := db.Delete(memTestType, memTestKey)
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
+
+		l1 := len(db.collections)
+		if l1 != l0-1 {
+			t.Errorf("Delete did not remove a collection. Contents are: %+v", db.collections)
+		}
+
+	})
 }
