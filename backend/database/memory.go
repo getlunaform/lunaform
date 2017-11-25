@@ -44,6 +44,10 @@ func (md MemoryDatabase) Read(recordType, key string, i interface{}) error {
 }
 
 func (md MemoryDatabase) Update(recordType, key string, doc interface{}) error {
+	if !md.exists(recordType, key) {
+		return fmt.Errorf("%q %q doesn't exist", recordType, key)
+	}
+
 	md.collections[md.key(recordType, key)] = md.serialize(doc)
 
 	return nil
