@@ -6,10 +6,12 @@ import (
 )
 
 var (
-	memTestType = "test-type"
-	memTestKey  = "test-key"
-	memTestDoc  = map[string]string{"hello": "world"}
-	memTestDocU = map[string]string{"jello": "whirled"}
+	memTestType       = "test-type"
+	memTestKey        = "test-key"
+	memDuplicateKey   = "duplicate"
+	memNonExistantKey = "no-such-key"
+	memTestDoc        = map[string]string{"hello": "world"}
+	memTestDocU       = map[string]string{"jello": "whirled"}
 )
 
 func TestMemoryDB(t *testing.T) {
@@ -18,6 +20,14 @@ func TestMemoryDB(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error: %+v", err)
 		}
+	})
+
+	t.Run("I can ping my redis", func(*testing.T) {
+		_ = db.Ping()
+	})
+
+	t.Run("I can close my memory database", func(*testing.T) {
+		_ = db.Close()
 	})
 
 	t.Run("I can add a collection", func(t *testing.T) {
@@ -34,8 +44,21 @@ func TestMemoryDB(t *testing.T) {
 		}
 	})
 
+	t.Run("I receive an error adding a collection which exists", func(t *testing.T) {
+		err := db.Create(memTestType, memDuplicateKey, memTestDoc)
+		if err != nil {
+			t.Errorf("Unexpected error: %+v", err)
+		}
+
+		err = db.Create(memTestType, memDuplicateKey, memTestDoc)
+		if err == nil {
+			t.Errorf("Expected error")
+		}
+	})
+
+	var i map[string]string
 	t.Run("I can read a collection", func(t *testing.T) {
-		i := make(map[string]string)
+		i = nil
 
 		err := db.Read(memTestType, memTestKey, &i)
 		if err != nil {
@@ -44,6 +67,15 @@ func TestMemoryDB(t *testing.T) {
 
 		if !reflect.DeepEqual(i, memTestDoc) {
 			t.Errorf("expected %+v, received %+v", memTestDoc, i)
+		}
+	})
+
+	t.Run("I get an error reading a collection which does not exist", func(t *testing.T) {
+		i = nil
+
+		err := db.Read(memTestType, memNonExistantKey, &i)
+		if err == nil {
+			t.Errorf("Expected error")
 		}
 	})
 
@@ -69,13 +101,17 @@ func TestMemoryDB(t *testing.T) {
 		if !reflect.DeepEqual(i, memTestDocU) {
 			t.Errorf("expected %+v, received %+v", memTestDoc, i)
 		}
-
 	})
 
+	t.Run("I get an error updating a collection which does not exist", func(t *testing.T) {
+		err := db.Update(memTestType, memNonExistantKey, memTestDocU)
+		if err == nil {
+			t.Errorf("Expected error")
+		}
+	})
 
 	t.Run("I can delete a collection", func(t *testing.T) {
 		l0 := len(db.collections)
-
 
 		err := db.Delete(memTestType, memTestKey)
 		if err != nil {
