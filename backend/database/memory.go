@@ -5,16 +5,6 @@ import (
 	"fmt"
 )
 
-// type Driver interface {
-//     Create(recordType, key string, doc interface{}) error
-//     Read(recordType, key string, i interface{}) (error)
-//     Update(recordType, key string, doc interface{}) error
-//     Delete(recordType, key string) error
-
-//     Ping() error
-//     Close() error
-// }
-
 func NewMemoryDatabase() (MemoryDatabase, error) {
 	return MemoryDatabase{
 		collections: make(map[string]string),
