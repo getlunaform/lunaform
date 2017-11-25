@@ -1,0 +1,27 @@
+swagger: "2.0"
+info:
+  title: terraform-server
+  description: This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.
+  version: 0.0.1-alpha
+  contact:
+    email: drew.sonne@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://github.com/zeebox/terraform-server/blob/master/LICENSE
+basePath: /api
+schemes:
+  - http
+  - https
+consumes:
+- application/vnd.terraform.server.v1+json
+produces:
+- application/vnd.terraform.server.v1+json
+
+paths:
+  /:
+    get:
+      description: List the root resource groups
+      operationId: list-resource-groups
+      responses:
+        200:
+          description: OK
