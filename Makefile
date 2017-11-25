@@ -9,12 +9,14 @@ run: terraform-server
 validate-swagger:
 	swagger validate $(SRC_YAML)
 
-terraform-server: validate-swagger
+generate-swagger: validate-swagger
 	swagger generate server \
 		--target=server \
 		--principal=models.Principal \
 		--name=TerraformServer \
-		--spec=$(SRC_YAML) && \
+		--spec=$(SRC_YAML)
+
+terraform-server: generate-swagger
 	go build \
 		-o ./terraform-server \
 		github.com/zeebox/terraform-server/server/cmd/terraform-server-server
