@@ -16,5 +16,13 @@ terraform-server: validate-swagger
 		--name=TerraformServer \
 		--spec=$(SRC_YAML) && \
 	go build \
+		-a -installsuffix cgo \
 		-o ./terraform-server \
 		github.com/zeebox/terraform-server/server/cmd/terraform-server-server
+
+build-docker:
+	GOOS=linux $(MAKE) terraform-server
+	docker build -t terraform-server .
+
+run-docker: build-docker
+	docker run terraform-server

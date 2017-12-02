@@ -1,4 +1,8 @@
 FROM scratch
-ADD ca-certificates.crt /etc/ssl/certs/
+
+EXPOSE 8080
+
 ADD terraform-server /
-CMD ["/terraform-server","--scheme=http"]
+CMD ["/terraform-server"]
+
+ENTRYPOINT ["/terraform-server","--scheme=http", "--port=8080", "--host=0.0.0.0"]
