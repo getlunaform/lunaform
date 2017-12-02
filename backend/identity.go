@@ -1,5 +1,8 @@
 package backend
 
+// IdentityProvider is a specialised database concerned exclusively
+// with managing Users and a source of authority for their
+// authentication.
 type IdentityProvider interface {
 	IsEditable() bool
 	IsFederated() bool
