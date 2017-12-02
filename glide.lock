@@ -1,5 +1,5 @@
-hash: 4c5ba852e9ec3ee3e904f57e31a3caf40911750176480749e2434d0bdf253d8d
-updated: 2017-11-25T14:01:59.541583396Z
+hash: c595948a4811071acbe720052e9544100cbd55879182858219165aa91f19688a
+updated: 2017-12-02T15:48:37.09629195Z
 imports:
 - name: github.com/asaskevich/govalidator
   version: f682aee18e37332521b3c3ef4cba9ddb9b516b09
@@ -55,16 +55,6 @@ imports:
   version: 1c4bec281e4bbc75b4f4a1bd923bdf1bd989a969
 - name: github.com/PuerkitoBio/urlesc
   version: de5bf2ad457846296e2031421a34e2568e304e35
-- name: github.com/revel/modules
-  version: 45c500a736554f6951e4855e1ca59658fa2528c3
-  subpackages:
-  - static/app/controllers
-  - testrunner/app
-  - testrunner/app/controllers
-- name: github.com/revel/revel
-  version: 164f0cf561ac8046a994276fa417fc7f11863da5
-  subpackages:
-  - testing
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
 - name: golang.org/x/crypto
