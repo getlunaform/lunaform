@@ -19,6 +19,15 @@ validate-swagger:
 
 build: terraform-server
 
+test:
+	go test $(shell go list ./... | grep -v vendor)
+
+format:
+	go fmt $(shell go list ./...)
+
+lint:
+	golint $(shell go list ./... | grep -v vendor)
+
 terraform-server: validate-swagger
 	swagger generate server \
 		--target=server \
