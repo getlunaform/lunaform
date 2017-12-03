@@ -6,16 +6,18 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/runtime/middleware"
 	"github.com/tylerb/graceful"
 
 	"github.com/zeebox/terraform-server/server/restapi/operations"
 
 	bmw "github.com/zeebox/go-http-middleware"
+	"github.com/zeebox/terraform-server/server/restapi/controller"
 
 	"github.com/zeebox/goose4"
 	"time"
 	"strconv"
+	"github.com/zeebox/terraform-server/backend/identity"
+	"github.com/zeebox/terraform-server/backend"
 )
 
 // goose4
@@ -52,13 +54,17 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// Example:
 	// api.Logger = log.Printf
 
-	api.JSONConsumer = runtime.JSONConsumer()
+	var idp backend.IdentityProvider
+	idp = identity.NewMemoryIdentityProvider()
 
+	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.ListResourceGroupsHandler = operations.ListResourceGroupsHandlerFunc(func(params operations.ListResourceGroupsParams) middleware.Responder {
-		return middleware.NotImplemented("operation .ListResourceGroups has not yet been implemented")
-	})
+	// Controllers for /api/
+	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
+
+	// Controllers for /api/tf
+	api.ResourcesListTerraformResourcesHandler = controller.ListTerraformResourcesController(api, idp)
 
 	api.ServerShutdown = func() {}
 
