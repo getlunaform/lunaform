@@ -24,9 +24,9 @@ type CfgIdentityDefault struct {
 
 type CfgBackend struct {
 	DatabaseType string        `json:"database_type"`
-	Database     cfgBackendDb  `json:"database"`
+	Database     interface{}  `json:"database"`
 	IdentityType string        `json:"identity_type"`
-	Identity     cfgBackendIdp `json:"identity"`
+	Identity     interface{} `json:"identity"`
 }
 
 func (cfg *Configuration) loadFromFile(path string) {
@@ -39,9 +39,6 @@ func (cfg *Configuration) loadFromFile(path string) {
 		panic(err)
 	}
 }
-
-type cfgBackendDb struct{}
-type cfgBackendIdp struct{}
 
 type ConfigFileFlags struct {
 	ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
