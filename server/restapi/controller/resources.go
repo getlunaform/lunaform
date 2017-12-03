@@ -8,6 +8,22 @@ import (
 	"github.com/zeebox/terraform-server/server/models"
 )
 
+var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, idp backend.IdentityProvider) resources.ListIdentityResourcesHandlerFunc {
+	return resources.ListIdentityResourcesHandlerFunc(func(params resources.ListIdentityResourcesParams) middleware.Responder {
+		parts := apiParts(params.HTTPRequest, api)
+
+		ir := buildResourceGroupResponse([]string{"groups", "providers", "users"}, parts)
+
+		r := resources.NewListIdentityResourcesOK()
+		r.SetPayload(&models.ResponseListIdentityResources{
+			Links:    HALRootRscLinks(parts),
+			Embedded: &models.ResponseListIdentityResourcesEmbedded{IdentityResources: ir},
+		})
+
+		return r
+	})
+}
+
 var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp backend.IdentityProvider) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
 
