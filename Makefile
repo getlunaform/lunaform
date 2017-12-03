@@ -17,7 +17,7 @@ run: terraform-server
 validate-swagger:
 	swagger validate $(SRC_YAML)
 
-build: terraform-server
+build: generate-swagger terraform-server
 
 test:
 	go test $(shell go list ./... | grep -v vendor)
@@ -28,12 +28,14 @@ format:
 lint:
 	golint $(shell go list ./... | grep -v vendor)
 
-terraform-server: validate-swagger
+generate-swagger: validate-swagger
 	swagger generate server \
 		--target=server \
 		--principal=models.Principal \
 		--name=TerraformServer \
-		--spec=$(SRC_YAML) && \
+		--spec=$(SRC_YAML)
+
+terraform-server:
 	go build \
 		-a -installsuffix $(COMPILER) \
 		-ldflags "-X github.com/zeebox/terraform-server/server/restapi.builtWhen=$(shell date +%s) \
