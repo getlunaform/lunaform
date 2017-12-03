@@ -1,10 +1,14 @@
-hash: 22ccdb156f3163bd6607b230102d1026daf4419963758a1c8482a01a9637e755
-updated: 2017-11-25T17:17:42.228613768Z
+hash: 8fb16887f89a7c264669f995b04a27b277e7af214f57d808b0260bfc46f6ca75
+updated: 2017-12-03T11:51:45.702340211Z
 imports:
 - name: github.com/asaskevich/govalidator
   version: f682aee18e37332521b3c3ef4cba9ddb9b516b09
 - name: github.com/docker/go-units
   version: 0dadbb0345b35ec7ef35e228dabb8de89a65bf52
+- name: github.com/go-ole/go-ole
+  version: a41e3c4b706f6ae8dfbff342b06e40fa4d2d0506
+  subpackages:
+  - oleutil
 - name: github.com/go-openapi/analysis
   version: 8ed83f2ea9f00f945516462951a288eaa68bf0d6
 - name: github.com/go-openapi/errors
@@ -41,8 +45,6 @@ imports:
   - internal/hashtag
   - internal/pool
   - internal/proto
-- name: github.com/go-yaml/yaml
-  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
 - name: github.com/jessevdk/go-flags
   version: 96dc06278ce32a0e9d957d590bb987c81ee66407
 - name: github.com/mailru/easyjson
@@ -57,8 +59,28 @@ imports:
   version: 1c4bec281e4bbc75b4f4a1bd923bdf1bd989a969
 - name: github.com/PuerkitoBio/urlesc
   version: de5bf2ad457846296e2031421a34e2568e304e35
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
+- name: github.com/shirou/gopsutil
+  version: 48fc5612898a1213aa5d6a0fb2d4f7b968e898fb
+  subpackages:
+  - cpu
+  - host
+  - internal/common
+  - load
+  - mem
+  - net
+  - process
+- name: github.com/shirou/w32
+  version: bb4de0191aa41b5507caa14b0650cdbddcd9280b
+- name: github.com/StackExchange/wmi
+  version: ea383cf3ba6ec950874b8486cd72356d007c768f
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
+- name: github.com/zeebox/go-http-middleware
+  version: d8d506a1800d830c3f9eee2637c0134067219ef4
+- name: github.com/zeebox/goose4
+  version: 03cdd7eb62092fd0fd3f29734399ea4516e9f2f9
 - name: golang.org/x/crypto
   version: 9f005a07e0d31d45e6656d241bb5c0f2efd4bc94
   subpackages:
@@ -69,6 +91,11 @@ imports:
   subpackages:
   - context
   - idna
+- name: golang.org/x/sys
+  version: 7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce
+  subpackages:
+  - unix
+  - windows
 - name: golang.org/x/text
   version: 88f656faf3f37f690df1a32515b479415e1a6769
   subpackages:
