@@ -60,7 +60,11 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
+	// Controllers for /api/
 	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
+
+	// Controllers for /api/tf
+	api.ResourcesListTerraformResourcesHandler = controller.ListTerraformResourcesController(api, idp)
 
 	api.ServerShutdown = func() {}
 

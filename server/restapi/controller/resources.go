@@ -24,3 +24,19 @@ var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp 
 		return r
 	})
 }
+
+var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, idp backend.IdentityProvider) resources.ListTerraformResourcesHandlerFunc {
+	return resources.ListTerraformResourcesHandlerFunc(func(params resources.ListTerraformResourcesParams) middleware.Responder {
+		parts := apiParts(params.HTTPRequest, api)
+
+		rg := buildResourceGroupResponse([]string{"modules", "stacks", "state-backends", "workspaces"}, parts)
+
+		r := resources.NewListResourceGroupsOK()
+		r.SetPayload(&models.ResponseListResourceGroups{
+			Links:    HALRootRscLinks(parts),
+			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
+		})
+
+		return r
+	})
+}
