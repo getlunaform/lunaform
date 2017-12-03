@@ -17,6 +17,11 @@ consumes:
 produces:
 - application/vnd.terraform.server.v1+json
 
+x-tagGroups:
+  - name: Resources
+    tags:
+      - resources
+
 paths:
   /:
     get:
@@ -41,6 +46,28 @@ paths:
                     _links: {self: {href: "http://example.com/api/vcs"}}
           schema:
             $ref: "#/definitions/response-list-resource-groups"
+  /tf:
+    get:
+      tags:
+        - resources
+      operationId: list-terraform-resources
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _embedded:
+                tf-resources:
+                  - name: modules
+                    _links: {self: {href: "http://example.com/api/tf/modules"}}
+                  - name: stacks
+                    _links: {self: {href: "http://example.com/api/tf/stacks"}}
+                  - name: state-backends
+                    _links: {self: {href: "http://example.com/api/tf/state-backends"}}
+                  - name: workspaces
+                    _links: {self: {href: "http://example.com/api/tf/workspaces"}}
+          schema:
+            $ref: "#/definitions/response-list-tf-resources"
 
 definitions:
   response-list-resource-groups:
@@ -62,6 +89,26 @@ definitions:
             type: array
             items:
               $ref: "#/definitions/resource-group"
+  response-list-tf-resources:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of resources for managing terraform
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        type: object
+        readOnly: true
+        required:
+        - tf-resources
+        properties:
+          tf-resources:
+            type: array
+            items:
+              $ref: "#/definitions/resource-group"
+
   resource-group:
     type: object
     description: A group of resources
