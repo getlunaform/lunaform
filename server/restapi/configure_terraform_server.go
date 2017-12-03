@@ -12,6 +12,7 @@ import (
 	"github.com/zeebox/terraform-server/server/restapi/operations"
 
 	bmw "github.com/zeebox/go-http-middleware"
+	"github.com/zeebox/terraform-server/server/restapi/controller"
 
 	"github.com/zeebox/goose4"
 	"time"
@@ -56,9 +57,7 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.ListResourceGroupsHandler = operations.ListResourceGroupsHandlerFunc(func(params operations.ListResourceGroupsParams) middleware.Responder {
-		return middleware.NotImplemented("operation .ListResourceGroups has not yet been implemented")
-	})
+	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
 
 	api.ServerShutdown = func() {}
 
