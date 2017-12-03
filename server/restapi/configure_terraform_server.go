@@ -18,6 +18,7 @@ import (
 	"strconv"
 	"github.com/zeebox/terraform-server/backend/identity"
 	"github.com/zeebox/terraform-server/backend"
+	"fmt"
 )
 
 // goose4
@@ -40,28 +41,30 @@ const (
 
 //go:generate swagger generate server --target ../server --name TerraformServer --spec ../swagger.yml --principal models.Principal
 
-func configureFlags(api *operations.TerraformServerAPI) {
-	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
-}
-
 func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
-	// Set your custom logger if needed. Default one is log.Printf
-	// Expected interface func(string, ...interface{})
-	//
-	// Example:
-	// api.Logger = log.Printf
-
 	var idp backend.IdentityProvider
-	idp = identity.NewMemoryIdentityProvider()
+
+	cfg := parseCliConfiguration()
+
+	if cfg.Backend.IdentityType == "memory" {
+		idp = identity.NewMemoryIdentityProvider()
+		//} else if cfg.Backend.IdentityType == "redis" {
+		//	idp = identity.New
+	} else {
+		panic(fmt.Sprintf("Unexpected Identity Provider type: '%s'", cfg.Backend.IdentityType))
+	}
 
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Controllers for /api/
 	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
+
+	// Controllers for /api/identity
+	api.ResourcesListIdentityResourcesHandler = controller.ListIdentityResourcesController(api, idp)
 
 	// Controllers for /api/tf
 	api.ResourcesListTerraformResourcesHandler = controller.ListTerraformResourcesController(api, idp)
@@ -93,6 +96,9 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
 
+	if builtWhen == "" {
+		builtWhen = "-1"
+	}
 	t, err := strconv.Atoi(builtWhen)
 	if err != nil {
 		panic(err)
