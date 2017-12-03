@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/runtime/middleware"
 	"github.com/tylerb/graceful"
 
 	"github.com/zeebox/terraform-server/server/restapi/operations"
@@ -17,6 +16,8 @@ import (
 	"github.com/zeebox/goose4"
 	"time"
 	"strconv"
+	"github.com/zeebox/terraform-server/backend/identity"
+	"github.com/zeebox/terraform-server/backend"
 )
 
 // goose4
@@ -53,8 +54,10 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// Example:
 	// api.Logger = log.Printf
 
-	api.JSONConsumer = runtime.JSONConsumer()
+	var idp backend.IdentityProvider
+	idp = identity.NewMemoryIdentityProvider()
 
+	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
