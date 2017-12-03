@@ -20,9 +20,9 @@ backend:
     path: config/db.yaml
   identity:
     - type: json
-       path: config/auth-db.yaml`)
+      path: config/auth-db.yaml`)
 
-	c := cfg{}
+	c := Configuration{}
 
 	err := yaml.Unmarshal(defaultConfigPayload, &c)
 	assert.Nil(t, err)
