@@ -46,6 +46,26 @@ paths:
                     _links: {self: {href: "http://example.com/api/vcs"}}
           schema:
             $ref: "#/definitions/response-list-resource-groups"
+  /identity:
+    get:
+      tags:
+        - resources
+      operationId: list-identity-resources
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _embedded:
+                identity-resources:
+                  - name: groups
+                    _links: {self: {href: "http://example.com/api/identity/groups"}}
+                  - name: providers
+                    _links: {self: {href: "http://example.com/api/identity/providers"}}
+                  - name: users
+                    _links: {self: {href: "http://example.com/api/identity/users"}}
+          schema:
+            $ref: "#/definitions/response-list-identity-resources"
   /tf:
     get:
       tags:
@@ -108,7 +128,25 @@ definitions:
             type: array
             items:
               $ref: "#/definitions/resource-group"
-
+  response-list-identity-resources:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of Identity resources
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        type: object
+        readOnly: true
+        required:
+          - identity-resources
+        properties:
+          identity-resources:
+            type: array
+            items:
+              $ref: "#/definitions/resource-group"
   resource-group:
     type: object
     description: A group of resources
