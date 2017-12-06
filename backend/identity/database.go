@@ -6,5 +6,5 @@ import (
 )
 
 func NewDatabaseIdentityProvider(db backend.Database) (idp backend.IdentityProvider, err error) {
-	return nil, errors.New("IdP Not Implemented")
+	return nil, errors.New("Database IdP Not Implemented")
 }
