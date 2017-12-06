@@ -1,9 +1,9 @@
 package restapi
 
 import (
+	"encoding/json"
 	"github.com/go-openapi/swag"
 	"github.com/zeebox/terraform-server/server/restapi/operations"
-	"encoding/json"
 )
 
 var cliconfig = ConfigFileFlags{}
@@ -23,9 +23,9 @@ type CfgIdentityDefault struct {
 }
 
 type CfgBackend struct {
-	DatabaseType string        `json:"database_type"`
-	Database     interface{}  `json:"database"`
-	IdentityType string        `json:"identity_type"`
+	DatabaseType string      `json:"database_type"`
+	Database     interface{} `json:"database"`
+	IdentityType string      `json:"identity_type"`
 	Identity     interface{} `json:"identity"`
 }
 
