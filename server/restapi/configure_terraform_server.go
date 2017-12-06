@@ -16,10 +16,10 @@ import (
 	"fmt"
 	"github.com/zeebox/goose4"
 	"github.com/zeebox/terraform-server/backend"
+	"github.com/zeebox/terraform-server/backend/database"
 	"github.com/zeebox/terraform-server/backend/identity"
 	"strconv"
 	"time"
-	"github.com/zeebox/terraform-server/backend/database"
 )
 
 // goose4

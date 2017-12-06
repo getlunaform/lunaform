@@ -1,8 +1,8 @@
 package identity
 
 import (
-	"github.com/zeebox/terraform-server/backend"
 	"errors"
+	"github.com/zeebox/terraform-server/backend"
 )
 
 func NewDatabaseIdentityProvider(db backend.Database) (idp backend.IdentityProvider, err error) {
