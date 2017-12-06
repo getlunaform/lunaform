@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"strings"
-	"net/http"
-	"github.com/zeebox/terraform-server/server/restapi/operations"
 	"github.com/go-openapi/strfmt"
 	"github.com/zeebox/terraform-server/server/models"
+	"github.com/zeebox/terraform-server/server/restapi/operations"
+	"net/http"
+	"strings"
 )
 
 func str(v string) *string { return &v }

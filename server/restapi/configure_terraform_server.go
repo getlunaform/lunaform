@@ -13,12 +13,12 @@ import (
 	bmw "github.com/zeebox/go-http-middleware"
 	"github.com/zeebox/terraform-server/server/restapi/controller"
 
-	"github.com/zeebox/goose4"
-	"time"
-	"strconv"
-	"github.com/zeebox/terraform-server/backend/identity"
-	"github.com/zeebox/terraform-server/backend"
 	"fmt"
+	"github.com/zeebox/goose4"
+	"github.com/zeebox/terraform-server/backend"
+	"github.com/zeebox/terraform-server/backend/identity"
+	"strconv"
+	"time"
 )
 
 // goose4
