@@ -1,106 +1,73 @@
 package database
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	"os"
-	"sync"
-	"time"
 )
 
-type fileClient interface {
-	Write([]byte) (n int, err error)
-}
-
-// JSONDatabase represents a store on disk encoded in JSON format.
+// JSONDatabase stores data on disk in json files.
 // This database is better than MemoryDatabase (but honestly,
 // pretty much everything is), but still not a good solution for
 // live/production.
 type JSONDatabase struct {
-	localStore   MemoryDatabase
-	file         fileClient
-	flushPending chan bool
-	flushPeriod  int
-	flushMux     sync.Mutex
+	file fileClient
+	db   MemoryDatabase
 }
 
-// NewJSONDatabase returns a driver to a JSON file on disk
-func NewJSONDatabase(path string) (j JSONDatabase, err error) {
-	var file fileClient
-	if file, err = os.Open(path); os.IsNotExist(err) {
-		if file, err = os.Create(path); err != nil {
-			// If we can't create the file and it doesn't exist, bail.
-			return
-		}
-	}
+type fileClient interface {
+	//io.Closer
+	io.Reader
+	//io.ReaderAt
+	io.Seeker
+	io.WriterAt
+	io.Writer
+	Stat() (os.FileInfo, error)
+	Truncate(size int64) error
+}
 
-	j = JSONDatabase{
-		file:         file,
-		flushPending: make(chan bool),
-		flushPeriod:  10,
-		flushMux:     sync.Mutex{},
-	}
-	j.localStore, err = NewMemoryDatabase()
-	go j.startFlusher()
+// NewJSONDatabase returns a json database object
+func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error) {
+	jdb = JSONDatabase{file: dbFile}
+	jdb.db, err = NewMemoryDatabase()
 
+	b := new(bytes.Buffer)
+	b.ReadFrom(jdb.file)
+
+	err = json.Unmarshal(b.Bytes(), &jdb.db.collections)
+
+	return jdb, err
+}
+
+// Close the file pointer
+func (jdb *JSONDatabase) Close() (err error) {
+	jdb.file.Truncate(0)
+	_, err = jdb.file.WriteAt(jdb.db.Bytes(), 0)
 	return
 }
 
-// Close will not do anything as we write directly to disk
-// and keep a copy in memory
-func (jd JSONDatabase) Close() (err error) {
-	return
+// Create a record in the JSON file on disk
+func (jdb *JSONDatabase) Create(recordType, key string, doc interface{}) error {
+	return jdb.db.Create(recordType, key, doc)
 }
 
-// Ping does nothing as the file is on a local disk.
-func (jd JSONDatabase) Ping() error {
-	return nil
+// Delete a record in the JSON file on disk
+func (jdb *JSONDatabase) Delete(recordType, key string) error {
+	return jdb.db.Delete(recordType, key)
 }
 
-// Create a record in the json file on disk
-func (jd JSONDatabase) Create(recordType, key string, doc interface{}) (err error) {
-	jd.localStore.Create(recordType, key, doc)
-	go jd.flush()
-
-	return
+// Ping mock. Implementing a no-op for the json file db
+func (jdb *JSONDatabase) Ping() error {
+	return jdb.db.Ping()
 }
 
-// Read a record from a json file on disk
-func (jd JSONDatabase) Read(recordType, key string, i interface{}) (err error) {
-	return
+// Read a record from the JSON file on disk
+func (jdb *JSONDatabase) Read(recordType, key string, i interface{}) (err error) {
+	return jdb.db.Read(recordType, key, i)
 }
 
-// Update a record to a json file on disk
-func (jd JSONDatabase) Update(recordType, key string, doc interface{}) (err error) {
-	return
-}
-
-// Delete a record from the json file on disk
-func (jd JSONDatabase) Delete(recordType, key string) (err error) {
-	return
-}
-
-func (jd JSONDatabase) flush() {
-	jd.flushMux.Lock()
-	jd.flushPending <- true
-	jd.flushMux.Unlock()
-}
-
-func (jd JSONDatabase) startFlusher() {
-	for {
-
-		// Make the flushPending reset operation atomic.
-		jd.flushMux.Lock()
-		doFlush := <-jd.flushPending
-		jd.flushPending <- false
-		jd.flushMux.Unlock()
-
-		if doFlush {
-			payload, err := json.Marshal(jd.localStore.collections)
-			if err != nil {
-				panic(err)
-			}
-			jd.file.Write(payload)
-		}
-		time.Sleep(time.Duration(jd.flushPeriod * time.Millisecond))
-	}
+// Updated a record in the JSON file on disk
+func (jdb *JSONDatabase) Update(recordType, key string, doc interface{}) (err error) {
+	return jdb.db.Update(recordType, key, doc)
 }
