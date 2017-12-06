@@ -1,8 +1,8 @@
 package restapi
 
 import (
-	"net/http"
 	"github.com/zeebox/goose4"
+	"net/http"
 	"strings"
 )
 
