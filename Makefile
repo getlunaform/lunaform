@@ -31,12 +31,6 @@ build: generate-swagger terraform-server
 test:
 	go test $(shell go list ./... | grep -v vendor)
 
-format:
-	go fmt $(shell go list ./...)
-
-lint:
-	golint $(shell go list ./... | grep -v vendor)
-
 generate-swagger: validate-swagger
 	swagger generate server \
 		--target=server \
