@@ -8,6 +8,9 @@ BUILD_ID?=$(ENVIRONMENT)
 
 COMPILER?="cgo"
 
+doc:
+	@sh scripts/generate-doc.sh
+
 update-vendor:
 	glide update
 
