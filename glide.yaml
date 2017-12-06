@@ -3,8 +3,18 @@ import:
 - package: golang.org/x/crypto
   subpackages:
   - bcrypt
+- package: github.com/zeebox/goose4
+- package: github.com/zeebox/go-http-middleware
+- package: github.com/go-openapi/runtime
+- package: github.com/tylerb/graceful
+  version: ^1.2.15
+- package: github.com/jessevdk/go-flags
+  version: ^1.3.0
+- package: github.com/satori/go.uuid
+  version: ^1.1.0
 testImport:
-- package: github.com/golang/lint
+- package: github.com/go-swagger/go-swagger
+  version: ^0.13.0
 - package: github.com/stretchr/testify
   version: ^1.1.4
   subpackages:

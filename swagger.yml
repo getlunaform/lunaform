@@ -1,0 +1,178 @@
+swagger: "2.0"
+info:
+  title: terraform-server
+  description: This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.
+  version: 0.0.1-alpha
+  contact:
+    email: drew.sonne@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://github.com/zeebox/terraform-server/blob/master/LICENSE
+basePath: /api
+schemes:
+  - http
+  - https
+consumes:
+- application/vnd.terraform.server.v1+json
+produces:
+- application/vnd.terraform.server.v1+json
+
+x-tagGroups:
+  - name: Resources
+    tags:
+      - resources
+
+paths:
+  /:
+    get:
+      tags:
+        - resources
+      description: List the root resource groups
+      operationId: list-resource-groups
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              _embedded:
+                resource-groups:
+                  - name: tf
+                    _links: {self: {href: "http://example.com/api/tf/"}}
+                  - name: identity
+                    _links: {self: {href: "http://example.com/api/identity"}}
+                  - name: vcs
+                    _links: {self: {href: "http://example.com/api/vcs"}}
+          schema:
+            $ref: "#/definitions/response-list-resource-groups"
+  /identity:
+    get:
+      tags:
+        - resources
+      operationId: list-identity-resources
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _embedded:
+                identity-resources:
+                  - name: groups
+                    _links: {self: {href: "http://example.com/api/identity/groups"}}
+                  - name: providers
+                    _links: {self: {href: "http://example.com/api/identity/providers"}}
+                  - name: users
+                    _links: {self: {href: "http://example.com/api/identity/users"}}
+          schema:
+            $ref: "#/definitions/response-list-identity-resources"
+  /tf:
+    get:
+      tags:
+        - resources
+      operationId: list-terraform-resources
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _embedded:
+                tf-resources:
+                  - name: modules
+                    _links: {self: {href: "http://example.com/api/tf/modules"}}
+                  - name: stacks
+                    _links: {self: {href: "http://example.com/api/tf/stacks"}}
+                  - name: state-backends
+                    _links: {self: {href: "http://example.com/api/tf/state-backends"}}
+                  - name: workspaces
+                    _links: {self: {href: "http://example.com/api/tf/workspaces"}}
+          schema:
+            $ref: "#/definitions/response-list-tf-resources"
+
+definitions:
+  response-list-resource-groups:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of resources for managing users and their access
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        type: object
+        readOnly: true
+        required:
+          - identity-resources
+        properties:
+          identity-resources:
+            type: array
+            items:
+              $ref: "#/definitions/resource-group"
+  response-list-tf-resources:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of resources for managing terraform
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        type: object
+        readOnly: true
+        required:
+        - tf-resources
+        properties:
+          tf-resources:
+            type: array
+            items:
+              $ref: "#/definitions/resource-group"
+  response-list-identity-resources:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of Identity resources
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        type: object
+        readOnly: true
+        required:
+          - identity-resources
+        properties:
+          identity-resources:
+            type: array
+            items:
+              $ref: "#/definitions/resource-group"
+  resource-group:
+    type: object
+    description: A group of resources
+    required:
+      - _links
+      - name
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      name:
+        type: string
+  hal-rsc-links:
+    type: object
+    readOnly: true
+    description: Links to this resources and documentation for this resource
+    properties:
+      self:
+        $ref: "#/definitions/hal-href"
+      doc:
+        $ref: "#/definitions/hal-href"
+  hal-href:
+    type: object
+    readOnly: true
+    properties:
+      href:
+        type: string
+        format: uri
+  principal:
+    type: object
