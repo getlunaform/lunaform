@@ -35,7 +35,7 @@ format:
 	go fmt $(shell go list ./...)
 
 lint:
-	diff -u <(echo -n) <(gofmt -d -s main.go $(GO_TARGETS))
+	diff -u <(echo -n) <(gofmt -d -s $(GO_TARGETS))
 	golint -set_exit_status . $(GO_TARGETS)
 
 generate-swagger: validate-swagger
