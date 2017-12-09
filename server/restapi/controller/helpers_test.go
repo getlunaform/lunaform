@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
-	"net/http"
 	"crypto/tls"
+	"github.com/stretchr/testify/assert"
+	"net/http"
+	"testing"
 )
 
 func TestUrlPrefix(t *testing.T) {
@@ -16,7 +16,7 @@ func TestUrlPrefix(t *testing.T) {
 		prefix string
 	}{
 		{host: "mock-host", uri: "/mock-uri", tls: &tls.ConnectionState{}, prefix: "https://mock-host/mock-uri"},
-		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-url"},
+		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-uri"},
 	} {
 		r := http.Request{
 			TLS:        test.tls,

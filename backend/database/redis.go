@@ -13,14 +13,15 @@ const (
 	redisDelimeter = "."
 )
 
-// RedisDatabase represents a redis store for our server
+// redisDatabase represents a redis store for our server
 // It holds state and docs and all kinds of awesome sauce
-type RedisDatabase struct {
-	client    redisClient
+type redisDatabase struct {
+	client    RedisClient
 	namespace string
 }
 
-type redisClient interface {
+// RedisClient interface to allow custom redis clients to be used
+type RedisClient interface {
 	Close() error
 	Del(...string) *redis.IntCmd
 	Keys(string) *redis.StringSliceCmd
@@ -29,14 +30,17 @@ type redisClient interface {
 	Set(string, interface{}, time.Duration) *redis.StatusCmd
 }
 
-// NewRedisDatabase returns a redis database object
-func NewRedisDatabase(namespace, address, password string, database int) (r RedisDatabase, err error) {
-	r = RedisDatabase{
-		client: redis.NewClient(&redis.Options{
+// NewRedisDBDriver returns a redis database object
+func NewRedisDBDriver(namespace, address, password string, database int, driver RedisClient) (r Driver, err error) {
+	if driver == nil {
+		driver = redis.NewClient(&redis.Options{
 			Addr:     address,
 			Password: password,
 			DB:       database,
-		}),
+		})
+	}
+	r = redisDatabase{
+		client:    driver,
 		namespace: namespace,
 	}
 
@@ -45,19 +49,19 @@ func NewRedisDatabase(namespace, address, password string, database int) (r Redi
 
 // Ping checks whether redis is up and usable
 // it returns an error to determine this; a nil value means the redis database is usable
-func (r RedisDatabase) Ping() error {
+func (r redisDatabase) Ping() error {
 	_, err := r.client.Ping().Result()
 
 	return err
 }
 
 // Close will close a connection to the redis database
-func (r RedisDatabase) Close() error {
+func (r redisDatabase) Close() error {
 	return r.client.Close()
 }
 
 // Create a record within redis
-func (r RedisDatabase) Create(recordType, key string, doc interface{}) error {
+func (r redisDatabase) Create(recordType, key string, doc interface{}) error {
 	k := r.key(recordType, key)
 
 	if r.exists(k) {
@@ -68,7 +72,7 @@ func (r RedisDatabase) Create(recordType, key string, doc interface{}) error {
 }
 
 // Read a record from redis
-func (r RedisDatabase) Read(recordType, key string, i interface{}) (err error) {
+func (r redisDatabase) Read(recordType, key string, i interface{}) (err error) {
 	k := r.key(recordType, key)
 
 	if !r.exists(k) {
@@ -90,7 +94,7 @@ func (r RedisDatabase) Read(recordType, key string, i interface{}) (err error) {
 }
 
 // Update a redis record
-func (r RedisDatabase) Update(recordType, key string, doc interface{}) (err error) {
+func (r redisDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	k := r.key(recordType, key)
 
 	if !r.exists(k) {
@@ -101,13 +105,13 @@ func (r RedisDatabase) Update(recordType, key string, doc interface{}) (err erro
 }
 
 // Delete a record from redis
-func (r RedisDatabase) Delete(recordType, key string) error {
+func (r redisDatabase) Delete(recordType, key string) error {
 	k := r.key(recordType, key)
 
 	return r.client.Del(k).Err()
 }
 
-func (r RedisDatabase) deserialize(s string, i interface{}) (err error) {
+func (r redisDatabase) deserialize(s string, i interface{}) (err error) {
 	cleanString, err := strconv.Unquote(s)
 	if err != nil {
 		return
@@ -118,19 +122,19 @@ func (r RedisDatabase) deserialize(s string, i interface{}) (err error) {
 	return
 }
 
-func (r RedisDatabase) exists(key string) bool {
+func (r redisDatabase) exists(key string) bool {
 	k, _ := r.client.Keys(key).Result()
 
 	return len(k) > 0
 }
 
-func (r RedisDatabase) serialize(i interface{}) (string, error) {
+func (r redisDatabase) serialize(i interface{}) (string, error) {
 	v, err := json.Marshal(i)
 
 	return string(v), err
 }
 
-func (r RedisDatabase) set(key string, doc interface{}) error {
+func (r redisDatabase) set(key string, doc interface{}) error {
 	v, err := r.serialize(doc)
 	if err != nil {
 		return err
@@ -139,6 +143,6 @@ func (r RedisDatabase) set(key string, doc interface{}) error {
 	return r.client.Set(key, v, 0).Err()
 }
 
-func (r RedisDatabase) key(recordType, key string) string {
+func (r redisDatabase) key(recordType, key string) string {
 	return fmt.Sprintf("%s%s%s%s%s", r.namespace, redisDelimeter, recordType, redisDelimeter, key)
 }

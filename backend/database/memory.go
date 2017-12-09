@@ -5,33 +5,40 @@ import (
 	"fmt"
 )
 
-// MemoryDatabase represents an in memory store for our server.
+// memoryDatabase represents an in memory store for our server.
 //   This driver is an ephemeral database stored in RAM, and
 //   primarily used for development. When the server shuts down
 //   all the state in it is lost. You probably shouldn't use it.
-type MemoryDatabase struct {
+type memoryDatabase struct {
 	collections map[string]string
 }
 
-// NewMemoryDatabase returns a memory database object
-func NewMemoryDatabase() (MemoryDatabase, error) {
-	return MemoryDatabase{
+// NewMemoryDBDriver returns a memory database object
+func NewMemoryDBDriver() (Driver, error) {
+	return memoryDatabase{
 		collections: make(map[string]string),
 	}, nil
 }
 
+// NewMemoryDBDriverWithCollection seeds the memory database with some initialisaiton data
+func NewMemoryDBDriverWithCollection(collection map[string]string) (BufferedDriver, error) {
+	return memoryDatabase{
+		collections: collection,
+	}, nil
+}
+
 // Close doesn't do anything as there is no connection to sever.
-func (md MemoryDatabase) Close() error {
+func (md memoryDatabase) Close() error {
 	return nil
 }
 
 // Ping doesn't do anything as the database is inside the app memory space.
-func (md MemoryDatabase) Ping() error {
+func (md memoryDatabase) Ping() error {
 	return nil
 }
 
 // Create a record in memory
-func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error) {
+func (md memoryDatabase) Create(recordType, key string, doc interface{}) (err error) {
 	if md.exists(recordType, key) {
 		return fmt.Errorf("%q %q already exists", recordType, key)
 	}
@@ -42,7 +49,7 @@ func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err er
 }
 
 // Read a record from memory
-func (md MemoryDatabase) Read(recordType, key string, i interface{}) error {
+func (md memoryDatabase) Read(recordType, key string, i interface{}) error {
 	if !md.exists(recordType, key) {
 		return fmt.Errorf("%q %q does not exist", recordType, key)
 	}
@@ -53,7 +60,7 @@ func (md MemoryDatabase) Read(recordType, key string, i interface{}) error {
 }
 
 // Update a record in memory
-func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
+func (md memoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	if !md.exists(recordType, key) {
 		return fmt.Errorf("%q %q does not exist", recordType, key)
 	}
@@ -64,17 +71,17 @@ func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err er
 }
 
 // Delete a record from memory
-func (md MemoryDatabase) Delete(recordType, key string) error {
+func (md memoryDatabase) Delete(recordType, key string) error {
 	delete(md.collections, md.key(recordType, key))
 
 	return nil
 }
 
-func (md MemoryDatabase) key(recordType, key string) string {
+func (md memoryDatabase) key(recordType, key string) string {
 	return fmt.Sprintf("%s %s", recordType, key)
 }
 
-func (md MemoryDatabase) exists(recordType, key string) (ok bool) {
+func (md memoryDatabase) exists(recordType, key string) (ok bool) {
 	_, ok = md.collections[md.key(recordType, key)]
 
 	return
@@ -84,7 +91,7 @@ func (md MemoryDatabase) exists(recordType, key string) (ok bool) {
 // a pointer to a struct. The original implementation, for example, of
 // Read() looked like:
 //
-// func (md MemoryDatabase) Read(recordType, key string, i interface{}) error {
+// func (md memoryDatabase) Read(recordType, key string, i interface{}) error {
 //     if !md.exists(recordType, key) {
 //         return fmt.Errorf("%q %q doesn't exist", recordType, key)
 //     }
@@ -98,18 +105,18 @@ func (md MemoryDatabase) exists(recordType, key string) (ok bool) {
 // and so we weren't seeing the data we expected.
 // Instead, then, we're going to do json
 
-func (md MemoryDatabase) serialize(i interface{}) (string, error) {
+func (md memoryDatabase) serialize(i interface{}) (string, error) {
 	v, err := json.Marshal(i)
 
 	return string(v), err
 }
 
-func (md MemoryDatabase) deserialize(s string, i interface{}) error {
+func (md memoryDatabase) deserialize(s string, i interface{}) error {
 	return json.Unmarshal([]byte(s), i)
 }
 
 // Bytes slice representation of the database
-func (md MemoryDatabase) Bytes() (b []byte, err error) {
+func (md memoryDatabase) Bytes() (b []byte, err error) {
 	s, err := md.serialize(md.collections)
 	return []byte(s), err
 }

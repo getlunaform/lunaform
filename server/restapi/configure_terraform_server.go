@@ -53,7 +53,7 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 
 	switch cfg.Backend.DatabaseType {
 	case "memory":
-		dbDriver, err = database.NewMemoryDatabase()
+		dbDriver, err = database.NewMemoryDBDriver()
 	default:
 		panic(fmt.Sprintf("Unexpected Database type: '%s'", cfg.Backend.DatabaseType))
 	}
