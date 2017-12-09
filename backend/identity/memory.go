@@ -3,6 +3,7 @@ package identity
 import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
+	"errors"
 )
 
 //
@@ -28,7 +29,7 @@ func (mip MemoryIdentityProvider) IsFederated() (federated bool) {
 }
 
 func (mip MemoryIdentityProvider) ConsumeEndpoint(payload []byte) (err error) {
-	return
+	return errors.New("Can not consume endpoint for managed IdP")
 }
 
 func (mip MemoryIdentityProvider) CreateUser(username string, password string) (user User, err error) {
@@ -42,6 +43,8 @@ func (mip MemoryIdentityProvider) CreateUser(username string, password string) (
 		Idp:        mip,
 	}
 	user.Password, err = mip.hashPassword(password)
+
+	mip.users[username] = user
 
 	return
 }
@@ -64,10 +67,6 @@ func (mip MemoryIdentityProvider) ReadUser(username string) (user User, err erro
 
 	user.Logout()
 
-	return
-}
-
-func (mip MemoryIdentityProvider) UpdateUser(user User) (err error) {
 	return
 }
 

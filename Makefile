@@ -23,13 +23,18 @@ validate-swagger:
 build: generate-swagger terraform-server
 
 test:
-	go test $(shell go list ./... | grep -v vendor)
+	go tool vet ./server ./backend
+	go test - $(shell go list ./... | grep -v vendor)
+
+test-coverage:
+	goverage -v -race -coverprofile=profile.txt -covermode=atomic $(shell go list ./... | grep -v vendor)
 
 format:
 	go fmt $(shell go list ./...)
 
 lint:
-	golint $(shell go list ./... | grep -v vendor)
+	diff -u <(echo -n) <(gofmt -d -s main.go $(GO_TARGETS))
+	golint -set_exit_status . $(go list ./... | grep -v vendor/)
 
 generate-swagger: validate-swagger
 	swagger generate server \

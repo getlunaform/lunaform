@@ -16,7 +16,19 @@ func TestManagedIdentityProvider(t *testing.T) {
 
 		t.Run(key, func(t *testing.T) {
 
-			t.Run("DefaultLogin", func(t *testing.T) {
+			t.Run("I can validate my ability to update my user in an IdP", func(*testing.T) {
+				assert.True(t, idp.IsEditable())
+			})
+
+			t.Run("I can validate the IdP is not federated", func(*testing.T) {
+				assert.False(t, idp.IsFederated())
+			})
+
+			t.Run("I get an error when I try to use a federated endpoint", func(t2 *testing.T) {
+				assert.EqualError(t, idp.ConsumeEndpoint(nil), "Can not consume endpoint for managed IdP")
+			})
+
+			t.Run("I can authenticate a user against an IdP", func(*testing.T) {
 				admin, err := idp.ReadUser("admin")
 				assert.Nil(t, err)
 				assert.Equal(t, "admin", admin.Username)
@@ -25,7 +37,7 @@ func TestManagedIdentityProvider(t *testing.T) {
 				assert.True(t, loggedIn)
 			})
 
-			t.Run("CreateUser", func(t *testing.T) {
+			t.Run("I can create a user in my IdP", func(*testing.T) {
 				user, err := idp.CreateUser("test-user", "test-password")
 				assert.NotNil(t, user)
 				assert.Nil(t, err)
@@ -37,7 +49,16 @@ func TestManagedIdentityProvider(t *testing.T) {
 				assert.False(t, user1.LoggedIn())
 			})
 
-			t.Run("ChangePassword", func(t *testing.T) {
+			t.Run("I get an error trying to create a user in my IdP if they already exist", func(*testing.T) {
+				user1, _ := idp.CreateUser("test-user", "test-password")
+				assert.NotNil(t, user1)
+
+				_, err := idp.CreateUser("test-user", "test-password")
+				assert.EqualError(t, err, "User 'test-user' already exists")
+
+			})
+
+			t.Run("I can change a users password", func(*testing.T) {
 
 				admin, _ := idp.ReadUser("admin")
 				assert.True(t, admin.IsEditable)
