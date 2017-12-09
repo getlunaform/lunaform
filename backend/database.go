@@ -30,3 +30,10 @@ type Driver interface {
 type Database struct {
 	driver Driver
 }
+
+// NewDatabaseWithDriver creates a new Database struct with
+func NewDatabaseWithDriver(driver Driver) Database {
+	return Database{
+		driver: driver,
+	}
+}
