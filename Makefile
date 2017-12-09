@@ -24,7 +24,7 @@ build: generate-swagger terraform-server
 
 test:
 	go tool vet ./server ./backend
-	go test - $(shell go list ./... | grep -v vendor)
+	go test $(shell go list ./... | grep -v vendor)
 
 test-coverage:
 	goverage -v -race -coverprofile=profile.txt -covermode=atomic $(shell go list ./... | grep -v vendor)
