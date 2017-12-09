@@ -6,9 +6,9 @@ import (
 )
 
 // MemoryDatabase represents an in memory store for our server.
-// This driver is an ephemeral database stored in RAM, and
-// primarily used for development. When the server shuts down
-// all the state in it is lost. You probably shouldn't use it.
+//   This driver is an ephemeral database stored in RAM, and
+//   primarily used for development. When the server shuts down
+//   all the state in it is lost. You probably shouldn't use it.
 type MemoryDatabase struct {
 	collections map[string]string
 }

@@ -16,7 +16,7 @@ var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, i
 
 		r := resources.NewListIdentityResourcesOK()
 		r.SetPayload(&models.ResponseListIdentityResources{
-			Links:    HALRootRscLinks(parts),
+			Links:    halRootRscLinks(parts),
 			Embedded: &models.ResponseListIdentityResourcesEmbedded{IdentityResources: ir},
 		})
 
@@ -33,7 +33,7 @@ var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp 
 
 		r := resources.NewListResourceGroupsOK()
 		r.SetPayload(&models.ResponseListResourceGroups{
-			Links:    HALRootRscLinks(parts),
+			Links:    halRootRscLinks(parts),
 			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
 		})
 
@@ -49,7 +49,7 @@ var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, 
 
 		r := resources.NewListResourceGroupsOK()
 		r.SetPayload(&models.ResponseListResourceGroups{
-			Links:    HALRootRscLinks(parts),
+			Links:    halRootRscLinks(parts),
 			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
 		})
 

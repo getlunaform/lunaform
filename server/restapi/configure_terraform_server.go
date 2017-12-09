@@ -28,7 +28,6 @@ var (
 	buildMachine string
 	builtBy      string
 	builtWhen    string
-	buildId      string
 	compiler     string
 	sha          string
 )

@@ -71,7 +71,7 @@ func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error) 
 	return jdb.db.Read(recordType, key, i)
 }
 
-// Updated a record in the JSON file on disk
+// Update a record in the JSON file on disk
 func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	return jdb.db.Update(recordType, key, doc)
 }

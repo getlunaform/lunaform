@@ -26,7 +26,7 @@ func TestHALSelfLink(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		l := HALSelfLink(test.url)
+		l := halSelfLink(test.url)
 		assert.NotNil(t, l)
 		assert.Nil(t, l.Doc)
 		assert.NotNil(t, l.Self)
@@ -46,10 +46,10 @@ func TestHALRootRscLinks(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		l := HALRootRscLinks(&APIHostBase{
+		l := halRootRscLinks(&apiHostBase{
 			FQEndpoint:  test.fqe,
 			ServerURL:   test.server,
-			OperationId: test.opid,
+			OperationID: test.opid,
 		})
 		assert.NotNil(t, l)
 		assert.NotNil(t, l.Doc)
