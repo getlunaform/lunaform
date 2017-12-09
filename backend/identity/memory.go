@@ -2,7 +2,6 @@ package identity
 
 import (
 	"fmt"
-	"github.com/zeebox/terraform-server/backend"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -14,8 +13,8 @@ func NewMemoryIdentityProvider() MemoryIdentityProvider {
 }
 
 // Memory IdentityProvider will store user details in RAM. Once this
-//   struct is released, all data is lost. This is really only used for
-//   development and will probably be deprecated in time.
+// struct is released, all data is lost. This is really only used for
+// development and will probably be deprecated in time.
 type MemoryIdentityProvider struct {
 	users map[string]User
 }

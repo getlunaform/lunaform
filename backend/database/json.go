@@ -41,33 +41,33 @@ func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error) {
 }
 
 // Close the file pointer
-func (jdb *JSONDatabase) Close() (err error) {
+func (jdb JSONDatabase) Close() (err error) {
 	jdb.file.Truncate(0)
 	_, err = jdb.file.WriteAt(jdb.db.Bytes(), 0)
 	return
 }
 
 // Create a record in the JSON file on disk
-func (jdb *JSONDatabase) Create(recordType, key string, doc interface{}) error {
+func (jdb JSONDatabase) Create(recordType, key string, doc interface{}) error {
 	return jdb.db.Create(recordType, key, doc)
 }
 
 // Delete a record in the JSON file on disk
-func (jdb *JSONDatabase) Delete(recordType, key string) error {
+func (jdb JSONDatabase) Delete(recordType, key string) error {
 	return jdb.db.Delete(recordType, key)
 }
 
 // Ping mock. Implementing a no-op for the json file db
-func (jdb *JSONDatabase) Ping() error {
+func (jdb JSONDatabase) Ping() error {
 	return jdb.db.Ping()
 }
 
 // Read a record from the JSON file on disk
-func (jdb *JSONDatabase) Read(recordType, key string, i interface{}) (err error) {
+func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error) {
 	return jdb.db.Read(recordType, key, i)
 }
 
 // Updated a record in the JSON file on disk
-func (jdb *JSONDatabase) Update(recordType, key string, doc interface{}) (err error) {
+func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	return jdb.db.Update(recordType, key, doc)
 }

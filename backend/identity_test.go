@@ -10,54 +10,53 @@ import (
 // These providers are managed by terraform-server meaning that terraform-server is responsible for being
 // its own identity provider. Therefore, all managed terraform servers should conform to the following conditions
 func TestManagedIdentityProvider(t *testing.T) {
-	tests := []struct {
-		idp IdentityProvider
-	}{
-		{idp: identity.NewMemoryIdentityProvider()},
-	}
 
-	for _, test := range tests {
-		idp := test.idp
+	for key, idp := range map[string]identity.Provider{
+		"Memory": identity.NewMemoryIdentityProvider(),
+	} {
 
-		t.Run("DefaultLogin", func(t *testing.T) {
-			admin, err := idp.ReadUser("admin")
-			assert.Nil(t, err)
-			assert.Equal(t, "admin", admin.Username)
+		t.Run(key, func(t *testing.T) {
 
-			loggedIn := admin.Login("password")
-			assert.True(t, loggedIn)
-		})
+			t.Run("DefaultLogin", func(t *testing.T) {
+				admin, err := idp.ReadUser("admin")
+				assert.Nil(t, err)
+				assert.Equal(t, "admin", admin.Username)
 
-		t.Run("CreateUser", func(t *testing.T) {
-			user, err := idp.CreateUser("test-user", "test-password")
-			assert.NotNil(t, user)
-			assert.Nil(t, err)
+				loggedIn := admin.Login("password")
+				assert.True(t, loggedIn)
+			})
 
-			assert.Equal(t, user.Username, "test-user")
+			t.Run("CreateUser", func(t *testing.T) {
+				user, err := idp.CreateUser("test-user", "test-password")
+				assert.NotNil(t, user)
+				assert.Nil(t, err)
 
-			user1, err := idp.ReadUser("test-user")
-			assert.Nil(t, err)
-			assert.False(t, user1.LoggedIn())
-		})
+				assert.Equal(t, user.Username, "test-user")
 
-		t.Run("ChangePassword", func(t *testing.T) {
+				user1, err := idp.ReadUser("test-user")
+				assert.Nil(t, err)
+				assert.False(t, user1.LoggedIn())
+			})
 
-			admin, _ := idp.ReadUser("admin")
-			assert.True(t, admin.IsEditable)
+			t.Run("ChangePassword", func(t *testing.T) {
 
-			err := admin.ChangePassword("new_password")
-			assert.NotNil(t, err)
+				admin, _ := idp.ReadUser("admin")
+				assert.True(t, admin.IsEditable)
 
-			admin.Login("password")
-			err = admin.ChangePassword("new_password")
-			assert.Nil(t, err)
+				err := admin.ChangePassword("new_password")
+				assert.NotNil(t, err)
 
-			admin1, _ := idp.ReadUser("admin")
-			assert.True(t, admin.LoggedIn())
-			assert.False(t, admin1.LoggedIn())
-			admin1.Login("new_password")
-			assert.True(t, admin1.LoggedIn())
+				admin.Login("password")
+				err = admin.ChangePassword("new_password")
+				assert.Nil(t, err)
 
+				admin1, _ := idp.ReadUser("admin")
+				assert.True(t, admin.LoggedIn())
+				assert.False(t, admin1.LoggedIn())
+				admin1.Login("new_password")
+				assert.True(t, admin1.LoggedIn())
+
+			})
 		})
 
 	}

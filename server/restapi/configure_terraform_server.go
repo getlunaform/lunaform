@@ -46,7 +46,7 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
-	var idp backend.IdentityProvider
+	var idp identity.Provider
 	var dbDriver backend.Driver
 	var err error
 
