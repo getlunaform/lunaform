@@ -31,7 +31,7 @@ func (md MemoryDatabase) Ping() error {
 }
 
 // Create a record in memory
-func (md *MemoryDatabase) Create(recordType, key string, doc interface{}) error {
+func (md MemoryDatabase) Create(recordType, key string, doc interface{}) error {
 	if md.exists(recordType, key) {
 		return fmt.Errorf("%q %q already exists", recordType, key)
 	}
