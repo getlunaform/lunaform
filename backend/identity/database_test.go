@@ -2,8 +2,8 @@ package identity
 
 import (
 	"github.com/stretchr/testify/assert"
-	"testing"
 	"github.com/zeebox/terraform-server/backend/database"
+	"testing"
 )
 
 func TestDatabaseIdP(t *testing.T) {

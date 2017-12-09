@@ -80,7 +80,7 @@ func TestDriverInterface(t *testing.T) {
 			t.Run("I get an error reading a collection which doesn't exist", func(t *testing.T) {
 				i = nil
 				err := db.Read(dbTestType, dbNonexistantKey, &i)
-				assert.EqualError(t, err, "\"test-type\" \"no-such-key\" does not exist" )
+				assert.EqualError(t, err, "\"test-type\" \"no-such-key\" does not exist")
 			})
 
 			t.Run("I can update a collection", func(t *testing.T) {
@@ -106,7 +106,7 @@ func TestDriverInterface(t *testing.T) {
 
 			t.Run("I can delete a collection", func(t *testing.T) {
 				err := db.Delete(dbTestType, dbTestKey)
-				assert.NoError(t, err, )
+				assert.NoError(t, err)
 			})
 		})
 	}

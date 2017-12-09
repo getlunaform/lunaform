@@ -2,10 +2,10 @@ package controller
 
 import (
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/zeebox/terraform-server/backend/identity"
 	"github.com/zeebox/terraform-server/server/models"
 	"github.com/zeebox/terraform-server/server/restapi/operations"
 	"github.com/zeebox/terraform-server/server/restapi/operations/resources"
-	"github.com/zeebox/terraform-server/backend/identity"
 )
 
 var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListIdentityResourcesHandlerFunc {

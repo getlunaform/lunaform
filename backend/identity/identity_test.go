@@ -1,9 +1,8 @@
 package identity
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // TestManagedIdentityProviders for terraform-server to create, update, and destroy users and groups.
