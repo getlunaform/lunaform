@@ -94,18 +94,18 @@ paths:
             $ref: "#/definitions/response-list-tf-resources"
 
 definitions:
-  module:
-    type: object
-    description: The same definition as used within the [terraform ecosystem](<a href="https://www.terraform.io/docs/modules/index.html">https://www.terraform.io/docs/modules/index.html</a>).
-  stack:
-    type: object
-    description: A _stack_ is a _module_ bound to a specific set of parameters. Taking the analogy of classes and objects, if
-  identity_provider:
-    type: object
-    description: |
-      A source of users either locally managed, or through a federation.
-      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
-      handles all management of. The second are read-only federated IdP's.
+#  module:
+#    type: string
+#    description: The same definition as used within the [terraform ecosystem](<a href="https://www.terraform.io/docs/modules/index.html">https://www.terraform.io/docs/modules/index.html</a>).
+#  stack:
+#    type: string
+#    description: A _stack_ is a _module_ bound to a specific set of parameters. Taking the analogy of classes and objects, if
+#  identity_provider:
+#    type: object
+#    description: |
+#      A source of users either locally managed, or through a federation.
+#      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
+#      handles all management of. The second are read-only federated IdP's.
   response-list-resource-groups:
     type: object
     required:
