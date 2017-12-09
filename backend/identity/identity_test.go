@@ -1,8 +1,8 @@
-package backend
+package identity
 
 import (
 	"testing"
-	"github.com/zeebox/terraform-server/backend/identity"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,8 +11,8 @@ import (
 // its own identity provider. Therefore, all managed terraform servers should conform to the following conditions
 func TestManagedIdentityProvider(t *testing.T) {
 
-	for key, idp := range map[string]identity.Provider{
-		"Memory": identity.NewMemoryIdentityProvider(),
+	for key, idp := range map[string]Provider{
+		"Memory": NewMemoryIdentityProvider(),
 	} {
 
 		t.Run(key, func(t *testing.T) {

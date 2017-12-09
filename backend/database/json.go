@@ -43,7 +43,11 @@ func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error) {
 // Close the file pointer
 func (jdb JSONDatabase) Close() (err error) {
 	jdb.file.Truncate(0)
-	_, err = jdb.file.WriteAt(jdb.db.Bytes(), 0)
+	b, err := jdb.db.Bytes()
+	if err != nil {
+		return err
+	}
+	_, err = jdb.file.WriteAt(b, 0)
 	return
 }
 

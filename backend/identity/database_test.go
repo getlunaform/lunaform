@@ -2,7 +2,6 @@ package identity
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/zeebox/terraform-server/backend"
 	"testing"
 	"github.com/zeebox/terraform-server/backend/database"
 )
