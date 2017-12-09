@@ -15,7 +15,8 @@ import (
 
 	"fmt"
 	"github.com/zeebox/goose4"
-	"github.com/zeebox/terraform-server/backend"
+
+	"github.com/zeebox/terraform-server/backend/database"
 	"github.com/zeebox/terraform-server/backend/identity"
 	"strconv"
 	"time"
@@ -45,16 +46,36 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
-	var idp backend.IdentityProvider
+	var idp identity.Provider
+	var dbDriver database.Driver
+	var err error
 
 	cfg := parseCliConfiguration()
 
-	if cfg.Backend.IdentityType == "memory" {
+	switch cfg.Backend.DatabaseType {
+	case "memory":
+		dbDriver, err = database.NewMemoryDatabase()
+	default:
+		panic(fmt.Sprintf("Unexpected Database type: '%s'", cfg.Backend.DatabaseType))
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	db := database.NewDatabaseWithDriver(dbDriver)
+
+	switch cfg.Backend.IdentityType {
+	case "memory":
 		idp = identity.NewMemoryIdentityProvider()
-		//} else if cfg.Backend.IdentityType == "redis" {
-		//	idp = identity.New
-	} else {
+	case "database":
+		idp, err = identity.NewDatabaseIdentityProvider(db)
+	default:
 		panic(fmt.Sprintf("Unexpected Identity Provider type: '%s'", cfg.Backend.IdentityType))
+	}
+
+	if err != nil {
+		panic(err)
 	}
 
 	api.JSONConsumer = runtime.JSONConsumer()

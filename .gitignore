@@ -14,3 +14,4 @@
 .glide/
 /terraform-server
 vendor
+/profile.txt

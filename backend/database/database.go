@@ -1,4 +1,4 @@
-package backend
+package database
 
 // Record is an untyped, schemaless record type which all
 // record types embed and implement
@@ -29,4 +29,11 @@ type Driver interface {
 // Database stores data for terraform server
 type Database struct {
 	driver Driver
+}
+
+// NewDatabaseWithDriver creates a new Database struct with
+func NewDatabaseWithDriver(driver Driver) Database {
+	return Database{
+		driver: driver,
+	}
 }

@@ -1,4 +1,4 @@
-package backend
+package identity
 
 // Group of users which can have a role attached to it
 type Group struct{}

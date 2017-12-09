@@ -5,37 +5,46 @@ import (
 	"fmt"
 )
 
+// MemoryDatabase represents an in memory store for our server.
+// This driver is an ephemeral database stored in RAM, and
+// primarily used for development. When the server shuts down
+// all the state in it is lost. You probably shouldn't use it.
+type MemoryDatabase struct {
+	collections map[string]string
+}
+
+// NewMemoryDatabase returns a memory database object
 func NewMemoryDatabase() (MemoryDatabase, error) {
 	return MemoryDatabase{
 		collections: make(map[string]string),
 	}, nil
 }
 
-type MemoryDatabase struct {
-	collections map[string]string
-}
-
+// Close doesn't do anything as there is no connection to sever.
 func (md MemoryDatabase) Close() error {
 	return nil
 }
 
+// Ping doesn't do anything as the database is inside the app memory space.
 func (md MemoryDatabase) Ping() error {
 	return nil
 }
 
-func (md *MemoryDatabase) Create(recordType, key string, doc interface{}) error {
+// Create a record in memory
+func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error) {
 	if md.exists(recordType, key) {
 		return fmt.Errorf("%q %q already exists", recordType, key)
 	}
 
-	md.collections[md.key(recordType, key)] = md.serialize(doc)
+	md.collections[md.key(recordType, key)], err = md.serialize(doc)
 
-	return nil
+	return
 }
 
+// Read a record from memory
 func (md MemoryDatabase) Read(recordType, key string, i interface{}) error {
 	if !md.exists(recordType, key) {
-		return fmt.Errorf("%q %q doesn't exist", recordType, key)
+		return fmt.Errorf("%q %q does not exist", recordType, key)
 	}
 
 	md.deserialize(md.collections[md.key(recordType, key)], i)
@@ -43,16 +52,18 @@ func (md MemoryDatabase) Read(recordType, key string, i interface{}) error {
 	return nil
 }
 
-func (md MemoryDatabase) Update(recordType, key string, doc interface{}) error {
+// Update a record in memory
+func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	if !md.exists(recordType, key) {
-		return fmt.Errorf("%q %q doesn't exist", recordType, key)
+		return fmt.Errorf("%q %q does not exist", recordType, key)
 	}
 
-	md.collections[md.key(recordType, key)] = md.serialize(doc)
+	md.collections[md.key(recordType, key)], err = md.serialize(doc)
 
-	return nil
+	return
 }
 
+// Delete a record from memory
 func (md MemoryDatabase) Delete(recordType, key string) error {
 	delete(md.collections, md.key(recordType, key))
 
@@ -87,12 +98,18 @@ func (md MemoryDatabase) exists(recordType, key string) (ok bool) {
 // and so we weren't seeing the data we expected.
 // Instead, then, we're going to do json
 
-func (md MemoryDatabase) serialize(i interface{}) string {
-	v, _ := json.Marshal(i)
+func (md MemoryDatabase) serialize(i interface{}) (string, error) {
+	v, err := json.Marshal(i)
 
-	return string(v)
+	return string(v), err
 }
 
 func (md MemoryDatabase) deserialize(s string, i interface{}) error {
 	return json.Unmarshal([]byte(s), i)
+}
+
+// Bytes slice representation of the database
+func (md MemoryDatabase) Bytes() (b []byte, err error) {
+	s, err := md.serialize(md.collections)
+	return []byte(s), err
 }
