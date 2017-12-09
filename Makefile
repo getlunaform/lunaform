@@ -1,5 +1,5 @@
 SRC_YAML?="swagger.yml"
-CGO?="cgo"
+CGO?=cgo
 
 SHELL:=/bin/bash
 GO_PIPELINE_LABEL?=BUILD_ID
@@ -73,6 +73,7 @@ generate-swagger: validate-swagger
 terraform-server:
 	go build \
 		-a -installsuffix $(CGO) \
+		-ldflags $(LDFLAGS) \
 		-o ./terraform-server \
 		github.com/zeebox/terraform-server/server/cmd/terraform-server-server
 
