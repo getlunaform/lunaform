@@ -52,8 +52,8 @@ test:
 	go test $(GOR_TARGETS)
 
 test-coverage:
-	@sh scripts/test-coverage.sh $(PWD) "$(GO_TARGETS)"
-	go tool cover -html=profile.out -o coverage.html
+	@sh $(PWD)/scripts/test-coverage.sh $(PWD) "$(GO_TARGETS)"
+	go tool cover -html=$(PWD)/profile.out -o $(PWD)/coverage.html
 
 format:
 	go fmt $(shell go list ./...)

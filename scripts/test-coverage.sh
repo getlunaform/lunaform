@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #set -e
-#set -x
+set -x
 
 OUTPUT_PATH="${1}"
 
