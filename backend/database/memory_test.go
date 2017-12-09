@@ -1,6 +1,7 @@
 package database
 
 import (
+	"github.com/zeebox/terraform-server/backend"
 	"reflect"
 	"testing"
 )
@@ -16,13 +17,18 @@ var (
 
 func TestMemoryDB(t *testing.T) {
 	db, err := NewMemoryDatabase()
+
 	t.Run("DB does not error", func(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error: %+v", err)
 		}
 	})
 
-	t.Run("I can ping my redis", func(*testing.T) {
+	t.Run("I can use redis as a DB interface", func(*testing.T) {
+		var _ backend.Driver = (*MemoryDatabase)(nil)
+	})
+
+	t.Run("I can ping my memory database", func(*testing.T) {
 		_ = db.Ping()
 	})
 
