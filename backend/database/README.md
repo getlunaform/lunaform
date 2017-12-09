@@ -11,14 +11,17 @@
 
 
 ## <a name="pkg-index">Index</a>
+* [type Database](#Database)
+  * [func NewDatabaseWithDriver(driver Driver) Database](#NewDatabaseWithDriver)
+* [type Driver](#Driver)
 * [type JSONDatabase](#JSONDatabase)
   * [func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error)](#NewJSONDatabase)
-  * [func (jdb *JSONDatabase) Close() (err error)](#JSONDatabase.Close)
-  * [func (jdb *JSONDatabase) Create(recordType, key string, doc interface{}) error](#JSONDatabase.Create)
-  * [func (jdb *JSONDatabase) Delete(recordType, key string) error](#JSONDatabase.Delete)
-  * [func (jdb *JSONDatabase) Ping() error](#JSONDatabase.Ping)
-  * [func (jdb *JSONDatabase) Read(recordType, key string, i interface{}) (err error)](#JSONDatabase.Read)
-  * [func (jdb *JSONDatabase) Update(recordType, key string, doc interface{}) (err error)](#JSONDatabase.Update)
+  * [func (jdb JSONDatabase) Close() (err error)](#JSONDatabase.Close)
+  * [func (jdb JSONDatabase) Create(recordType, key string, doc interface{}) error](#JSONDatabase.Create)
+  * [func (jdb JSONDatabase) Delete(recordType, key string) error](#JSONDatabase.Delete)
+  * [func (jdb JSONDatabase) Ping() error](#JSONDatabase.Ping)
+  * [func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error)](#JSONDatabase.Read)
+  * [func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error)](#JSONDatabase.Update)
 * [type MemoryDatabase](#MemoryDatabase)
   * [func NewMemoryDatabase() (MemoryDatabase, error)](#NewMemoryDatabase)
   * [func (md MemoryDatabase) Bytes() []byte](#MemoryDatabase.Bytes)
@@ -28,6 +31,9 @@
   * [func (md MemoryDatabase) Ping() error](#MemoryDatabase.Ping)
   * [func (md MemoryDatabase) Read(recordType, key string, i interface{}) error](#MemoryDatabase.Read)
   * [func (md MemoryDatabase) Update(recordType, key string, doc interface{}) error](#MemoryDatabase.Update)
+* [type Record](#Record)
+  * [func (r Record) Key() string](#Record.Key)
+  * [func (r Record) Type() string](#Record.Type)
 * [type RedisDatabase](#RedisDatabase)
   * [func NewRedisDatabase(namespace, address, password string, database int) (r RedisDatabase, err error)](#NewRedisDatabase)
   * [func (r RedisDatabase) Close() error](#RedisDatabase.Close)
@@ -39,7 +45,55 @@
 
 
 #### <a name="pkg-files">Package files</a>
-[dynamodb.go](/src/github.com/zeebox/terraform-server/backend/database/dynamodb.go) [json.go](/src/github.com/zeebox/terraform-server/backend/database/json.go) [memory.go](/src/github.com/zeebox/terraform-server/backend/database/memory.go) [redis.go](/src/github.com/zeebox/terraform-server/backend/database/redis.go) 
+[database.go](/src/github.com/zeebox/terraform-server/backend/database/database.go) [dynamodb.go](/src/github.com/zeebox/terraform-server/backend/database/dynamodb.go) [json.go](/src/github.com/zeebox/terraform-server/backend/database/json.go) [memory.go](/src/github.com/zeebox/terraform-server/backend/database/memory.go) [redis.go](/src/github.com/zeebox/terraform-server/backend/database/redis.go) 
+
+
+
+
+
+
+## <a name="Database">type</a> [Database](/src/target/database.go?s=734:773#L30)
+``` go
+type Database struct {
+    // contains filtered or unexported fields
+}
+```
+Database stores data for terraform server
+
+
+
+
+
+
+
+### <a name="NewDatabaseWithDriver">func</a> [NewDatabaseWithDriver](/src/target/database.go?s=835:885#L35)
+``` go
+func NewDatabaseWithDriver(driver Driver) Database
+```
+NewDatabaseWithDriver creates a new Database struct with
+
+
+
+
+
+## <a name="Driver">type</a> [Driver](/src/target/database.go?s=433:687#L19)
+``` go
+type Driver interface {
+    Create(recordType, key string, doc interface{}) error
+    Read(recordType, key string, i interface{}) error
+    Update(recordType, key string, doc interface{}) error
+    Delete(recordType, key string) error
+
+    Ping() error
+    Close() error
+}
+```
+Driver represents a low level storage serialiser/ deserialiser
+This is wrapped in the Database
+
+
+
+
 
 
 
@@ -73,54 +127,54 @@ NewJSONDatabase returns a json database object
 
 
 
-### <a name="JSONDatabase.Close">func</a> (\*JSONDatabase) [Close](/src/target/json.go?s=836:880#L44)
+### <a name="JSONDatabase.Close">func</a> (JSONDatabase) [Close](/src/target/json.go?s=836:879#L44)
 ``` go
-func (jdb *JSONDatabase) Close() (err error)
+func (jdb JSONDatabase) Close() (err error)
 ```
 Close the file pointer
 
 
 
 
-### <a name="JSONDatabase.Create">func</a> (\*JSONDatabase) [Create](/src/target/json.go?s=1006:1084#L51)
+### <a name="JSONDatabase.Create">func</a> (JSONDatabase) [Create](/src/target/json.go?s=1005:1082#L51)
 ``` go
-func (jdb *JSONDatabase) Create(recordType, key string, doc interface{}) error
+func (jdb JSONDatabase) Create(recordType, key string, doc interface{}) error
 ```
 Create a record in the JSON file on disk
 
 
 
 
-### <a name="JSONDatabase.Delete">func</a> (\*JSONDatabase) [Delete](/src/target/json.go?s=1178:1239#L56)
+### <a name="JSONDatabase.Delete">func</a> (JSONDatabase) [Delete](/src/target/json.go?s=1176:1236#L56)
 ``` go
-func (jdb *JSONDatabase) Delete(recordType, key string) error
+func (jdb JSONDatabase) Delete(recordType, key string) error
 ```
 Delete a record in the JSON file on disk
 
 
 
 
-### <a name="JSONDatabase.Ping">func</a> (\*JSONDatabase) [Ping](/src/target/json.go?s=1340:1377#L61)
+### <a name="JSONDatabase.Ping">func</a> (JSONDatabase) [Ping](/src/target/json.go?s=1337:1373#L61)
 ``` go
-func (jdb *JSONDatabase) Ping() error
+func (jdb JSONDatabase) Ping() error
 ```
 Ping mock. Implementing a no-op for the json file db
 
 
 
 
-### <a name="JSONDatabase.Read">func</a> (\*JSONDatabase) [Read](/src/target/json.go?s=1449:1529#L66)
+### <a name="JSONDatabase.Read">func</a> (JSONDatabase) [Read](/src/target/json.go?s=1445:1524#L66)
 ``` go
-func (jdb *JSONDatabase) Read(recordType, key string, i interface{}) (err error)
+func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error)
 ```
 Read a record from the JSON file on disk
 
 
 
 
-### <a name="JSONDatabase.Update">func</a> (\*JSONDatabase) [Update](/src/target/json.go?s=1620:1704#L71)
+### <a name="JSONDatabase.Update">func</a> (JSONDatabase) [Update](/src/target/json.go?s=1615:1698#L71)
 ``` go
-func (jdb *JSONDatabase) Update(recordType, key string, doc interface{}) (err error)
+func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error)
 ```
 Updated a record in the JSON file on disk
 
@@ -213,6 +267,40 @@ Read a record from memory
 func (md MemoryDatabase) Update(recordType, key string, doc interface{}) error
 ```
 Update a record in memory
+
+
+
+
+## <a name="Record">type</a> [Record](/src/target/database.go?s=112:146#L5)
+``` go
+type Record map[string]interface{}
+```
+Record is an untyped, schemaless record type which all
+record types embed and implement
+
+
+
+
+
+
+
+
+
+
+### <a name="Record.Key">func</a> (Record) [Key](/src/target/database.go?s=178:206#L8)
+``` go
+func (r Record) Key() string
+```
+Key returns a record's Key
+
+
+
+
+### <a name="Record.Type">func</a> (Record) [Type](/src/target/database.go?s=270:299#L13)
+``` go
+func (r Record) Type() string
+```
+Type returns a record's type
 
 
 
