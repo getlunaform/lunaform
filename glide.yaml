@@ -13,6 +13,7 @@ import:
 - package: github.com/satori/go.uuid
   version: ^1.1.0
 testImport:
+- package: github.com/haya14busa/goverage
 - package: github.com/go-swagger/go-swagger
   version: ^0.13.0
 - package: github.com/stretchr/testify

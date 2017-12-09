@@ -1,4 +1,4 @@
-package backend
+package database
 
 // Record is an untyped, schemaless record type which all
 // record types embed and implement

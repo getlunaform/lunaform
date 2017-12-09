@@ -67,6 +67,10 @@ func newDefaultConfiguration() *Configuration {
 
 func configureFlags(api *operations.TerraformServerAPI) {
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
-		{"Config", "Configuration", &cliconfig},
+		{
+			ShortDescription: "Config",
+			LongDescription:  "Configuration",
+			Options:          &cliconfig,
+		},
 	}
 }

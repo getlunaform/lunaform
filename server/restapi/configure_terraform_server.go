@@ -15,7 +15,7 @@ import (
 
 	"fmt"
 	"github.com/zeebox/goose4"
-	"github.com/zeebox/terraform-server/backend"
+
 	"github.com/zeebox/terraform-server/backend/database"
 	"github.com/zeebox/terraform-server/backend/identity"
 	"strconv"
@@ -46,8 +46,8 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
-	var idp backend.IdentityProvider
-	var dbDriver backend.Driver
+	var idp identity.Provider
+	var dbDriver database.Driver
 	var err error
 
 	cfg := parseCliConfiguration()
@@ -63,7 +63,7 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 		panic(err)
 	}
 
-	db := backend.NewDatabaseWithDriver(dbDriver)
+	db := database.NewDatabaseWithDriver(dbDriver)
 
 	switch cfg.Backend.IdentityType {
 	case "memory":

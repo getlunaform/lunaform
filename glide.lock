@@ -1,5 +1,5 @@
-hash: 8fb16887f89a7c264669f995b04a27b277e7af214f57d808b0260bfc46f6ca75
-updated: 2017-12-03T11:51:45.702340211Z
+hash: 9f512667f63f41f96aed4d8c6929808a2e95c767977911dfa8a8c3247fdccdfc
+updated: 2017-12-09T08:55:42.706014908Z
 imports:
 - name: github.com/asaskevich/govalidator
   version: f682aee18e37332521b3c3ef4cba9ddb9b516b09
@@ -45,6 +45,8 @@ imports:
   - internal/hashtag
   - internal/pool
   - internal/proto
+- name: github.com/haya14busa/goverage
+  version: b9be4a50677bf4dca7f109c0c9e0341f8beaabbb
 - name: github.com/jessevdk/go-flags
   version: 96dc06278ce32a0e9d957d590bb987c81ee66407
 - name: github.com/mailru/easyjson
@@ -62,7 +64,7 @@ imports:
 - name: github.com/satori/go.uuid
   version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/shirou/gopsutil
-  version: 48fc5612898a1213aa5d6a0fb2d4f7b968e898fb
+  version: bfe3c2e8f406bf352bc8df81f98c752224867349
   subpackages:
   - cpu
   - host

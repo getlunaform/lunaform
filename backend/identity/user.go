@@ -1,4 +1,4 @@
-package backend
+package identity
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ type User struct {
 	Password   string
 	ApiKeys    []*ApiKey
 	SSHKeys    []*SSHKey
-	Idp        IdentityProvider
+	Idp        Provider
 	loggedin   bool
 	groups     []Group
 }

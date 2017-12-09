@@ -5,14 +5,13 @@ CWD=$(PWD)
 
 function build_readme() {
     declare -r package=$1
-    declare -r gopath=$2
-    godoc2md ${package} > ${gopath}/src/${package}/README.md
-}
+    declare -r file_path=${2}/src/${package}
 
-cd ${CWD}/backend
-for package in $(go list ./... | grep -v vendor); do
-    build_readme ${package} ${GOPATH}
-done
+    count=`(cd ${file_path} && ls -1 *.go 2>/dev/null | wc -l)`
+    if [ $count != 0 ]; then
+        godoc2md -play -ex ${package} > ${file_path}/README.md
+    fi
+}
 
 build_readme \
     "github.com/zeebox/terraform-server/server/restapi/controller" \
@@ -21,3 +20,9 @@ build_readme \
 build_readme \
     "github.com/zeebox/terraform-server/server/restapi" \
      ${GOPATH}
+
+cd ${CWD}/backend
+for package in $(go list ./... | grep -v vendor); do
+    build_readme ${package} ${GOPATH}
+done
+
