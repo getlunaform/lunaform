@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-#set -e
-set -x
-
 OUTPUT_PATH="${1}"
 
 echo "mode: atomic" > ${OUTPUT_PATH}/profile.out
