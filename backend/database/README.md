@@ -24,13 +24,13 @@
   * [func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error)](#JSONDatabase.Update)
 * [type MemoryDatabase](#MemoryDatabase)
   * [func NewMemoryDatabase() (MemoryDatabase, error)](#NewMemoryDatabase)
-  * [func (md MemoryDatabase) Bytes() []byte](#MemoryDatabase.Bytes)
+  * [func (md MemoryDatabase) Bytes() (b []byte, err error)](#MemoryDatabase.Bytes)
   * [func (md MemoryDatabase) Close() error](#MemoryDatabase.Close)
-  * [func (md MemoryDatabase) Create(recordType, key string, doc interface{}) error](#MemoryDatabase.Create)
+  * [func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error)](#MemoryDatabase.Create)
   * [func (md MemoryDatabase) Delete(recordType, key string) error](#MemoryDatabase.Delete)
   * [func (md MemoryDatabase) Ping() error](#MemoryDatabase.Ping)
   * [func (md MemoryDatabase) Read(recordType, key string, i interface{}) error](#MemoryDatabase.Read)
-  * [func (md MemoryDatabase) Update(recordType, key string, doc interface{}) error](#MemoryDatabase.Update)
+  * [func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error)](#MemoryDatabase.Update)
 * [type Record](#Record)
   * [func (r Record) Key() string](#Record.Key)
   * [func (r Record) Type() string](#Record.Type)
@@ -136,7 +136,7 @@ Close the file pointer
 
 
 
-### <a name="JSONDatabase.Create">func</a> (JSONDatabase) [Create](/src/target/json.go?s=1005:1082#L51)
+### <a name="JSONDatabase.Create">func</a> (JSONDatabase) [Create](/src/target/json.go?s=1051:1128#L55)
 ``` go
 func (jdb JSONDatabase) Create(recordType, key string, doc interface{}) error
 ```
@@ -145,7 +145,7 @@ Create a record in the JSON file on disk
 
 
 
-### <a name="JSONDatabase.Delete">func</a> (JSONDatabase) [Delete](/src/target/json.go?s=1176:1236#L56)
+### <a name="JSONDatabase.Delete">func</a> (JSONDatabase) [Delete](/src/target/json.go?s=1222:1282#L60)
 ``` go
 func (jdb JSONDatabase) Delete(recordType, key string) error
 ```
@@ -154,7 +154,7 @@ Delete a record in the JSON file on disk
 
 
 
-### <a name="JSONDatabase.Ping">func</a> (JSONDatabase) [Ping](/src/target/json.go?s=1337:1373#L61)
+### <a name="JSONDatabase.Ping">func</a> (JSONDatabase) [Ping](/src/target/json.go?s=1383:1419#L65)
 ``` go
 func (jdb JSONDatabase) Ping() error
 ```
@@ -163,7 +163,7 @@ Ping mock. Implementing a no-op for the json file db
 
 
 
-### <a name="JSONDatabase.Read">func</a> (JSONDatabase) [Read](/src/target/json.go?s=1445:1524#L66)
+### <a name="JSONDatabase.Read">func</a> (JSONDatabase) [Read](/src/target/json.go?s=1491:1570#L70)
 ``` go
 func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error)
 ```
@@ -172,7 +172,7 @@ Read a record from the JSON file on disk
 
 
 
-### <a name="JSONDatabase.Update">func</a> (JSONDatabase) [Update](/src/target/json.go?s=1615:1698#L71)
+### <a name="JSONDatabase.Update">func</a> (JSONDatabase) [Update](/src/target/json.go?s=1661:1744#L75)
 ``` go
 func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error)
 ```
@@ -208,9 +208,9 @@ NewMemoryDatabase returns a memory database object
 
 
 
-### <a name="MemoryDatabase.Bytes">func</a> (MemoryDatabase) [Bytes](/src/target/memory.go?s=2942:2981#L112)
+### <a name="MemoryDatabase.Bytes">func</a> (MemoryDatabase) [Bytes](/src/target/memory.go?s=2974:3028#L112)
 ``` go
-func (md MemoryDatabase) Bytes() []byte
+func (md MemoryDatabase) Bytes() (b []byte, err error)
 ```
 Bytes slice representation of the database
 
@@ -226,16 +226,16 @@ Close doesn't do anything as there is no connection to sever.
 
 
 
-### <a name="MemoryDatabase.Create">func</a> (MemoryDatabase) [Create](/src/target/memory.go?s=826:904#L34)
+### <a name="MemoryDatabase.Create">func</a> (MemoryDatabase) [Create](/src/target/memory.go?s=826:910#L34)
 ``` go
-func (md MemoryDatabase) Create(recordType, key string, doc interface{}) error
+func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error)
 ```
 Create a record in memory
 
 
 
 
-### <a name="MemoryDatabase.Delete">func</a> (MemoryDatabase) [Delete](/src/target/memory.go?s=1678:1739#L67)
+### <a name="MemoryDatabase.Delete">func</a> (MemoryDatabase) [Delete](/src/target/memory.go?s=1694:1755#L67)
 ``` go
 func (md MemoryDatabase) Delete(recordType, key string) error
 ```
@@ -253,7 +253,7 @@ Ping doesn't do anything as the database is inside the app memory space.
 
 
 
-### <a name="MemoryDatabase.Read">func</a> (MemoryDatabase) [Read](/src/target/memory.go?s=1111:1185#L45)
+### <a name="MemoryDatabase.Read">func</a> (MemoryDatabase) [Read](/src/target/memory.go?s=1118:1192#L45)
 ``` go
 func (md MemoryDatabase) Read(recordType, key string, i interface{}) error
 ```
@@ -262,9 +262,9 @@ Read a record from memory
 
 
 
-### <a name="MemoryDatabase.Update">func</a> (MemoryDatabase) [Update](/src/target/memory.go?s=1391:1469#L56)
+### <a name="MemoryDatabase.Update">func</a> (MemoryDatabase) [Update](/src/target/memory.go?s=1399:1483#L56)
 ``` go
-func (md MemoryDatabase) Update(recordType, key string, doc interface{}) error
+func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error)
 ```
 Update a record in memory
 
