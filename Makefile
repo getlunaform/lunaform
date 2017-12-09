@@ -1,7 +1,7 @@
 SRC_YAML?="swagger.yml"
 CGO?=cgo
 
-PWD?=$(shell pwd)
+CWD?=$(shell pwd)
 
 SHELL:=/bin/bash
 GO_PIPELINE_LABEL?=BUILD_ID
@@ -32,17 +32,17 @@ update-vendor:
 	glide update
 
 clean:
-	rm -rf $(PWD)/server/cmd/ \
-		$(PWD)/server/models/ \
-		$(PWD)/server/restapi/operations \
-		$(PWD)/server/restapi/doc.go \
-		$(PWD)/server/restapi/embedded_spec.go \
-		$(PWD)/server/restapi/server.go \
-		$(PWD)/terraform-server \
-		$(PWD)/profile.txt
+	rm -rf $(CWD)/server/cmd/ \
+		$(CWD)/server/models/ \
+		$(CWD)/server/restapi/operations \
+		$(CWD)/server/restapi/doc.go \
+		$(CWD)/server/restapi/embedded_spec.go \
+		$(CWD)/server/restapi/server.go \
+		$(CWD)/terraform-server \
+		$(CWD)/profile.txt
 
 run: terraform-server
-	$(PWD)/terraform-server --scheme=http
+	$(CWD)/terraform-server --scheme=http
 
 validate-swagger:
 	swagger validate $(SRC_YAML)
@@ -54,8 +54,8 @@ test:
 	go test $(GOR_TARGETS)
 
 test-coverage:
-	@sh $(PWD)/scripts/test-coverage.sh $(PWD) "$(GO_TARGETS)"
-	go tool cover -html=$(PWD)/profile.out -o $(PWD)/coverage.html
+	@sh $(CWD)/scripts/test-coverage.sh $(CWD) "$(GO_TARGETS)"
+	go tool cover -html=$(CWD)/profile.out -o $(CWD)/coverage.html
 
 format:
 	go fmt $(shell go list ./...)
