@@ -29,6 +29,16 @@ doc:
 update-vendor:
 	glide update
 
+clean:
+	rm -rf $(PWD)/server/cmd/ \
+		$(PWD)/server/models/ \
+		$(PWD)/server/restapi/operations \
+		$(PWD)/server/restapi/doc.go \
+		$(PWD)/server/restapi/embedded_spec.go \
+		$(PWD)/server/restapi/server.go \
+		$(PWD)/terraform-server \
+		$(PWD)/profile.txt
+
 run: terraform-server
 	$(PWD)/terraform-server --scheme=http
 
@@ -39,11 +49,11 @@ build: generate-swagger terraform-server
 
 test:
 	go tool vet $(GO_TARGETS)
-	go test $(shell go list $(GOR_TARGETS))
+	go test $(GOR_TARGETS)
 
 test-coverage:
-	goverage -v -race -coverprofile=profile.txt -covermode=atomic $(shell go list $(GOR_TARGETS))
-	go tool cover -html=profile.txt -o coverage.html
+	@sh scripts/test-coverage.sh $(PWD) "$(GO_TARGETS)"
+	go tool cover -html=profile.out -o coverage.html
 
 format:
 	go fmt $(shell go list ./...)

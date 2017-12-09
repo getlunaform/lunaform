@@ -1,0 +1,1841 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/zeebox/terraform-server/backend/database/database.go (100.0%)</option>
+				
+				<option value="file1">github.com/zeebox/terraform-server/backend/database/json.go (94.1%)</option>
+				
+				<option value="file2">github.com/zeebox/terraform-server/backend/database/memory.go (100.0%)</option>
+				
+				<option value="file3">github.com/zeebox/terraform-server/backend/database/redis.go (92.3%)</option>
+				
+				<option value="file4">github.com/zeebox/terraform-server/backend/identity/database.go (100.0%)</option>
+				
+				<option value="file5">github.com/zeebox/terraform-server/backend/identity/memory.go (0.0%)</option>
+				
+				<option value="file6">github.com/zeebox/terraform-server/backend/identity/user.go (0.0%)</option>
+				
+				<option value="file7">github.com/zeebox/terraform-server/server/restapi/config.go (0.0%)</option>
+				
+				<option value="file8">github.com/zeebox/terraform-server/server/restapi/configure_terraform_server.go (0.0%)</option>
+				
+				<option value="file9">github.com/zeebox/terraform-server/server/restapi/controller/helpers.go (25.0%)</option>
+				
+				<option value="file10">github.com/zeebox/terraform-server/server/restapi/controller/resources.go (0.0%)</option>
+				
+				<option value="file11">github.com/zeebox/terraform-server/server/restapi/embedded_spec.go (100.0%)</option>
+				
+				<option value="file12">github.com/zeebox/terraform-server/server/restapi/se4_middleware.go (0.0%)</option>
+				
+				<option value="file13">github.com/zeebox/terraform-server/server/restapi/server.go (0.6%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package database
+
+// Record is an untyped, schemaless record type which all
+// record types embed and implement
+type Record map[string]interface{}
+
+// Key returns a record's Key
+func (r Record) Key() string <span class="cov8" title="1">{
+        return r["Key"].(string)
+}</span>
+
+// Type returns a record's type
+func (r Record) Type() string <span class="cov8" title="1">{
+        return r["Type"].(string)
+}</span>
+
+// Driver represents a low level storage serialiser/ deserialiser
+// This is wrapped in the Database
+type Driver interface {
+        Create(recordType, key string, doc interface{}) error
+        Read(recordType, key string, i interface{}) error
+        Update(recordType, key string, doc interface{}) error
+        Delete(recordType, key string) error
+
+        Ping() error
+        Close() error
+}
+
+// Database stores data for terraform server
+type Database struct {
+        driver Driver
+}
+
+// NewDatabaseWithDriver creates a new Database struct with
+func NewDatabaseWithDriver(driver Driver) Database <span class="cov8" title="1">{
+        return Database{
+                driver: driver,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package database
+
+import (
+        "bytes"
+        "encoding/json"
+        "io"
+        "os"
+)
+
+// JSONDatabase stores data on disk in json files.
+// This database is better than MemoryDatabase (but honestly,
+// pretty much everything is), but still not a good solution for
+// live/production.
+type JSONDatabase struct {
+        file fileClient
+        db   MemoryDatabase
+}
+
+type fileClient interface {
+        //io.Closer
+        io.Reader
+        //io.ReaderAt
+        io.Seeker
+        io.WriterAt
+        io.Writer
+        Stat() (os.FileInfo, error)
+        Truncate(size int64) error
+}
+
+// NewJSONDatabase returns a json database object
+func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error) <span class="cov1" title="1">{
+        jdb = JSONDatabase{file: dbFile}
+        jdb.db, err = NewMemoryDatabase()
+
+        b := new(bytes.Buffer)
+        b.ReadFrom(jdb.file)
+
+        err = json.Unmarshal(b.Bytes(), &amp;jdb.db.collections)
+
+        return jdb, err
+}</span>
+
+// Close the file pointer
+func (jdb JSONDatabase) Close() (err error) <span class="cov1" title="1">{
+        jdb.file.Truncate(0)
+        b, err := jdb.db.Bytes()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov1" title="1">_, err = jdb.file.WriteAt(b, 0)
+        return</span>
+}
+
+// Create a record in the JSON file on disk
+func (jdb JSONDatabase) Create(recordType, key string, doc interface{}) error <span class="cov10" title="3">{
+        return jdb.db.Create(recordType, key, doc)
+}</span>
+
+// Delete a record in the JSON file on disk
+func (jdb JSONDatabase) Delete(recordType, key string) error <span class="cov1" title="1">{
+        return jdb.db.Delete(recordType, key)
+}</span>
+
+// Ping mock. Implementing a no-op for the json file db
+func (jdb JSONDatabase) Ping() error <span class="cov1" title="1">{
+        return jdb.db.Ping()
+}</span>
+
+// Read a record from the JSON file on disk
+func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error) <span class="cov10" title="3">{
+        return jdb.db.Read(recordType, key, i)
+}</span>
+
+// Update a record in the JSON file on disk
+func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error) <span class="cov10" title="3">{
+        return jdb.db.Update(recordType, key, doc)
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package database
+
+import (
+        "encoding/json"
+        "fmt"
+)
+
+// MemoryDatabase represents an in memory store for our server.
+//   This driver is an ephemeral database stored in RAM, and
+//   primarily used for development. When the server shuts down
+//   all the state in it is lost. You probably shouldn't use it.
+type MemoryDatabase struct {
+        collections map[string]string
+}
+
+// NewMemoryDatabase returns a memory database object
+func NewMemoryDatabase() (MemoryDatabase, error) <span class="cov2" title="2">{
+        return MemoryDatabase{
+                collections: make(map[string]string),
+        }, nil
+}</span>
+
+// Close doesn't do anything as there is no connection to sever.
+func (md MemoryDatabase) Close() error <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Ping doesn't do anything as the database is inside the app memory space.
+func (md MemoryDatabase) Ping() error <span class="cov2" title="2">{
+        return nil
+}</span>
+
+// Create a record in memory
+func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error) <span class="cov5" title="6">{
+        if md.exists(recordType, key) </span><span class="cov2" title="2">{
+                return fmt.Errorf("%q %q already exists", recordType, key)
+        }</span>
+
+        <span class="cov4" title="4">md.collections[md.key(recordType, key)], err = md.serialize(doc)
+
+        return</span>
+}
+
+// Read a record from memory
+func (md MemoryDatabase) Read(recordType, key string, i interface{}) error <span class="cov5" title="6">{
+        if !md.exists(recordType, key) </span><span class="cov2" title="2">{
+                return fmt.Errorf("%q %q does not exist", recordType, key)
+        }</span>
+
+        <span class="cov4" title="4">md.deserialize(md.collections[md.key(recordType, key)], i)
+
+        return nil</span>
+}
+
+// Update a record in memory
+func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error) <span class="cov5" title="6">{
+        if !md.exists(recordType, key) </span><span class="cov2" title="2">{
+                return fmt.Errorf("%q %q does not exist", recordType, key)
+        }</span>
+
+        <span class="cov4" title="4">md.collections[md.key(recordType, key)], err = md.serialize(doc)
+
+        return</span>
+}
+
+// Delete a record from memory
+func (md MemoryDatabase) Delete(recordType, key string) error <span class="cov2" title="2">{
+        delete(md.collections, md.key(recordType, key))
+
+        return nil
+}</span>
+
+func (md MemoryDatabase) key(recordType, key string) string <span class="cov10" title="32">{
+        return fmt.Sprintf("%s %s", recordType, key)
+}</span>
+
+func (md MemoryDatabase) exists(recordType, key string) (ok bool) <span class="cov8" title="18">{
+        _, ok = md.collections[md.key(recordType, key)]
+
+        return
+}</span>
+
+// The following exist because we expect to be able to serialise to/ from
+// a pointer to a struct. The original implementation, for example, of
+// Read() looked like:
+//
+// func (md MemoryDatabase) Read(recordType, key string, i interface{}) error {
+//     if !md.exists(recordType, key) {
+//         return fmt.Errorf("%q %q doesn't exist", recordType, key)
+//     }
+//
+//     i = md.collections[md.key(recordType, key)]
+//
+//     return nil
+// }
+//
+// this meant we were never really updating the i that was passed in (scoping, I assume)
+// and so we weren't seeing the data we expected.
+// Instead, then, we're going to do json
+
+func (md MemoryDatabase) serialize(i interface{}) (string, error) <span class="cov6" title="9">{
+        v, err := json.Marshal(i)
+
+        return string(v), err
+}</span>
+
+func (md MemoryDatabase) deserialize(s string, i interface{}) error <span class="cov4" title="4">{
+        return json.Unmarshal([]byte(s), i)
+}</span>
+
+// Bytes slice representation of the database
+func (md MemoryDatabase) Bytes() (b []byte, err error) <span class="cov1" title="1">{
+        s, err := md.serialize(md.collections)
+        return []byte(s), err
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package database
+
+import (
+        "encoding/json"
+        "fmt"
+        "strconv"
+        "time"
+
+        "github.com/go-redis/redis"
+)
+
+const (
+        redisDelimeter = "."
+)
+
+// RedisDatabase represents a redis store for our server
+// It holds state and docs and all kinds of awesome sauce
+type RedisDatabase struct {
+        client    redisClient
+        namespace string
+}
+
+type redisClient interface {
+        Close() error
+        Del(...string) *redis.IntCmd
+        Keys(string) *redis.StringSliceCmd
+        Get(string) *redis.StringCmd
+        Ping() *redis.StatusCmd
+        Set(string, interface{}, time.Duration) *redis.StatusCmd
+}
+
+// NewRedisDatabase returns a redis database object
+func NewRedisDatabase(namespace, address, password string, database int) (r RedisDatabase, err error) <span class="cov1" title="1">{
+        r = RedisDatabase{
+                client: redis.NewClient(&amp;redis.Options{
+                        Addr:     address,
+                        Password: password,
+                        DB:       database,
+                }),
+                namespace: namespace,
+        }
+
+        return
+}</span>
+
+// Ping checks whether redis is up and usable
+// it returns an error to determine this; a nil value means the redis database is usable
+func (r RedisDatabase) Ping() error <span class="cov1" title="1">{
+        _, err := r.client.Ping().Result()
+
+        return err
+}</span>
+
+// Close will close a connection to the redis database
+func (r RedisDatabase) Close() error <span class="cov1" title="1">{
+        return r.client.Close()
+}</span>
+
+// Create a record within redis
+func (r RedisDatabase) Create(recordType, key string, doc interface{}) error <span class="cov5" title="3">{
+        k := r.key(recordType, key)
+
+        if r.exists(k) </span><span class="cov1" title="1">{
+                return fmt.Errorf("%q %q already exists at %q", recordType, key, k)
+        }</span>
+
+        <span class="cov3" title="2">return r.set(k, doc)</span>
+}
+
+// Read a record from redis
+func (r RedisDatabase) Read(recordType, key string, i interface{}) (err error) <span class="cov5" title="3">{
+        k := r.key(recordType, key)
+
+        if !r.exists(k) </span><span class="cov1" title="1">{
+                err = fmt.Errorf("%q %q does not exist", recordType, key)
+
+                return
+        }</span>
+
+        <span class="cov3" title="2">d := r.client.Get(k)
+        if d.Err() != nil </span><span class="cov0" title="0">{
+                err = d.Err()
+
+                return
+        }</span>
+
+        <span class="cov3" title="2">result, err := d.Result()
+
+        return r.deserialize(result, i)</span>
+}
+
+// Update a redis record
+func (r RedisDatabase) Update(recordType, key string, doc interface{}) (err error) <span class="cov5" title="3">{
+        k := r.key(recordType, key)
+
+        if !r.exists(k) </span><span class="cov1" title="1">{
+                return fmt.Errorf("%q %q does not exist", recordType, key)
+        }</span>
+
+        <span class="cov3" title="2">return r.set(k, doc)</span>
+}
+
+// Delete a record from redis
+func (r RedisDatabase) Delete(recordType, key string) error <span class="cov1" title="1">{
+        k := r.key(recordType, key)
+
+        return r.client.Del(k).Err()
+}</span>
+
+func (r RedisDatabase) deserialize(s string, i interface{}) (err error) <span class="cov3" title="2">{
+        cleanString, err := strconv.Unquote(s)
+        if err != nil </span><span class="cov0" title="0">{
+                return
+        }</span>
+
+        <span class="cov3" title="2">err = json.Unmarshal([]byte(cleanString), i)
+
+        return</span>
+}
+
+func (r RedisDatabase) exists(key string) bool <span class="cov9" title="9">{
+        k, _ := r.client.Keys(key).Result()
+
+        return len(k) &gt; 0
+}</span>
+
+func (r RedisDatabase) serialize(i interface{}) (string, error) <span class="cov6" title="4">{
+        v, err := json.Marshal(i)
+
+        return string(v), err
+}</span>
+
+func (r RedisDatabase) set(key string, doc interface{}) error <span class="cov6" title="4">{
+        v, err := r.serialize(doc)
+        if err != nil </span><span class="cov1" title="1">{
+                return err
+        }</span>
+
+        <span class="cov5" title="3">return r.client.Set(key, v, 0).Err()</span>
+}
+
+func (r RedisDatabase) key(recordType, key string) string <span class="cov10" title="10">{
+        return fmt.Sprintf("%s%s%s%s%s", r.namespace, redisDelimeter, recordType, redisDelimeter, key)
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package identity
+
+import (
+        "errors"
+        "github.com/zeebox/terraform-server/backend/database"
+)
+
+// NewDatabaseIdentityProvider is not yet implemented and will return an error
+func NewDatabaseIdentityProvider(db database.Database) (idp Provider, err error) <span class="cov8" title="1">{
+        return nil, errors.New("Database IdP Not Implemented")
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package identity
+
+import (
+        "errors"
+        "fmt"
+        "golang.org/x/crypto/bcrypt"
+)
+
+// NewMemoryIdentityProvider creates a memory provider stored in memory.
+// This is very volatile and should only be used for development or testing.
+func NewMemoryIdentityProvider() Provider <span class="cov0" title="0">{
+        return memoryIdentityProvider{
+                users: make(map[string]User),
+        }
+}</span>
+
+// Memory IdentityProvider will store user details in RAM. Once this
+// struct is released, all data is lost. This is really only used for
+// development and will probably be deprecated in time.
+type memoryIdentityProvider struct {
+        users map[string]User
+}
+
+func (mip memoryIdentityProvider) IsEditable() (editable bool) <span class="cov0" title="0">{
+        return true
+}</span>
+
+func (mip memoryIdentityProvider) IsFederated() (federated bool) <span class="cov0" title="0">{
+        return false
+}</span>
+
+func (mip memoryIdentityProvider) ConsumeEndpoint(payload []byte) (err error) <span class="cov0" title="0">{
+        return errors.New("Can not consume endpoint for managed IdP")
+}</span>
+
+func (mip memoryIdentityProvider) CreateUser(username string, password string) (user User, err error) <span class="cov0" title="0">{
+        if _, exists := mip.users[username]; exists </span><span class="cov0" title="0">{
+                return user, fmt.Errorf("User '%s' already exists", username)
+        }</span>
+
+        <span class="cov0" title="0">user = User{
+                IsEditable: true,
+                Username:   username,
+                Idp:        mip,
+        }
+        user.Password, err = mip.hashPassword(password)
+
+        mip.users[username] = user
+
+        return</span>
+}
+
+func (mip memoryIdentityProvider) ReadUser(username string) (user User, err error) <span class="cov0" title="0">{
+        user, exists := mip.users[username]
+        if username == "admin" &amp;&amp; !exists </span><span class="cov0" title="0">{
+                var pwd string
+                if pwd, err = mip.hashPassword("password"); err != nil </span><span class="cov0" title="0">{
+                        return
+                }</span>
+                <span class="cov0" title="0">user = User{
+                        IsEditable: mip.IsEditable(),
+                        Username:   "admin",
+                        Password:   pwd,
+                        Idp:        mip,
+                }
+                mip.users[user.Username] = user</span>
+        }
+
+        <span class="cov0" title="0">user.Logout()
+
+        return</span>
+}
+
+func (mip memoryIdentityProvider) LoginUser(user User, password string) (loggedin bool) <span class="cov0" title="0">{
+        return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) == nil
+}</span>
+
+func (mip memoryIdentityProvider) ChangePassword(user User, password string) (err error) <span class="cov0" title="0">{
+        user.Password, err = mip.hashPassword(password)
+        mip.users[user.Username] = user
+        return
+}</span>
+
+func (mip memoryIdentityProvider) hashPassword(password string) (pwd string, err error) <span class="cov0" title="0">{
+        bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+        return string(bytes), err
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package identity
+
+import (
+        "fmt"
+        "time"
+)
+
+// User who can log in, be assigned to groups, and is defined within an IdP.
+type User struct {
+        IsEditable bool
+        Username   string
+        Password   string
+        APIKeys    []*APIKey
+        SSHKeys    []*SSHKey
+        Idp        Provider
+        loggedin   bool
+        groups     []Group
+}
+
+// Login a user with a plaintext password
+func (u *User) Login(password string) bool <span class="cov0" title="0">{
+        u.loggedin = u.Idp.LoginUser(*u, password)
+        return u.LoggedIn()
+}</span>
+
+// Logout a user
+func (u *User) Logout() <span class="cov0" title="0">{
+        u.loggedin = false
+}</span>
+
+// LoggedIn returns true if the user is logged in
+func (u *User) LoggedIn() bool <span class="cov0" title="0">{
+        return u.loggedin
+}</span>
+
+// ChangePassword for a user if the IdP allows password changes
+func (u *User) ChangePassword(password string) (err error) <span class="cov0" title="0">{
+        if !u.LoggedIn() </span><span class="cov0" title="0">{
+                return fmt.Errorf("Could not change password on '%s' as user is not logged in", u.Username)
+        }</span>
+
+        <span class="cov0" title="0">return u.Idp.ChangePassword(*u, password)</span>
+}
+
+// SSHKey contains both the public and private sections, and the location of the sshkey on disk
+type SSHKey struct {
+        Public          []byte
+        Private         []byte
+        PublicPath      string
+        PrivatePath     string
+        ServerGenerated bool
+}
+
+// APIKey for a user, to allow them to log in without a username and password
+type APIKey struct {
+        Value                string
+        DateCreated          time.Time
+        DateExpired          time.Time
+        ValidationPeriod     time.Duration
+        AutomaticallyExpired bool
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package restapi
+
+import (
+        "encoding/json"
+        "github.com/go-openapi/swag"
+        "github.com/zeebox/terraform-server/server/restapi/operations"
+)
+
+var cliconfig = ConfigFileFlags{}
+
+// Configuration describes the structure of options in the server config file
+type Configuration struct {
+        Identity CfgIdentity `json:"identity"`
+        Backend  CfgBackend  `json:"backend"`
+}
+
+// CfgIdentity describes the structure of options for Identity Providers
+type CfgIdentity struct {
+        Defaults []CfgIdentityDefault `json:"defaults"`
+}
+
+// CfgIdentityDefault allows the setting of a username and password for a default user. This value will only be used
+// when initialising a new managed Identity Provider, and will be ignored on subsequent boots.
+// @TODO Restrict this to only be for the `admin` user
+// @TODO Allow a force cli option when booting to reset the password
+type CfgIdentityDefault struct {
+        User     string `json:"username"`
+        Password string `json:"password"`
+}
+
+// CfgBackend describes how the server can load the backend database and the primary managed Identity Provider
+type CfgBackend struct {
+        DatabaseType string      `json:"database_type"`
+        Database     interface{} `json:"database"`
+        IdentityType string      `json:"identity_type"`
+        Identity     interface{} `json:"identity"`
+}
+
+func (cfg *Configuration) loadFromFile(path string) <span class="cov0" title="0">{
+        j, err := swag.YAMLDoc(path)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        <span class="cov0" title="0">err = json.Unmarshal(j, cfg)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+}
+
+//ConfigFileFlags for loading settings for the server
+type ConfigFileFlags struct {
+        ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
+}
+
+func parseCliConfiguration() *Configuration <span class="cov0" title="0">{
+        cfg := newDefaultConfiguration()
+        if cliconfig.ConfigFile != "" </span><span class="cov0" title="0">{
+                cfg.loadFromFile(cliconfig.ConfigFile)
+        }</span>
+        <span class="cov0" title="0">return cfg</span>
+}
+
+func newDefaultConfiguration() *Configuration <span class="cov0" title="0">{
+        return &amp;Configuration{
+                Identity: CfgIdentity{
+                        Defaults: []CfgIdentityDefault{
+                                {User: "admin", Password: "password"},
+                        },
+                },
+                Backend: CfgBackend{
+                        IdentityType: "memory",
+                        DatabaseType: "memory",
+                },
+        }
+}</span>
+
+func configureFlags(api *operations.TerraformServerAPI) <span class="cov0" title="0">{
+        api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
+                {
+                        ShortDescription: "Config",
+                        LongDescription:  "Configuration",
+                        Options:          &amp;cliconfig,
+                },
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package restapi
+
+import (
+        "crypto/tls"
+        "net/http"
+
+        "github.com/go-openapi/errors"
+        "github.com/go-openapi/runtime"
+        "github.com/tylerb/graceful"
+
+        "github.com/zeebox/terraform-server/server/restapi/operations"
+
+        bmw "github.com/zeebox/go-http-middleware"
+        "github.com/zeebox/terraform-server/server/restapi/controller"
+
+        "fmt"
+        "github.com/zeebox/goose4"
+
+        "github.com/zeebox/terraform-server/backend/database"
+        "github.com/zeebox/terraform-server/backend/identity"
+        "strconv"
+        "time"
+)
+
+// goose4
+var (
+        buildNumber  string
+        buildMachine string
+        builtBy      string
+        builtWhen    string
+        compiler     string
+        sha          string
+)
+
+// goose4
+const (
+        runbookURI = "http://github.com/zeebox/terraform-server"
+)
+
+// This file is safe to edit. Once it exists it will not be overwritten
+
+//go:generate swagger generate server --target ../server --name TerraformServer --spec ../swagger.yml --principal models.Principal
+
+func configureAPI(api *operations.TerraformServerAPI) http.Handler <span class="cov0" title="0">{
+        // configure the api here
+        api.ServeError = errors.ServeError
+
+        var idp identity.Provider
+        var dbDriver database.Driver
+        var err error
+
+        cfg := parseCliConfiguration()
+
+        switch cfg.Backend.DatabaseType </span>{
+        case "memory":<span class="cov0" title="0">
+                dbDriver, err = database.NewMemoryDatabase()</span>
+        default:<span class="cov0" title="0">
+                panic(fmt.Sprintf("Unexpected Database type: '%s'", cfg.Backend.DatabaseType))</span>
+        }
+
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov0" title="0">db := database.NewDatabaseWithDriver(dbDriver)
+
+        switch cfg.Backend.IdentityType </span>{
+        case "memory":<span class="cov0" title="0">
+                idp = identity.NewMemoryIdentityProvider()</span>
+        case "database":<span class="cov0" title="0">
+                idp, err = identity.NewDatabaseIdentityProvider(db)</span>
+        default:<span class="cov0" title="0">
+                panic(fmt.Sprintf("Unexpected Identity Provider type: '%s'", cfg.Backend.IdentityType))</span>
+        }
+
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov0" title="0">api.JSONConsumer = runtime.JSONConsumer()
+        api.JSONProducer = runtime.JSONProducer()
+
+        // Controllers for /api/
+        api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
+
+        // Controllers for /api/identity
+        api.ResourcesListIdentityResourcesHandler = controller.ListIdentityResourcesController(api, idp)
+
+        // Controllers for /api/tf
+        api.ResourcesListTerraformResourcesHandler = controller.ListTerraformResourcesController(api, idp)
+
+        api.ServerShutdown = func() </span><span class="cov0" title="0">{}</span>
+
+        <span class="cov0" title="0">return setupGlobalMiddleware(api.Serve(setupMiddlewares))</span>
+}
+
+// The TLS configuration before HTTPS server starts.
+func configureTLS(tlsConfig *tls.Config) <span class="cov0" title="0">{
+        // Make all necessary changes to the TLS configuration here.
+}</span>
+
+// As soon as server is initialized but not run yet, this function will be called.
+// If you need to modify a config, store server instance to stop it individually later, this is the place.
+// This function can be called multiple times, depending on the number of serving schemes.
+// scheme value will be set accordingly: "http", "https" or "unix"
+func configureServer(s *graceful.Server, scheme, addr string) <span class="cov0" title="0">{
+}</span>
+
+// The middleware configuration is for the handler executors. These do not apply to the swagger.json document.
+// The middleware executes after routing but before authentication, binding and validation
+func setupMiddlewares(handler http.Handler) http.Handler <span class="cov0" title="0">{
+        return handler
+}</span>
+
+// The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
+// So this is a good place to plug in a panic handling middleware, logging and metrics
+func setupGlobalMiddleware(handler http.Handler) http.Handler <span class="cov0" title="0">{
+
+        if builtWhen == "" </span><span class="cov0" title="0">{
+                builtWhen = "-1"
+        }</span>
+        <span class="cov0" title="0">t, err := strconv.Atoi(builtWhen)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov0" title="0">mw := bmw.NewMiddleware(handler)
+
+        se4, err := goose4.NewGoose4(goose4.Config{
+                ArtifactID:      "terraform-server",
+                BuildNumber:     buildNumber,
+                BuildMachine:    buildMachine,
+                BuiltBy:         builtBy,
+                BuiltWhen:       time.Unix(int64(t), 0),
+                CompilerVersion: compiler,
+                GitSha:          sha,
+                RunbookURI:      runbookURI,
+                Version:         buildNumber,
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov0" title="0">gmw := NewMiddleware(mw)
+        gmw.SE4 = se4
+        return gmw</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package controller
+
+import (
+        "github.com/go-openapi/strfmt"
+        "github.com/zeebox/terraform-server/server/models"
+        "github.com/zeebox/terraform-server/server/restapi/operations"
+        "net/http"
+        "strings"
+)
+
+func str(v string) *string <span class="cov1" title="1">{ return &amp;v }</span>
+
+func halRootRscLinks(parts *apiHostBase) *models.HalRscLinks <span class="cov1" title="1">{
+        lnks := halSelfLink(parts.FQEndpoint)
+        lnks.Doc = &amp;models.HalHref{
+                Href: strfmt.URI(parts.ServerURL + "/docs#operation/" + parts.OperationID),
+        }
+        return lnks
+}</span>
+func halSelfLink(href string) *models.HalRscLinks <span class="cov10" title="2">{
+        return &amp;models.HalRscLinks{
+                Self: &amp;models.HalHref{Href: strfmt.URI(href)},
+        }
+}</span>
+
+type apiHostBase struct {
+        ServerURL   string
+        Endpoint    string
+        FQEndpoint  string
+        OperationID string
+}
+
+func apiParts(req *http.Request, api *operations.TerraformServerAPI) *apiHostBase <span class="cov0" title="0">{
+        prefix := "http"
+        if req.TLS != nil </span><span class="cov0" title="0">{
+                prefix += "s"
+        }</span>
+
+        <span class="cov0" title="0">root := strings.TrimSuffix(prefix+"://"+req.Host+api.Context().BasePath(), "/")
+        requestURI := strings.TrimSuffix(urlPrefix(req), "/")
+
+        route, _, _ := api.Context().RouteInfo(req)
+
+        return &amp;apiHostBase{
+                ServerURL:   root,
+                Endpoint:    strings.TrimPrefix(requestURI, root),
+                FQEndpoint:  requestURI,
+                OperationID: route.Operation.ID,
+        }</span>
+}
+
+func urlPrefix(req *http.Request) string <span class="cov0" title="0">{
+        prefix := "http"
+        if req.TLS != nil </span><span class="cov0" title="0">{
+                prefix += "s"
+        }</span>
+        <span class="cov0" title="0">return prefix + "://" + req.Host + req.RequestURI</span>
+}
+
+func buildResourceGroupResponse(rscs []string, parts *apiHostBase) (rg []*models.ResourceGroup) <span class="cov0" title="0">{
+        rg = make([]*models.ResourceGroup, len(rscs))
+        for i, rsc := range rscs </span><span class="cov0" title="0">{
+                rg[i] = &amp;models.ResourceGroup{
+                        Name:  str(rsc),
+                        Links: halSelfLink(parts.FQEndpoint + "/" + rsc),
+                }
+        }</span>
+        <span class="cov0" title="0">return</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package controller
+
+import (
+        "github.com/go-openapi/runtime/middleware"
+        "github.com/zeebox/terraform-server/backend/identity"
+        "github.com/zeebox/terraform-server/server/models"
+        "github.com/zeebox/terraform-server/server/restapi/operations"
+        "github.com/zeebox/terraform-server/server/restapi/operations/resources"
+)
+
+var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListIdentityResourcesHandlerFunc <span class="cov0" title="0">{
+        return resources.ListIdentityResourcesHandlerFunc(func(params resources.ListIdentityResourcesParams) middleware.Responder </span><span class="cov0" title="0">{
+                parts := apiParts(params.HTTPRequest, api)
+
+                ir := buildResourceGroupResponse([]string{"groups", "providers", "users"}, parts)
+
+                r := resources.NewListIdentityResourcesOK()
+                r.SetPayload(&amp;models.ResponseListIdentityResources{
+                        Links:    halRootRscLinks(parts),
+                        Embedded: &amp;models.ResponseListIdentityResourcesEmbedded{IdentityResources: ir},
+                })
+
+                return r
+        }</span>)
+}
+
+var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListResourceGroupsHandlerFunc <span class="cov0" title="0">{
+        return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder </span><span class="cov0" title="0">{
+
+                parts := apiParts(params.HTTPRequest, api)
+
+                rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, parts)
+
+                r := resources.NewListResourceGroupsOK()
+                r.SetPayload(&amp;models.ResponseListResourceGroups{
+                        Links:    halRootRscLinks(parts),
+                        Embedded: &amp;models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
+                })
+
+                return r
+        }</span>)
+}
+
+var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListTerraformResourcesHandlerFunc <span class="cov0" title="0">{
+        return resources.ListTerraformResourcesHandlerFunc(func(params resources.ListTerraformResourcesParams) middleware.Responder </span><span class="cov0" title="0">{
+                parts := apiParts(params.HTTPRequest, api)
+
+                rg := buildResourceGroupResponse([]string{"modules", "stacks", "state-backends", "workspaces"}, parts)
+
+                r := resources.NewListResourceGroupsOK()
+                r.SetPayload(&amp;models.ResponseListResourceGroups{
+                        Links:    halRootRscLinks(parts),
+                        Embedded: &amp;models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
+                })
+
+                return r
+        }</span>)
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">// Code generated by go-swagger; DO NOT EDIT.
+
+package restapi
+
+// This file was generated by the swagger tool.
+// Editing this file might prove futile when you re-run the swagger generate command
+
+import (
+        "encoding/json"
+)
+
+// SwaggerJSON embedded version of the swagger document used at generation time
+var SwaggerJSON json.RawMessage
+
+func init() <span class="cov8" title="1">{
+        SwaggerJSON = json.RawMessage([]byte(`{
+  "consumes": [
+    "application/vnd.terraform.server.v1+json"
+  ],
+  "produces": [
+    "application/vnd.terraform.server.v1+json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.\nThe inspiration for this project is the AWS CloudFormation API's. The intention is to implement a locking mechanism\nnot only for the terraform state, but for the plan and apply of terraform modules. Once a ` + "`" + `module` + "`" + ` plan starts, it\nis instantiated as a ` + "`" + `stack` + "`" + ` within the nomencalture of ` + "`" + `terraform-server` + "`" + `.\n",
+    "title": "terraform-server",
+    "contact": {
+      "email": "drew.sonne@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://github.com/zeebox/terraform-server/blob/master/LICENSE"
+    },
+    "version": "0.0.1-alpha"
+  },
+  "basePath": "/api",
+  "paths": {
+    "/": {
+      "get": {
+        "description": "List the root resource groups",
+        "tags": [
+          "resources"
+        ],
+        "operationId": "list-resource-groups",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/response-list-resource-groups"
+            },
+            "examples": {
+              "application/vnd.terraform.server.v1+json": {
+                "_embedded": {
+                  "resource-groups": [
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/tf/"
+                        }
+                      },
+                      "name": "tf"
+                    },
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/identity"
+                        }
+                      },
+                      "name": "identity"
+                    },
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/vcs"
+                        }
+                      },
+                      "name": "vcs"
+                    }
+                  ]
+                },
+                "_links": {
+                  "$ref": "#/definitions/hal-rsc-links"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/identity": {
+      "get": {
+        "tags": [
+          "resources"
+        ],
+        "operationId": "list-identity-resources",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/response-list-identity-resources"
+            },
+            "examples": {
+              "application/vnd.terraform.server.v1+json": {
+                "_embedded": {
+                  "identity-resources": [
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/identity/groups"
+                        }
+                      },
+                      "name": "groups"
+                    },
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/identity/providers"
+                        }
+                      },
+                      "name": "providers"
+                    },
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/identity/users"
+                        }
+                      },
+                      "name": "users"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tf": {
+      "get": {
+        "tags": [
+          "resources"
+        ],
+        "operationId": "list-terraform-resources",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/response-list-tf-resources"
+            },
+            "examples": {
+              "application/vnd.terraform.server.v1+json": {
+                "_embedded": {
+                  "tf-resources": [
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/tf/modules"
+                        }
+                      },
+                      "name": "modules"
+                    },
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/tf/stacks"
+                        }
+                      },
+                      "name": "stacks"
+                    },
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/tf/state-backends"
+                        }
+                      },
+                      "name": "state-backends"
+                    },
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "http://example.com/api/tf/workspaces"
+                        }
+                      },
+                      "name": "workspaces"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "hal-href": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "readOnly": true
+    },
+    "hal-rsc-links": {
+      "description": "Links to this resources and documentation for this resource",
+      "type": "object",
+      "properties": {
+        "doc": {
+          "$ref": "#/definitions/hal-href"
+        },
+        "self": {
+          "$ref": "#/definitions/hal-href"
+        }
+      },
+      "readOnly": true
+    },
+    "principal": {
+      "type": "object"
+    },
+    "resource-group": {
+      "description": "A group of resources",
+      "type": "object",
+      "required": [
+        "_links",
+        "name"
+      ],
+      "properties": {
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "response-list-identity-resources": {
+      "description": "List of Identity resources",
+      "type": "object",
+      "required": [
+        "_links",
+        "_embedded"
+      ],
+      "properties": {
+        "_embedded": {
+          "type": "object",
+          "required": [
+            "identity-resources"
+          ],
+          "properties": {
+            "identity-resources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/resource-group"
+              }
+            }
+          },
+          "readOnly": true
+        },
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        }
+      }
+    },
+    "response-list-resource-groups": {
+      "description": "List of resources for managing users and their access",
+      "type": "object",
+      "required": [
+        "_links",
+        "_embedded"
+      ],
+      "properties": {
+        "_embedded": {
+          "type": "object",
+          "required": [
+            "identity-resources"
+          ],
+          "properties": {
+            "identity-resources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/resource-group"
+              }
+            }
+          },
+          "readOnly": true
+        },
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        }
+      }
+    },
+    "response-list-tf-resources": {
+      "description": "List of resources for managing terraform",
+      "type": "object",
+      "required": [
+        "_links",
+        "_embedded"
+      ],
+      "properties": {
+        "_embedded": {
+          "type": "object",
+          "required": [
+            "tf-resources"
+          ],
+          "properties": {
+            "tf-resources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/resource-group"
+              }
+            }
+          },
+          "readOnly": true
+        },
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        }
+      }
+    }
+  },
+  "x-tagGroups": [
+    {
+      "name": "Resources",
+      "tags": [
+        "resources"
+      ]
+    }
+  ]
+}`))
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package restapi
+
+import (
+        "github.com/zeebox/goose4"
+        "net/http"
+        "strings"
+)
+
+// Middleware handles the "/service" prefix to comply with the SE4 prefix
+type Middleware struct {
+        handler http.Handler
+        SE4     goose4.Goose4
+}
+
+// NewMiddleware takes an http handler
+// to wrap and returns mutable Middleware object
+func NewMiddleware(h http.Handler) *Middleware <span class="cov0" title="0">{
+        return &amp;Middleware{
+                handler: h,
+        }
+}</span>
+
+// ServeHTTP wraps our requests and handles any calles to `/service*`.
+func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        if strings.HasPrefix(r.URL.String(), "/service") </span><span class="cov0" title="0">{
+                m.SE4.ServeHTTP(w, r)
+        }</span><span class="cov0" title="0"> else {
+                m.handler.ServeHTTP(w, r)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">// Code generated by go-swagger; DO NOT EDIT.
+
+package restapi
+
+import (
+        "crypto/tls"
+        "crypto/x509"
+        "errors"
+        "io/ioutil"
+        "log"
+        "net"
+        "net/http"
+        "os"
+        "strconv"
+        "sync"
+        "time"
+
+        "github.com/go-openapi/runtime/flagext"
+        "github.com/go-openapi/swag"
+        flags "github.com/jessevdk/go-flags"
+        graceful "github.com/tylerb/graceful"
+
+        "github.com/zeebox/terraform-server/server/restapi/operations"
+)
+
+const (
+        schemeHTTP  = "http"
+        schemeHTTPS = "https"
+        schemeUnix  = "unix"
+)
+
+var defaultSchemes []string
+
+func init() <span class="cov8" title="1">{
+        defaultSchemes = []string{
+                schemeHTTP,
+                schemeHTTPS,
+        }
+}</span>
+
+// NewServer creates a new api terraform server server but does not configure it
+func NewServer(api *operations.TerraformServerAPI) *Server <span class="cov0" title="0">{
+        s := new(Server)
+
+        s.api = api
+        return s
+}</span>
+
+// ConfigureAPI configures the API and handlers.
+func (s *Server) ConfigureAPI() <span class="cov0" title="0">{
+        if s.api != nil </span><span class="cov0" title="0">{
+                s.handler = configureAPI(s.api)
+        }</span>
+}
+
+// ConfigureFlags configures the additional flags defined by the handlers. Needs to be called before the parser.Parse
+func (s *Server) ConfigureFlags() <span class="cov0" title="0">{
+        if s.api != nil </span><span class="cov0" title="0">{
+                configureFlags(s.api)
+        }</span>
+}
+
+// Server for the terraform server API
+type Server struct {
+        EnabledListeners []string         `long:"scheme" description:"the listeners to enable, this can be repeated and defaults to the schemes in the swagger spec"`
+        CleanupTimeout   time.Duration    `long:"cleanup-timeout" description:"grace period for which to wait before shutting down the server" default:"10s"`
+        MaxHeaderSize    flagext.ByteSize `long:"max-header-size" description:"controls the maximum number of bytes the server will read parsing the request header's keys and values, including the request line. It does not limit the size of the request body." default:"1MiB"`
+
+        SocketPath    flags.Filename `long:"socket-path" description:"the unix socket to listen on" default:"/var/run/terraform-server.sock"`
+        domainSocketL net.Listener
+
+        Host         string        `long:"host" description:"the IP to listen on" default:"localhost" env:"HOST"`
+        Port         int           `long:"port" description:"the port to listen on for insecure connections, defaults to a random value" env:"PORT"`
+        ListenLimit  int           `long:"listen-limit" description:"limit the number of outstanding requests"`
+        KeepAlive    time.Duration `long:"keep-alive" description:"sets the TCP keep-alive timeouts on accepted connections. It prunes dead TCP connections ( e.g. closing laptop mid-download)" default:"3m"`
+        ReadTimeout  time.Duration `long:"read-timeout" description:"maximum duration before timing out read of the request" default:"30s"`
+        WriteTimeout time.Duration `long:"write-timeout" description:"maximum duration before timing out write of the response" default:"60s"`
+        httpServerL  net.Listener
+
+        TLSHost           string         `long:"tls-host" description:"the IP to listen on for tls, when not specified it's the same as --host" env:"TLS_HOST"`
+        TLSPort           int            `long:"tls-port" description:"the port to listen on for secure connections, defaults to a random value" env:"TLS_PORT"`
+        TLSCertificate    flags.Filename `long:"tls-certificate" description:"the certificate to use for secure connections" env:"TLS_CERTIFICATE"`
+        TLSCertificateKey flags.Filename `long:"tls-key" description:"the private key to use for secure conections" env:"TLS_PRIVATE_KEY"`
+        TLSCACertificate  flags.Filename `long:"tls-ca" description:"the certificate authority file to be used with mutual tls auth" env:"TLS_CA_CERTIFICATE"`
+        TLSListenLimit    int            `long:"tls-listen-limit" description:"limit the number of outstanding requests"`
+        TLSKeepAlive      time.Duration  `long:"tls-keep-alive" description:"sets the TCP keep-alive timeouts on accepted connections. It prunes dead TCP connections ( e.g. closing laptop mid-download)"`
+        TLSReadTimeout    time.Duration  `long:"tls-read-timeout" description:"maximum duration before timing out read of the request"`
+        TLSWriteTimeout   time.Duration  `long:"tls-write-timeout" description:"maximum duration before timing out write of the response"`
+        httpsServerL      net.Listener
+
+        api          *operations.TerraformServerAPI
+        handler      http.Handler
+        hasListeners bool
+}
+
+// Logf logs message either via defined user logger or via system one if no user logger is defined.
+func (s *Server) Logf(f string, args ...interface{}) <span class="cov0" title="0">{
+        if s.api != nil &amp;&amp; s.api.Logger != nil </span><span class="cov0" title="0">{
+                s.api.Logger(f, args...)
+        }</span><span class="cov0" title="0"> else {
+                log.Printf(f, args...)
+        }</span>
+}
+
+// Fatalf logs message either via defined user logger or via system one if no user logger is defined.
+// Exits with non-zero status after printing
+func (s *Server) Fatalf(f string, args ...interface{}) <span class="cov0" title="0">{
+        if s.api != nil &amp;&amp; s.api.Logger != nil </span><span class="cov0" title="0">{
+                s.api.Logger(f, args...)
+                os.Exit(1)
+        }</span><span class="cov0" title="0"> else {
+                log.Fatalf(f, args...)
+        }</span>
+}
+
+// SetAPI configures the server with the specified API. Needs to be called before Serve
+func (s *Server) SetAPI(api *operations.TerraformServerAPI) <span class="cov0" title="0">{
+        if api == nil </span><span class="cov0" title="0">{
+                s.api = nil
+                s.handler = nil
+                return
+        }</span>
+
+        <span class="cov0" title="0">s.api = api
+        s.api.Logger = log.Printf
+        s.handler = configureAPI(api)</span>
+}
+
+func (s *Server) hasScheme(scheme string) bool <span class="cov0" title="0">{
+        schemes := s.EnabledListeners
+        if len(schemes) == 0 </span><span class="cov0" title="0">{
+                schemes = defaultSchemes
+        }</span>
+
+        <span class="cov0" title="0">for _, v := range schemes </span><span class="cov0" title="0">{
+                if v == scheme </span><span class="cov0" title="0">{
+                        return true
+                }</span>
+        }
+        <span class="cov0" title="0">return false</span>
+}
+
+// Serve the api
+func (s *Server) Serve() (err error) <span class="cov0" title="0">{
+        if !s.hasListeners </span><span class="cov0" title="0">{
+                if err = s.Listen(); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+
+        // set default handler, if none is set
+        <span class="cov0" title="0">if s.handler == nil </span><span class="cov0" title="0">{
+                if s.api == nil </span><span class="cov0" title="0">{
+                        return errors.New("can't create the default handler, as no api is set")
+                }</span>
+
+                <span class="cov0" title="0">s.SetHandler(s.api.Serve(nil))</span>
+        }
+
+        <span class="cov0" title="0">var wg sync.WaitGroup
+
+        if s.hasScheme(schemeUnix) </span><span class="cov0" title="0">{
+                domainSocket := &amp;graceful.Server{Server: new(http.Server)}
+                domainSocket.MaxHeaderBytes = int(s.MaxHeaderSize)
+                domainSocket.Handler = s.handler
+                domainSocket.LogFunc = s.Logf
+                if int64(s.CleanupTimeout) &gt; 0 </span><span class="cov0" title="0">{
+                        domainSocket.Timeout = s.CleanupTimeout
+                }</span>
+
+                <span class="cov0" title="0">configureServer(domainSocket, "unix", string(s.SocketPath))
+
+                wg.Add(1)
+                s.Logf("Serving terraform server at unix://%s", s.SocketPath)
+                go func(l net.Listener) </span><span class="cov0" title="0">{
+                        defer wg.Done()
+                        if err := domainSocket.Serve(l); err != nil </span><span class="cov0" title="0">{
+                                s.Fatalf("%v", err)
+                        }</span>
+                        <span class="cov0" title="0">s.Logf("Stopped serving terraform server at unix://%s", s.SocketPath)</span>
+                }(s.domainSocketL)
+        }
+
+        <span class="cov0" title="0">if s.hasScheme(schemeHTTP) </span><span class="cov0" title="0">{
+                httpServer := &amp;graceful.Server{Server: new(http.Server)}
+                httpServer.MaxHeaderBytes = int(s.MaxHeaderSize)
+                httpServer.ReadTimeout = s.ReadTimeout
+                httpServer.WriteTimeout = s.WriteTimeout
+                httpServer.SetKeepAlivesEnabled(int64(s.KeepAlive) &gt; 0)
+                httpServer.TCPKeepAlive = s.KeepAlive
+                if s.ListenLimit &gt; 0 </span><span class="cov0" title="0">{
+                        httpServer.ListenLimit = s.ListenLimit
+                }</span>
+
+                <span class="cov0" title="0">if int64(s.CleanupTimeout) &gt; 0 </span><span class="cov0" title="0">{
+                        httpServer.Timeout = s.CleanupTimeout
+                }</span>
+
+                <span class="cov0" title="0">httpServer.Handler = s.handler
+                httpServer.LogFunc = s.Logf
+
+                configureServer(httpServer, "http", s.httpServerL.Addr().String())
+
+                wg.Add(1)
+                s.Logf("Serving terraform server at http://%s", s.httpServerL.Addr())
+                go func(l net.Listener) </span><span class="cov0" title="0">{
+                        defer wg.Done()
+                        if err := httpServer.Serve(l); err != nil </span><span class="cov0" title="0">{
+                                s.Fatalf("%v", err)
+                        }</span>
+                        <span class="cov0" title="0">s.Logf("Stopped serving terraform server at http://%s", l.Addr())</span>
+                }(s.httpServerL)
+        }
+
+        <span class="cov0" title="0">if s.hasScheme(schemeHTTPS) </span><span class="cov0" title="0">{
+                httpsServer := &amp;graceful.Server{Server: new(http.Server)}
+                httpsServer.MaxHeaderBytes = int(s.MaxHeaderSize)
+                httpsServer.ReadTimeout = s.TLSReadTimeout
+                httpsServer.WriteTimeout = s.TLSWriteTimeout
+                httpsServer.SetKeepAlivesEnabled(int64(s.TLSKeepAlive) &gt; 0)
+                httpsServer.TCPKeepAlive = s.TLSKeepAlive
+                if s.TLSListenLimit &gt; 0 </span><span class="cov0" title="0">{
+                        httpsServer.ListenLimit = s.TLSListenLimit
+                }</span>
+                <span class="cov0" title="0">if int64(s.CleanupTimeout) &gt; 0 </span><span class="cov0" title="0">{
+                        httpsServer.Timeout = s.CleanupTimeout
+                }</span>
+                <span class="cov0" title="0">httpsServer.Handler = s.handler
+                httpsServer.LogFunc = s.Logf
+
+                // Inspired by https://blog.bracebin.com/achieving-perfect-ssl-labs-score-with-go
+                httpsServer.TLSConfig = &amp;tls.Config{
+                        // Causes servers to use Go's default ciphersuite preferences,
+                        // which are tuned to avoid attacks. Does nothing on clients.
+                        PreferServerCipherSuites: true,
+                        // Only use curves which have assembly implementations
+                        // https://github.com/golang/go/tree/master/src/crypto/elliptic
+                        CurvePreferences: []tls.CurveID{tls.CurveP256},
+                        // Use modern tls mode https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility
+                        NextProtos: []string{"http/1.1", "h2"},
+                        // https://www.owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet#Rule_-_Only_Support_Strong_Protocols
+                        MinVersion: tls.VersionTLS12,
+                        // These ciphersuites support Forward Secrecy: https://en.wikipedia.org/wiki/Forward_secrecy
+                        CipherSuites: []uint16{
+                                tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+                                tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+                                tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                                tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                        },
+                }
+
+                if s.TLSCertificate != "" &amp;&amp; s.TLSCertificateKey != "" </span><span class="cov0" title="0">{
+                        httpsServer.TLSConfig.Certificates = make([]tls.Certificate, 1)
+                        httpsServer.TLSConfig.Certificates[0], err = tls.LoadX509KeyPair(string(s.TLSCertificate), string(s.TLSCertificateKey))
+                }</span>
+
+                <span class="cov0" title="0">if s.TLSCACertificate != "" </span><span class="cov0" title="0">{
+                        caCert, caCertErr := ioutil.ReadFile(string(s.TLSCACertificate))
+                        if caCertErr != nil </span><span class="cov0" title="0">{
+                                log.Fatal(caCertErr)
+                        }</span>
+                        <span class="cov0" title="0">caCertPool := x509.NewCertPool()
+                        caCertPool.AppendCertsFromPEM(caCert)
+                        httpsServer.TLSConfig.ClientCAs = caCertPool
+                        httpsServer.TLSConfig.ClientAuth = tls.RequireAndVerifyClientCert</span>
+                }
+
+                <span class="cov0" title="0">configureTLS(httpsServer.TLSConfig)
+                httpsServer.TLSConfig.BuildNameToCertificate()
+
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">if len(httpsServer.TLSConfig.Certificates) == 0 </span><span class="cov0" title="0">{
+                        if s.TLSCertificate == "" </span><span class="cov0" title="0">{
+                                if s.TLSCertificateKey == "" </span><span class="cov0" title="0">{
+                                        s.Fatalf("the required flags `--tls-certificate` and `--tls-key` were not specified")
+                                }</span>
+                                <span class="cov0" title="0">s.Fatalf("the required flag `--tls-certificate` was not specified")</span>
+                        }
+                        <span class="cov0" title="0">if s.TLSCertificateKey == "" </span><span class="cov0" title="0">{
+                                s.Fatalf("the required flag `--tls-key` was not specified")
+                        }</span>
+                }
+
+                <span class="cov0" title="0">configureServer(httpsServer, "https", s.httpsServerL.Addr().String())
+
+                wg.Add(1)
+                s.Logf("Serving terraform server at https://%s", s.httpsServerL.Addr())
+                go func(l net.Listener) </span><span class="cov0" title="0">{
+                        defer wg.Done()
+                        if err := httpsServer.Serve(l); err != nil </span><span class="cov0" title="0">{
+                                s.Fatalf("%v", err)
+                        }</span>
+                        <span class="cov0" title="0">s.Logf("Stopped serving terraform server at https://%s", l.Addr())</span>
+                }(tls.NewListener(s.httpsServerL, httpsServer.TLSConfig))
+        }
+
+        <span class="cov0" title="0">wg.Wait()
+        return nil</span>
+}
+
+// Listen creates the listeners for the server
+func (s *Server) Listen() error <span class="cov0" title="0">{
+        if s.hasListeners </span><span class="cov0" title="0">{ // already done this
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">if s.hasScheme(schemeHTTPS) </span><span class="cov0" title="0">{
+                // Use http host if https host wasn't defined
+                if s.TLSHost == "" </span><span class="cov0" title="0">{
+                        s.TLSHost = s.Host
+                }</span>
+                // Use http listen limit if https listen limit wasn't defined
+                <span class="cov0" title="0">if s.TLSListenLimit == 0 </span><span class="cov0" title="0">{
+                        s.TLSListenLimit = s.ListenLimit
+                }</span>
+                // Use http tcp keep alive if https tcp keep alive wasn't defined
+                <span class="cov0" title="0">if int64(s.TLSKeepAlive) == 0 </span><span class="cov0" title="0">{
+                        s.TLSKeepAlive = s.KeepAlive
+                }</span>
+                // Use http read timeout if https read timeout wasn't defined
+                <span class="cov0" title="0">if int64(s.TLSReadTimeout) == 0 </span><span class="cov0" title="0">{
+                        s.TLSReadTimeout = s.ReadTimeout
+                }</span>
+                // Use http write timeout if https write timeout wasn't defined
+                <span class="cov0" title="0">if int64(s.TLSWriteTimeout) == 0 </span><span class="cov0" title="0">{
+                        s.TLSWriteTimeout = s.WriteTimeout
+                }</span>
+        }
+
+        <span class="cov0" title="0">if s.hasScheme(schemeUnix) </span><span class="cov0" title="0">{
+                domSockListener, err := net.Listen("unix", string(s.SocketPath))
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">s.domainSocketL = domSockListener</span>
+        }
+
+        <span class="cov0" title="0">if s.hasScheme(schemeHTTP) </span><span class="cov0" title="0">{
+                listener, err := net.Listen("tcp", net.JoinHostPort(s.Host, strconv.Itoa(s.Port)))
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">h, p, err := swag.SplitHostPort(listener.Addr().String())
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">s.Host = h
+                s.Port = p
+                s.httpServerL = listener</span>
+        }
+
+        <span class="cov0" title="0">if s.hasScheme(schemeHTTPS) </span><span class="cov0" title="0">{
+                tlsListener, err := net.Listen("tcp", net.JoinHostPort(s.TLSHost, strconv.Itoa(s.TLSPort)))
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">sh, sp, err := swag.SplitHostPort(tlsListener.Addr().String())
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">s.TLSHost = sh
+                s.TLSPort = sp
+                s.httpsServerL = tlsListener</span>
+        }
+
+        <span class="cov0" title="0">s.hasListeners = true
+        return nil</span>
+}
+
+// Shutdown server and clean up resources
+func (s *Server) Shutdown() error <span class="cov0" title="0">{
+        s.api.ServerShutdown()
+        return nil
+}</span>
+
+// GetHandler returns a handler useful for testing
+func (s *Server) GetHandler() http.Handler <span class="cov0" title="0">{
+        return s.handler
+}</span>
+
+// SetHandler allows for setting a http handler on this server
+func (s *Server) SetHandler(handler http.Handler) <span class="cov0" title="0">{
+        s.handler = handler
+}</span>
+
+// UnixListener returns the domain socket listener
+func (s *Server) UnixListener() (net.Listener, error) <span class="cov0" title="0">{
+        if !s.hasListeners </span><span class="cov0" title="0">{
+                if err := s.Listen(); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+        <span class="cov0" title="0">return s.domainSocketL, nil</span>
+}
+
+// HTTPListener returns the http listener
+func (s *Server) HTTPListener() (net.Listener, error) <span class="cov0" title="0">{
+        if !s.hasListeners </span><span class="cov0" title="0">{
+                if err := s.Listen(); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+        <span class="cov0" title="0">return s.httpServerL, nil</span>
+}
+
+// TLSListener returns the https listener
+func (s *Server) TLSListener() (net.Listener, error) <span class="cov0" title="0">{
+        if !s.hasListeners </span><span class="cov0" title="0">{
+                if err := s.Listen(); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+        <span class="cov0" title="0">return s.httpsServerL, nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
