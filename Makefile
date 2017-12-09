@@ -16,8 +16,6 @@ doc:
 update-vendor:
 	glide update
 
-
-
 run: terraform-server
 	./terraform-server --scheme=http
 
@@ -28,7 +26,7 @@ build: generate-swagger terraform-server
 
 test:
 	go tool vet $(GO_TARGETS)
-	go test $(GO_TARGETS)
+	go test $(shell go list ./server/... ./backend/...)
 
 test-coverage:
 	goverage -v -race -coverprofile=profile.txt -covermode=atomic $(GO_TARGETS)
