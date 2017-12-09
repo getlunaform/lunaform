@@ -3,14 +3,36 @@ package controller
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"net/http"
+	"crypto/tls"
 )
 
-func TestPointerString(t *testing.T) {
-	tests := []string{
-		"hello",
+func TestUrlPrefix(t *testing.T) {
+
+	for _, test := range []struct {
+		host   string
+		uri    string
+		tls    *tls.ConnectionState
+		prefix string
+	}{
+		{host: "mock-host", uri: "/mock-uri", tls: &tls.ConnectionState{}, prefix: "https://mock-host/mock-uri"},
+		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-url"},
+	} {
+		r := http.Request{
+			TLS:        test.tls,
+			Host:       test.host,
+			RequestURI: test.uri,
+		}
+		assert.Equal(t, test.prefix, urlPrefix(&r))
 	}
 
-	for _, test := range tests {
+}
+
+func TestPointerString(t *testing.T) {
+
+	for _, test := range []string{
+		"hello",
+	} {
 		var s interface{}
 		s = str(test)
 		_, ok := s.(*string)
@@ -19,13 +41,12 @@ func TestPointerString(t *testing.T) {
 }
 
 func TestHALSelfLink(t *testing.T) {
-	tests := []struct {
+
+	for _, test := range []struct {
 		url string
 	}{
 		{url: "http://example.com/hello-world"},
-	}
-
-	for _, test := range tests {
+	} {
 		l := halSelfLink(test.url)
 		assert.NotNil(t, l)
 		assert.Nil(t, l.Doc)
