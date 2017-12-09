@@ -12,9 +12,6 @@
 
 ## <a name="pkg-index">Index</a>
 * [Variables](#pkg-variables)
-* [func HALRootRscLinks(parts *APIHostBase) *models.HalRscLinks](#HALRootRscLinks)
-* [func HALSelfLink(href string) *models.HalRscLinks](#HALSelfLink)
-* [type APIHostBase](#APIHostBase)
 
 
 #### <a name="pkg-files">Package files</a>
@@ -32,7 +29,7 @@ var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, i
 
         r := resources.NewListIdentityResourcesOK()
         r.SetPayload(&models.ResponseListIdentityResources{
-            Links:    HALRootRscLinks(parts),
+            Links:    halRootRscLinks(parts),
             Embedded: &models.ResponseListIdentityResourcesEmbedded{IdentityResources: ir},
         })
 
@@ -50,7 +47,7 @@ var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp 
 
         r := resources.NewListResourceGroupsOK()
         r.SetPayload(&models.ResponseListResourceGroups{
-            Links:    HALRootRscLinks(parts),
+            Links:    halRootRscLinks(parts),
             Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
         })
 
@@ -67,7 +64,7 @@ var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, 
 
         r := resources.NewListResourceGroupsOK()
         r.SetPayload(&models.ResponseListResourceGroups{
-            Links:    HALRootRscLinks(parts),
+            Links:    halRootRscLinks(parts),
             Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
         })
 
@@ -75,36 +72,6 @@ var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, 
     })
 }
 ```
-
-
-## <a name="HALRootRscLinks">func</a> [HALRootRscLinks](/src/target/helpers.go?s=245:305#L13)
-``` go
-func HALRootRscLinks(parts *APIHostBase) *models.HalRscLinks
-```
-
-
-## <a name="HALSelfLink">func</a> [HALSelfLink](/src/target/helpers.go?s=472:521#L20)
-``` go
-func HALSelfLink(href string) *models.HalRscLinks
-```
-
-
-
-## <a name="APIHostBase">type</a> [APIHostBase](/src/target/helpers.go?s=608:715#L26)
-``` go
-type APIHostBase struct {
-    ServerURL   string
-    Endpoint    string
-    FQEndpoint  string
-    OperationId string
-}
-```
-
-
-
-
-
-
 
 
 

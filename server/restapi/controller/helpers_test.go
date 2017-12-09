@@ -1,16 +1,38 @@
 package controller
 
 import (
+	"crypto/tls"
 	"github.com/stretchr/testify/assert"
+	"net/http"
 	"testing"
 )
 
-func TestPointerString(t *testing.T) {
-	tests := []string{
-		"hello",
+func TestUrlPrefix(t *testing.T) {
+
+	for _, test := range []struct {
+		host   string
+		uri    string
+		tls    *tls.ConnectionState
+		prefix string
+	}{
+		{host: "mock-host", uri: "/mock-uri", tls: &tls.ConnectionState{}, prefix: "https://mock-host/mock-uri"},
+		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-uri"},
+	} {
+		r := http.Request{
+			TLS:        test.tls,
+			Host:       test.host,
+			RequestURI: test.uri,
+		}
+		assert.Equal(t, test.prefix, urlPrefix(&r))
 	}
 
-	for _, test := range tests {
+}
+
+func TestPointerString(t *testing.T) {
+
+	for _, test := range []string{
+		"hello",
+	} {
 		var s interface{}
 		s = str(test)
 		_, ok := s.(*string)
@@ -19,14 +41,13 @@ func TestPointerString(t *testing.T) {
 }
 
 func TestHALSelfLink(t *testing.T) {
-	tests := []struct {
+
+	for _, test := range []struct {
 		url string
 	}{
 		{url: "http://example.com/hello-world"},
-	}
-
-	for _, test := range tests {
-		l := HALSelfLink(test.url)
+	} {
+		l := halSelfLink(test.url)
 		assert.NotNil(t, l)
 		assert.Nil(t, l.Doc)
 		assert.NotNil(t, l.Self)
@@ -46,10 +67,10 @@ func TestHALRootRscLinks(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		l := HALRootRscLinks(&APIHostBase{
+		l := halRootRscLinks(&apiHostBase{
 			FQEndpoint:  test.fqe,
 			ServerURL:   test.server,
-			OperationId: test.opid,
+			OperationID: test.opid,
 		})
 		assert.NotNil(t, l)
 		assert.NotNil(t, l.Doc)

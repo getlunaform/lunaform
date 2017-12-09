@@ -10,42 +10,42 @@ import (
 
 func str(v string) *string { return &v }
 
-func HALRootRscLinks(parts *APIHostBase) *models.HalRscLinks {
-	lnks := HALSelfLink(parts.FQEndpoint)
+func halRootRscLinks(parts *apiHostBase) *models.HalRscLinks {
+	lnks := halSelfLink(parts.FQEndpoint)
 	lnks.Doc = &models.HalHref{
-		Href: strfmt.URI(parts.ServerURL + "/docs#operation/" + parts.OperationId),
+		Href: strfmt.URI(parts.ServerURL + "/docs#operation/" + parts.OperationID),
 	}
 	return lnks
 }
-func HALSelfLink(href string) *models.HalRscLinks {
+func halSelfLink(href string) *models.HalRscLinks {
 	return &models.HalRscLinks{
 		Self: &models.HalHref{Href: strfmt.URI(href)},
 	}
 }
 
-type APIHostBase struct {
+type apiHostBase struct {
 	ServerURL   string
 	Endpoint    string
 	FQEndpoint  string
-	OperationId string
+	OperationID string
 }
 
-func apiParts(req *http.Request, api *operations.TerraformServerAPI) *APIHostBase {
+func apiParts(req *http.Request, api *operations.TerraformServerAPI) *apiHostBase {
 	prefix := "http"
 	if req.TLS != nil {
 		prefix += "s"
 	}
 
 	root := strings.TrimSuffix(prefix+"://"+req.Host+api.Context().BasePath(), "/")
-	requestUri := strings.TrimSuffix(urlPrefix(req), "/")
+	requestURI := strings.TrimSuffix(urlPrefix(req), "/")
 
 	route, _, _ := api.Context().RouteInfo(req)
 
-	return &APIHostBase{
+	return &apiHostBase{
 		ServerURL:   root,
-		Endpoint:    strings.TrimPrefix(requestUri, root),
-		FQEndpoint:  requestUri,
-		OperationId: route.Operation.ID,
+		Endpoint:    strings.TrimPrefix(requestURI, root),
+		FQEndpoint:  requestURI,
+		OperationID: route.Operation.ID,
 	}
 }
 
@@ -57,12 +57,12 @@ func urlPrefix(req *http.Request) string {
 	return prefix + "://" + req.Host + req.RequestURI
 }
 
-func buildResourceGroupResponse(rscs []string, parts *APIHostBase) (rg []*models.ResourceGroup) {
+func buildResourceGroupResponse(rscs []string, parts *apiHostBase) (rg []*models.ResourceGroup) {
 	rg = make([]*models.ResourceGroup, len(rscs))
 	for i, rsc := range rscs {
 		rg[i] = &models.ResourceGroup{
 			Name:  str(rsc),
-			Links: HALSelfLink(parts.FQEndpoint + "/" + rsc),
+			Links: halSelfLink(parts.FQEndpoint + "/" + rsc),
 		}
 	}
 	return

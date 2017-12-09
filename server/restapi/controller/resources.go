@@ -8,6 +8,7 @@ import (
 	"github.com/zeebox/terraform-server/server/restapi/operations/resources"
 )
 
+// ListIdentityResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListIdentityResourcesHandlerFunc {
 	return resources.ListIdentityResourcesHandlerFunc(func(params resources.ListIdentityResourcesParams) middleware.Responder {
 		parts := apiParts(params.HTTPRequest, api)
@@ -16,7 +17,7 @@ var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, i
 
 		r := resources.NewListIdentityResourcesOK()
 		r.SetPayload(&models.ResponseListIdentityResources{
-			Links:    HALRootRscLinks(parts),
+			Links:    halRootRscLinks(parts),
 			Embedded: &models.ResponseListIdentityResourcesEmbedded{IdentityResources: ir},
 		})
 
@@ -24,6 +25,7 @@ var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, i
 	})
 }
 
+// ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
 var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
 
@@ -33,7 +35,7 @@ var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp 
 
 		r := resources.NewListResourceGroupsOK()
 		r.SetPayload(&models.ResponseListResourceGroups{
-			Links:    HALRootRscLinks(parts),
+			Links:    halRootRscLinks(parts),
 			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
 		})
 
@@ -41,6 +43,7 @@ var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp 
 	})
 }
 
+// ListTerraformResourcesController provides a list of terraform resources. This is an exploratory read-only endpoint.
 var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListTerraformResourcesHandlerFunc {
 	return resources.ListTerraformResourcesHandlerFunc(func(params resources.ListTerraformResourcesParams) middleware.Responder {
 		parts := apiParts(params.HTTPRequest, api)
@@ -49,7 +52,7 @@ var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, 
 
 		r := resources.NewListResourceGroupsOK()
 		r.SetPayload(&models.ResponseListResourceGroups{
-			Links:    HALRootRscLinks(parts),
+			Links:    halRootRscLinks(parts),
 			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
 		})
 

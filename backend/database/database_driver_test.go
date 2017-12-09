@@ -19,23 +19,28 @@ var (
 func TestDriverInterface(t *testing.T) {
 
 	// Test Redis bootstrapping and configure mock
-	dbRedis, err := NewRedisDatabase("test", "localhost:3276", "", 0)
+	dbRedis, err := NewRedisDBDriver(
+		"test",
+		"localhost:3276",
+		"",
+		0,
+		&stubRedis{
+			collections: make(map[string]interface{}),
+		},
+	)
 	t.Run("Redis DB does not error", func(t *testing.T) {
 		assert.NoError(t, err)
 	})
-	dbRedis.client = &stubRedis{
-		collections: make(map[string]interface{}),
-	}
 
 	// Test Memory Database bootstrap
-	dbMem, err := NewMemoryDatabase()
+	dbMem, err := NewMemoryDBDriver()
 	t.Run("Memory DB does not error", func(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
 	// Test JSON Database bootstrap
 	f := mockFile{}
-	dbJSON, err := NewJSONDatabase(f)
+	dbJSON, err := NewJSONDBDriver(f)
 	t.Run("DB does not error", func(t *testing.T) {
 		assert.NoError(t, err)
 	})

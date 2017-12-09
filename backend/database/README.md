@@ -172,25 +172,27 @@ Read a record from the JSON file on disk
 
 
 
-### <a name="JSONDatabase.Update">func</a> (JSONDatabase) [Update](/src/target/json.go?s=1661:1744#L75)
+### <a name="JSONDatabase.Update">func</a> (JSONDatabase) [Update](/src/target/json.go?s=1660:1743#L75)
 ``` go
 func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error)
 ```
-Updated a record in the JSON file on disk
+Update a record in the JSON file on disk
 
 
 
 
-## <a name="MemoryDatabase">type</a> [MemoryDatabase](/src/target/memory.go?s=302:363#L12)
+## <a name="MemoryDatabase">type</a> [MemoryDatabase](/src/target/memory.go?s=308:369#L12)
 ``` go
 type MemoryDatabase struct {
     // contains filtered or unexported fields
 }
 ```
 MemoryDatabase represents an in memory store for our server.
-This driver is an ephemeral database stored in RAM, and
-primarily used for development. When the server shuts down
-all the state in it is lost. You probably shouldn't use it.
+
+
+	This driver is an ephemeral database stored in RAM, and
+	primarily used for development. When the server shuts down
+	all the state in it is lost. You probably shouldn't use it.
 
 
 
@@ -198,7 +200,7 @@ all the state in it is lost. You probably shouldn't use it.
 
 
 
-### <a name="NewMemoryDatabase">func</a> [NewMemoryDatabase](/src/target/memory.go?s=419:467#L17)
+### <a name="NewMemoryDatabase">func</a> [NewMemoryDatabase](/src/target/memory.go?s=425:473#L17)
 ``` go
 func NewMemoryDatabase() (MemoryDatabase, error)
 ```
@@ -208,7 +210,7 @@ NewMemoryDatabase returns a memory database object
 
 
 
-### <a name="MemoryDatabase.Bytes">func</a> (MemoryDatabase) [Bytes](/src/target/memory.go?s=2974:3028#L112)
+### <a name="MemoryDatabase.Bytes">func</a> (MemoryDatabase) [Bytes](/src/target/memory.go?s=2980:3034#L112)
 ``` go
 func (md MemoryDatabase) Bytes() (b []byte, err error)
 ```
@@ -217,7 +219,7 @@ Bytes slice representation of the database
 
 
 
-### <a name="MemoryDatabase.Close">func</a> (MemoryDatabase) [Close](/src/target/memory.go?s=610:648#L24)
+### <a name="MemoryDatabase.Close">func</a> (MemoryDatabase) [Close](/src/target/memory.go?s=616:654#L24)
 ``` go
 func (md MemoryDatabase) Close() error
 ```
@@ -226,7 +228,7 @@ Close doesn't do anything as there is no connection to sever.
 
 
 
-### <a name="MemoryDatabase.Create">func</a> (MemoryDatabase) [Create](/src/target/memory.go?s=826:910#L34)
+### <a name="MemoryDatabase.Create">func</a> (MemoryDatabase) [Create](/src/target/memory.go?s=832:916#L34)
 ``` go
 func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error)
 ```
@@ -235,7 +237,7 @@ Create a record in memory
 
 
 
-### <a name="MemoryDatabase.Delete">func</a> (MemoryDatabase) [Delete](/src/target/memory.go?s=1694:1755#L67)
+### <a name="MemoryDatabase.Delete">func</a> (MemoryDatabase) [Delete](/src/target/memory.go?s=1700:1761#L67)
 ``` go
 func (md MemoryDatabase) Delete(recordType, key string) error
 ```
@@ -244,7 +246,7 @@ Delete a record from memory
 
 
 
-### <a name="MemoryDatabase.Ping">func</a> (MemoryDatabase) [Ping](/src/target/memory.go?s=742:779#L29)
+### <a name="MemoryDatabase.Ping">func</a> (MemoryDatabase) [Ping](/src/target/memory.go?s=748:785#L29)
 ``` go
 func (md MemoryDatabase) Ping() error
 ```
@@ -253,7 +255,7 @@ Ping doesn't do anything as the database is inside the app memory space.
 
 
 
-### <a name="MemoryDatabase.Read">func</a> (MemoryDatabase) [Read](/src/target/memory.go?s=1118:1192#L45)
+### <a name="MemoryDatabase.Read">func</a> (MemoryDatabase) [Read](/src/target/memory.go?s=1124:1198#L45)
 ``` go
 func (md MemoryDatabase) Read(recordType, key string, i interface{}) error
 ```
@@ -262,7 +264,7 @@ Read a record from memory
 
 
 
-### <a name="MemoryDatabase.Update">func</a> (MemoryDatabase) [Update](/src/target/memory.go?s=1399:1483#L56)
+### <a name="MemoryDatabase.Update">func</a> (MemoryDatabase) [Update](/src/target/memory.go?s=1405:1489#L56)
 ``` go
 func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error)
 ```

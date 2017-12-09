@@ -1,7 +1,11 @@
 swagger: "2.0"
 info:
   title: terraform-server
-  description: This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.
+  description: |
+   This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.
+   The inspiration for this project is the AWS CloudFormation API's. The intention is to implement a locking mechanism
+   not only for the terraform state, but for the plan and apply of terraform modules. Once a `module` plan starts, it
+   is instantiated as a `stack` within the nomencalture of `terraform-server`.
   version: 0.0.1-alpha
   contact:
     email: drew.sonne@gmail.com
@@ -90,6 +94,18 @@ paths:
             $ref: "#/definitions/response-list-tf-resources"
 
 definitions:
+#  module:
+#    type: string
+#    description: The same definition as used within the [terraform ecosystem](<a href="https://www.terraform.io/docs/modules/index.html">https://www.terraform.io/docs/modules/index.html</a>).
+#  stack:
+#    type: string
+#    description: A _stack_ is a _module_ bound to a specific set of parameters. Taking the analogy of classes and objects, if
+#  identity_provider:
+#    type: object
+#    description: |
+#      A source of users either locally managed, or through a federation.
+#      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
+#      handles all management of. The second are read-only federated IdP's.
   response-list-resource-groups:
     type: object
     required:

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-CWD=$(PWD)
+declare -ar folders=( "backend" "server" )
+
+ROOT_DIR=$(PWD)
 
 
 function build_readme() {
@@ -21,8 +23,11 @@ build_readme \
     "github.com/zeebox/terraform-server/server/restapi" \
      ${GOPATH}
 
-cd ${CWD}/backend
-for package in $(go list ./... | grep -v vendor); do
-    build_readme ${package} ${GOPATH}
+for folder in "${folders[@]}"; do
+    echo "${folder}"
+    cd ${ROOT_DIR}/${folder}
+    for package in $(go list ./... | grep -v vendor); do
+        build_readme ${package} ${GOPATH}
+    done
 done
 

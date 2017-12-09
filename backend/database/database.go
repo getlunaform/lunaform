@@ -26,6 +26,13 @@ type Driver interface {
 	Close() error
 }
 
+// BufferedDriver represents a low level storage which exposes a Bytes method to allow
+// serialization to disk
+type BufferedDriver interface {
+	Driver
+	Bytes() ([]byte, error)
+}
+
 // Database stores data for terraform server
 type Database struct {
 	driver Driver

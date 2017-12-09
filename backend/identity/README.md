@@ -11,19 +11,11 @@
 
 
 ## <a name="pkg-index">Index</a>
-* [type ApiKey](#ApiKey)
+* [type APIKey](#APIKey)
 * [type Group](#Group)
-* [type MemoryIdentityProvider](#MemoryIdentityProvider)
-  * [func NewMemoryIdentityProvider() MemoryIdentityProvider](#NewMemoryIdentityProvider)
-  * [func (mip MemoryIdentityProvider) ChangePassword(user User, password string) (err error)](#MemoryIdentityProvider.ChangePassword)
-  * [func (mip MemoryIdentityProvider) ConsumeEndpoint(payload []byte) (err error)](#MemoryIdentityProvider.ConsumeEndpoint)
-  * [func (mip MemoryIdentityProvider) CreateUser(username string, password string) (user User, err error)](#MemoryIdentityProvider.CreateUser)
-  * [func (mip MemoryIdentityProvider) IsEditable() (editable bool)](#MemoryIdentityProvider.IsEditable)
-  * [func (mip MemoryIdentityProvider) IsFederated() (federated bool)](#MemoryIdentityProvider.IsFederated)
-  * [func (mip MemoryIdentityProvider) LoginUser(user User, password string) (loggedin bool)](#MemoryIdentityProvider.LoginUser)
-  * [func (mip MemoryIdentityProvider) ReadUser(username string) (user User, err error)](#MemoryIdentityProvider.ReadUser)
 * [type Provider](#Provider)
   * [func NewDatabaseIdentityProvider(db database.Database) (idp Provider, err error)](#NewDatabaseIdentityProvider)
+  * [func NewMemoryIdentityProvider() Provider](#NewMemoryIdentityProvider)
 * [type SSHKey](#SSHKey)
 * [type User](#User)
   * [func (u *User) ChangePassword(password string) (err error)](#User.ChangePassword)
@@ -40,9 +32,9 @@
 
 
 
-## <a name="ApiKey">type</a> [ApiKey](/src/target/user.go?s=808:986#L48)
+## <a name="APIKey">type</a> [APIKey](/src/target/user.go?s=1232:1410#L55)
 ``` go
-type ApiKey struct {
+type APIKey struct {
     Value                string
     DateCreated          time.Time
     DateExpired          time.Time
@@ -50,6 +42,7 @@ type ApiKey struct {
     AutomaticallyExpired bool
 }
 ```
+APIKey for a user, to allow them to log in without a username and password
 
 
 
@@ -59,10 +52,12 @@ type ApiKey struct {
 
 
 
-## <a name="Group">type</a> [Group](/src/target/group.go?s=18:37#L3)
+
+## <a name="Group">type</a> [Group](/src/target/group.go?s=73:92#L4)
 ``` go
 type Group struct{}
 ```
+Group of users which can have a role attached to it
 
 
 
@@ -72,80 +67,8 @@ type Group struct{}
 
 
 
-## <a name="MemoryIdentityProvider">type</a> [MemoryIdentityProvider](/src/target/memory.go?s=403:464#L19)
-``` go
-type MemoryIdentityProvider struct {
-    // contains filtered or unexported fields
-}
-```
-Memory IdentityProvider will store user details in RAM. Once this
-struct is released, all data is lost. This is really only used for
-development and will probably be deprecated in time.
 
-
-
-
-
-
-
-### <a name="NewMemoryIdentityProvider">func</a> [NewMemoryIdentityProvider](/src/target/memory.go?s=80:135#L10)
-``` go
-func NewMemoryIdentityProvider() MemoryIdentityProvider
-```
-
-
-
-
-### <a name="MemoryIdentityProvider.ChangePassword">func</a> (MemoryIdentityProvider) [ChangePassword](/src/target/memory.go?s=1775:1863#L77)
-``` go
-func (mip MemoryIdentityProvider) ChangePassword(user User, password string) (err error)
-```
-
-
-
-### <a name="MemoryIdentityProvider.ConsumeEndpoint">func</a> (MemoryIdentityProvider) [ConsumeEndpoint](/src/target/memory.go?s=631:708#L31)
-``` go
-func (mip MemoryIdentityProvider) ConsumeEndpoint(payload []byte) (err error)
-```
-
-
-
-### <a name="MemoryIdentityProvider.CreateUser">func</a> (MemoryIdentityProvider) [CreateUser](/src/target/memory.go?s=777:878#L35)
-``` go
-func (mip MemoryIdentityProvider) CreateUser(username string, password string) (user User, err error)
-```
-
-
-
-### <a name="MemoryIdentityProvider.IsEditable">func</a> (MemoryIdentityProvider) [IsEditable](/src/target/memory.go?s=466:528#L23)
-``` go
-func (mip MemoryIdentityProvider) IsEditable() (editable bool)
-```
-
-
-
-### <a name="MemoryIdentityProvider.IsFederated">func</a> (MemoryIdentityProvider) [IsFederated](/src/target/memory.go?s=547:611#L27)
-``` go
-func (mip MemoryIdentityProvider) IsFederated() (federated bool)
-```
-
-
-
-### <a name="MemoryIdentityProvider.LoginUser">func</a> (MemoryIdentityProvider) [LoginUser](/src/target/memory.go?s=1596:1683#L73)
-``` go
-func (mip MemoryIdentityProvider) LoginUser(user User, password string) (loggedin bool)
-```
-
-
-
-### <a name="MemoryIdentityProvider.ReadUser">func</a> (MemoryIdentityProvider) [ReadUser](/src/target/memory.go?s=1166:1248#L52)
-``` go
-func (mip MemoryIdentityProvider) ReadUser(username string) (user User, err error)
-```
-
-
-
-## <a name="Provider">type</a> [Provider](/src/target/provider.go?s=18:321#L3)
+## <a name="Provider">type</a> [Provider](/src/target/provider.go?s=156:459#L6)
 ``` go
 type Provider interface {
     IsEditable() bool
@@ -160,21 +83,35 @@ type Provider interface {
     ConsumeEndpoint(payload []byte) error
 }
 ```
+Provider is a specialised database concerned exclusively
+with managing Users and a source of authority for their
+authentication.
 
 
 
 
 
 
-### <a name="NewDatabaseIdentityProvider">func</a> [NewDatabaseIdentityProvider](/src/target/database.go?s=95:175#L8)
+
+### <a name="NewDatabaseIdentityProvider">func</a> [NewDatabaseIdentityProvider](/src/target/database.go?s=174:254#L9)
 ``` go
 func NewDatabaseIdentityProvider(db database.Database) (idp Provider, err error)
 ```
+NewDatabaseIdentityProvider is not yet implemented and will return an error
+
+
+### <a name="NewMemoryIdentityProvider">func</a> [NewMemoryIdentityProvider](/src/target/memory.go?s=227:268#L11)
+``` go
+func NewMemoryIdentityProvider() Provider
+```
+NewMemoryIdentityProvider creates a memory provider stored in memory.
+This is very volatile and should only be used for development or testing.
 
 
 
 
-## <a name="SSHKey">type</a> [SSHKey](/src/target/user.go?s=666:806#L40)
+
+## <a name="SSHKey">type</a> [SSHKey](/src/target/user.go?s=1012:1152#L46)
 ``` go
 type SSHKey struct {
     Public          []byte
@@ -184,6 +121,7 @@ type SSHKey struct {
     ServerGenerated bool
 }
 ```
+SSHKey contains both the public and private sections, and the location of the sshkey on disk
 
 
 
@@ -193,18 +131,20 @@ type SSHKey struct {
 
 
 
-## <a name="User">type</a> [User](/src/target/user.go?s=45:222#L8)
+
+## <a name="User">type</a> [User](/src/target/user.go?s=122:299#L9)
 ``` go
 type User struct {
     IsEditable bool
     Username   string
     Password   string
-    ApiKeys    []*ApiKey
+    APIKeys    []*APIKey
     SSHKeys    []*SSHKey
     Idp        Provider
     // contains filtered or unexported fields
 }
 ```
+User who can log in, be assigned to groups, and is defined within an IdP.
 
 
 
@@ -214,31 +154,40 @@ type User struct {
 
 
 
-### <a name="User.ChangePassword">func</a> (\*User) [ChangePassword](/src/target/user.go?s=441:499#L32)
+
+### <a name="User.ChangePassword">func</a> (\*User) [ChangePassword](/src/target/user.go?s=691:749#L37)
 ``` go
 func (u *User) ChangePassword(password string) (err error)
 ```
+ChangePassword for a user if the IdP allows password changes
 
 
 
-### <a name="User.LoggedIn">func</a> (\*User) [LoggedIn](/src/target/user.go?s=386:416#L28)
+
+### <a name="User.LoggedIn">func</a> (\*User) [LoggedIn](/src/target/user.go?s=572:602#L32)
 ``` go
 func (u *User) LoggedIn() bool
 ```
+LoggedIn returns true if the user is logged in
 
 
 
-### <a name="User.Login">func</a> (\*User) [Login](/src/target/user.go?s=224:266#L19)
+
+### <a name="User.Login">func</a> (\*User) [Login](/src/target/user.go?s=343:385#L21)
 ``` go
 func (u *User) Login(password string) bool
 ```
+Login a user with a plaintext password
 
 
 
-### <a name="User.Logout">func</a> (\*User) [Logout](/src/target/user.go?s=337:360#L24)
+
+### <a name="User.Logout">func</a> (\*User) [Logout](/src/target/user.go?s=473:496#L27)
 ``` go
 func (u *User) Logout()
 ```
+Logout a user
+
 
 
 

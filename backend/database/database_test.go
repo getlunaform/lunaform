@@ -6,7 +6,7 @@ import (
 )
 
 func TestDBFactory(t *testing.T) {
-	db := NewDatabaseWithDriver(MemoryDatabase{})
+	db := NewDatabaseWithDriver(memoryDatabase{})
 	assert.NotNil(t, db.driver)
 }
 

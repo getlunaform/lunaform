@@ -6,9 +6,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//
-func NewMemoryIdentityProvider() MemoryIdentityProvider {
-	return MemoryIdentityProvider{
+// NewMemoryIdentityProvider creates a memory provider stored in memory.
+// This is very volatile and should only be used for development or testing.
+func NewMemoryIdentityProvider() Provider {
+	return memoryIdentityProvider{
 		users: make(map[string]User),
 	}
 }
@@ -16,23 +17,23 @@ func NewMemoryIdentityProvider() MemoryIdentityProvider {
 // Memory IdentityProvider will store user details in RAM. Once this
 // struct is released, all data is lost. This is really only used for
 // development and will probably be deprecated in time.
-type MemoryIdentityProvider struct {
+type memoryIdentityProvider struct {
 	users map[string]User
 }
 
-func (mip MemoryIdentityProvider) IsEditable() (editable bool) {
+func (mip memoryIdentityProvider) IsEditable() (editable bool) {
 	return true
 }
 
-func (mip MemoryIdentityProvider) IsFederated() (federated bool) {
+func (mip memoryIdentityProvider) IsFederated() (federated bool) {
 	return false
 }
 
-func (mip MemoryIdentityProvider) ConsumeEndpoint(payload []byte) (err error) {
+func (mip memoryIdentityProvider) ConsumeEndpoint(payload []byte) (err error) {
 	return errors.New("Can not consume endpoint for managed IdP")
 }
 
-func (mip MemoryIdentityProvider) CreateUser(username string, password string) (user User, err error) {
+func (mip memoryIdentityProvider) CreateUser(username string, password string) (user User, err error) {
 	if _, exists := mip.users[username]; exists {
 		return user, fmt.Errorf("User '%s' already exists", username)
 	}
@@ -49,7 +50,7 @@ func (mip MemoryIdentityProvider) CreateUser(username string, password string) (
 	return
 }
 
-func (mip MemoryIdentityProvider) ReadUser(username string) (user User, err error) {
+func (mip memoryIdentityProvider) ReadUser(username string) (user User, err error) {
 	user, exists := mip.users[username]
 	if username == "admin" && !exists {
 		var pwd string
@@ -70,17 +71,17 @@ func (mip MemoryIdentityProvider) ReadUser(username string) (user User, err erro
 	return
 }
 
-func (mip MemoryIdentityProvider) LoginUser(user User, password string) (loggedin bool) {
+func (mip memoryIdentityProvider) LoginUser(user User, password string) (loggedin bool) {
 	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) == nil
 }
 
-func (mip MemoryIdentityProvider) ChangePassword(user User, password string) (err error) {
+func (mip memoryIdentityProvider) ChangePassword(user User, password string) (err error) {
 	user.Password, err = mip.hashPassword(password)
 	mip.users[user.Username] = user
 	return
 }
 
-func (mip MemoryIdentityProvider) hashPassword(password string) (pwd string, err error) {
+func (mip memoryIdentityProvider) hashPassword(password string) (pwd string, err error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	return string(bytes), err
 }
