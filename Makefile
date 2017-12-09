@@ -1,7 +1,7 @@
 SRC_YAML?="swagger.yml"
 CGO?=cgo
 
-PWD=?$(shell pwd)
+PWD?=$(shell pwd)
 
 SHELL:=/bin/bash
 GO_PIPELINE_LABEL?=BUILD_ID
