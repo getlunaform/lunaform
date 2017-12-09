@@ -1,8 +1,8 @@
 package database
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestDBFactory(t *testing.T) {

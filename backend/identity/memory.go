@@ -1,9 +1,9 @@
 package identity
 
 import (
+	"errors"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
-	"errors"
 )
 
 //

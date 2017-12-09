@@ -1,12 +1,14 @@
-SRC_YAML="swagger.yml"
+SRC_YAML?="swagger.yml"
+COMPILER?="cgo"
 
+SHELL:=/bin/bash
 GO_PIPELINE_LABEL?=BUILD_ID
 ENVIRONMENT?=DEVELOPMENT
 
 BUILD_NUMBER?=$(GO_PIPELINE_LABEL)
 BUILD_ID?=$(ENVIRONMENT)
 
-COMPILER?="cgo"
+GO_TARGETS= ./server ./backend
 
 doc:
 	@sh scripts/generate-doc.sh
@@ -23,18 +25,18 @@ validate-swagger:
 build: generate-swagger terraform-server
 
 test:
-	go tool vet ./server ./backend
-	go test $(shell go list ./... | grep -v vendor)
+	go tool vet $(GO_TARGETS)
+	go test $(GO_TARGETS)
 
 test-coverage:
-	goverage -v -race -coverprofile=profile.txt -covermode=atomic $(shell go list ./... | grep -v vendor)
+	goverage -v -race -coverprofile=profile.txt -covermode=atomic $(GO_TARGETS)
 
 format:
 	go fmt $(shell go list ./...)
 
 lint:
 	diff -u <(echo -n) <(gofmt -d -s main.go $(GO_TARGETS))
-	golint -set_exit_status . $(go list ./... | grep -v vendor/)
+	golint -set_exit_status . $(GO_TARGETS)
 
 generate-swagger: validate-swagger
 	swagger generate server \
