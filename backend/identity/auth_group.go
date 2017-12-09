@@ -1,4 +1,4 @@
-package backend
+package identity
 
 type Group struct{}
 
