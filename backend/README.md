@@ -12,43 +12,16 @@
 
 
 ## <a name="pkg-index">Index</a>
-* [type ApiKey](#ApiKey)
 * [type Database](#Database)
+  * [func NewDatabaseWithDriver(driver Driver) Database](#NewDatabaseWithDriver)
 * [type Driver](#Driver)
-* [type Group](#Group)
-* [type IdentityProvider](#IdentityProvider)
 * [type Record](#Record)
   * [func (r Record) Key() string](#Record.Key)
   * [func (r Record) Type() string](#Record.Type)
-* [type SSHKey](#SSHKey)
-* [type User](#User)
-  * [func (u *User) ChangePassword(password string) (err error)](#User.ChangePassword)
-  * [func (u *User) LoggedIn() bool](#User.LoggedIn)
-  * [func (u *User) Login(password string) bool](#User.Login)
-  * [func (u *User) Logout()](#User.Logout)
 
 
 #### <a name="pkg-files">Package files</a>
-[auth_group.go](/src/github.com/zeebox/terraform-server/backend/auth_group.go) [auth_user.go](/src/github.com/zeebox/terraform-server/backend/auth_user.go) [database.go](/src/github.com/zeebox/terraform-server/backend/database.go) [identity.go](/src/github.com/zeebox/terraform-server/backend/identity.go) 
-
-
-
-
-
-
-## <a name="ApiKey">type</a> [ApiKey](/src/target/auth_user.go?s=815:993#L48)
-``` go
-type ApiKey struct {
-    Value                string
-    DateCreated          time.Time
-    DateExpired          time.Time
-    ValidationPeriod     time.Duration
-    AutomaticallyExpired bool
-}
-```
-
-
-
+[database.go](/src/github.com/zeebox/terraform-server/backend/database.go) 
 
 
 
@@ -69,6 +42,13 @@ Database stores data for terraform server
 
 
 
+### <a name="NewDatabaseWithDriver">func</a> [NewDatabaseWithDriver](/src/target/database.go?s=834:884#L35)
+``` go
+func NewDatabaseWithDriver(driver Driver) Database
+```
+NewDatabaseWithDriver creates a new Database struct with
+
+
 
 
 
@@ -87,44 +67,6 @@ type Driver interface {
 Driver represents a low level storage serialiser/ deserialiser
 This is wrapped in the Database
 
-
-
-
-
-
-
-
-
-
-## <a name="Group">type</a> [Group](/src/target/auth_group.go?s=17:36#L3)
-``` go
-type Group struct{}
-```
-
-
-
-
-
-
-
-
-
-## <a name="IdentityProvider">type</a> [IdentityProvider](/src/target/identity.go?s=17:357#L3)
-``` go
-type IdentityProvider interface {
-    IsEditable() bool
-    IsFederated() bool
-
-    CreateUser(username string, password string) (User, error)
-    ReadUser(username string) (User, error)
-    UpdateUser(user User) error
-
-    LoginUser(user User, password string) bool
-    ChangePassword(user User, password string) error
-
-    ConsumeEndpoint(payload []byte) error
-}
-```
 
 
 
@@ -165,74 +107,6 @@ func (r Record) Type() string
 ```
 Type returns a record's type
 
-
-
-
-## <a name="SSHKey">type</a> [SSHKey](/src/target/auth_user.go?s=673:813#L40)
-``` go
-type SSHKey struct {
-    Public          []byte
-    Private         []byte
-    PublicPath      string
-    PrivatePath     string
-    ServerGenerated bool
-}
-```
-
-
-
-
-
-
-
-
-
-## <a name="User">type</a> [User](/src/target/auth_user.go?s=44:229#L8)
-``` go
-type User struct {
-    IsEditable bool
-    Username   string
-    Password   string
-    ApiKeys    []*ApiKey
-    SSHKeys    []*SSHKey
-    Idp        IdentityProvider
-    // contains filtered or unexported fields
-}
-```
-
-
-
-
-
-
-
-
-
-### <a name="User.ChangePassword">func</a> (\*User) [ChangePassword](/src/target/auth_user.go?s=448:506#L32)
-``` go
-func (u *User) ChangePassword(password string) (err error)
-```
-
-
-
-### <a name="User.LoggedIn">func</a> (\*User) [LoggedIn](/src/target/auth_user.go?s=393:423#L28)
-``` go
-func (u *User) LoggedIn() bool
-```
-
-
-
-### <a name="User.Login">func</a> (\*User) [Login](/src/target/auth_user.go?s=231:273#L19)
-``` go
-func (u *User) Login(password string) bool
-```
-
-
-
-### <a name="User.Logout">func</a> (\*User) [Logout](/src/target/auth_user.go?s=344:367#L24)
-``` go
-func (u *User) Logout()
-```
 
 
 

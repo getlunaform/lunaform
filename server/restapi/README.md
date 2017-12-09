@@ -10,22 +10,57 @@
 ## <a name="pkg-overview">Overview</a>
 Package restapi terraform-server
 This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.
+# Introduction
+The inspiration for this project is the AWS CloudFormation API's. The intention is to implement a locking mechanism
+not only for the terraform state, but for the plan and apply of terraform modules. Once a `module` plan starts, it
+is instantiated as a `stack` within the nomencalture of `terraform-server`.
+## Terms
 
 
-	Schemes:
-	  http
-	  https
-	Host: localhost
-	BasePath: /api
-	Version: 0.0.1-alpha
-	License: Apache 2.0 <a href="https://github.com/zeebox/terraform-server/blob/master/LICENSE">https://github.com/zeebox/terraform-server/blob/master/LICENSE</a>
-	Contact: <drew.sonne@gmail.com>
+	- `module` - The same definition as used within the [terraform ecosystem](<a href="https://www.terraform.io/docs/modules/index.html">https://www.terraform.io/docs/modules/index.html</a>).
+	- `stack` - A _stack_ is a _module_ bound to a specific set of parameters. Taking the analogy of classes and objects, if
+	   _modules_ are classes, then _stacks_ are instantiated objects.
+	- `identity-provider` - Is a source of users either locally managed, or through a federation.
+
+# Authentication
+`terraform-server` offers two forms of authentication:
+
+
+	- Basic Auth
+	- API Key
+
+<!-- ReDoc-Inject: <security-definitions> -->
+
+## Identity Providers
+Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
+handles all management of. The second are read-only federated IdP's.
+
+### Local
+
+
+	- memory
+	- json file
+
+### Federated
+
+
+	- [SAMLv2.0](<a href="https://www.oasis-open.org/standards#samlv2.0">https://www.oasis-open.org/standards#samlv2.0</a>)
 	
-	Consumes:
-	- application/vnd.terraform.server.v1+json
+	   Schemes:
+	     http
+	     https
+	   Host: localhost
+	   BasePath: /api/
+	   Version: 0.1.0
+	   License: Apache 2.0 <a href="https://github.com/zeebox/terraform-server/blob/master/LICENSE">https://github.com/zeebox/terraform-server/blob/master/LICENSE</a>
+	   Contact: <drew.sonne@gmail.com>
 	
-	Produces:
-	- application/vnd.terraform.server.v1+json
+	   Consumes:
+	   - application/vnd.terraform.server.v1+json
+	   - application/x-www-form-urlencoded
+	
+	   Produces:
+	   - application/vnd.terraform.server.v1+json
 
 swagger:meta
 
@@ -73,7 +108,7 @@ SwaggerJSON embedded version of the swagger document used at generation time
 
 
 
-## <a name="CfgBackend">type</a> [CfgBackend](/src/target/config.go?s=465:682#L25)
+## <a name="CfgBackend">type</a> [CfgBackend](/src/target/config.go?s=465:677#L25)
 ``` go
 type CfgBackend struct {
     DatabaseType string      `json:"database_type"`
@@ -122,7 +157,7 @@ type CfgIdentityDefault struct {
 
 
 
-## <a name="ConfigFileFlags">type</a> [ConfigFileFlags](/src/target/config.go?s=867:987#L43)
+## <a name="ConfigFileFlags">type</a> [ConfigFileFlags](/src/target/config.go?s=862:982#L43)
 ``` go
 type ConfigFileFlags struct {
     ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`

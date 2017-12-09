@@ -11,11 +11,19 @@
 
 
 ## <a name="pkg-index">Index</a>
-* [type JSONCollection](#JSONCollection)
+* [type JSONDatabase](#JSONDatabase)
+  * [func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error)](#NewJSONDatabase)
+  * [func (jdb *JSONDatabase) Close() (err error)](#JSONDatabase.Close)
+  * [func (jdb *JSONDatabase) Create(recordType, key string, doc interface{}) error](#JSONDatabase.Create)
+  * [func (jdb *JSONDatabase) Delete(recordType, key string) error](#JSONDatabase.Delete)
+  * [func (jdb *JSONDatabase) Ping() error](#JSONDatabase.Ping)
+  * [func (jdb *JSONDatabase) Read(recordType, key string, i interface{}) (err error)](#JSONDatabase.Read)
+  * [func (jdb *JSONDatabase) Update(recordType, key string, doc interface{}) (err error)](#JSONDatabase.Update)
 * [type MemoryDatabase](#MemoryDatabase)
   * [func NewMemoryDatabase() (MemoryDatabase, error)](#NewMemoryDatabase)
+  * [func (md MemoryDatabase) Bytes() []byte](#MemoryDatabase.Bytes)
   * [func (md MemoryDatabase) Close() error](#MemoryDatabase.Close)
-  * [func (md *MemoryDatabase) Create(recordType, key string, doc interface{}) error](#MemoryDatabase.Create)
+  * [func (md MemoryDatabase) Create(recordType, key string, doc interface{}) error](#MemoryDatabase.Create)
   * [func (md MemoryDatabase) Delete(recordType, key string) error](#MemoryDatabase.Delete)
   * [func (md MemoryDatabase) Ping() error](#MemoryDatabase.Ping)
   * [func (md MemoryDatabase) Read(recordType, key string, i interface{}) error](#MemoryDatabase.Read)
@@ -38,12 +46,16 @@
 
 
 
-## <a name="JSONCollection">type</a> [JSONCollection](/src/target/json.go?s=67:97#L4)
+## <a name="JSONDatabase">type</a> [JSONDatabase](/src/target/json.go?s=266:332#L14)
 ``` go
-type JSONCollection struct {
+type JSONDatabase struct {
+    // contains filtered or unexported fields
 }
 ```
-JSONFileDB stores data on disk in json files.
+JSONDatabase stores data on disk in json files.
+This database is better than MemoryDatabase (but honestly,
+pretty much everything is), but still not a good solution for
+live/production.
 
 
 
@@ -51,68 +63,157 @@ JSONFileDB stores data on disk in json files.
 
 
 
+### <a name="NewJSONDatabase">func</a> [NewJSONDatabase](/src/target/json.go?s=546:615#L31)
+``` go
+func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error)
+```
+NewJSONDatabase returns a json database object
 
 
 
-## <a name="MemoryDatabase">type</a> [MemoryDatabase](/src/target/memory.go?s=180:241#L14)
+
+
+### <a name="JSONDatabase.Close">func</a> (\*JSONDatabase) [Close](/src/target/json.go?s=836:880#L44)
+``` go
+func (jdb *JSONDatabase) Close() (err error)
+```
+Close the file pointer
+
+
+
+
+### <a name="JSONDatabase.Create">func</a> (\*JSONDatabase) [Create](/src/target/json.go?s=1006:1084#L51)
+``` go
+func (jdb *JSONDatabase) Create(recordType, key string, doc interface{}) error
+```
+Create a record in the JSON file on disk
+
+
+
+
+### <a name="JSONDatabase.Delete">func</a> (\*JSONDatabase) [Delete](/src/target/json.go?s=1178:1239#L56)
+``` go
+func (jdb *JSONDatabase) Delete(recordType, key string) error
+```
+Delete a record in the JSON file on disk
+
+
+
+
+### <a name="JSONDatabase.Ping">func</a> (\*JSONDatabase) [Ping](/src/target/json.go?s=1340:1377#L61)
+``` go
+func (jdb *JSONDatabase) Ping() error
+```
+Ping mock. Implementing a no-op for the json file db
+
+
+
+
+### <a name="JSONDatabase.Read">func</a> (\*JSONDatabase) [Read](/src/target/json.go?s=1449:1529#L66)
+``` go
+func (jdb *JSONDatabase) Read(recordType, key string, i interface{}) (err error)
+```
+Read a record from the JSON file on disk
+
+
+
+
+### <a name="JSONDatabase.Update">func</a> (\*JSONDatabase) [Update](/src/target/json.go?s=1620:1704#L71)
+``` go
+func (jdb *JSONDatabase) Update(recordType, key string, doc interface{}) (err error)
+```
+Updated a record in the JSON file on disk
+
+
+
+
+## <a name="MemoryDatabase">type</a> [MemoryDatabase](/src/target/memory.go?s=302:363#L12)
 ``` go
 type MemoryDatabase struct {
     // contains filtered or unexported fields
 }
 ```
+MemoryDatabase represents an in memory store for our server.
+This driver is an ephemeral database stored in RAM, and
+primarily used for development. When the server shuts down
+all the state in it is lost. You probably shouldn't use it.
 
 
 
 
 
 
-### <a name="NewMemoryDatabase">func</a> [NewMemoryDatabase](/src/target/memory.go?s=54:102#L8)
+
+### <a name="NewMemoryDatabase">func</a> [NewMemoryDatabase](/src/target/memory.go?s=419:467#L17)
 ``` go
 func NewMemoryDatabase() (MemoryDatabase, error)
 ```
+NewMemoryDatabase returns a memory database object
 
 
 
 
-### <a name="MemoryDatabase.Close">func</a> (MemoryDatabase) [Close](/src/target/memory.go?s=243:281#L18)
+
+### <a name="MemoryDatabase.Bytes">func</a> (MemoryDatabase) [Bytes](/src/target/memory.go?s=2942:2981#L112)
+``` go
+func (md MemoryDatabase) Bytes() []byte
+```
+Bytes slice representation of the database
+
+
+
+
+### <a name="MemoryDatabase.Close">func</a> (MemoryDatabase) [Close](/src/target/memory.go?s=610:648#L24)
 ``` go
 func (md MemoryDatabase) Close() error
 ```
+Close doesn't do anything as there is no connection to sever.
 
 
 
-### <a name="MemoryDatabase.Create">func</a> (\*MemoryDatabase) [Create](/src/target/memory.go?s=354:433#L26)
+
+### <a name="MemoryDatabase.Create">func</a> (MemoryDatabase) [Create](/src/target/memory.go?s=826:904#L34)
 ``` go
-func (md *MemoryDatabase) Create(recordType, key string, doc interface{}) error
+func (md MemoryDatabase) Create(recordType, key string, doc interface{}) error
 ```
+Create a record in memory
 
 
 
-### <a name="MemoryDatabase.Delete">func</a> (MemoryDatabase) [Delete](/src/target/memory.go?s=1118:1179#L56)
+
+### <a name="MemoryDatabase.Delete">func</a> (MemoryDatabase) [Delete](/src/target/memory.go?s=1678:1739#L67)
 ``` go
 func (md MemoryDatabase) Delete(recordType, key string) error
 ```
+Delete a record from memory
 
 
 
-### <a name="MemoryDatabase.Ping">func</a> (MemoryDatabase) [Ping](/src/target/memory.go?s=299:336#L22)
+
+### <a name="MemoryDatabase.Ping">func</a> (MemoryDatabase) [Ping](/src/target/memory.go?s=742:779#L29)
 ``` go
 func (md MemoryDatabase) Ping() error
 ```
+Ping doesn't do anything as the database is inside the app memory space.
 
 
 
-### <a name="MemoryDatabase.Read">func</a> (MemoryDatabase) [Read](/src/target/memory.go?s=611:685#L36)
+
+### <a name="MemoryDatabase.Read">func</a> (MemoryDatabase) [Read](/src/target/memory.go?s=1111:1185#L45)
 ``` go
 func (md MemoryDatabase) Read(recordType, key string, i interface{}) error
 ```
+Read a record from memory
 
 
 
-### <a name="MemoryDatabase.Update">func</a> (MemoryDatabase) [Update](/src/target/memory.go?s=862:940#L46)
+
+### <a name="MemoryDatabase.Update">func</a> (MemoryDatabase) [Update](/src/target/memory.go?s=1391:1469#L56)
 ``` go
 func (md MemoryDatabase) Update(recordType, key string, doc interface{}) error
 ```
+Update a record in memory
+
 
 
 
