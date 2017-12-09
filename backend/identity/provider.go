@@ -1,6 +1,6 @@
-package backend
+package identity
 
-type IdentityProvider interface {
+type Provider interface {
 	IsEditable() bool
 	IsFederated() bool
 
