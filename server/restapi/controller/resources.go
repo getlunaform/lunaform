@@ -8,9 +8,9 @@ import (
 )
 
 // ListIdentityResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListResourcesController = func(idp identity.Provider, oh ContextHelper) resources.ListResourcesHandlerFunc {
+var ListResourcesController = func(idp identity.Provider, ch ContextHelper) resources.ListResourcesHandlerFunc {
 	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) middleware.Responder {
-		oh.SetRequest(params.HTTPRequest)
+		ch.SetRequest(params.HTTPRequest)
 
 		var rsc []string
 		switch params.Group {
@@ -18,14 +18,14 @@ var ListResourcesController = func(idp identity.Provider, oh ContextHelper) reso
 			rsc = []string{"modules", "stacks", "state-backends", "workspaces"}
 		case "identity":
 			rsc = []string{"groups", "providers", "users"}
-		case "git":
+		case "vcs":
 			rsc = []string{"git"}
 		}
 
 		r := resources.NewListResourcesOK()
 		r.SetPayload(&models.ResponseListResources{
-			Links:    halRootRscLinks(oh),
-			Embedded: buildResourceGroupResponse(rsc, oh),
+			Links:    halRootRscLinks(ch),
+			Embedded: buildResourceGroupResponse(rsc, ch),
 		})
 
 		return r
@@ -33,16 +33,15 @@ var ListResourcesController = func(idp identity.Provider, oh ContextHelper) reso
 }
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
-var ListResourceGroupsController = func(idp identity.Provider, oh ContextHelper, ctx *middleware.Context) resources.ListResourceGroupsHandlerFunc {
+var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper, ctx *middleware.Context) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
-		parts := apiParts(params.HTTPRequest, ctx.BasePath())
-		parts.OperationID = oh.GetOperationID(params.HTTPRequest, ctx)
+		ch.SetRequest(params.HTTPRequest)
 
-		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, parts)
+		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch)
 
 		r := resources.NewListResourceGroupsOK()
 		r.SetPayload(&models.ResponseListResources{
-			Links:    halRootRscLinks(parts),
+			Links:    halRootRscLinks(ch),
 			Embedded: rg,
 		})
 

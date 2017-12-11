@@ -1,26 +1,25 @@
 package controller
 
 import (
-	"crypto/tls"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestUrlPrefix(t *testing.T) {
-
-	for _, test := range []struct {
-		host   string
-		uri    string
-		tls    *tls.ConnectionState
-		prefix string
-	}{
-		{host: "mock-host", uri: "/mock-uri", tls: &tls.ConnectionState{}, prefix: "https://mock-host/mock-uri"},
-		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-uri"},
-	} {
-		assert.Equal(t, test.prefix, urlPrefix(test.host, test.uri, test.tls != nil))
-	}
-
-}
+//func TestUrlPrefix(t *testing.T) {
+//
+//	for _, test := range []struct {
+//		host   string
+//		uri    string
+//		tls    *tls.ConnectionState
+//		prefix string
+//	}{
+//		{host: "mock-host", uri: "/mock-uri", tls: &tls.ConnectionState{}, prefix: "https://mock-host/mock-uri"},
+//		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-uri"},
+//	} {
+//		assert.Equal(t, test.prefix, urlPrefix(test.host, test.uri, test.tls != nil))
+//	}
+//
+//}
 
 func TestPointerString(t *testing.T) {
 
@@ -61,7 +60,7 @@ func TestHALRootRscLinks(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		l := halRootRscLinks(&apiHostBase{
+		l := halRootRscLinks(&mockOpHelper{
 			FQEndpoint:  test.fqe,
 			ServerURL:   test.server,
 			OperationID: test.opid,

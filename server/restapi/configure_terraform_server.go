@@ -21,7 +21,6 @@ import (
 	"strconv"
 	"time"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/spec"
 	"strings"
 )
 
@@ -156,27 +155,36 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 // of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
 // ctx.LookupRoute. Doing it this way, means we can mock it in tests.
 type opHelp struct {
-	ctx *middleware.Context
+	ctx         *middleware.Context
+	req         *http.Request
+	serverurl   string
+	endpoint    string
+	fqendpoint  string
+	operationid string
 }
 
-func (oh opHelp) GetAPIParts(req *http.Request) {
-	parts := oh.apiParts(params.HTTPRequest, oh.ctx.BasePath())
-	parts.OperationID = oh.GetOperationID(params.HTTPRequest)
+//func (oh opHelp) GetAPIParts(req *http.Request) {
+//	parts := oh.apiParts(params.HTTPRequest, oh.ctx.BasePath())
+//	parts.OperationID = oh.GetOperationID(params.HTTPRequest)
+//}
+
+func (oh opHelp) GetAPIParts(basePath string) {
+
+	oh.serverurl = oh.urlPrefix(oh.req.Host, basePath, oh.req.TLS != nil)
+	requestURI := oh.urlPrefix(oh.req.Host, oh.req.RequestURI, oh.req.TLS != nil)
+	oh.fqendpoint = requestURI
+	oh.endpoint = strings.TrimPrefix(requestURI, oh.serverurl)
 }
 
-func (oh opHelp) apiParts(req *http.Request, basePath string) *apiHostBase {
+func (oh opHelp) GetOperationID() string {
+	r, _ := oh.ctx.LookupRoute(oh.req)
+	return r.Operation.ID
+}
 
-	root := urlPrefix(req.Host, basePath, req.TLS != nil)
-	requestURI := urlPrefix(req.Host, req.RequestURI, req.TLS != nil)
-
-	return &apiHostBase{
-		ServerURL:  root,
-		Endpoint:   strings.TrimPrefix(requestURI, root),
-		FQEndpoint: requestURI,
+func (oh opHelp) urlPrefix(host string, uri string, https bool) string {
+	prefix := "http"
+	if https {
+		prefix += "s"
 	}
-}
-
-func (oh opHelp) GetOperationID(req *http.Request) *spec.Operation {
-	r, _ := oh.ctx.LookupRoute(req)
-	return r.Operation
+	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
 }

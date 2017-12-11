@@ -6,19 +6,39 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"io"
-	"github.com/go-openapi/runtime/middleware"
+	"fmt"
+	"io/ioutil"
+	"github.com/stretchr/testify/assert"
 )
 
-type mockOpHelper struct{}
-
-func (moh mockOpHelper) GetOperationID(*http.Request, *middleware.Context) string {
-	return "mock-id"
+type mockOpHelper struct {
+	OperationID string
+	FQEndpoint  string
+	ServerURL   string
+	Request     *http.Request
 }
 
-type mockProducer struct{}
+func (moh mockOpHelper) GetOperationID() string {
+	return moh.OperationID
+}
+
+func (moh mockOpHelper) GetFQEndpoint() string {
+	return moh.FQEndpoint
+}
+
+func (moh mockOpHelper) GetServerURL() string {
+	return moh.FQEndpoint
+}
+func (moh mockOpHelper) SetRequest(req *http.Request) {
+	moh.Request = req
+}
+
+type mockProducer struct {
+	ProducerHandler func(w io.Writer, i interface{}) (err error)
+}
 
 func (mp mockProducer) Produce(w io.Writer, i interface{}) (err error) {
-	return nil
+	return mp.ProducerHandler(w, i)
 }
 
 func TestResourcesController(t *testing.T) {
@@ -27,13 +47,21 @@ func TestResourcesController(t *testing.T) {
 	}
 
 	t.Run("ListIdentity", func(*testing.T) {
-		r := ListResourcesController(nil, mockOpHelper{}, &middleware.Context{}).Handle(resources.ListResourcesParams{
+		r := ListResourcesController(nil, mockOpHelper{}).Handle(resources.ListResourcesParams{
 			HTTPRequest: &mock,
 			Group:       "tf",
 		})
 
 		w := httptest.NewRecorder()
 		p := mockProducer{}
+		p.ProducerHandler = func(w io.Writer, i interface{}) (err error) {
+			return nil
+		}
 		r.WriteResponse(w, p)
+
+		assert.Equal(t, 200, w.Result().StatusCode)
+
+		bdy, err := ioutil.ReadAll(w.Body)
+		fmt.Println(w, p, bdy, err)
 	})
 }

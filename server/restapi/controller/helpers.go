@@ -4,7 +4,6 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/zeebox/terraform-server/server/models"
 	"net/http"
-	"strings"
 )
 
 type ContextHelper interface {
@@ -37,24 +36,14 @@ type apiHostBase struct {
 	OperationID string
 }
 
-
-
-func urlPrefix(host string, uri string, https bool) string {
-	prefix := "http"
-	if https {
-		prefix += "s"
-	}
-	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
-}
-
-func buildResourceGroupResponse(rscs []string, parts *apiHostBase) (rsclist *models.ResourceList) {
+func buildResourceGroupResponse(rscs []string, ch ContextHelper) (rsclist *models.ResourceList) {
 	rsclist = &models.ResourceList{
 		Resources: make([]*models.Resource, len(rscs)),
 	}
 	for i, rsc := range rscs {
 		rsclist.Resources[i] = &models.Resource{
 			Name:  str(rsc),
-			Links: halSelfLink(parts.FQEndpoint + "/" + rsc),
+			Links: halSelfLink(ch.GetFQEndpoint() + "/" + rsc),
 		}
 	}
 	return
