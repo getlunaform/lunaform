@@ -41,7 +41,7 @@ paths:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               _embedded:
-                resource-groups:
+                resources:
                   - name: tf
                     _links: {self: {href: "http://example.com/api/tf/"}}
                   - name: identity
@@ -49,19 +49,29 @@ paths:
                   - name: vcs
                     _links: {self: {href: "http://example.com/api/vcs"}}
           schema:
-            $ref: "#/definitions/response-list-resource-groups"
-  /identity:
+            $ref: "#/definitions/response-list-resources"
+  /{group}:
     get:
       tags:
         - resources
-      operationId: list-identity-resources
+      operationId: list-resources
+      parameters:
+        - in: path
+          name: group
+          type: string
+          required: true
+          description: Root level resources
+          enum:
+            - tf
+            - identity
+            - vcs
       responses:
         200:
           description: OK
           examples:
             application/vnd.terraform.server.v1+json:
               _embedded:
-                identity-resources:
+                resources:
                   - name: groups
                     _links: {self: {href: "http://example.com/api/identity/groups"}}
                   - name: providers
@@ -69,30 +79,7 @@ paths:
                   - name: users
                     _links: {self: {href: "http://example.com/api/identity/users"}}
           schema:
-            $ref: "#/definitions/response-list-identity-resources"
-  /tf:
-    get:
-      tags:
-        - resources
-      operationId: list-terraform-resources
-      responses:
-        200:
-          description: OK
-          examples:
-            application/vnd.terraform.server.v1+json:
-              _embedded:
-                tf-resources:
-                  - name: modules
-                    _links: {self: {href: "http://example.com/api/tf/modules"}}
-                  - name: stacks
-                    _links: {self: {href: "http://example.com/api/tf/stacks"}}
-                  - name: state-backends
-                    _links: {self: {href: "http://example.com/api/tf/state-backends"}}
-                  - name: workspaces
-                    _links: {self: {href: "http://example.com/api/tf/workspaces"}}
-          schema:
-            $ref: "#/definitions/response-list-tf-resources"
-
+            $ref: "#/definitions/response-list-resources"
 definitions:
 #  module:
 #    type: string
@@ -106,66 +93,30 @@ definitions:
 #      A source of users either locally managed, or through a federation.
 #      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
 #      handles all management of. The second are read-only federated IdP's.
-  response-list-resource-groups:
+  response-list-resources:
     type: object
     required:
       - _links
       - _embedded
-    description: List of resources for managing users and their access
+    description: List of resources
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
       _embedded:
-        type: object
-        readOnly: true
-        required:
-          - identity-resources
-        properties:
-          identity-resources:
-            type: array
-            items:
-              $ref: "#/definitions/resource-group"
-  response-list-tf-resources:
+        $ref: "#/definitions/resource-list"
+  resource-list:
     type: object
+    readOnly: true
     required:
-      - _links
-      - _embedded
-    description: List of resources for managing terraform
+      - resources
     properties:
-      _links:
-        $ref: "#/definitions/hal-rsc-links"
-      _embedded:
-        type: object
-        readOnly: true
-        required:
-        - tf-resources
-        properties:
-          tf-resources:
-            type: array
-            items:
-              $ref: "#/definitions/resource-group"
-  response-list-identity-resources:
+      resources:
+        type: array
+        items:
+          $ref: "#/definitions/resource"
+  resource:
     type: object
-    required:
-      - _links
-      - _embedded
-    description: List of Identity resources
-    properties:
-      _links:
-        $ref: "#/definitions/hal-rsc-links"
-      _embedded:
-        type: object
-        readOnly: true
-        required:
-          - identity-resources
-        properties:
-          identity-resources:
-            type: array
-            items:
-              $ref: "#/definitions/resource-group"
-  resource-group:
-    type: object
-    description: A group of resources
+    description: A resources
     required:
       - _links
       - name

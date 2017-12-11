@@ -3,7 +3,6 @@ package controller
 import (
 	"crypto/tls"
 	"github.com/stretchr/testify/assert"
-	"net/http"
 	"testing"
 )
 
@@ -18,12 +17,7 @@ func TestUrlPrefix(t *testing.T) {
 		{host: "mock-host", uri: "/mock-uri", tls: &tls.ConnectionState{}, prefix: "https://mock-host/mock-uri"},
 		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-uri"},
 	} {
-		r := http.Request{
-			TLS:        test.tls,
-			Host:       test.host,
-			RequestURI: test.uri,
-		}
-		assert.Equal(t, test.prefix, urlPrefix(&r))
+		assert.Equal(t, test.prefix, urlPrefix(test.host, test.uri, test.tls != nil))
 	}
 
 }

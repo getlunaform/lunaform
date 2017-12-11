@@ -20,6 +20,9 @@ import (
 	"github.com/zeebox/terraform-server/backend/identity"
 	"strconv"
 	"time"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/spec"
+	"strings"
 )
 
 // goose4
@@ -80,16 +83,19 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
+	oh := opHelp{
+		ctx: api.Context(),
+	}
+
 	// Controllers for /api/
-	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
+	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(idp, oh, ctx)
 
-	// Controllers for /api/identity
-	api.ResourcesListIdentityResourcesHandler = controller.ListIdentityResourcesController(api, idp)
+	// Controllers for /api/{group}
+	api.ResourcesListResourcesHandler = controller.ListResourcesController(idp, oh, ctx)
 
-	// Controllers for /api/tf
-	api.ResourcesListTerraformResourcesHandler = controller.ListTerraformResourcesController(api, idp)
-
-	api.ServerShutdown = func() {}
+	api.ServerShutdown = func() {
+		dbDriver.Close()
+	}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }
@@ -144,4 +150,33 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	gmw := NewMiddleware(mw)
 	gmw.SE4 = se4
 	return gmw
+}
+
+// This is split into its own little function, as test it is really difficult due to the un-exported nature
+// of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
+// ctx.LookupRoute. Doing it this way, means we can mock it in tests.
+type opHelp struct {
+	ctx *middleware.Context
+}
+
+func (oh opHelp) GetAPIParts(req *http.Request) {
+	parts := oh.apiParts(params.HTTPRequest, oh.ctx.BasePath())
+	parts.OperationID = oh.GetOperationID(params.HTTPRequest)
+}
+
+func (oh opHelp) apiParts(req *http.Request, basePath string) *apiHostBase {
+
+	root := urlPrefix(req.Host, basePath, req.TLS != nil)
+	requestURI := urlPrefix(req.Host, req.RequestURI, req.TLS != nil)
+
+	return &apiHostBase{
+		ServerURL:  root,
+		Endpoint:   strings.TrimPrefix(requestURI, root),
+		FQEndpoint: requestURI,
+	}
+}
+
+func (oh opHelp) GetOperationID(req *http.Request) *spec.Operation {
+	r, _ := oh.ctx.LookupRoute(req)
+	return r.Operation
 }

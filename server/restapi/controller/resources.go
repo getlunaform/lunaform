@@ -4,21 +4,28 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/zeebox/terraform-server/backend/identity"
 	"github.com/zeebox/terraform-server/server/models"
-	"github.com/zeebox/terraform-server/server/restapi/operations"
 	"github.com/zeebox/terraform-server/server/restapi/operations/resources"
 )
 
 // ListIdentityResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListIdentityResourcesHandlerFunc {
-	return resources.ListIdentityResourcesHandlerFunc(func(params resources.ListIdentityResourcesParams) middleware.Responder {
-		parts := apiParts(params.HTTPRequest, api)
+var ListResourcesController = func(idp identity.Provider, oh ContextHelper) resources.ListResourcesHandlerFunc {
+	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) middleware.Responder {
+		oh.SetRequest(params.HTTPRequest)
 
-		ir := buildResourceGroupResponse([]string{"groups", "providers", "users"}, parts)
+		var rsc []string
+		switch params.Group {
+		case "tf":
+			rsc = []string{"modules", "stacks", "state-backends", "workspaces"}
+		case "identity":
+			rsc = []string{"groups", "providers", "users"}
+		case "git":
+			rsc = []string{"git"}
+		}
 
-		r := resources.NewListIdentityResourcesOK()
-		r.SetPayload(&models.ResponseListIdentityResources{
-			Links:    halRootRscLinks(parts),
-			Embedded: &models.ResponseListIdentityResourcesEmbedded{IdentityResources: ir},
+		r := resources.NewListResourcesOK()
+		r.SetPayload(&models.ResponseListResources{
+			Links:    halRootRscLinks(oh),
+			Embedded: buildResourceGroupResponse(rsc, oh),
 		})
 
 		return r
@@ -26,34 +33,17 @@ var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, i
 }
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
-var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListResourceGroupsHandlerFunc {
+var ListResourceGroupsController = func(idp identity.Provider, oh ContextHelper, ctx *middleware.Context) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
-
-		parts := apiParts(params.HTTPRequest, api)
+		parts := apiParts(params.HTTPRequest, ctx.BasePath())
+		parts.OperationID = oh.GetOperationID(params.HTTPRequest, ctx)
 
 		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, parts)
 
 		r := resources.NewListResourceGroupsOK()
-		r.SetPayload(&models.ResponseListResourceGroups{
+		r.SetPayload(&models.ResponseListResources{
 			Links:    halRootRscLinks(parts),
-			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
-		})
-
-		return r
-	})
-}
-
-// ListTerraformResourcesController provides a list of terraform resources. This is an exploratory read-only endpoint.
-var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListTerraformResourcesHandlerFunc {
-	return resources.ListTerraformResourcesHandlerFunc(func(params resources.ListTerraformResourcesParams) middleware.Responder {
-		parts := apiParts(params.HTTPRequest, api)
-
-		rg := buildResourceGroupResponse([]string{"modules", "stacks", "state-backends", "workspaces"}, parts)
-
-		r := resources.NewListResourceGroupsOK()
-		r.SetPayload(&models.ResponseListResourceGroups{
-			Links:    halRootRscLinks(parts),
-			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
+			Embedded: rg,
 		})
 
 		return r

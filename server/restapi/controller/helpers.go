@@ -3,20 +3,27 @@ package controller
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/zeebox/terraform-server/server/models"
-	"github.com/zeebox/terraform-server/server/restapi/operations"
 	"net/http"
 	"strings"
 )
 
+type ContextHelper interface {
+	SetRequest(req *http.Request)
+	GetOperationID() string
+	GetFQEndpoint() string
+	GetServerURL() string
+}
+
 func str(v string) *string { return &v }
 
-func halRootRscLinks(parts *apiHostBase) *models.HalRscLinks {
-	lnks := halSelfLink(parts.FQEndpoint)
+func halRootRscLinks(oh ContextHelper) *models.HalRscLinks {
+	lnks := halSelfLink(oh.GetFQEndpoint())
 	lnks.Doc = &models.HalHref{
-		Href: strfmt.URI(parts.ServerURL + "/docs#operation/" + parts.OperationID),
+		Href: strfmt.URI(oh.GetServerURL() + "/docs#operation/" + oh.GetOperationID()),
 	}
 	return lnks
 }
+
 func halSelfLink(href string) *models.HalRscLinks {
 	return &models.HalRscLinks{
 		Self: &models.HalHref{Href: strfmt.URI(href)},
@@ -30,37 +37,22 @@ type apiHostBase struct {
 	OperationID string
 }
 
-func apiParts(req *http.Request, api *operations.TerraformServerAPI) *apiHostBase {
+
+
+func urlPrefix(host string, uri string, https bool) string {
 	prefix := "http"
-	if req.TLS != nil {
+	if https {
 		prefix += "s"
 	}
-
-	root := strings.TrimSuffix(prefix+"://"+req.Host+api.Context().BasePath(), "/")
-	requestURI := strings.TrimSuffix(urlPrefix(req), "/")
-
-	route, _, _ := api.Context().RouteInfo(req)
-
-	return &apiHostBase{
-		ServerURL:   root,
-		Endpoint:    strings.TrimPrefix(requestURI, root),
-		FQEndpoint:  requestURI,
-		OperationID: route.Operation.ID,
-	}
+	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
 }
 
-func urlPrefix(req *http.Request) string {
-	prefix := "http"
-	if req.TLS != nil {
-		prefix += "s"
+func buildResourceGroupResponse(rscs []string, parts *apiHostBase) (rsclist *models.ResourceList) {
+	rsclist = &models.ResourceList{
+		Resources: make([]*models.Resource, len(rscs)),
 	}
-	return prefix + "://" + req.Host + req.RequestURI
-}
-
-func buildResourceGroupResponse(rscs []string, parts *apiHostBase) (rg []*models.ResourceGroup) {
-	rg = make([]*models.ResourceGroup, len(rscs))
 	for i, rsc := range rscs {
-		rg[i] = &models.ResourceGroup{
+		rsclist.Resources[i] = &models.Resource{
 			Name:  str(rsc),
 			Links: halSelfLink(parts.FQEndpoint + "/" + rsc),
 		}
