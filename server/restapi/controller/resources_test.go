@@ -42,6 +42,14 @@ func (mp mockProducer) Produce(w io.Writer, i interface{}) (err error) {
 }
 
 func TestResourcesController(t *testing.T) {
+
+	for _, test := range []struct {
+		host string
+		responseCode int
+	} {
+		{host:"mock.com"}
+	}
+
 	mock := http.Request{
 		Host: "mock.com",
 	}
