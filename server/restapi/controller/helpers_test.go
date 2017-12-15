@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
-	"io"
 	"encoding/json"
+	"github.com/stretchr/testify/assert"
+	"io"
+	"testing"
 )
 
 type mockProducer struct {

@@ -61,4 +61,3 @@ func (oh ContextHelper) urlPrefix(host string, uri string, https bool) string {
 	}
 	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
 }
-
