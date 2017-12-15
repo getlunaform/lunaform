@@ -20,8 +20,6 @@ import (
 	"github.com/zeebox/terraform-server/backend/identity"
 	"strconv"
 	"time"
-	"github.com/go-openapi/runtime/middleware"
-	"strings"
 )
 
 // goose4
@@ -82,15 +80,13 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	oh := opHelp{
-		ctx: api.Context(),
-	}
+	oh := controller.NewContextHelper(api.Context())
 
 	// Controllers for /api/
-	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(idp, oh, ctx)
+	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(idp, oh)
 
 	// Controllers for /api/{group}
-	api.ResourcesListResourcesHandler = controller.ListResourcesController(idp, oh, ctx)
+	api.ResourcesListResourcesHandler = controller.ListResourcesController(idp, oh)
 
 	api.ServerShutdown = func() {
 		dbDriver.Close()
@@ -149,42 +145,4 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	gmw := NewMiddleware(mw)
 	gmw.SE4 = se4
 	return gmw
-}
-
-// This is split into its own little function, as test it is really difficult due to the un-exported nature
-// of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
-// ctx.LookupRoute. Doing it this way, means we can mock it in tests.
-type opHelp struct {
-	ctx         *middleware.Context
-	req         *http.Request
-	serverurl   string
-	endpoint    string
-	fqendpoint  string
-	operationid string
-}
-
-//func (oh opHelp) GetAPIParts(req *http.Request) {
-//	parts := oh.apiParts(params.HTTPRequest, oh.ctx.BasePath())
-//	parts.OperationID = oh.GetOperationID(params.HTTPRequest)
-//}
-
-func (oh opHelp) GetAPIParts(basePath string) {
-
-	oh.serverurl = oh.urlPrefix(oh.req.Host, basePath, oh.req.TLS != nil)
-	requestURI := oh.urlPrefix(oh.req.Host, oh.req.RequestURI, oh.req.TLS != nil)
-	oh.fqendpoint = requestURI
-	oh.endpoint = strings.TrimPrefix(requestURI, oh.serverurl)
-}
-
-func (oh opHelp) GetOperationID() string {
-	r, _ := oh.ctx.LookupRoute(oh.req)
-	return r.Operation.ID
-}
-
-func (oh opHelp) urlPrefix(host string, uri string, https bool) string {
-	prefix := "http"
-	if https {
-		prefix += "s"
-	}
-	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
 }

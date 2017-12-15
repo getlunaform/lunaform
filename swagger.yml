@@ -34,6 +34,8 @@ paths:
       description: List the root resource groups
       operationId: list-resource-groups
       responses:
+        404:
+          description: Not Found
         200:
           description: OK
           examples:

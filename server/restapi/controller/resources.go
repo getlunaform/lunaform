@@ -7,10 +7,10 @@ import (
 	"github.com/zeebox/terraform-server/server/restapi/operations/resources"
 )
 
-// ListIdentityResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
+// ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 var ListResourcesController = func(idp identity.Provider, ch ContextHelper) resources.ListResourcesHandlerFunc {
-	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) middleware.Responder {
-		ch.SetRequest(params.HTTPRequest)
+	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
+		ch.Request = params.HTTPRequest
 
 		var rsc []string
 		switch params.Group {
@@ -22,20 +22,23 @@ var ListResourcesController = func(idp identity.Provider, ch ContextHelper) reso
 			rsc = []string{"git"}
 		}
 
-		r := resources.NewListResourcesOK()
-		r.SetPayload(&models.ResponseListResources{
-			Links:    halRootRscLinks(ch),
-			Embedded: buildResourceGroupResponse(rsc, ch),
-		})
+		if len(rsc) > 0 {
+			r := resources.NewListResourcesOK()
+			r.SetPayload(&models.ResponseListResources{
+				Links:    halRootRscLinks(ch),
+				Embedded: buildResourceGroupResponse(rsc, ch),
+			})
+			return r
+		}
 
-		return r
+		return resources.NewListResourceGroupsNotFound()
 	})
 }
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
-var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper, ctx *middleware.Context) resources.ListResourceGroupsHandlerFunc {
+var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
-		ch.SetRequest(params.HTTPRequest)
+		ch.Request = params.HTTPRequest
 
 		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch)
 
@@ -47,4 +50,17 @@ var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper,
 
 		return r
 	})
+}
+
+func buildResourceGroupResponse(rscs []string, ch ContextHelper) (rsclist *models.ResourceList) {
+	rsclist = &models.ResourceList{
+		Resources: make([]*models.Resource, len(rscs)),
+	}
+	for i, rsc := range rscs {
+		rsclist.Resources[i] = &models.Resource{
+			Name:  str(rsc),
+			Links: halSelfLink(ch.FQEndpoint + "/" + rsc),
+		}
+	}
+	return
 }
