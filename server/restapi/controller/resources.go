@@ -4,58 +4,63 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/zeebox/terraform-server/backend/identity"
 	"github.com/zeebox/terraform-server/server/models"
-	"github.com/zeebox/terraform-server/server/restapi/operations"
 	"github.com/zeebox/terraform-server/server/restapi/operations/resources"
 )
 
-// ListIdentityResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListIdentityResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListIdentityResourcesHandlerFunc {
-	return resources.ListIdentityResourcesHandlerFunc(func(params resources.ListIdentityResourcesParams) middleware.Responder {
-		parts := apiParts(params.HTTPRequest, api)
+// ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
+var ListResourcesController = func(idp identity.Provider, ch ContextHelper) resources.ListResourcesHandlerFunc {
+	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
+		ch.Request = params.HTTPRequest
 
-		ir := buildResourceGroupResponse([]string{"groups", "providers", "users"}, parts)
+		var rsc []string
+		switch params.Group {
+		case "tf":
+			rsc = []string{"modules", "stacks", "state-backends", "workspaces"}
+		case "identity":
+			rsc = []string{"groups", "providers", "users"}
+		case "vcs":
+			rsc = []string{"git"}
+		}
 
-		r := resources.NewListIdentityResourcesOK()
-		r.SetPayload(&models.ResponseListIdentityResources{
-			Links:    halRootRscLinks(parts),
-			Embedded: &models.ResponseListIdentityResourcesEmbedded{IdentityResources: ir},
-		})
+		if len(rsc) > 0 {
+			r := resources.NewListResourcesOK()
+			r.SetPayload(&models.ResponseListResources{
+				Links:    halRootRscLinks(ch),
+				Embedded: buildResourceGroupResponse(rsc, ch),
+			})
+			return r
+		}
 
-		return r
+		return resources.NewListResourceGroupsNotFound()
 	})
 }
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
-var ListResourceGroupsController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListResourceGroupsHandlerFunc {
+var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
+		ch.Request = params.HTTPRequest
 
-		parts := apiParts(params.HTTPRequest, api)
-
-		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, parts)
+		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch)
 
 		r := resources.NewListResourceGroupsOK()
-		r.SetPayload(&models.ResponseListResourceGroups{
-			Links:    halRootRscLinks(parts),
-			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
+		r.SetPayload(&models.ResponseListResources{
+			Links:    halRootRscLinks(ch),
+			Embedded: rg,
 		})
 
 		return r
 	})
 }
 
-// ListTerraformResourcesController provides a list of terraform resources. This is an exploratory read-only endpoint.
-var ListTerraformResourcesController = func(api *operations.TerraformServerAPI, idp identity.Provider) resources.ListTerraformResourcesHandlerFunc {
-	return resources.ListTerraformResourcesHandlerFunc(func(params resources.ListTerraformResourcesParams) middleware.Responder {
-		parts := apiParts(params.HTTPRequest, api)
-
-		rg := buildResourceGroupResponse([]string{"modules", "stacks", "state-backends", "workspaces"}, parts)
-
-		r := resources.NewListResourceGroupsOK()
-		r.SetPayload(&models.ResponseListResourceGroups{
-			Links:    halRootRscLinks(parts),
-			Embedded: &models.ResponseListResourceGroupsEmbedded{IdentityResources: rg},
-		})
-
-		return r
-	})
+func buildResourceGroupResponse(rscs []string, ch ContextHelper) (rsclist *models.ResourceList) {
+	rsclist = &models.ResourceList{
+		Resources: make([]*models.Resource, len(rscs)),
+	}
+	for i, rsc := range rscs {
+		rsclist.Resources[i] = &models.Resource{
+			Name:  str(rsc),
+			Links: halSelfLink(ch.FQEndpoint + "/" + rsc),
+		}
+	}
+	return
 }

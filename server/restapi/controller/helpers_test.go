@@ -1,31 +1,21 @@
 package controller
 
 import (
-	"crypto/tls"
 	"github.com/stretchr/testify/assert"
-	"net/http"
 	"testing"
+	"io"
+	"encoding/json"
 )
 
-func TestUrlPrefix(t *testing.T) {
+type mockProducer struct {
+	ProducerHandler func(w io.Writer, i interface{}) (err error)
+}
 
-	for _, test := range []struct {
-		host   string
-		uri    string
-		tls    *tls.ConnectionState
-		prefix string
-	}{
-		{host: "mock-host", uri: "/mock-uri", tls: &tls.ConnectionState{}, prefix: "https://mock-host/mock-uri"},
-		{host: "mock-host", uri: "/mock-uri", tls: nil, prefix: "http://mock-host/mock-uri"},
-	} {
-		r := http.Request{
-			TLS:        test.tls,
-			Host:       test.host,
-			RequestURI: test.uri,
-		}
-		assert.Equal(t, test.prefix, urlPrefix(&r))
-	}
-
+func (mp mockProducer) Produce(w io.Writer, i interface{}) (err error) {
+	var b []byte
+	b, err = json.Marshal(i)
+	w.Write(b)
+	return
 }
 
 func TestPointerString(t *testing.T) {
@@ -55,19 +45,23 @@ func TestHALSelfLink(t *testing.T) {
 		assert.Equal(t, l.Self.Href.String(), test.url)
 	}
 }
+
 func TestHALRootRscLinks(t *testing.T) {
 
-	tests := []struct {
+	for _, test := range []struct {
 		fqe    string
 		server string
 		opid   string
 		docURL string
 	}{
-		{fqe: "http://example.com/hello-world", server: "http://example.com", opid: "my-operation", docURL: "http://example.com/docs#operation/my-operation"},
-	}
-
-	for _, test := range tests {
-		l := halRootRscLinks(&apiHostBase{
+		{
+			fqe:    "http://example.com/hello-world",
+			server: "http://example.com",
+			opid:   "my-operation",
+			docURL: "http://example.com/docs#operation/my-operation",
+		},
+	} {
+		l := halRootRscLinks(ContextHelper{
 			FQEndpoint:  test.fqe,
 			ServerURL:   test.server,
 			OperationID: test.opid,
@@ -78,5 +72,24 @@ func TestHALRootRscLinks(t *testing.T) {
 
 		assert.Equal(t, test.fqe, l.Self.Href.String())
 		assert.Equal(t, test.docURL, l.Doc.Href.String())
+	}
+}
+
+func TestUrlPrefix(t *testing.T) {
+	for _, test := range []struct {
+		host   string
+		uri    string
+		https  bool
+		prefix string
+	}{
+		{host: "mock.com", uri: "/mock-uri", https: false, prefix: "http://mock.com/mock-uri"},
+		{host: "mock.com", uri: "/mock-uri", https: true, prefix: "https://mock.com/mock-uri"},
+	} {
+		ch := ContextHelper{}
+		assert.Equal(
+			t,
+			test.prefix,
+			ch.urlPrefix(test.host, test.uri, test.https),
+		)
 	}
 }

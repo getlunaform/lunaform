@@ -80,16 +80,17 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
+	oh := controller.NewContextHelper(api.Context())
+
 	// Controllers for /api/
-	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(api, idp)
+	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(idp, oh)
 
-	// Controllers for /api/identity
-	api.ResourcesListIdentityResourcesHandler = controller.ListIdentityResourcesController(api, idp)
+	// Controllers for /api/{group}
+	api.ResourcesListResourcesHandler = controller.ListResourcesController(idp, oh)
 
-	// Controllers for /api/tf
-	api.ResourcesListTerraformResourcesHandler = controller.ListTerraformResourcesController(api, idp)
-
-	api.ServerShutdown = func() {}
+	api.ServerShutdown = func() {
+		dbDriver.Close()
+	}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }

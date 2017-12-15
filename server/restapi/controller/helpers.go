@@ -1,69 +1,64 @@
 package controller
 
 import (
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/zeebox/terraform-server/server/models"
-	"github.com/zeebox/terraform-server/server/restapi/operations"
 	"net/http"
 	"strings"
 )
 
 func str(v string) *string { return &v }
 
-func halRootRscLinks(parts *apiHostBase) *models.HalRscLinks {
-	lnks := halSelfLink(parts.FQEndpoint)
+func halRootRscLinks(oh ContextHelper) *models.HalRscLinks {
+	lnks := halSelfLink(oh.FQEndpoint)
 	lnks.Doc = &models.HalHref{
-		Href: strfmt.URI(parts.ServerURL + "/docs#operation/" + parts.OperationID),
+		Href: strfmt.URI(oh.ServerURL + "/docs#operation/" + oh.OperationID),
 	}
 	return lnks
 }
+
 func halSelfLink(href string) *models.HalRscLinks {
 	return &models.HalRscLinks{
 		Self: &models.HalHref{Href: strfmt.URI(href)},
 	}
 }
 
-type apiHostBase struct {
+// NewContextHelper to easily get URL parts for generating HAL resources
+func NewContextHelper(ctx *middleware.Context) ContextHelper {
+	return ContextHelper{
+		ctx: ctx,
+	}
+}
+
+// ContextHelper is split into its own little function, as test it is really difficult due to the un-exported nature
+// of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
+// ctx.LookupRoute. Doing it this way, means we can mock it in tests.
+type ContextHelper struct {
+	ctx         *middleware.Context
+	Request     *http.Request
 	ServerURL   string
-	Endpoint    string
+	endpoint    string
 	FQEndpoint  string
 	OperationID string
 }
 
-func apiParts(req *http.Request, api *operations.TerraformServerAPI) *apiHostBase {
+// GetAPIParts from the combination of the request and the API. This is used to generate HAL resources
+func (oh ContextHelper) GetAPIParts(basePath string) {
+
+	oh.ServerURL = oh.urlPrefix(oh.Request.Host, basePath, oh.Request.TLS != nil)
+	oh.FQEndpoint = oh.urlPrefix(oh.Request.Host, oh.Request.RequestURI, oh.Request.TLS != nil)
+
+	oh.endpoint = strings.TrimPrefix(oh.FQEndpoint, oh.ServerURL)
+	r, _ := oh.ctx.LookupRoute(oh.Request)
+	oh.OperationID = r.Operation.ID
+}
+
+func (oh ContextHelper) urlPrefix(host string, uri string, https bool) string {
 	prefix := "http"
-	if req.TLS != nil {
+	if https {
 		prefix += "s"
 	}
-
-	root := strings.TrimSuffix(prefix+"://"+req.Host+api.Context().BasePath(), "/")
-	requestURI := strings.TrimSuffix(urlPrefix(req), "/")
-
-	route, _, _ := api.Context().RouteInfo(req)
-
-	return &apiHostBase{
-		ServerURL:   root,
-		Endpoint:    strings.TrimPrefix(requestURI, root),
-		FQEndpoint:  requestURI,
-		OperationID: route.Operation.ID,
-	}
+	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
 }
 
-func urlPrefix(req *http.Request) string {
-	prefix := "http"
-	if req.TLS != nil {
-		prefix += "s"
-	}
-	return prefix + "://" + req.Host + req.RequestURI
-}
-
-func buildResourceGroupResponse(rscs []string, parts *apiHostBase) (rg []*models.ResourceGroup) {
-	rg = make([]*models.ResourceGroup, len(rscs))
-	for i, rsc := range rscs {
-		rg[i] = &models.ResourceGroup{
-			Name:  str(rsc),
-			Links: halSelfLink(parts.FQEndpoint + "/" + rsc),
-		}
-	}
-	return
-}
