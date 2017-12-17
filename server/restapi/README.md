@@ -42,6 +42,9 @@ swagger:meta
 * [type CfgIdentityDefault](#CfgIdentityDefault)
 * [type ConfigFileFlags](#ConfigFileFlags)
 * [type Configuration](#Configuration)
+* [type ContextHelper](#ContextHelper)
+  * [func NewContextHelper(ctx *middleware.Context) ContextHelper](#NewContextHelper)
+  * [func (oh *ContextHelper) SetRequest(req *http.Request)](#ContextHelper.SetRequest)
 * [type Middleware](#Middleware)
   * [func NewMiddleware(h http.Handler) *Middleware](#NewMiddleware)
   * [func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request)](#Middleware.ServeHTTP)
@@ -63,11 +66,60 @@ swagger:meta
 
 
 #### <a name="pkg-files">Package files</a>
-[config.go](/src/github.com/zeebox/terraform-server/server/restapi/config.go) [configure_terraform_server.go](/src/github.com/zeebox/terraform-server/server/restapi/configure_terraform_server.go) [doc-intro.go](/src/github.com/zeebox/terraform-server/server/restapi/doc-intro.go) [doc.go](/src/github.com/zeebox/terraform-server/server/restapi/doc.go) [embedded_spec.go](/src/github.com/zeebox/terraform-server/server/restapi/embedded_spec.go) [se4_middleware.go](/src/github.com/zeebox/terraform-server/server/restapi/se4_middleware.go) [server.go](/src/github.com/zeebox/terraform-server/server/restapi/server.go) 
+[config.go](/src/github.com/zeebox/terraform-server/server/restapi/config.go) [configure_terraform_server.go](/src/github.com/zeebox/terraform-server/server/restapi/configure_terraform_server.go) [controller_resources.go](/src/github.com/zeebox/terraform-server/server/restapi/controller_resources.go) [doc-intro.go](/src/github.com/zeebox/terraform-server/server/restapi/doc-intro.go) [doc.go](/src/github.com/zeebox/terraform-server/server/restapi/doc.go) [embedded_spec.go](/src/github.com/zeebox/terraform-server/server/restapi/embedded_spec.go) [helpers.go](/src/github.com/zeebox/terraform-server/server/restapi/helpers.go) [se4_middleware.go](/src/github.com/zeebox/terraform-server/server/restapi/se4_middleware.go) [server.go](/src/github.com/zeebox/terraform-server/server/restapi/server.go) 
 
 
 
 ## <a name="pkg-variables">Variables</a>
+``` go
+var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper) resources.ListResourceGroupsHandlerFunc {
+    return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
+        ch.SetRequest(params.HTTPRequest)
+
+        rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch)
+
+        r := resources.NewListResourceGroupsOK()
+        r.SetPayload(&models.ResponseListResources{
+            Links:    halRootRscLinks(ch),
+            Embedded: rg,
+        })
+
+        return r
+    })
+}
+```
+ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
+
+``` go
+var ListResourcesController = func(idp identity.Provider, ch ContextHelper) resources.ListResourcesHandlerFunc {
+    return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
+        ch.SetRequest(params.HTTPRequest)
+
+        var rsc []string
+        switch params.Group {
+        case "tf":
+            rsc = []string{"modules", "stacks", "state-backends", "workspaces"}
+        case "identity":
+            rsc = []string{"groups", "providers", "users"}
+        case "vcs":
+            rsc = []string{"git"}
+        }
+
+        if len(rsc) > 0 {
+            r := resources.NewListResourcesOK()
+            r.SetPayload(&models.ResponseListResources{
+                Links:    halRootRscLinks(ch),
+                Embedded: buildResourceGroupResponse(rsc, ch),
+            })
+            return r
+        }
+
+        return resources.NewListResourceGroupsNotFound()
+    })
+}
+```
+ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
+
 ``` go
 var SwaggerJSON json.RawMessage
 ```
@@ -165,6 +217,47 @@ Configuration describes the structure of options in the server config file
 
 
 
+
+
+
+
+## <a name="ContextHelper">type</a> [ContextHelper](/src/target/helpers.go?s=1091:1280#L39)
+``` go
+type ContextHelper struct {
+    Request   *http.Request
+    ServerURL string
+
+    FQEndpoint  string
+    OperationID string
+    BasePath    string
+    // contains filtered or unexported fields
+}
+```
+ContextHelper is split into its own little function, as test it is really difficult due to the un-exported nature
+of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
+ctx.LookupRoute. Doing it this way, means we can mock it in tests.
+
+
+
+
+
+
+
+### <a name="NewContextHelper">func</a> [NewContextHelper](/src/target/helpers.go?s=648:708#L28)
+``` go
+func NewContextHelper(ctx *middleware.Context) ContextHelper
+```
+NewContextHelper to easily get URL parts for generating HAL resources
+
+
+
+
+
+### <a name="ContextHelper.SetRequest">func</a> (\*ContextHelper) [SetRequest](/src/target/helpers.go?s=1412:1466#L50)
+``` go
+func (oh *ContextHelper) SetRequest(req *http.Request)
+```
+SetRequest and calculate the api parts from the combination of the request and the API. This is used to generate HAL resources
 
 
 

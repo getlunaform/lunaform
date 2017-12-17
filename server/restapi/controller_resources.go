@@ -1,4 +1,4 @@
-package controller
+package restapi
 
 import (
 	"github.com/go-openapi/runtime/middleware"
@@ -10,7 +10,7 @@ import (
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 var ListResourcesController = func(idp identity.Provider, ch ContextHelper) resources.ListResourcesHandlerFunc {
 	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
-		ch.Request = params.HTTPRequest
+		ch.SetRequest(params.HTTPRequest)
 
 		var rsc []string
 		switch params.Group {
@@ -38,7 +38,7 @@ var ListResourcesController = func(idp identity.Provider, ch ContextHelper) reso
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
 var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
-		ch.Request = params.HTTPRequest
+		ch.SetRequest(params.HTTPRequest)
 
 		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch)
 

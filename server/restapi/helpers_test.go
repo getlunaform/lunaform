@@ -1,8 +1,10 @@
-package controller
+package restapi
 
 import (
 	"encoding/json"
+	"github.com/go-openapi/loads"
 	"github.com/stretchr/testify/assert"
+	"github.com/zeebox/terraform-server/server/restapi/operations"
 	"io"
 	"testing"
 )
@@ -92,4 +94,18 @@ func TestUrlPrefix(t *testing.T) {
 			ch.urlPrefix(test.host, test.uri, test.https),
 		)
 	}
+}
+
+var api *operations.TerraformServerAPI
+
+func init() {
+	swaggerSpec, err := loads.Analyzed(SwaggerJSON, "")
+	if err != nil {
+		panic(err)
+	}
+
+	api = operations.NewTerraformServerAPI(swaggerSpec)
+	configureAPI(api)
+
+	return
 }

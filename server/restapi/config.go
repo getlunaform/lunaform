@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"encoding/json"
+
 	"github.com/go-openapi/swag"
 	"github.com/zeebox/terraform-server/server/restapi/operations"
 )
@@ -36,15 +37,12 @@ type CfgBackend struct {
 	Identity     interface{} `json:"identity"`
 }
 
-func (cfg *Configuration) loadFromFile(path string) {
-	j, err := swag.YAMLDoc(path)
-	if err != nil {
-		panic(err)
+func (cfg *Configuration) loadFromFile(path string) (err error) {
+	var j json.RawMessage
+	if j, err = swag.YAMLDoc(path); err == nil {
+		err = json.Unmarshal(j, cfg)
 	}
-	err = json.Unmarshal(j, cfg)
-	if err != nil {
-		panic(err)
-	}
+	return
 }
 
 //ConfigFileFlags for loading settings for the server
@@ -52,12 +50,12 @@ type ConfigFileFlags struct {
 	ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
 }
 
-func parseCliConfiguration() *Configuration {
-	cfg := newDefaultConfiguration()
+func parseCliConfiguration() (cfg *Configuration, err error) {
+	cfg = newDefaultConfiguration()
 	if cliconfig.ConfigFile != "" {
-		cfg.loadFromFile(cliconfig.ConfigFile)
+		err = cfg.loadFromFile(cliconfig.ConfigFile)
 	}
-	return cfg
+	return
 }
 
 func newDefaultConfiguration() *Configuration {

@@ -16,10 +16,6 @@ function build_readme() {
 }
 
 build_readme \
-    "github.com/zeebox/terraform-server/server/restapi/controller" \
-     ${GOPATH}
-
-build_readme \
     "github.com/zeebox/terraform-server/server/restapi" \
      ${GOPATH}
 
