@@ -25,7 +25,7 @@ LDFLAGS?="-X github.com/zeebox/terraform-server/server/restapi.builtWhen=$(NOW) 
 			-X github.com/zeebox/terraform-server/server/restapi.compiler=$(CGO) \
 			-X github.com/zeebox/terraform-server/server/restapi.sha=$(SHA)"
 
-doc:
+doc: generate-swagger
 	@sh scripts/generate-doc.sh
 
 update-vendor:

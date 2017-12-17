@@ -38,7 +38,7 @@ var ListResourcesController = func(idp identity.Provider, ch ContextHelper) reso
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
 var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
-		ch.Request = params.HTTPRequest
+		ch.SetRequest(params.HTTPRequest)
 
 		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch)
 

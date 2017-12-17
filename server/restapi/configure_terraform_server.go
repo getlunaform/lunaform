@@ -2,7 +2,10 @@ package restapi
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
@@ -11,13 +14,10 @@ import (
 	"github.com/zeebox/terraform-server/server/restapi/operations"
 
 	bmw "github.com/zeebox/go-http-middleware"
-	"fmt"
 	"github.com/zeebox/goose4"
 
 	"github.com/zeebox/terraform-server/backend/database"
 	"github.com/zeebox/terraform-server/backend/identity"
-	"strconv"
-	"time"
 )
 
 // goose4
@@ -47,13 +47,16 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	var dbDriver database.Driver
 	var err error
 
-	cfg := parseCliConfiguration()
+	cfg, err := parseCliConfiguration()
+	if err != nil {
+		panic(err)
+	}
 
 	switch cfg.Backend.DatabaseType {
 	case "memory":
 		dbDriver, err = database.NewMemoryDBDriver()
 	default:
-		panic(fmt.Sprintf("Unexpected Database type: '%s'", cfg.Backend.DatabaseType))
+		err = fmt.Errorf("unexpected Database type: '%s'", cfg.Backend.DatabaseType)
 	}
 
 	if err != nil {
@@ -103,6 +106,7 @@ func configureTLS(tlsConfig *tls.Config) {
 // This function can be called multiple times, depending on the number of serving schemes.
 // scheme value will be set accordingly: "http", "https" or "unix"
 func configureServer(s *graceful.Server, scheme, addr string) {
+
 }
 
 // The middleware configuration is for the handler executors. These do not apply to the swagger.json document.

@@ -3,6 +3,7 @@ package restapi
 import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
+	"github.com/pkg/errors"
 	"github.com/zeebox/terraform-server/server/models"
 	"net/http"
 	"strings"
@@ -47,7 +48,7 @@ type ContextHelper struct {
 }
 
 // SetRequest and calculate the api parts from the combination of the request and the API. This is used to generate HAL resources
-func (oh *ContextHelper) SetRequest(req *http.Request) {
+func (oh *ContextHelper) SetRequest(req *http.Request) (err error) {
 
 	oh.Request = req
 
@@ -55,8 +56,13 @@ func (oh *ContextHelper) SetRequest(req *http.Request) {
 	oh.FQEndpoint = oh.urlPrefix(oh.Request.Host, oh.Request.RequestURI, oh.Request.TLS != nil)
 
 	oh.endpoint = strings.TrimPrefix(oh.FQEndpoint, oh.ServerURL)
-	r, _ := oh.ctx.LookupRoute(oh.Request)
-	oh.OperationID = r.Operation.ID
+	if r, matched := oh.ctx.LookupRoute(oh.Request); matched {
+		oh.OperationID = r.Operation.ID
+	} else {
+		return errors.New("Could not find route for request")
+	}
+
+	return
 }
 
 func (oh ContextHelper) urlPrefix(host string, uri string, https bool) string {
