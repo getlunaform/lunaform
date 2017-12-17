@@ -11,37 +11,18 @@
 
 
 ## <a name="pkg-index">Index</a>
+* [type BufferedDriver](#BufferedDriver)
+  * [func NewMemoryDBDriverWithCollection(collection map[string]string) (BufferedDriver, error)](#NewMemoryDBDriverWithCollection)
 * [type Database](#Database)
   * [func NewDatabaseWithDriver(driver Driver) Database](#NewDatabaseWithDriver)
 * [type Driver](#Driver)
-* [type JSONDatabase](#JSONDatabase)
-  * [func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error)](#NewJSONDatabase)
-  * [func (jdb JSONDatabase) Close() (err error)](#JSONDatabase.Close)
-  * [func (jdb JSONDatabase) Create(recordType, key string, doc interface{}) error](#JSONDatabase.Create)
-  * [func (jdb JSONDatabase) Delete(recordType, key string) error](#JSONDatabase.Delete)
-  * [func (jdb JSONDatabase) Ping() error](#JSONDatabase.Ping)
-  * [func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error)](#JSONDatabase.Read)
-  * [func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error)](#JSONDatabase.Update)
-* [type MemoryDatabase](#MemoryDatabase)
-  * [func NewMemoryDatabase() (MemoryDatabase, error)](#NewMemoryDatabase)
-  * [func (md MemoryDatabase) Bytes() (b []byte, err error)](#MemoryDatabase.Bytes)
-  * [func (md MemoryDatabase) Close() error](#MemoryDatabase.Close)
-  * [func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error)](#MemoryDatabase.Create)
-  * [func (md MemoryDatabase) Delete(recordType, key string) error](#MemoryDatabase.Delete)
-  * [func (md MemoryDatabase) Ping() error](#MemoryDatabase.Ping)
-  * [func (md MemoryDatabase) Read(recordType, key string, i interface{}) error](#MemoryDatabase.Read)
-  * [func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error)](#MemoryDatabase.Update)
+  * [func NewJSONDBDriver(dbFile fileClient) (Driver, error)](#NewJSONDBDriver)
+  * [func NewMemoryDBDriver() (Driver, error)](#NewMemoryDBDriver)
+  * [func NewRedisDBDriver(namespace, address, password string, database int, driver RedisClient) (r Driver, err error)](#NewRedisDBDriver)
 * [type Record](#Record)
   * [func (r Record) Key() string](#Record.Key)
   * [func (r Record) Type() string](#Record.Type)
-* [type RedisDatabase](#RedisDatabase)
-  * [func NewRedisDatabase(namespace, address, password string, database int) (r RedisDatabase, err error)](#NewRedisDatabase)
-  * [func (r RedisDatabase) Close() error](#RedisDatabase.Close)
-  * [func (r RedisDatabase) Create(recordType, key string, doc interface{}) error](#RedisDatabase.Create)
-  * [func (r RedisDatabase) Delete(recordType, key string) error](#RedisDatabase.Delete)
-  * [func (r RedisDatabase) Ping() error](#RedisDatabase.Ping)
-  * [func (r RedisDatabase) Read(recordType, key string, i interface{}) (err error)](#RedisDatabase.Read)
-  * [func (r RedisDatabase) Update(recordType, key string, doc interface{}) (err error)](#RedisDatabase.Update)
+* [type RedisClient](#RedisClient)
 
 
 #### <a name="pkg-files">Package files</a>
@@ -52,7 +33,33 @@
 
 
 
-## <a name="Database">type</a> [Database](/src/target/database.go?s=734:773#L30)
+## <a name="BufferedDriver">type</a> [BufferedDriver](/src/target/database.go?s=801:867#L31)
+``` go
+type BufferedDriver interface {
+    Driver
+    Bytes() ([]byte, error)
+}
+```
+BufferedDriver represents a low level storage which exposes a Bytes method to allow
+serialization to disk
+
+
+
+
+
+
+
+### <a name="NewMemoryDBDriverWithCollection">func</a> [NewMemoryDBDriverWithCollection](/src/target/memory.go?s=634:724#L24)
+``` go
+func NewMemoryDBDriverWithCollection(collection map[string]string) (BufferedDriver, error)
+```
+NewMemoryDBDriverWithCollection seeds the memory database with some initialisaiton data
+
+
+
+
+
+## <a name="Database">type</a> [Database](/src/target/database.go?s=914:953#L37)
 ``` go
 type Database struct {
     // contains filtered or unexported fields
@@ -66,7 +73,7 @@ Database stores data for terraform server
 
 
 
-### <a name="NewDatabaseWithDriver">func</a> [NewDatabaseWithDriver](/src/target/database.go?s=835:885#L35)
+### <a name="NewDatabaseWithDriver">func</a> [NewDatabaseWithDriver](/src/target/database.go?s=1015:1065#L42)
 ``` go
 func NewDatabaseWithDriver(driver Driver) Database
 ```
@@ -97,178 +104,26 @@ This is wrapped in the Database
 
 
 
-
-
-
-## <a name="JSONDatabase">type</a> [JSONDatabase](/src/target/json.go?s=266:332#L14)
+### <a name="NewJSONDBDriver">func</a> [NewJSONDBDriver](/src/target/json.go?s=546:601#L31)
 ``` go
-type JSONDatabase struct {
-    // contains filtered or unexported fields
-}
+func NewJSONDBDriver(dbFile fileClient) (Driver, error)
 ```
-JSONDatabase stores data on disk in json files.
-This database is better than MemoryDatabase (but honestly,
-pretty much everything is), but still not a good solution for
-live/production.
+NewJSONDBDriver returns a json database object
 
 
-
-
-
-
-
-### <a name="NewJSONDatabase">func</a> [NewJSONDatabase](/src/target/json.go?s=546:615#L31)
+### <a name="NewMemoryDBDriver">func</a> [NewMemoryDBDriver](/src/target/memory.go?s=425:465#L17)
 ``` go
-func NewJSONDatabase(dbFile fileClient) (jdb JSONDatabase, err error)
+func NewMemoryDBDriver() (Driver, error)
 ```
-NewJSONDatabase returns a json database object
+NewMemoryDBDriver returns a memory database object
 
 
-
-
-
-### <a name="JSONDatabase.Close">func</a> (JSONDatabase) [Close](/src/target/json.go?s=836:879#L44)
+### <a name="NewRedisDBDriver">func</a> [NewRedisDBDriver](/src/target/redis.go?s=667:781#L34)
 ``` go
-func (jdb JSONDatabase) Close() (err error)
+func NewRedisDBDriver(namespace, address, password string, database int, driver RedisClient) (r Driver, err error)
 ```
-Close the file pointer
+NewRedisDBDriver returns a redis database object
 
-
-
-
-### <a name="JSONDatabase.Create">func</a> (JSONDatabase) [Create](/src/target/json.go?s=1051:1128#L55)
-``` go
-func (jdb JSONDatabase) Create(recordType, key string, doc interface{}) error
-```
-Create a record in the JSON file on disk
-
-
-
-
-### <a name="JSONDatabase.Delete">func</a> (JSONDatabase) [Delete](/src/target/json.go?s=1222:1282#L60)
-``` go
-func (jdb JSONDatabase) Delete(recordType, key string) error
-```
-Delete a record in the JSON file on disk
-
-
-
-
-### <a name="JSONDatabase.Ping">func</a> (JSONDatabase) [Ping](/src/target/json.go?s=1383:1419#L65)
-``` go
-func (jdb JSONDatabase) Ping() error
-```
-Ping mock. Implementing a no-op for the json file db
-
-
-
-
-### <a name="JSONDatabase.Read">func</a> (JSONDatabase) [Read](/src/target/json.go?s=1491:1570#L70)
-``` go
-func (jdb JSONDatabase) Read(recordType, key string, i interface{}) (err error)
-```
-Read a record from the JSON file on disk
-
-
-
-
-### <a name="JSONDatabase.Update">func</a> (JSONDatabase) [Update](/src/target/json.go?s=1660:1743#L75)
-``` go
-func (jdb JSONDatabase) Update(recordType, key string, doc interface{}) (err error)
-```
-Update a record in the JSON file on disk
-
-
-
-
-## <a name="MemoryDatabase">type</a> [MemoryDatabase](/src/target/memory.go?s=308:369#L12)
-``` go
-type MemoryDatabase struct {
-    // contains filtered or unexported fields
-}
-```
-MemoryDatabase represents an in memory store for our server.
-
-
-	This driver is an ephemeral database stored in RAM, and
-	primarily used for development. When the server shuts down
-	all the state in it is lost. You probably shouldn't use it.
-
-
-
-
-
-
-
-### <a name="NewMemoryDatabase">func</a> [NewMemoryDatabase](/src/target/memory.go?s=425:473#L17)
-``` go
-func NewMemoryDatabase() (MemoryDatabase, error)
-```
-NewMemoryDatabase returns a memory database object
-
-
-
-
-
-### <a name="MemoryDatabase.Bytes">func</a> (MemoryDatabase) [Bytes](/src/target/memory.go?s=2980:3034#L112)
-``` go
-func (md MemoryDatabase) Bytes() (b []byte, err error)
-```
-Bytes slice representation of the database
-
-
-
-
-### <a name="MemoryDatabase.Close">func</a> (MemoryDatabase) [Close](/src/target/memory.go?s=616:654#L24)
-``` go
-func (md MemoryDatabase) Close() error
-```
-Close doesn't do anything as there is no connection to sever.
-
-
-
-
-### <a name="MemoryDatabase.Create">func</a> (MemoryDatabase) [Create](/src/target/memory.go?s=832:916#L34)
-``` go
-func (md MemoryDatabase) Create(recordType, key string, doc interface{}) (err error)
-```
-Create a record in memory
-
-
-
-
-### <a name="MemoryDatabase.Delete">func</a> (MemoryDatabase) [Delete](/src/target/memory.go?s=1700:1761#L67)
-``` go
-func (md MemoryDatabase) Delete(recordType, key string) error
-```
-Delete a record from memory
-
-
-
-
-### <a name="MemoryDatabase.Ping">func</a> (MemoryDatabase) [Ping](/src/target/memory.go?s=748:785#L29)
-``` go
-func (md MemoryDatabase) Ping() error
-```
-Ping doesn't do anything as the database is inside the app memory space.
-
-
-
-
-### <a name="MemoryDatabase.Read">func</a> (MemoryDatabase) [Read](/src/target/memory.go?s=1124:1198#L45)
-``` go
-func (md MemoryDatabase) Read(recordType, key string, i interface{}) error
-```
-Read a record from memory
-
-
-
-
-### <a name="MemoryDatabase.Update">func</a> (MemoryDatabase) [Update](/src/target/memory.go?s=1405:1489#L56)
-``` go
-func (md MemoryDatabase) Update(recordType, key string, doc interface{}) (err error)
-```
-Update a record in memory
 
 
 
@@ -307,82 +162,24 @@ Type returns a record's type
 
 
 
-## <a name="RedisDatabase">type</a> [RedisDatabase](/src/target/redis.go?s=251:321#L18)
+## <a name="RedisClient">type</a> [RedisClient](/src/target/redis.go?s=389:613#L24)
 ``` go
-type RedisDatabase struct {
-    // contains filtered or unexported fields
+type RedisClient interface {
+    Close() error
+    Del(...string) *redis.IntCmd
+    Keys(string) *redis.StringSliceCmd
+    Get(string) *redis.StringCmd
+    Ping() *redis.StatusCmd
+    Set(string, interface{}, time.Duration) *redis.StatusCmd
 }
 ```
-RedisDatabase represents a redis store for our server
-It holds state and docs and all kinds of awesome sauce
+RedisClient interface to allow custom redis clients to be used
 
 
 
 
 
 
-
-### <a name="NewRedisDatabase">func</a> [NewRedisDatabase](/src/target/redis.go?s=601:702#L33)
-``` go
-func NewRedisDatabase(namespace, address, password string, database int) (r RedisDatabase, err error)
-```
-NewRedisDatabase returns a redis database object
-
-
-
-
-
-### <a name="RedisDatabase.Close">func</a> (RedisDatabase) [Close](/src/target/redis.go?s=1160:1196#L55)
-``` go
-func (r RedisDatabase) Close() error
-```
-Close will close a connection to the redis database
-
-
-
-
-### <a name="RedisDatabase.Create">func</a> (RedisDatabase) [Create](/src/target/redis.go?s=1259:1335#L60)
-``` go
-func (r RedisDatabase) Create(recordType, key string, doc interface{}) error
-```
-Create a record within redis
-
-
-
-
-### <a name="RedisDatabase.Delete">func</a> (RedisDatabase) [Delete](/src/target/redis.go?s=2133:2192#L104)
-``` go
-func (r RedisDatabase) Delete(recordType, key string) error
-```
-Delete a record from redis
-
-
-
-
-### <a name="RedisDatabase.Ping">func</a> (RedisDatabase) [Ping](/src/target/redis.go?s=1015:1050#L48)
-``` go
-func (r RedisDatabase) Ping() error
-```
-Ping checks whether redis is up and usable
-it returns an error to determine this; a nil value means the redis database is usable
-
-
-
-
-### <a name="RedisDatabase.Read">func</a> (RedisDatabase) [Read](/src/target/redis.go?s=1513:1591#L71)
-``` go
-func (r RedisDatabase) Read(recordType, key string, i interface{}) (err error)
-```
-Read a record from redis
-
-
-
-
-### <a name="RedisDatabase.Update">func</a> (RedisDatabase) [Update](/src/target/redis.go?s=1879:1961#L93)
-``` go
-func (r RedisDatabase) Update(recordType, key string, doc interface{}) (err error)
-```
-Update a redis record
 
 
 
