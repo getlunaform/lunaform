@@ -1,10 +1,12 @@
-package controller
+package restapi
 
 import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
+	"github.com/go-openapi/loads"
+	"github.com/zeebox/terraform-server/server/restapi/operations"
 )
 
 type mockProducer struct {
@@ -92,4 +94,16 @@ func TestUrlPrefix(t *testing.T) {
 			ch.urlPrefix(test.host, test.uri, test.https),
 		)
 	}
+}
+
+func mockApi() (api *operations.TerraformServerAPI, err error) {
+	swaggerSpec, err := loads.Analyzed(SwaggerJSON, "")
+	if err != nil {
+		return nil, err
+	}
+
+	api = operations.NewTerraformServerAPI(swaggerSpec)
+	configureAPI(api)
+
+	return
 }

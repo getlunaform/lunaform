@@ -11,8 +11,6 @@ import (
 	"github.com/zeebox/terraform-server/server/restapi/operations"
 
 	bmw "github.com/zeebox/go-http-middleware"
-	"github.com/zeebox/terraform-server/server/restapi/controller"
-
 	"fmt"
 	"github.com/zeebox/goose4"
 
@@ -80,13 +78,13 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	oh := controller.NewContextHelper(api.Context())
+	oh := NewContextHelper(api.Context())
 
 	// Controllers for /api/
-	api.ResourcesListResourceGroupsHandler = controller.ListResourceGroupsController(idp, oh)
+	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(idp, oh)
 
 	// Controllers for /api/{group}
-	api.ResourcesListResourcesHandler = controller.ListResourcesController(idp, oh)
+	api.ResourcesListResourcesHandler = ListResourcesController(idp, oh)
 
 	api.ServerShutdown = func() {
 		dbDriver.Close()

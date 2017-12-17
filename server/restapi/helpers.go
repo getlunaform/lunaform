@@ -1,4 +1,4 @@
-package controller
+package restapi
 
 import (
 	"github.com/go-openapi/runtime/middleware"
@@ -26,9 +26,11 @@ func halSelfLink(href string) *models.HalRscLinks {
 
 // NewContextHelper to easily get URL parts for generating HAL resources
 func NewContextHelper(ctx *middleware.Context) ContextHelper {
-	return ContextHelper{
+	ch := ContextHelper{
 		ctx: ctx,
 	}
+	ch.BasePath = ctx.BasePath()
+	return ch
 }
 
 // ContextHelper is split into its own little function, as test it is really difficult due to the un-exported nature
@@ -41,12 +43,15 @@ type ContextHelper struct {
 	endpoint    string
 	FQEndpoint  string
 	OperationID string
+	BasePath    string
 }
 
-// GetAPIParts from the combination of the request and the API. This is used to generate HAL resources
-func (oh ContextHelper) GetAPIParts(basePath string) {
+// SetRequest and calculate the api parts from the combination of the request and the API. This is used to generate HAL resources
+func (oh *ContextHelper) SetRequest(req *http.Request) {
 
-	oh.ServerURL = oh.urlPrefix(oh.Request.Host, basePath, oh.Request.TLS != nil)
+	oh.Request = req
+
+	oh.ServerURL = oh.urlPrefix(oh.Request.Host, oh.BasePath, oh.Request.TLS != nil)
 	oh.FQEndpoint = oh.urlPrefix(oh.Request.Host, oh.Request.RequestURI, oh.Request.TLS != nil)
 
 	oh.endpoint = strings.TrimPrefix(oh.FQEndpoint, oh.ServerURL)
