@@ -22,10 +22,10 @@ func TestResourceGroupsController(t *testing.T) {
 		response      string
 	}{
 		{
-			requestURL:    "/api/tf",
+			requestURL:    "/api",
 			requestMethod: "GET",
 			responseCode:  200,
-			response:      `{"_embedded":{"resources":[{"_links":{"self":{"href":"http://example.com/api/tf"}},"name":"tf"},{"_links":{"self":{"href":"http://example.com/api/identity"}},"name":"identity"},{"_links":{"self":{"href":"http://example.com/api/vcs"}},"name":"vcs"}]},"_links":{"doc":{"href":"http://example.com/api/docs#operation/"},"self":{"href":"http://example.com/api"}}}`,
+			response:      `{"_embedded":{"resources":[{"_links":{"self":{"href":"http://example.com/api/tf"}},"name":"tf"},{"_links":{"self":{"href":"http://example.com/api/identity"}},"name":"identity"},{"_links":{"self":{"href":"http://example.com/api/vcs"}},"name":"vcs"}]},"_links":{"doc":{"href":"http://example.com/api/docs#operation/list-resource-groups"},"self":{"href":"http://example.com/api"}}}`,
 		},
 	} {
 
