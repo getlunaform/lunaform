@@ -1,7 +1,7 @@
 
 
 # restapi
-`import "github.com/zeebox/terraform-server/server/restapi"`
+`import "github.com/drewsonne/terraform-server/server/restapi"`
 
 * [Overview](#pkg-overview)
 * [Index](#pkg-index)
@@ -44,7 +44,7 @@ swagger:meta
 * [type Configuration](#Configuration)
 * [type ContextHelper](#ContextHelper)
   * [func NewContextHelper(ctx *middleware.Context) ContextHelper](#NewContextHelper)
-  * [func (oh *ContextHelper) SetRequest(req *http.Request)](#ContextHelper.SetRequest)
+  * [func (oh *ContextHelper) SetRequest(req *http.Request) (err error)](#ContextHelper.SetRequest)
 * [type Middleware](#Middleware)
   * [func NewMiddleware(h http.Handler) *Middleware](#NewMiddleware)
   * [func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request)](#Middleware.ServeHTTP)
@@ -66,11 +66,19 @@ swagger:meta
 
 
 #### <a name="pkg-files">Package files</a>
-[config.go](/src/github.com/zeebox/terraform-server/server/restapi/config.go) [configure_terraform_server.go](/src/github.com/zeebox/terraform-server/server/restapi/configure_terraform_server.go) [controller_resources.go](/src/github.com/zeebox/terraform-server/server/restapi/controller_resources.go) [doc-intro.go](/src/github.com/zeebox/terraform-server/server/restapi/doc-intro.go) [doc.go](/src/github.com/zeebox/terraform-server/server/restapi/doc.go) [embedded_spec.go](/src/github.com/zeebox/terraform-server/server/restapi/embedded_spec.go) [helpers.go](/src/github.com/zeebox/terraform-server/server/restapi/helpers.go) [se4_middleware.go](/src/github.com/zeebox/terraform-server/server/restapi/se4_middleware.go) [server.go](/src/github.com/zeebox/terraform-server/server/restapi/server.go) 
+[config.go](/src/github.com/drewsonne/terraform-server/server/restapi/config.go) [configure_terraform_server.go](/src/github.com/drewsonne/terraform-server/server/restapi/configure_terraform_server.go) [controller_resources.go](/src/github.com/drewsonne/terraform-server/server/restapi/controller_resources.go) [doc-intro.go](/src/github.com/drewsonne/terraform-server/server/restapi/doc-intro.go) [doc.go](/src/github.com/drewsonne/terraform-server/server/restapi/doc.go) [embedded_spec.go](/src/github.com/drewsonne/terraform-server/server/restapi/embedded_spec.go) [helpers.go](/src/github.com/drewsonne/terraform-server/server/restapi/helpers.go) [se4_middleware.go](/src/github.com/drewsonne/terraform-server/server/restapi/se4_middleware.go) [server.go](/src/github.com/drewsonne/terraform-server/server/restapi/server.go) 
 
 
 
 ## <a name="pkg-variables">Variables</a>
+``` go
+var (
+    // SwaggerJSON embedded version of the swagger document used at generation time
+    SwaggerJSON json.RawMessage
+    // FlatSwaggerJSON embedded flattened version of the swagger document used at generation time
+    FlatSwaggerJSON json.RawMessage
+)
+```
 ``` go
 var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper) resources.ListResourceGroupsHandlerFunc {
     return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
@@ -120,15 +128,10 @@ var ListResourcesController = func(idp identity.Provider, ch ContextHelper) reso
 ```
 ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 
-``` go
-var SwaggerJSON json.RawMessage
-```
-SwaggerJSON embedded version of the swagger document used at generation time
 
 
 
-
-## <a name="CfgBackend">type</a> [CfgBackend](/src/target/config.go?s=1067:1279#L32)
+## <a name="CfgBackend">type</a> [CfgBackend](/src/target/config.go?s=1068:1280#L33)
 ``` go
 type CfgBackend struct {
     DatabaseType string      `json:"database_type"`
@@ -148,7 +151,7 @@ CfgBackend describes how the server can load the backend database and the primar
 
 
 
-## <a name="CfgIdentity">type</a> [CfgIdentity](/src/target/config.go?s=436:512#L18)
+## <a name="CfgIdentity">type</a> [CfgIdentity](/src/target/config.go?s=437:513#L19)
 ``` go
 type CfgIdentity struct {
     Defaults []CfgIdentityDefault `json:"defaults"`
@@ -165,7 +168,7 @@ CfgIdentity describes the structure of options for Identity Providers
 
 
 
-## <a name="CfgIdentityDefault">type</a> [CfgIdentityDefault](/src/target/config.go?s=850:954#L26)
+## <a name="CfgIdentityDefault">type</a> [CfgIdentityDefault](/src/target/config.go?s=851:955#L27)
 ``` go
 type CfgIdentityDefault struct {
     User     string `json:"username"`
@@ -186,7 +189,7 @@ when initialising a new managed Identity Provider, and will be ignored on subseq
 
 
 
-## <a name="ConfigFileFlags">type</a> [ConfigFileFlags](/src/target/config.go?s=1518:1638#L51)
+## <a name="ConfigFileFlags">type</a> [ConfigFileFlags](/src/target/config.go?s=1516:1636#L49)
 ``` go
 type ConfigFileFlags struct {
     ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
@@ -203,7 +206,7 @@ ConfigFileFlags for loading settings for the server
 
 
 
-## <a name="Configuration">type</a> [Configuration](/src/target/config.go?s=253:361#L12)
+## <a name="Configuration">type</a> [Configuration](/src/target/config.go?s=254:362#L13)
 ``` go
 type Configuration struct {
     Identity CfgIdentity `json:"identity"`
@@ -221,7 +224,7 @@ Configuration describes the structure of options in the server config file
 
 
 
-## <a name="ContextHelper">type</a> [ContextHelper](/src/target/helpers.go?s=1091:1280#L39)
+## <a name="ContextHelper">type</a> [ContextHelper](/src/target/helpers.go?s=1116:1305#L40)
 ``` go
 type ContextHelper struct {
     Request   *http.Request
@@ -243,7 +246,7 @@ ctx.LookupRoute. Doing it this way, means we can mock it in tests.
 
 
 
-### <a name="NewContextHelper">func</a> [NewContextHelper](/src/target/helpers.go?s=648:708#L28)
+### <a name="NewContextHelper">func</a> [NewContextHelper](/src/target/helpers.go?s=673:733#L29)
 ``` go
 func NewContextHelper(ctx *middleware.Context) ContextHelper
 ```
@@ -253,9 +256,9 @@ NewContextHelper to easily get URL parts for generating HAL resources
 
 
 
-### <a name="ContextHelper.SetRequest">func</a> (\*ContextHelper) [SetRequest](/src/target/helpers.go?s=1412:1466#L50)
+### <a name="ContextHelper.SetRequest">func</a> (\*ContextHelper) [SetRequest](/src/target/helpers.go?s=1437:1503#L51)
 ``` go
-func (oh *ContextHelper) SetRequest(req *http.Request)
+func (oh *ContextHelper) SetRequest(req *http.Request) (err error)
 ```
 SetRequest and calculate the api parts from the combination of the request and the API. This is used to generate HAL resources
 
@@ -297,7 +300,7 @@ ServeHTTP wraps our requests and handles any calles to `/service*`.
 
 
 
-## <a name="Server">type</a> [Server](/src/target/server.go?s=1156:4202#L64)
+## <a name="Server">type</a> [Server](/src/target/server.go?s=1208:4302#L66)
 ``` go
 type Server struct {
     EnabledListeners []string         `long:"scheme" description:"the listeners to enable, this can be repeated and defaults to the schemes in the swagger spec"`
@@ -333,7 +336,7 @@ Server for the terraform server API
 
 
 
-### <a name="NewServer">func</a> [NewServer](/src/target/server.go?s=666:724#L42)
+### <a name="NewServer">func</a> [NewServer](/src/target/server.go?s=684:742#L43)
 ``` go
 func NewServer(api *operations.TerraformServerAPI) *Server
 ```
@@ -343,7 +346,7 @@ NewServer creates a new api terraform server server but does not configure it
 
 
 
-### <a name="Server.ConfigureAPI">func</a> (\*Server) [ConfigureAPI](/src/target/server.go?s=821:852#L50)
+### <a name="Server.ConfigureAPI">func</a> (\*Server) [ConfigureAPI](/src/target/server.go?s=873:904#L52)
 ``` go
 func (s *Server) ConfigureAPI()
 ```
@@ -352,7 +355,7 @@ ConfigureAPI configures the API and handlers.
 
 
 
-### <a name="Server.ConfigureFlags">func</a> (\*Server) [ConfigureFlags](/src/target/server.go?s=1032:1065#L57)
+### <a name="Server.ConfigureFlags">func</a> (\*Server) [ConfigureFlags](/src/target/server.go?s=1084:1117#L59)
 ``` go
 func (s *Server) ConfigureFlags()
 ```
@@ -361,7 +364,7 @@ ConfigureFlags configures the additional flags defined by the handlers. Needs to
 
 
 
-### <a name="Server.Fatalf">func</a> (\*Server) [Fatalf](/src/target/server.go?s=4616:4670#L107)
+### <a name="Server.Fatalf">func</a> (\*Server) [Fatalf](/src/target/server.go?s=4716:4770#L111)
 ``` go
 func (s *Server) Fatalf(f string, args ...interface{})
 ```
@@ -371,7 +374,7 @@ Exits with non-zero status after printing
 
 
 
-### <a name="Server.GetHandler">func</a> (\*Server) [GetHandler](/src/target/server.go?s=12292:12334#L382)
+### <a name="Server.GetHandler">func</a> (\*Server) [GetHandler](/src/target/server.go?s=12988:13030#L411)
 ``` go
 func (s *Server) GetHandler() http.Handler
 ```
@@ -380,7 +383,7 @@ GetHandler returns a handler useful for testing
 
 
 
-### <a name="Server.HTTPListener">func</a> (\*Server) [HTTPListener](/src/target/server.go?s=12763:12816#L402)
+### <a name="Server.HTTPListener">func</a> (\*Server) [HTTPListener](/src/target/server.go?s=13459:13512#L431)
 ``` go
 func (s *Server) HTTPListener() (net.Listener, error)
 ```
@@ -389,7 +392,7 @@ HTTPListener returns the http listener
 
 
 
-### <a name="Server.Listen">func</a> (\*Server) [Listen](/src/target/server.go?s=10495:10526#L305)
+### <a name="Server.Listen">func</a> (\*Server) [Listen](/src/target/server.go?s=10715:10746#L312)
 ``` go
 func (s *Server) Listen() error
 ```
@@ -398,7 +401,7 @@ Listen creates the listeners for the server
 
 
 
-### <a name="Server.Logf">func</a> (\*Server) [Logf](/src/target/server.go?s=4304:4356#L97)
+### <a name="Server.Logf">func</a> (\*Server) [Logf](/src/target/server.go?s=4404:4456#L101)
 ``` go
 func (s *Server) Logf(f string, args ...interface{})
 ```
@@ -407,7 +410,7 @@ Logf logs message either via defined user logger or via system one if no user lo
 
 
 
-### <a name="Server.Serve">func</a> (\*Server) [Serve](/src/target/server.go?s=5321:5357#L144)
+### <a name="Server.Serve">func</a> (\*Server) [Serve](/src/target/server.go?s=5421:5457#L148)
 ``` go
 func (s *Server) Serve() (err error)
 ```
@@ -416,7 +419,7 @@ Serve the api
 
 
 
-### <a name="Server.SetAPI">func</a> (\*Server) [SetAPI](/src/target/server.go?s=4884:4943#L117)
+### <a name="Server.SetAPI">func</a> (\*Server) [SetAPI](/src/target/server.go?s=4984:5043#L121)
 ``` go
 func (s *Server) SetAPI(api *operations.TerraformServerAPI)
 ```
@@ -425,7 +428,7 @@ SetAPI configures the server with the specified API. Needs to be called before S
 
 
 
-### <a name="Server.SetHandler">func</a> (\*Server) [SetHandler](/src/target/server.go?s=12421:12470#L387)
+### <a name="Server.SetHandler">func</a> (\*Server) [SetHandler](/src/target/server.go?s=13117:13166#L416)
 ``` go
 func (s *Server) SetHandler(handler http.Handler)
 ```
@@ -434,7 +437,7 @@ SetHandler allows for setting a http handler on this server
 
 
 
-### <a name="Server.Shutdown">func</a> (\*Server) [Shutdown](/src/target/server.go?s=12166:12199#L376)
+### <a name="Server.Shutdown">func</a> (\*Server) [Shutdown](/src/target/server.go?s=12386:12419#L383)
 ``` go
 func (s *Server) Shutdown() error
 ```
@@ -443,7 +446,7 @@ Shutdown server and clean up resources
 
 
 
-### <a name="Server.TLSListener">func</a> (\*Server) [TLSListener](/src/target/server.go?s=12976:13028#L412)
+### <a name="Server.TLSListener">func</a> (\*Server) [TLSListener](/src/target/server.go?s=13672:13724#L441)
 ``` go
 func (s *Server) TLSListener() (net.Listener, error)
 ```
@@ -452,7 +455,7 @@ TLSListener returns the https listener
 
 
 
-### <a name="Server.UnixListener">func</a> (\*Server) [UnixListener](/src/target/server.go?s=12548:12601#L392)
+### <a name="Server.UnixListener">func</a> (\*Server) [UnixListener](/src/target/server.go?s=13244:13297#L421)
 ``` go
 func (s *Server) UnixListener() (net.Listener, error)
 ```
