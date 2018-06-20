@@ -1,10 +1,10 @@
 package restapi
 
 import (
-	"github.com/go-openapi/runtime/middleware"
+	 "github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/pkg/errors"
-	"github.com/zeebox/terraform-server/server/models"
+	"github.com/drewsonne/terraform-server/server/models"
 	"net/http"
 	"strings"
 )

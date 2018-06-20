@@ -21,7 +21,7 @@ is instantiated as a `stack` within the nomencalture of `terraform-server`.
 	Host: localhost
 	BasePath: /api
 	Version: 0.0.1-alpha
-	License: Apache 2.0 <a href="https://github.com/zeebox/terraform-server/blob/master/LICENSE">https://github.com/zeebox/terraform-server/blob/master/LICENSE</a>
+	License: Apache 2.0 <a href="https://github.com/drewsonne/terraform-server/blob/master/LICENSE">https://github.com/drewsonne/terraform-server/blob/master/LICENSE</a>
 	Contact: <drew.sonne@gmail.com>
 	
 	Consumes:

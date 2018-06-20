@@ -4,35 +4,14 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
-	"strconv"
-	"time"
-
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/tylerb/graceful"
 
-	"github.com/zeebox/terraform-server/server/restapi/operations"
+	"github.com/drewsonne/terraform-server/server/restapi/operations"
 
-	bmw "github.com/zeebox/go-http-middleware"
-	"github.com/zeebox/goose4"
-
-	"github.com/zeebox/terraform-server/backend/database"
-	"github.com/zeebox/terraform-server/backend/identity"
-)
-
-// goose4
-var (
-	buildNumber  string
-	buildMachine string
-	builtBy      string
-	builtWhen    string
-	compiler     string
-	sha          string
-)
-
-// goose4
-const (
-	runbookURI = "http://github.com/zeebox/terraform-server"
+	"github.com/drewsonne/terraform-server/backend/database"
+	"github.com/drewsonne/terraform-server/backend/identity"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -118,33 +97,5 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-
-	if builtWhen == "" {
-		builtWhen = "-1"
-	}
-	t, err := strconv.Atoi(builtWhen)
-	if err != nil {
-		panic(err)
-	}
-
-	mw := bmw.NewMiddleware(handler)
-
-	se4, err := goose4.NewGoose4(goose4.Config{
-		ArtifactID:      "terraform-server",
-		BuildNumber:     buildNumber,
-		BuildMachine:    buildMachine,
-		BuiltBy:         builtBy,
-		BuiltWhen:       time.Unix(int64(t), 0),
-		CompilerVersion: compiler,
-		GitSha:          sha,
-		RunbookURI:      runbookURI,
-		Version:         buildNumber,
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	gmw := NewMiddleware(mw)
-	gmw.SE4 = se4
-	return gmw
+	return handler
 }

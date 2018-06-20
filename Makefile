@@ -18,13 +18,6 @@ BUILT_BY?=$(shell whoami)
 HOSTNAME?=$(shell hostname)
 NOW?=$(shell date +%s)
 
-LDFLAGS?="-X github.com/zeebox/terraform-server/server/restapi.builtWhen=$(NOW) \
-			-X github.com/zeebox/terraform-server/server/restapi.buildMachine=$(HOSTNAME) \
-			-X github.com/zeebox/terraform-server/server/restapi.buildNumber=$(BUILD_NUMBER) \
-			-X github.com/zeebox/terraform-server/server/restapi.builtBy=$(BUILT_BY) \
-			-X github.com/zeebox/terraform-server/server/restapi.compiler=$(CGO) \
-			-X github.com/zeebox/terraform-server/server/restapi.sha=$(SHA)"
-
 doc: generate-swagger
 	@sh scripts/generate-doc.sh
 
@@ -75,9 +68,8 @@ generate-swagger: validate-swagger
 terraform-server:
 	go build \
 		-a -installsuffix $(CGO) \
-		-ldflags $(LDFLAGS) \
 		-o ./terraform-server \
-		github.com/zeebox/terraform-server/server/cmd/terraform-server-server
+		github.com/drewsonne/terraform-server/server/cmd/terraform-server-server
 
 build-docker:
 	GOOS=linux $(MAKE) terraform-server
@@ -85,3 +77,9 @@ build-docker:
 
 run-docker: build-docker
 	docker run -p 8080:8080 terraform-server
+
+build-client:
+	swagger-codegen generate \
+		-i http://127.0.0.1:8080/swagger.json \
+		-l go \
+		-o client

@@ -1,10 +1,8 @@
-package: github.com/zeebox/terraform-server
+package: github.com/drewsonne/terraform-server
 import:
 - package: golang.org/x/crypto
   subpackages:
   - bcrypt
-- package: github.com/zeebox/goose4
-- package: github.com/zeebox/go-http-middleware
 - package: github.com/go-openapi/runtime
 - package: github.com/tylerb/graceful
   version: ^1.2.15

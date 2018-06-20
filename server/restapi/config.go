@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/swag"
-	"github.com/zeebox/terraform-server/server/restapi/operations"
+	"github.com/drewsonne/terraform-server/server/restapi/operations"
 )
 
 var cliconfig = ConfigFileFlags{}

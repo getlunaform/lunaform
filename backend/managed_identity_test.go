@@ -2,7 +2,7 @@ package backend
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/zeebox/terraform-server/backend/identity"
+	"github.com/drewsonne/terraform-server/backend/identity"
 	"testing"
 )
 

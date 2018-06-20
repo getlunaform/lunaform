@@ -1,26 +1,22 @@
-hash: 332f47ec2a82068d4d6549a57d64d9e61abc004075f960eb5452f2b67ad64e34
-updated: 2017-12-17T17:44:28.000052443Z
+hash: a189d0fa79f961164890326abc67dd577fc14efd9eb6d77e83baee36bbd6b5b2
+updated: 2018-06-20T19:13:15.991138869+01:00
 imports:
 - name: github.com/asaskevich/govalidator
-  version: f682aee18e37332521b3c3ef4cba9ddb9b516b09
+  version: 7d2e70ef918f16bd6455529af38304d6d025c952
 - name: github.com/docker/go-units
-  version: 0dadbb0345b35ec7ef35e228dabb8de89a65bf52
-- name: github.com/go-ole/go-ole
-  version: a41e3c4b706f6ae8dfbff342b06e40fa4d2d0506
-  subpackages:
-  - oleutil
+  version: 47565b4f722fb6ceae66b95f853feed578a4a51c
 - name: github.com/go-openapi/analysis
-  version: 8ed83f2ea9f00f945516462951a288eaa68bf0d6
+  version: 5957818e100395077187fb7ef3b8a28227af06c6
 - name: github.com/go-openapi/errors
-  version: 03cfca65330da08a5a440053faf994a3c682b5bf
+  version: b2b2befaf267d082d779bcef52d682a47c779517
 - name: github.com/go-openapi/jsonpointer
-  version: 779f45308c19820f1a69e9a4cd965f496e0da10f
+  version: 3a0015ad55fa9873f41605d3e8f28cd279c32ab2
 - name: github.com/go-openapi/jsonreference
-  version: 36d33bfe519efae5632669801b180bf1a245da3b
+  version: 3fb327e6747da3043567ee86abd02bb6376b6be2
 - name: github.com/go-openapi/loads
-  version: c3e1ca4c0b6160cac10aeef7e8b425cc95b9c820
+  version: 2a2b323bab96e6b1fdee110e57d959322446e9c9
 - name: github.com/go-openapi/runtime
-  version: 4ab0c2c86df53f4f138421a6b88d53dd9fd30254
+  version: 90c7afbb4bd8b22431e1c32d65caf405abf170c3
   subpackages:
   - flagext
   - logger
@@ -30,109 +26,107 @@ imports:
   - middleware/untyped
   - security
 - name: github.com/go-openapi/spec
-  version: a4fa9574c7aa73b2fc54e251eb9524d0482bb592
+  version: bcff419492eeeb01f76e77d2ebc714dc97b607f5
 - name: github.com/go-openapi/strfmt
-  version: 610b6cacdcde6852f4de68998bd20ce1dac85b22
+  version: 481808443b00a14745fada967cb5eeff0f9b1df2
 - name: github.com/go-openapi/swag
-  version: cf0bdb963811675a4d7e74901cefc7411a1df939
+  version: 811b1089cde9dad18d4d0c2d09fbdbf28dbd27a5
 - name: github.com/go-openapi/validate
-  version: d509235108fcf6ab4913d2dcb3a2260c0db2108e
+  version: b0a3ed684d0fdd3e1eda00433382188ce8aa7169
 - name: github.com/go-redis/redis
-  version: 03c0c1b43ccd46222493c7b5873375324221a360
+  version: 4b568cdf1adcfe5cab06ad6929ad5286b3db7138
   subpackages:
   - internal
   - internal/consistenthash
   - internal/hashtag
   - internal/pool
   - internal/proto
+  - internal/singleflight
+  - internal/util
+- name: github.com/golang/protobuf
+  version: 9f81198da99b79e14d70ca2c3cc1bbe44c6e69b6
+  subpackages:
+  - proto
 - name: github.com/jessevdk/go-flags
-  version: 96dc06278ce32a0e9d957d590bb987c81ee66407
+  version: c6ca198ec95c841fdb89fc0de7496fed11ab854e
 - name: github.com/mailru/easyjson
-  version: 32fa128f234d041f196a9f3e0fea5ac9772c08e1
+  version: 3fdea8d05856a0c8df22ed4bc71b3219245e4485
   subpackages:
   - buffer
   - jlexer
   - jwriter
 - name: github.com/mitchellh/mapstructure
-  version: db1efb556f84b25a0a13a04aad883943538ad2e0
+  version: bb74f1db0675b241733089d5a1faa5dd8b0ef57b
 - name: github.com/pkg/errors
-  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+  version: 816c9085562cd7ee03e7f8188a1cfd942858cded
 - name: github.com/PuerkitoBio/purell
-  version: 1c4bec281e4bbc75b4f4a1bd923bdf1bd989a969
+  version: 975f53781597ed779763b7b65566e74c4004d8de
 - name: github.com/PuerkitoBio/urlesc
   version: de5bf2ad457846296e2031421a34e2568e304e35
 - name: github.com/satori/go.uuid
-  version: 879c5887cd475cd7864858769793b2ceb0d44feb
-- name: github.com/shirou/gopsutil
-  version: bfe3c2e8f406bf352bc8df81f98c752224867349
-  subpackages:
-  - cpu
-  - host
-  - internal/common
-  - load
-  - mem
-  - net
-  - process
-- name: github.com/shirou/w32
-  version: bb4de0191aa41b5507caa14b0650cdbddcd9280b
-- name: github.com/spf13/afero
-  version: 8d919cbe7e2627e417f3e45c3c0e489a5b7e2536
-  subpackages:
-  - mem
-- name: github.com/StackExchange/wmi
-  version: ea383cf3ba6ec950874b8486cd72356d007c768f
+  version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
-- name: github.com/zeebox/go-http-middleware
-  version: d8d506a1800d830c3f9eee2637c0134067219ef4
-- name: github.com/zeebox/goose4
-  version: 03cdd7eb62092fd0fd3f29734399ea4516e9f2f9
 - name: golang.org/x/crypto
-  version: 9f005a07e0d31d45e6656d241bb5c0f2efd4bc94
+  version: 7f39a6fea4fe9364fb61e1def6a268a51b4f3a06
   subpackages:
   - bcrypt
   - blowfish
 - name: golang.org/x/net
-  version: 9dfe39835686865bff950a07b394c12a98ddc811
+  version: db08ff08e8622530d9ed3a0e8ac279f6d4c02196
   subpackages:
   - context
+  - context/ctxhttp
   - idna
-- name: golang.org/x/sys
-  version: 7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce
+- name: golang.org/x/oauth2
+  version: ef147856a6ddbb60760db74283d2424e98c87bff
   subpackages:
-  - unix
-  - windows
+  - internal
 - name: golang.org/x/text
-  version: 88f656faf3f37f690df1a32515b479415e1a6769
+  version: 5cec4b58c438bd98288aeb248bab2c1840713d21
   subpackages:
   - secure/bidirule
   - transform
   - unicode/bidi
   - unicode/norm
   - width
+- name: google.golang.org/appengine
+  version: b1f26356af11148e710935ed1ac8a7f5702c7612
+  subpackages:
+  - internal
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
 - name: gopkg.in/mgo.v2
   version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
   subpackages:
   - bson
   - internal/json
 - name: gopkg.in/yaml.v2
-  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  version: 8991bc29aa16c548c550c7ff78260e27b9ab7c73
   subpackages:
   - spew
 - name: github.com/Flaque/filet
-  version: 70fb4a62b734b80db316664a8d0932432bebaa41
+  version: dbf95344df50497dba92c62da869a873be2968e9
 - name: github.com/go-swagger/go-swagger
-  version: b015bda48dfc648fdd95e7bc81dbb5cefc17c975
+  version: 25e637c5028dee7baf8cdf5d172ccb28cb8e5c3e
 - name: github.com/haya14busa/goverage
-  version: b9be4a50677bf4dca7f109c0c9e0341f8beaabbb
+  version: eec3514a20b55dca311300eeb08fe5c8ab9ab781
 - name: github.com/pmezard/go-difflib
-  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  version: 792786c7400a136282c1664665ae0a8db921c6c2
   subpackages:
   - difflib
+- name: github.com/spf13/afero
+  version: 787d034dfe70e44075ccc060d346146ef53270ad
+  subpackages:
+  - mem
 - name: github.com/stretchr/testify
-  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  version: f35b8ab0b5a2cef36673838d662e249dd9c94686
   subpackages:
   - assert

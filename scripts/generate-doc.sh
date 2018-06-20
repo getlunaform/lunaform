@@ -16,7 +16,7 @@ function build_readme() {
 }
 
 build_readme \
-    "github.com/zeebox/terraform-server/server/restapi" \
+    "github.com/drewsonne/terraform-server/server/restapi" \
      ${GOPATH}
 
 for folder in "${folders[@]}"; do

@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zeebox/terraform-server/server/restapi/operations/resources"
+	"github.com/drewsonne/terraform-server/server/restapi/operations/resources"
 )
 
 func TestResourceGroupsController(t *testing.T) {
