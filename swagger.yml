@@ -82,6 +82,29 @@ paths:
                     _links: {self: {href: "http://example.com/api/identity/users"}}
           schema:
             $ref: "#/definitions/response-list-resources"
+  /tf/modules:
+    get:
+      tags:
+        - resources
+      description: List TF modules
+      operationId: list-tf-modules
+      responses:
+        404:
+          description: Not Found
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              _embedded:
+                resources:
+                  - name: template
+                    _links: {self: {href: "http://example.com/api/tf/template"}}
+                  - name: stack
+                    _links: {self: {href: "http://example.com/api/tf/stack"}}
+          schema:
+            $ref: "#/definitions/response-list-tf-modules"
 definitions:
 #  module:
 #    type: string
@@ -95,6 +118,30 @@ definitions:
 #      A source of users either locally managed, or through a federation.
 #      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
 #      handles all management of. The second are read-only federated IdP's.
+  response-list-tf-modules:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of tf modules
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        type: array
+        items:
+          $ref: "#/definitions/response-tf-module"
+  response-tf-module:
+    type: object
+    required:
+      - _links
+      - name
+    description: A TF module
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      name:
+        type: string
   response-list-resources:
     type: object
     required:
