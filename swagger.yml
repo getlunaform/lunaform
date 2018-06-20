@@ -11,7 +11,7 @@ info:
     email: drew.sonne@gmail.com
   license:
     name: Apache 2.0
-    url: https://github.com/zeebox/terraform-server/blob/master/LICENSE
+    url: https://github.com/drewsonne/terraform-server/blob/master/LICENSE
 basePath: /api
 schemes:
   - http
