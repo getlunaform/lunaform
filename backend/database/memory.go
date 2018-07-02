@@ -59,6 +59,11 @@ func (md memoryDatabase) Read(recordType, key string, i interface{}) error {
 	return nil
 }
 
+// List records of a given type from memory
+func (md memoryDatabase) List(recordType string) (err error) {
+	return nil
+}
+
 // Update a record in memory
 func (md memoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	if !md.exists(recordType, key) {

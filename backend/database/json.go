@@ -78,6 +78,11 @@ func (jdb jsonDatabase) Read(recordType, key string, i interface{}) (err error) 
 	return jdb.db.Read(recordType, key, i)
 }
 
+// List all records of a given type from the JSON file on disk
+func (jdb jsonDatabase) List(recordType string) (err error) {
+	return jdb.db.List(recordType)
+}
+
 // Update a record in the JSON file on disk
 func (jdb jsonDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	return jdb.db.Update(recordType, key, doc)

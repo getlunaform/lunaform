@@ -111,6 +111,10 @@ func (r redisDatabase) Delete(recordType, key string) error {
 	return r.client.Del(k).Err()
 }
 
+func (r redisDatabase) List(recordType string) (err error) {
+	return nil
+}
+
 func (r redisDatabase) deserialize(s string, i interface{}) (err error) {
 	cleanString, err := strconv.Unquote(s)
 	if err != nil {
