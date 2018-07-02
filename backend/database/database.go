@@ -19,6 +19,7 @@ func (r Record) Type() string {
 type Driver interface {
 	Create(recordType, key string, doc interface{}) error
 	Read(recordType, key string, i interface{}) error
+	List(recordType string) error
 	Update(recordType, key string, doc interface{}) error
 	Delete(recordType, key string) error
 
@@ -43,4 +44,29 @@ func NewDatabaseWithDriver(driver Driver) Database {
 	return Database{
 		driver: driver,
 	}
+}
+
+func (db *Database) Create(recordType, key string, doc interface{}) error {
+	return db.driver.Create(recordType, key, doc)
+}
+
+func (db *Database) Read(recordType, key string, i interface{}) error {
+	return db.driver.Read(recordType, key, i)
+
+}
+
+func (db *Database) Update(recordType, key string, doc interface{}) error {
+	return db.driver.Update(recordType, key, doc)
+}
+
+func (db *Database) Delete(recordType, key string) error {
+	return db.driver.Delete(recordType, key)
+}
+
+func (db *Database) Ping() error {
+	return db.driver.Ping()
+}
+
+func (db *Database) Close() error {
+	return db.driver.Close()
 }
