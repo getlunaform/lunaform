@@ -3,22 +3,30 @@ package restapi
 import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/drewsonne/terraform-server/backend/identity"
-	"github.com/drewsonne/terraform-server/server/restapi/operations/resources"
 	"github.com/drewsonne/terraform-server/server/models"
+	"github.com/drewsonne/terraform-server/server/restapi/operations/tf"
+	"github.com/drewsonne/terraform-server/backend/database"
 )
 
-//func(ListTfResourcesParams) middleware.Responder
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListResourcesTfModuleController = func(idp identity.Provider, ch ContextHelper) resources.ListTfModulesHandlerFunc {
-	return resources.ListTfModulesHandlerFunc(func(params resources.ListTfModulesParams) (r middleware.Responder) {
+var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db database.Database) tf.ListModulesHandlerFunc {
+	return tf.ListModulesHandlerFunc(func(params tf.ListModulesParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		tf := resources.NewListTfModulesOK()
-		tf.SetPayload(&models.ResponseListTfModules{
+		return tf.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
 			Links: halRootRscLinks(ch),
 		})
-		return tf
+	})
+}
 
-		//return resources.NewListResourceGroupsNotFound()
+var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db database.Database) tf.CreateModuleHandlerFunc {
+	return tf.CreateModuleHandlerFunc(func(params tf.CreateModuleParams) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		db.Create("tf", "tf-module", params)
+
+		return tf.NewCreateModuleCreated().WithPayload(&models.ResponseTfModule{
+			Links: halRootRscLinks(ch),
+		})
 	})
 }

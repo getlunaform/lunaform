@@ -69,7 +69,8 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.ResourcesListResourcesHandler = ListResourcesController(idp, oh)
 
 	// Controllers for /tf/modules
-	api.ResourcesListTfModulesHandler = ListResourcesTfModuleController(idp,oh)
+	api.TfListModulesHandler = ListTfModulesController(idp, oh, db)
+	api.TfCreateModuleHandler = CreateTfModuleController(idp, oh, db)
 
 	api.ServerShutdown = func() {
 		dbDriver.Close()
