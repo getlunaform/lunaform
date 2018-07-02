@@ -25,6 +25,9 @@ x-tagGroups:
   - name: Resources
     tags:
       - resources
+  - name: Terraform
+    tags:
+      - tf
 
 paths:
   /:
@@ -85,9 +88,9 @@ paths:
   /tf/modules:
     get:
       tags:
-        - resources
+        - tf
       description: List TF modules
-      operationId: list-tf-modules
+      operationId: list-modules
       responses:
         404:
           description: Not Found
@@ -105,6 +108,39 @@ paths:
                     _links: {self: {href: "http://example.com/api/tf/stack"}}
           schema:
             $ref: "#/definitions/response-list-tf-modules"
+    post:
+      tags:
+        - tf
+      description: Upload a Terraform module
+      operationId: create-module
+      parameters:
+        - in: body
+          name: terraform-module
+          description: A terraform module
+          schema:
+            type: object
+            required:
+              - name
+              - vcs-id
+              - type
+            properties:
+              name:
+                type: string
+              vcs-id:
+                description: ID of the VCS source for the module
+                type: string
+              type:
+                type: string
+      responses:
+        201:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-module
+          schema:
+            $ref: "#/definitions/response-tf-module"
 definitions:
 #  module:
 #    type: string
