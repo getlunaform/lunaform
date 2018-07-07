@@ -18,8 +18,8 @@ BUILT_BY?=$(shell whoami)
 HOSTNAME?=$(shell hostname)
 NOW?=$(shell date +%s)
 
-doc: generate-swagger
-	@sh scripts/generate-doc.sh
+run: terraform-server
+	$(CWD)/terraform-server --scheme=http
 
 update-vendor:
 	glide update
@@ -33,9 +33,6 @@ clean:
 		$(CWD)/server/restapi/server.go \
 		$(CWD)/terraform-server \
 		$(CWD)/profile.txt
-
-run: terraform-server
-	$(CWD)/terraform-server --scheme=http
 
 validate-swagger:
 	swagger validate $(SRC_YAML)
