@@ -109,6 +109,24 @@ func TestDriverInterface(t *testing.T) {
 				assert.EqualError(t, err, "json: unsupported type: map[chan int]string")
 			})
 
+			t.Run("I can get a collection list", func(t *testing.T) {
+				records, err := db.List(dbTestType)
+				assert.NoError(t, err)
+				assert.Equal(t, []*Record{
+					{
+						Key:   dbTestKey,
+						Type:  dbTestType,
+						Value: "{\"jello\":\"whirled\"}",
+					},
+					{
+						Key:   dbDuplicateKey,
+						Type:  dbTestType,
+						Value: "{\"hello\":\"world\"}",
+					},
+				}, records)
+
+			})
+
 			t.Run("I can delete a collection", func(t *testing.T) {
 				err := db.Delete(dbTestType, dbTestKey)
 				assert.NoError(t, err)

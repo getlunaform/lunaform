@@ -2,16 +2,10 @@ package database
 
 // Record is an untyped, schemaless record type which all
 // record types embed and implement
-type Record map[string]interface{}
-
-// Key returns a record's Key
-func (r Record) Key() string {
-	return r["Key"].(string)
-}
-
-// Type returns a record's type
-func (r Record) Type() string {
-	return r["Type"].(string)
+type Record struct {
+	Key   string
+	Type  string
+	Value string
 }
 
 // Driver represents a low level storage serialiser/ deserialiser
@@ -19,7 +13,7 @@ func (r Record) Type() string {
 type Driver interface {
 	Create(recordType, key string, doc interface{}) error
 	Read(recordType, key string, i interface{}) error
-	List(recordType string) error
+	List(recordType string) ([]*Record, error)
 	Update(recordType, key string, doc interface{}) error
 	Delete(recordType, key string) error
 
@@ -52,7 +46,6 @@ func (db *Database) Create(recordType, key string, doc interface{}) error {
 
 func (db *Database) Read(recordType, key string, i interface{}) error {
 	return db.driver.Read(recordType, key, i)
-
 }
 
 func (db *Database) Update(recordType, key string, doc interface{}) error {

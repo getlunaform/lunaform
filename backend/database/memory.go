@@ -3,6 +3,7 @@ package database
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 // memoryDatabase represents an in memory store for our server.
@@ -10,20 +11,31 @@ import (
 //   primarily used for development. When the server shuts down
 //   all the state in it is lost. You probably shouldn't use it.
 type memoryDatabase struct {
-	collections map[string]string
+	collections []*Record
 }
 
 // NewMemoryDBDriver returns a memory database object
 func NewMemoryDBDriver() (Driver, error) {
-	return memoryDatabase{
-		collections: make(map[string]string),
+	return &memoryDatabase{
+		collections: []*Record{},
 	}, nil
 }
 
 // NewMemoryDBDriverWithCollection seeds the memory database with some initialisaiton data
 func NewMemoryDBDriverWithCollection(collection map[string]string) (BufferedDriver, error) {
-	return memoryDatabase{
-		collections: collection,
+	rs := []*Record{}
+
+	for key, value := range collection {
+		keyParts := strings.Split(key, " ")
+		rs = append(rs, &Record{
+			Type:  keyParts[0],
+			Key:   keyParts[1],
+			Value: value,
+		})
+	}
+
+	return &memoryDatabase{
+		collections: rs,
 	}, nil
 }
 
@@ -38,48 +50,87 @@ func (md memoryDatabase) Ping() error {
 }
 
 // Create a record in memory
-func (md memoryDatabase) Create(recordType, key string, doc interface{}) (err error) {
+func (md *memoryDatabase) Create(recordType, key string, doc interface{}) (err error) {
 	if md.exists(recordType, key) {
 		return fmt.Errorf("%q %q already exists", recordType, key)
 	}
 
-	md.collections[md.key(recordType, key)], err = md.serialize(doc)
+	if data, err := md.serialize(doc); err == nil {
+		md.collections = append(
+			md.collections,
+			&Record{
+				Key:   key,
+				Type:  recordType,
+				Value: data,
+			},
+		)
+	}
 
 	return
 }
 
 // Read a record from memory
-func (md memoryDatabase) Read(recordType, key string, i interface{}) error {
+func (md memoryDatabase) Read(recordType, key string, i interface{}) (err error) {
 	if !md.exists(recordType, key) {
 		return fmt.Errorf("%q %q does not exist", recordType, key)
 	}
 
-	md.deserialize(md.collections[md.key(recordType, key)], i)
+	for _, record := range md.collections {
+		if record.Key == key && record.Type == recordType {
+			err = md.deserialize(record.Value, i)
+			break
+		}
+	}
 
 	return nil
 }
 
 // List records of a given type from memory
-func (md memoryDatabase) List(recordType string) (err error) {
-	return nil
+func (md memoryDatabase) List(recordType string) (rs []*Record, err error) {
+	rs = make([]*Record, 0)
+
+	for _, r := range md.collections {
+		if r.Type == recordType {
+			rs = append(rs, r)
+		}
+	}
+
+	return
 }
 
 // Update a record in memory
-func (md memoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
+func (md *memoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	if !md.exists(recordType, key) {
 		return fmt.Errorf("%q %q does not exist", recordType, key)
 	}
 
-	md.collections[md.key(recordType, key)], err = md.serialize(doc)
+	var data string
+	for i, r := range md.collections {
+		if r.Type == recordType && r.Key == key {
+			if data, err = md.serialize(doc); err == nil {
+				md.collections[i].Value = data
+			}
+			break
+		}
+	}
 
 	return
 }
 
 // Delete a record from memory
-func (md memoryDatabase) Delete(recordType, key string) error {
-	delete(md.collections, md.key(recordType, key))
+func (md *memoryDatabase) Delete(recordType, key string) (err error) {
 
-	return nil
+	for i, r := range md.collections {
+		if r.Type == recordType && r.Key == key {
+			md.collections = append(
+				md.collections[:i],
+				md.collections[i+1:]...
+			)
+			break
+		}
+	}
+
+	return
 }
 
 func (md memoryDatabase) key(recordType, key string) string {
@@ -87,9 +138,12 @@ func (md memoryDatabase) key(recordType, key string) string {
 }
 
 func (md memoryDatabase) exists(recordType, key string) (ok bool) {
-	_, ok = md.collections[md.key(recordType, key)]
-
-	return
+	for _, r := range md.collections {
+		if r.Type == recordType && r.Key == key {
+			return true
+		}
+	}
+	return false
 }
 
 // The following exist because we expect to be able to serialise to/ from

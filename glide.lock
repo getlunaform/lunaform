@@ -1,12 +1,12 @@
 hash: a189d0fa79f961164890326abc67dd577fc14efd9eb6d77e83baee36bbd6b5b2
-updated: 2018-06-20T19:13:15.991138869+01:00
+updated: 2018-07-07T12:50:42.950992+01:00
 imports:
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
 - name: github.com/docker/go-units
   version: 47565b4f722fb6ceae66b95f853feed578a4a51c
 - name: github.com/go-openapi/analysis
-  version: 5957818e100395077187fb7ef3b8a28227af06c6
+  version: a300ac7e9cfde2614eb71f7fe78ea4514bb14cfa
 - name: github.com/go-openapi/errors
   version: b2b2befaf267d082d779bcef52d682a47c779517
 - name: github.com/go-openapi/jsonpointer
@@ -16,7 +16,7 @@ imports:
 - name: github.com/go-openapi/loads
   version: 2a2b323bab96e6b1fdee110e57d959322446e9c9
 - name: github.com/go-openapi/runtime
-  version: 90c7afbb4bd8b22431e1c32d65caf405abf170c3
+  version: 9a3091f566c0811ef4d54b535179bc0fc484a11f
   subpackages:
   - flagext
   - logger
@@ -26,15 +26,15 @@ imports:
   - middleware/untyped
   - security
 - name: github.com/go-openapi/spec
-  version: bcff419492eeeb01f76e77d2ebc714dc97b607f5
+  version: 16284f9da51d5a5b5dc67c8109a99b014c4b7f0a
 - name: github.com/go-openapi/strfmt
-  version: 481808443b00a14745fada967cb5eeff0f9b1df2
+  version: 913ee058e387ac83a67e2d9f13acecdcd5769fc6
 - name: github.com/go-openapi/swag
-  version: 811b1089cde9dad18d4d0c2d09fbdbf28dbd27a5
+  version: 2b0bd4f193d011c203529df626a65d63cb8a79e8
 - name: github.com/go-openapi/validate
-  version: b0a3ed684d0fdd3e1eda00433382188ce8aa7169
+  version: 9a6e517cddf1ddd47449be5d06a6a786e51d9986
 - name: github.com/go-redis/redis
-  version: 4b568cdf1adcfe5cab06ad6929ad5286b3db7138
+  version: 5db3ab16e5037b64958414e6e8cd1a50b9ce56f1
   subpackages:
   - internal
   - internal/consistenthash
@@ -43,10 +43,6 @@ imports:
   - internal/proto
   - internal/singleflight
   - internal/util
-- name: github.com/golang/protobuf
-  version: 9f81198da99b79e14d70ca2c3cc1bbe44c6e69b6
-  subpackages:
-  - proto
 - name: github.com/jessevdk/go-flags
   version: c6ca198ec95c841fdb89fc0de7496fed11ab854e
 - name: github.com/mailru/easyjson
@@ -58,7 +54,7 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: bb74f1db0675b241733089d5a1faa5dd8b0ef57b
 - name: github.com/pkg/errors
-  version: 816c9085562cd7ee03e7f8188a1cfd942858cded
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/purell
   version: 975f53781597ed779763b7b65566e74c4004d8de
 - name: github.com/PuerkitoBio/urlesc
@@ -68,40 +64,25 @@ imports:
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
 - name: golang.org/x/crypto
-  version: 7f39a6fea4fe9364fb61e1def6a268a51b4f3a06
+  version: a49355c7e3f8fe157a85be2f77e6e269a0f89602
   subpackages:
   - bcrypt
   - blowfish
 - name: golang.org/x/net
-  version: db08ff08e8622530d9ed3a0e8ac279f6d4c02196
+  version: 32a936f46389aa10549d60bd7833e54b01685d09
   subpackages:
   - context
-  - context/ctxhttp
   - idna
-- name: golang.org/x/oauth2
-  version: ef147856a6ddbb60760db74283d2424e98c87bff
-  subpackages:
-  - internal
 - name: golang.org/x/text
-  version: 5cec4b58c438bd98288aeb248bab2c1840713d21
+  version: c0fe8dde8a10c9b32154bd9bdf080b8b3d635127
   subpackages:
   - secure/bidirule
   - transform
   - unicode/bidi
   - unicode/norm
   - width
-- name: google.golang.org/appengine
-  version: b1f26356af11148e710935ed1ac8a7f5702c7612
-  subpackages:
-  - internal
-  - internal/base
-  - internal/datastore
-  - internal/log
-  - internal/remote_api
-  - internal/urlfetch
-  - urlfetch
 - name: gopkg.in/mgo.v2
-  version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
+  version: 9856a29383ce1c59f308dd1cf0363a79b5bef6b5
   subpackages:
   - bson
   - internal/json

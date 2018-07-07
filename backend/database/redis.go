@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"strings"
 )
 
 const (
@@ -26,6 +27,7 @@ type RedisClient interface {
 	Del(...string) *redis.IntCmd
 	Keys(string) *redis.StringSliceCmd
 	Get(string) *redis.StringCmd
+	MGet(keys ...string) *redis.SliceCmd
 	Ping() *redis.StatusCmd
 	Set(string, interface{}, time.Duration) *redis.StatusCmd
 }
@@ -111,8 +113,29 @@ func (r redisDatabase) Delete(recordType, key string) error {
 	return r.client.Del(k).Err()
 }
 
-func (r redisDatabase) List(recordType string) (err error) {
-	return nil
+func (r redisDatabase) List(recordType string) (rs []*Record, err error) {
+	k := r.key(recordType, "*")
+	keys, err := r.client.Keys(k).Result()
+	if err != nil {
+		return nil, err
+	}
+	results, err := r.client.MGet(keys...).Result()
+
+	rs = make([]*Record, len(results))
+
+	for i, result := range results {
+		rs[i] = &Record{}
+
+		_, _, key := r.keyParts(keys[i])
+		rs[i].Type = recordType
+		rs[i].Key = key
+		rs[i].Value, err = strconv.Unquote(result.(string))
+		if err != nil {
+			return
+		}
+	}
+
+	return
 }
 
 func (r redisDatabase) deserialize(s string, i interface{}) (err error) {
@@ -149,4 +172,9 @@ func (r redisDatabase) set(key string, doc interface{}) error {
 
 func (r redisDatabase) key(recordType, key string) string {
 	return fmt.Sprintf("%s%s%s%s%s", r.namespace, redisDelimeter, recordType, redisDelimeter, key)
+}
+
+func (r redisDatabase) keyParts(fullKey string) (namespace string, recordType string, key string) {
+	parts := strings.Split(fullKey, redisDelimeter)
+	return parts[0], parts[1], parts[2]
 }
