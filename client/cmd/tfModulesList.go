@@ -19,10 +19,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// resourceGroupsCmd represents the resourceGroups command
-var resourceGroupsCmd = &cobra.Command{
-	Use:   "resource-groups",
-	Short: "Types of resource terrafor-server manages",
+// tfModulesListCmd represents the tfModulesList command
+var tfModulesListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List Terraform modules",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -30,22 +30,8 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+		modules, _, err := gocdClient.TfApi.ListModules(ctx)
+
+		handleOutput(cmd, &modules, useHal, err)
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(resourceGroupsCmd)
-
-	resourceGroupsCmd.AddCommand(resourceGroupsListCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// resourceGroupsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// resourceGroupsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

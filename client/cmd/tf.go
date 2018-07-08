@@ -19,10 +19,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// resourceGroupsCmd represents the resourceGroups command
-var resourceGroupsCmd = &cobra.Command{
-	Use:   "resource-groups",
-	Short: "Types of resource terrafor-server manages",
+// tfCmd represents the tf command
+var tfCmd = &cobra.Command{
+	Use:   "tf",
+	Short: "Terraform resources",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -35,17 +35,15 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(resourceGroupsCmd)
-
-	resourceGroupsCmd.AddCommand(resourceGroupsListCmd)
+	rootCmd.AddCommand(tfCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// resourceGroupsCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// tfCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// resourceGroupsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// tfCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

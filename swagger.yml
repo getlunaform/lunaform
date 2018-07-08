@@ -182,6 +182,12 @@ definitions:
         $ref: "#/definitions/hal-rsc-links"
       name:
         type: string
+      type:
+        type: string
+        enum:
+          - git
+          - registry
+          - enterprise
   response-list-resources:
     type: object
     required:

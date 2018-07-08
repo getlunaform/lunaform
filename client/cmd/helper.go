@@ -49,7 +49,7 @@ func jsonResponse(r interface{}) string {
 		panic(err)
 	}
 
-	return string(out)
+	return string(out) + "\n"
 }
 
 func buildActionName(c *cobra.Command, names []string) []string {

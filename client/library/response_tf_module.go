@@ -16,4 +16,6 @@ type ResponseTfModule struct {
 	Links *HalRscLinks `json:"_links"`
 
 	Name string `json:"name"`
+
+	Type_ string `json:"type,omitempty"`
 }
