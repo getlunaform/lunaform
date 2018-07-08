@@ -140,6 +140,7 @@ func logResponse(prefix string, h http.Handler) http.HandlerFunc {
 
 		// grab the captured response body
 		data := rec.Body.Bytes()
+		w.WriteHeader(rec.Code)
 
 		w.Write(data)
 	}

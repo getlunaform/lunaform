@@ -46,9 +46,17 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 		newId := uuid.New()
 		db.Create("tf-module", newId, params)
 
-		return tf.NewCreateModuleCreated().WithPayload(&models.ResponseTfModule{
+		response := &models.ResponseTfModule{
 			Links: halRootRscLinks(ch),
 			VcsID: String(newId),
-		})
+		}
+		if params.TerraformModule == nil {
+			return tf.NewCreateModuleBadRequest()
+		} else {
+			response.Name = params.TerraformModule.Name
+			response.Type = *params.TerraformModule.Type
+			return tf.NewCreateModuleCreated().WithPayload(response)
+		}
+
 	})
 }

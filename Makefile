@@ -68,6 +68,8 @@ generate-swagger: validate-swagger
 		--name=TerraformServer \
 		--spec=$(SRC_YAML)
 
+generate:generate-swagger
+
 terraform-server:
 	go build \
 		-a -installsuffix $(CGO) \

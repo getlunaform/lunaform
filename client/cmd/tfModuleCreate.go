@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"fmt"
 )
 
 // tfModuleCreateCmd represents the tfModuleCreate command
@@ -30,12 +31,14 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		module, _, err := gocdClient.TfApi.CreateModule(ctx, map[string]interface{}{
+		module, resp, err := gocdClient.TfApi.CreateModule(ctx, map[string]interface{}{
 			"terraformModule": map[string]interface{}{
 				"name": "test",
 				"type": "test",
 			},
 		})
+
+		fmt.Print(resp)
 
 		handleOutput(cmd, &module, useHal, err)
 	},

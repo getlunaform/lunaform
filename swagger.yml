@@ -145,6 +145,8 @@ paths:
               name: my-tf-module
           schema:
             $ref: "#/definitions/response-tf-module"
+        400:
+          description: Bad Request
 definitions:
 #  module:
 #    type: string

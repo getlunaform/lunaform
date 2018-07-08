@@ -110,6 +110,8 @@ paths:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               name: "my-tf-module"
+        400:
+          description: "Bad Request"
   /{group}:
     get:
       tags:
