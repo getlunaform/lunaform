@@ -13,8 +13,27 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 	return tf.ListModulesHandlerFunc(func(params tf.ListModulesParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
+		records, err := db.List("tf-modules")
+		if err != nil {
+			var statuscode int64 = 500
+			return tf.NewListModulesInternalServerError().WithPayload(&models.ServerError{
+				StatusCode: &statuscode,
+				Status:     String("Internal Server Error"),
+				Message:    String(err.Error()),
+			})
+		}
+
+		modules := make([]*models.ResponseTfModule, len(records))
+		for i, record := range records {
+			modules[i] = &models.ResponseTfModule{
+				Name:  &record.Value,
+				Links: halSelfLink(ch.FQEndpoint + "/" + record.Value),
+			}
+		}
+
 		return tf.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
-			Links: halRootRscLinks(ch),
+			Links:    halRootRscLinks(ch),
+			Embedded: modules,
 		})
 	})
 }

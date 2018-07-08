@@ -1,0 +1,253 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a RESTful server for managing Terraform plan and apply jobs\
+    \ and the auditing of actions to approve those apply jobs.\nThe inspiration for\
+    \ this project is the AWS CloudFormation API's. The intention is to implement\
+    \ a locking mechanism\nnot only for the terraform state, but for the plan and\
+    \ apply of terraform modules. Once a `module` plan starts, it\nis instantiated\
+    \ as a `stack` within the nomencalture of `terraform-server`.\n"
+  version: "0.0.1-alpha"
+  title: "terraform-server"
+  contact:
+    email: "drew.sonne@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "https://github.com/drewsonne/terraform-server/blob/master/LICENSE"
+basePath: "/api"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/vnd.terraform.server.v1+json"
+produces:
+- "application/vnd.terraform.server.v1+json"
+paths:
+  /:
+    get:
+      tags:
+      - "resources"
+      description: "List the root resource groups"
+      operationId: "list-resource-groups"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/response-list-resources"
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _embedded:
+                resources:
+                - _links:
+                    self:
+                      href: "http://example.com/api/tf/"
+                  name: "tf"
+                - _links:
+                    self:
+                      href: "http://example.com/api/identity"
+                  name: "identity"
+                - _links:
+                    self:
+                      href: "http://example.com/api/vcs"
+                  name: "vcs"
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+        404:
+          description: "Not Found"
+  /tf/modules:
+    get:
+      tags:
+      - "tf"
+      description: "List TF modules"
+      operationId: "list-modules"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/response-list-tf-modules"
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _embedded:
+                resources:
+                - _links:
+                    self:
+                      href: "http://example.com/api/tf/template"
+                  name: "template"
+                - _links:
+                    self:
+                      href: "http://example.com/api/tf/stack"
+                  name: "stack"
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/server-error"
+    post:
+      tags:
+      - "tf"
+      description: "Upload a Terraform module"
+      operationId: "create-module"
+      parameters:
+      - in: "body"
+        name: "terraform-module"
+        description: "A terraform module"
+        required: false
+        schema:
+          $ref: "#/definitions/terraformmodule"
+        x-exportParamName: "TerraformModule"
+      responses:
+        201:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/response-tf-module"
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: "my-tf-module"
+  /{group}:
+    get:
+      tags:
+      - "resources"
+      operationId: "list-resources"
+      parameters:
+      - name: "group"
+        in: "path"
+        description: "Root level resources"
+        required: true
+        type: "string"
+        enum:
+        - "tf"
+        - "identity"
+        - "vcs"
+        x-exportParamName: "Group"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/response-list-resources"
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _embedded:
+                resources:
+                - _links:
+                    self:
+                      href: "http://example.com/api/identity/groups"
+                  name: "groups"
+                - _links:
+                    self:
+                      href: "http://example.com/api/identity/providers"
+                  name: "providers"
+                - _links:
+                    self:
+                      href: "http://example.com/api/identity/users"
+                  name: "users"
+definitions:
+  hal-href:
+    type: "object"
+    properties:
+      href:
+        type: "string"
+        format: "uri"
+  hal-rsc-links:
+    type: "object"
+    properties:
+      doc:
+        $ref: "#/definitions/hal-href"
+      self:
+        $ref: "#/definitions/hal-href"
+    description: "Links to this resources and documentation for this resource"
+  resource:
+    type: "object"
+    required:
+    - "_links"
+    - "name"
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      name:
+        type: "string"
+    description: "A resources"
+  resource-list:
+    type: "object"
+    required:
+    - "resources"
+    properties:
+      resources:
+        type: "array"
+        items:
+          $ref: "#/definitions/resource"
+  response-list-resources:
+    type: "object"
+    required:
+    - "_embedded"
+    - "_links"
+    properties:
+      _embedded:
+        $ref: "#/definitions/resource-list"
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+    description: "List of resources"
+  response-list-tf-modules:
+    type: "object"
+    required:
+    - "_embedded"
+    - "_links"
+    properties:
+      _embedded:
+        type: "array"
+        items:
+          $ref: "#/definitions/response-tf-module"
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+    description: "List of tf modules"
+  response-tf-module:
+    type: "object"
+    required:
+    - "_links"
+    - "name"
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      name:
+        type: "string"
+    description: "A TF module"
+  server-error:
+    type: "object"
+    required:
+    - "message"
+    - "status"
+    - "status-code"
+    properties:
+      message:
+        type: "string"
+      status:
+        type: "string"
+      status-code:
+        type: "integer"
+  terraformmodule:
+    type: "object"
+    required:
+    - "name"
+    - "type"
+    - "vcs-id"
+    properties:
+      name:
+        type: "string"
+      type:
+        type: "string"
+      vcs-id:
+        type: "string"
+        description: "ID of the VCS source for the module"
+x-tagGroups:
+- name: "Resources"
+  tags:
+  - "resources"
+- name: "Terraform"
+  tags:
+  - "tf"

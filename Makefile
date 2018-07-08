@@ -18,13 +18,15 @@ BUILT_BY?=$(shell whoami)
 HOSTNAME?=$(shell hostname)
 NOW?=$(shell date +%s)
 
+run-clean: clean build run
+
 run: terraform-server
-	$(CWD)/terraform-server --scheme=http
+	$(CWD)/terraform-server --port=8080 --scheme=http
 
 update-vendor:
 	glide update
 
-clean:
+clean: clean-client
 	rm -rf $(CWD)/server/cmd/ \
 		$(CWD)/server/models/ \
 		$(CWD)/server/restapi/operations \
@@ -32,7 +34,12 @@ clean:
 		$(CWD)/server/restapi/embedded_spec.go \
 		$(CWD)/server/restapi/server.go \
 		$(CWD)/terraform-server \
-		$(CWD)/profile.txt
+		$(CWD)/profile.txt \
+
+
+clean-client:
+	rm -rf $(CWD)/tfs-client \
+		$(CWD)/client/library
 
 validate-swagger:
 	swagger validate $(SRC_YAML)
@@ -79,4 +86,7 @@ build-client:
 	swagger-codegen generate \
 		-i http://127.0.0.1:8080/swagger.json \
 		-l go \
-		-o client
+		-o client/library
+	go build -o tfs-client github.com/drewsonne/terraform-server/client
+
+client-clean: clean-client build-client

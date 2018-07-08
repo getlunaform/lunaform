@@ -92,8 +92,6 @@ paths:
       description: List TF modules
       operationId: list-modules
       responses:
-        404:
-          description: Not Found
         200:
           description: OK
           examples:
@@ -108,6 +106,12 @@ paths:
                     _links: {self: {href: "http://example.com/api/tf/stack"}}
           schema:
             $ref: "#/definitions/response-list-tf-modules"
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
     post:
       tags:
         - tf
@@ -226,5 +230,17 @@ definitions:
       href:
         type: string
         format: uri
-  principal:
+  server-error:
     type: object
+    readOnly: true
+    required:
+      - status-code
+      - status
+      - message
+    properties:
+      status-code:
+        type: integer
+      status:
+        type: string
+      message:
+        type: string

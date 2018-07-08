@@ -48,6 +48,10 @@ func (db *Database) Read(recordType, key string, i interface{}) error {
 	return db.driver.Read(recordType, key, i)
 }
 
+func (db *Database) List(recordType string) (r []*Record, err error) {
+	return db.driver.List(recordType)
+}
+
 func (db *Database) Update(recordType, key string, doc interface{}) error {
 	return db.driver.Update(recordType, key, doc)
 }

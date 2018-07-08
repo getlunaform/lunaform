@@ -1,5 +1,5 @@
 hash: a189d0fa79f961164890326abc67dd577fc14efd9eb6d77e83baee36bbd6b5b2
-updated: 2018-07-07T12:50:42.950992+01:00
+updated: 2018-07-07T22:34:03.012301+01:00
 imports:
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
@@ -43,6 +43,10 @@ imports:
   - internal/proto
   - internal/singleflight
   - internal/util
+- name: github.com/golang/protobuf
+  version: 1325a051a2753cd67556b182843b1b693d0854cd
+  subpackages:
+  - proto
 - name: github.com/jessevdk/go-flags
   version: c6ca198ec95c841fdb89fc0de7496fed11ab854e
 - name: github.com/mailru/easyjson
@@ -72,7 +76,12 @@ imports:
   version: 32a936f46389aa10549d60bd7833e54b01685d09
   subpackages:
   - context
+  - context/ctxhttp
   - idna
+- name: golang.org/x/oauth2
+  version: ef147856a6ddbb60760db74283d2424e98c87bff
+  subpackages:
+  - internal
 - name: golang.org/x/text
   version: c0fe8dde8a10c9b32154bd9bdf080b8b3d635127
   subpackages:
@@ -81,6 +90,16 @@ imports:
   - unicode/bidi
   - unicode/norm
   - width
+- name: google.golang.org/appengine
+  version: b1f26356af11148e710935ed1ac8a7f5702c7612
+  subpackages:
+  - internal
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
 - name: gopkg.in/mgo.v2
   version: 9856a29383ce1c59f308dd1cf0363a79b5bef6b5
   subpackages:

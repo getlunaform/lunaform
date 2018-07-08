@@ -1,7 +1,7 @@
 package restapi
 
 import (
-	 "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/pkg/errors"
 	"github.com/drewsonne/terraform-server/server/models"
@@ -71,4 +71,8 @@ func (oh ContextHelper) urlPrefix(host string, uri string, https bool) string {
 		prefix += "s"
 	}
 	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
+}
+
+func String(s string) *string {
+	return &s
 }
