@@ -176,10 +176,14 @@ definitions:
     required:
       - _links
       - name
+      - vcs-id
     description: A TF module
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
+      vcs-id:
+        type: string
+        format: uuid
       name:
         type: string
       type:
