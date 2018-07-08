@@ -96,6 +96,6 @@ func initConfig() {
 
 	gocdClient = tfs.NewAPIClient(&tfs.Configuration{
 		BasePath: "go",
-		Host:     "localhost:8080",
+		Host:     "https://localhost:8080",
 	})
 }
