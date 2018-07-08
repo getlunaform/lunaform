@@ -6,7 +6,7 @@ import (
 	"github.com/drewsonne/terraform-server/server/models"
 	"github.com/drewsonne/terraform-server/server/restapi/operations/tf"
 	"github.com/drewsonne/terraform-server/backend/database"
-	"github.com/satori/go.uuid"
+	"github.com/pborman/uuid"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
@@ -43,11 +43,12 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 	return tf.CreateModuleHandlerFunc(func(params tf.CreateModuleParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		newId := uuid.NewV4().String()
+		newId := uuid.New()
 		db.Create("tf-module", newId, params)
 
 		return tf.NewCreateModuleCreated().WithPayload(&models.ResponseTfModule{
 			Links: halRootRscLinks(ch),
+			VcsID: String(newId),
 		})
 	})
 }

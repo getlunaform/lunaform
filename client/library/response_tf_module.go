@@ -18,4 +18,6 @@ type ResponseTfModule struct {
 	Name string `json:"name"`
 
 	Type_ string `json:"type,omitempty"`
+
+	VcsId string `json:"vcs-id"`
 }

@@ -28,7 +28,8 @@ func (rl *ResourceList) Clean() interface{} {
 
 func (r *ResponseTfModule) Clean() interface{} {
 	return map[string]string{
-		"name": r.Name,
-		"type": r.Type_,
+		"name":   r.Name,
+		"type":   r.Type_,
+		"vcs-id": r.VcsId,
 	}
 }

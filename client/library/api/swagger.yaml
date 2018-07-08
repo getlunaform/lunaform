@@ -211,6 +211,7 @@ definitions:
     required:
     - "_links"
     - "name"
+    - "vcs-id"
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
@@ -222,6 +223,8 @@ definitions:
         - "git"
         - "registry"
         - "enterprise"
+      vcs-id:
+        type: "string"
     description: "A TF module"
   server-error:
     type: "object"

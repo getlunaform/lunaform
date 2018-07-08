@@ -183,7 +183,7 @@ definitions:
         $ref: "#/definitions/hal-rsc-links"
       vcs-id:
         type: string
-        format: uuid
+#        format: uuid4
       name:
         type: string
       type:
