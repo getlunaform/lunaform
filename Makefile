@@ -38,8 +38,7 @@ clean: clean-client
 
 
 clean-client:
-	rm -rf $(CWD)/tfs-client \
-		$(CWD)/client/library
+	rm -rf $(CWD)/tfs-client
 
 validate-swagger:
 	swagger validate $(SRC_YAML)

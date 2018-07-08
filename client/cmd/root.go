@@ -27,6 +27,7 @@ import (
 )
 
 var cfgFile string
+var useHal bool
 var gocdClient *tfs.APIClient
 var ctx = context.Background()
 
@@ -63,6 +64,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.client.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&useHal, "hal",false, "draw HAL elements in response")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -95,7 +97,6 @@ func initConfig() {
 	}
 
 	gocdClient = tfs.NewAPIClient(&tfs.Configuration{
-		BasePath: "go",
-		Host:     "https://localhost:8080",
+		BasePath: "http://localhost:8080/api",
 	})
 }
