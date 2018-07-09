@@ -170,6 +170,14 @@ definitions:
       _links:
         $ref: "#/definitions/hal-rsc-links"
       _embedded:
+        $ref: "#/definitions/resource-list-tf-module"
+  resource-list-tf-module:
+    type: object
+    readOnly: true
+    required:
+      - resources
+    properties:
+      resources:
         type: array
         items:
           $ref: "#/definitions/resource-tf-module"
