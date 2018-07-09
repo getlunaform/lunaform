@@ -86,7 +86,9 @@ var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db dat
 		db.Read("tf-module", id, module)
 
 		if module == nil {
-			return tf.NewGetModuleNotFound()
+			return tf.NewGetModuleNotFound().WithPayload(&models.ServerError{
+				StatusCode: Int64(404),
+			})
 		}
 
 		module.Links = halSelfLink(ch.FQEndpoint)
