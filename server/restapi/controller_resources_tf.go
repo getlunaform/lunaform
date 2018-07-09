@@ -47,19 +47,25 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 	return tf.CreateModuleHandlerFunc(func(params tf.CreateModuleParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
+		tfm := params.TerraformModule
+
 		newId := uuid.New()
-		params.TerraformModule.VcsID = newId
-		db.Create("tf-module", newId, params.TerraformModule)
+		tfm.VcsID = newId
+
+		db.Create("tf-module", newId, tfm)
 
 		response := &models.ResourceTfModule{
-			Links: halRootRscLinks(ch),
+			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID),
 			VcsID: newId,
 		}
+		response.Links.Doc = halDocLink(ch).Doc
+
 		if params.TerraformModule == nil {
 			return tf.NewCreateModuleBadRequest()
 		} else {
-			response.Name = params.TerraformModule.Name
-			response.Type = params.TerraformModule.Type
+			response.Name = tfm.Name
+			response.Type = tfm.Type
+			response.Source = tfm.Source
 			return tf.NewCreateModuleCreated().WithPayload(response)
 		}
 

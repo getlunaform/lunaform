@@ -11,17 +11,21 @@ import (
 
 func str(v string) *string { return &v }
 
-func halRootRscLinks(oh ContextHelper) *models.HalRscLinks {
-	lnks := halSelfLink(oh.FQEndpoint)
-	lnks.Doc = &models.HalHref{
-		Href: strfmt.URI(oh.ServerURL + "/docs#operation/" + oh.OperationID),
-	}
+func halRootRscLinks(ch ContextHelper) *models.HalRscLinks {
+	lnks := halSelfLink(ch.FQEndpoint)
+	lnks.Doc = halDocLink(ch).Doc
 	return lnks
 }
 
 func halSelfLink(href string) *models.HalRscLinks {
 	return &models.HalRscLinks{
 		Self: &models.HalHref{Href: strfmt.URI(href)},
+	}
+}
+
+func halDocLink(ch ContextHelper) *models.HalRscLinks {
+	return &models.HalRscLinks{
+		Doc: &models.HalHref{Href: strfmt.URI(ch.ServerURL + "/docs#operation/" + ch.OperationID)},
 	}
 }
 

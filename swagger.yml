@@ -126,6 +126,7 @@ paths:
             required:
               - name
               - type
+              - source
             properties:
               name:
                 type: string
@@ -133,6 +134,8 @@ paths:
                 description: ID of the VCS source for the module
                 type: string
               type:
+                type: string
+              source:
                 type: string
       responses:
         201:
