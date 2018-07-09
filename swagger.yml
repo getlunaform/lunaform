@@ -224,7 +224,6 @@ definitions:
     type: object
     description: A resources
     required:
-      - _links
       - name
     properties:
       _links:
