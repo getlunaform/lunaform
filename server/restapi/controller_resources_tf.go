@@ -82,21 +82,12 @@ var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db dat
 
 		id := params.ID
 
-		db.Read("tf-module", id, nil)
+		module := models.ResourceTfModule{}
+		db.Read("tf-module", id, &module)
 
-		return tf.NewGetModuleOK()
-
-		response := &models.ResourceTfModule{
-			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID),
-			VcsID: newId,
-		}
-
-		response.Links.Doc = halDocLink(ch).Doc
-
-		response.Name = tfm.Name
-		response.Type = tfm.Type
-		response.Source = tfm.Source
-		return tf.NewCreateModuleCreated().WithPayload(response)
+		module.Links.Self = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + id).Self
+		module.Links.Doc = halDocLink(ch).Doc
+		return tf.NewGetModuleOK().WithPayload(&module)
 
 	})
 }
