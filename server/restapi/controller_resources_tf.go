@@ -64,7 +64,7 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 		}
 		response.Links.Doc = halDocLink(ch).Doc
 
-		if params.TerraformModule == nil {
+		if tfm == nil {
 			return tf.NewCreateModuleBadRequest()
 		} else {
 			response.Name = tfm.Name
@@ -72,7 +72,6 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 			response.Source = tfm.Source
 			return tf.NewCreateModuleCreated().WithPayload(response)
 		}
-
 	})
 }
 
@@ -81,6 +80,7 @@ var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db dat
 		ch.SetRequest(params.HTTPRequest)
 
 		id := params.ID
+
 
 		var module *models.ResourceTfModule
 		db.Read("tf-module", id, module)

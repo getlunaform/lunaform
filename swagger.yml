@@ -85,6 +85,30 @@ paths:
                     _links: {self: {href: "http://example.com/api/identity/users"}}
           schema:
             $ref: "#/definitions/response-list-resources"
+  /tf/stacks:
+    post:
+      tags:
+        - tf
+      description: Deploy a stack from a module
+      operationId: deploy-stack
+      parameters:
+        - in: body
+          name: terraform-stack
+          description: A deployed terraform module
+          schema:
+            $ref: "#/definitions/resource-tf-stack"
+      responses:
+        201:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-module
+          schema:
+            $ref: "#/definitions/resource-tf-module"
+        400:
+          description: Bad Request
   /tf/modules:
     get:
       tags:
@@ -122,21 +146,7 @@ paths:
           name: terraform-module
           description: A terraform module
           schema:
-            type: object
-            required:
-              - name
-              - type
-              - source
-            properties:
-              name:
-                type: string
-              vcs-id:
-                description: ID of the VCS source for the module
-                type: string
-              type:
-                type: string
-              source:
-                type: string
+            $ref: "#/definitions/resource-tf-module"
       responses:
         201:
           description: OK
@@ -232,6 +242,21 @@ definitions:
           - git
           - registry
           - enterprise
+  resource-tf-stack:
+    type: object
+    required:
+      - name
+      - module-id
+    description: A TF module
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      stack-id:
+        type: string
+      name:
+        type: string
+      module-id:
+        type: string
   response-list-resources:
     type: object
     required:

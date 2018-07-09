@@ -68,7 +68,7 @@ type CreateModuleParams struct {
 	  A terraform module
 
 	*/
-	TerraformModule *models.CreateModuleParamsBody
+	TerraformModule *models.ResourceTfModule
 
 	timeout    time.Duration
 	Context    context.Context
@@ -109,13 +109,13 @@ func (o *CreateModuleParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithTerraformModule adds the terraformModule to the create module params
-func (o *CreateModuleParams) WithTerraformModule(terraformModule *models.CreateModuleParamsBody) *CreateModuleParams {
+func (o *CreateModuleParams) WithTerraformModule(terraformModule *models.ResourceTfModule) *CreateModuleParams {
 	o.SetTerraformModule(terraformModule)
 	return o
 }
 
 // SetTerraformModule adds the terraformModule to the create module params
-func (o *CreateModuleParams) SetTerraformModule(terraformModule *models.CreateModuleParamsBody) {
+func (o *CreateModuleParams) SetTerraformModule(terraformModule *models.ResourceTfModule) {
 	o.TerraformModule = terraformModule
 }
 

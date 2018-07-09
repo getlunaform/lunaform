@@ -53,6 +53,34 @@ func (a *Client) CreateModule(params *CreateModuleParams) (*CreateModuleCreated,
 }
 
 /*
+DeployStack Deploy a stack from a module
+*/
+func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeployStackParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "deploy-stack",
+		Method:             "POST",
+		PathPattern:        "/tf/stacks",
+		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &DeployStackReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*DeployStackCreated), nil
+
+}
+
+/*
 GetModule Get a Terraform module
 */
 func (a *Client) GetModule(params *GetModuleParams) (*GetModuleOK, error) {
