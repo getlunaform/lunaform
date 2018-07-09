@@ -34,3 +34,7 @@ func (list *ResourceList) Clean() interface{} {
 	}
 	return rscs
 }
+
+func (m *ResponseListTfModules) Clean() interface{} {
+	return m.Embedded.Clean()
+}
