@@ -97,6 +97,7 @@ func initConfig() {
 
 	cfg := apiclient.DefaultTransportConfig().WithHost("localhost:8080").WithSchemes([]string{"http"})
 	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
+	transport.Context = context.Background()
 
 	transport.Producers["application/vnd.terraform.server.v1+json"] = runtime.JSONProducer()
 	transport.Consumers["application/vnd.terraform.server.v1+json"] = runtime.JSONConsumer()

@@ -26,10 +26,10 @@ func handleOutput(action *cobra.Command, v models.HalLinkable, hal bool, err err
 	} else {
 
 		payload := map[string]interface{}{
-			"action": strings.Join(
-				buildActionName(action, []string{}),
-				".",
-			),
+			"action": strings.Join(buildActionName(
+				action,
+				[]string{},
+			), "."),
 		}
 
 		if hal {

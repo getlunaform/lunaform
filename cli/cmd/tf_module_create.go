@@ -39,7 +39,11 @@ to quickly create a Cobra application.`,
 			},
 		})
 
-		handleOutput(cmd, module.Payload, useHal, err)
+		if err == nil {
+			handleOutput(cmd, module.Payload, useHal, err)
+		} else {
+			handleOutput(cmd, nil, useHal, err)
+		}
 	},
 }
 
