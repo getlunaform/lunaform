@@ -185,6 +185,7 @@ definitions:
     required:
       - name
       - type
+      - source
     description: A TF module
     properties:
       _links:
@@ -192,6 +193,8 @@ definitions:
       vcs-id:
         type: string
       name:
+        type: string
+      source:
         type: string
       type:
         type: string

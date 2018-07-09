@@ -21,6 +21,10 @@ import (
 	"github.com/drewsonne/terraform-server/server/models"
 )
 
+var nameFlag string
+var typeFlag string
+var sourceFlag string
+
 // tfModuleCreateCmd represents the tfModuleCreate command
 var tfModuleCreateCmd = &cobra.Command{
 	Use:   "create",
@@ -34,8 +38,8 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		params := tf.NewCreateModuleParams().WithTerraformModule(
 			&models.CreateModuleParamsBody{
-				Name: String("test"),
-				Type: String("test"),
+				Name: &nameFlag,
+				Type: &typeFlag,
 			},
 		)
 		module, err := gocdClient.Tf.CreateModule(params)
@@ -50,4 +54,11 @@ to quickly create a Cobra application.`,
 
 func init() {
 	tfModulesCmd.AddCommand(tfModuleCreateCmd)
+	flags := tfModuleCreateCmd.Flags()
+	flags.StringVar(&nameFlag, "name", "", "Name of the terraform module")
+	flags.StringVar(&typeFlag, "type", "", "Type of the module. One of {git,registry,enterprise}")
+	flags.StringVar(&sourceFlag, "source", "", "Source of the terraform module")
+	tfModuleCreateCmd.MarkFlagRequired("name")
+	tfModuleCreateCmd.MarkFlagRequired("type")
+	tfModuleCreateCmd.MarkFlagRequired("source")
 }
