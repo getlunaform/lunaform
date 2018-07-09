@@ -1,9 +1,15 @@
 package models
 
 type HalLinkable interface {
-	 Clean() interface{}
+	Clean() interface{}
 }
 
-func (m *ResponseListResources) Clean() {
+func (m *ResponseListResources) Clean() interface{} {
 	m.Links = nil
+	return m
+}
+
+func (m *ResourceTfModule) Clean() interface{} {
+	m.Links = nil
+	return m
 }
