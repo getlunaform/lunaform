@@ -14,7 +14,7 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 	return tf.ListModulesHandlerFunc(func(params tf.ListModulesParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		records, err := db.List("tf-modules")
+		records, err := db.List("tf-module")
 		if err != nil {
 			var statuscode int64 = 500
 			return tf.NewListModulesInternalServerError().WithPayload(&models.ServerError{
