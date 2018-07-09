@@ -88,6 +88,8 @@ var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db dat
 		if module == nil {
 			return tf.NewGetModuleNotFound().WithPayload(&models.ServerError{
 				StatusCode: Int64(404),
+				Status:     String("Not Found"),
+				Message:    String("Could not find module with id '" + id + "'"),
 			})
 		}
 
