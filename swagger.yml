@@ -171,6 +171,10 @@ paths:
               name: my-tf-module
           schema:
             $ref: "#/definitions/resource-tf-module"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/server-error"
 
 definitions:
 #  module:

@@ -7,10 +7,13 @@ package tf
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	"github.com/drewsonne/terraform-server/server/models"
 )
 
 // GetModuleReader is a Reader for the GetModule structure.
@@ -29,6 +32,13 @@ func (o *GetModuleReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return result, nil
 
+	case 404:
+		result := NewGetModuleNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
@@ -44,13 +54,50 @@ func NewGetModuleOK() *GetModuleOK {
 OK
 */
 type GetModuleOK struct {
+	Payload *models.ResourceTfModule
 }
 
 func (o *GetModuleOK) Error() string {
-	return fmt.Sprintf("[GET /tf/module/{id}][%d] getModuleOK ", 200)
+	return fmt.Sprintf("[GET /tf/module/{id}][%d] getModuleOK  %+v", 200, o.Payload)
 }
 
 func (o *GetModuleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ResourceTfModule)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetModuleNotFound creates a GetModuleNotFound with default headers values
+func NewGetModuleNotFound() *GetModuleNotFound {
+	return &GetModuleNotFound{}
+}
+
+/*GetModuleNotFound handles this case with default header values.
+
+Not Found
+*/
+type GetModuleNotFound struct {
+	Payload *models.ServerError
+}
+
+func (o *GetModuleNotFound) Error() string {
+	return fmt.Sprintf("[GET /tf/module/{id}][%d] getModuleNotFound  %+v", 404, o.Payload)
+}
+
+func (o *GetModuleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }
