@@ -39,6 +39,8 @@ to quickly create a Cobra application.`,
 
 		if err == nil {
 			handleOutput(cmd, module.Payload, useHal, err)
+		} else if err1, ok := err.(*tf.GetModuleNotFound); ok {
+			handleOutput(cmd, err1.Payload, useHal, nil)
 		} else {
 			handleOutput(cmd, nil, useHal, err)
 		}
