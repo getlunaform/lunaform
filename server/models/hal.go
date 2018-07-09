@@ -1,4 +1,4 @@
-package custom_models
+package models
 
 type HalLinkable interface {
 	 Clean() interface{}
