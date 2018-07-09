@@ -52,7 +52,11 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 		newId := uuid.New()
 		tfm.VcsID = newId
 
-		db.Create("tf-module", newId, tfm)
+		err := db.Create("tf-module", newId, tfm)
+
+		if err != nil {
+			return tf.NewCreateModuleBadRequest()
+		}
 
 		response := &models.ResourceTfModule{
 			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID),
@@ -68,6 +72,31 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 			response.Source = tfm.Source
 			return tf.NewCreateModuleCreated().WithPayload(response)
 		}
+
+	})
+}
+
+var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db database.Database) tf.GetModuleHandlerFunc {
+	return tf.GetModuleHandlerFunc(func(params tf.GetModuleParams) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		id := params.ID
+
+		db.Read("tf-module", id, nil)
+
+		return tf.NewGetModuleOK()
+
+		response := &models.ResourceTfModule{
+			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID),
+			VcsID: newId,
+		}
+
+		response.Links.Doc = halDocLink(ch).Doc
+
+		response.Name = tfm.Name
+		response.Type = tfm.Type
+		response.Source = tfm.Source
+		return tf.NewCreateModuleCreated().WithPayload(response)
 
 	})
 }

@@ -53,6 +53,34 @@ func (a *Client) CreateModule(params *CreateModuleParams) (*CreateModuleCreated,
 }
 
 /*
+GetModule Get a Terraform module
+*/
+func (a *Client) GetModule(params *GetModuleParams) (*GetModuleOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetModuleParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "get-module",
+		Method:             "GET",
+		PathPattern:        "/tf/module/{id}",
+		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetModuleReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetModuleOK), nil
+
+}
+
+/*
 ListModules List TF modules
 */
 func (a *Client) ListModules(params *ListModulesParams) (*ListModulesOK, error) {
