@@ -81,23 +81,25 @@ var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db dat
 
 		id := params.ID
 
-
 		var module *models.ResourceTfModule
 		err := db.Read("tf-module", id, module)
 
-		if module == nil {
+		if err != nil {
+			return tf.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
+				StatusCode: Int64(500),
+				Status:     String("Internal Server Error"),
+				Message:    String(err.Error()),
+			})
+		} else if module == nil {
 			return tf.NewGetModuleNotFound().WithPayload(&models.ServerError{
 				StatusCode: Int64(404),
 				Status:     String("Not Found"),
 				Message:    String("Could not find module with id '" + id + "'"),
 			})
-		} else if err == nil {
-			return 
+		} else {
+			module.Links = halSelfLink(ch.FQEndpoint)
+			module.Links.Doc = halDocLink(ch).Doc
+			return tf.NewGetModuleOK().WithPayload(module)
 		}
-
-		module.Links = halSelfLink(ch.FQEndpoint)
-		module.Links.Doc = halDocLink(ch).Doc
-		return tf.NewGetModuleOK().WithPayload(module)
-
 	})
 }

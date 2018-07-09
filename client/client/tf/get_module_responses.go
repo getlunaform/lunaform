@@ -39,6 +39,13 @@ func (o *GetModuleReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return nil, result
 
+	case 500:
+		result := NewGetModuleInternalServerError()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
@@ -91,6 +98,35 @@ func (o *GetModuleNotFound) Error() string {
 }
 
 func (o *GetModuleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetModuleInternalServerError creates a GetModuleInternalServerError with default headers values
+func NewGetModuleInternalServerError() *GetModuleInternalServerError {
+	return &GetModuleInternalServerError{}
+}
+
+/*GetModuleInternalServerError handles this case with default header values.
+
+Internal Server Error
+*/
+type GetModuleInternalServerError struct {
+	Payload *models.ServerError
+}
+
+func (o *GetModuleInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /tf/module/{id}][%d] getModuleInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetModuleInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ServerError)
 
