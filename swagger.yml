@@ -125,7 +125,6 @@ paths:
             type: object
             required:
               - name
-              - vcs-id
               - type
             properties:
               name:
