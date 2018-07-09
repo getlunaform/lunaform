@@ -36,5 +36,7 @@ to quickly create a Cobra application.`,
 
 func init() {
 	tfCmd.AddCommand(tfModulesCmd)
+	tfModulesCmd.AddCommand(tfModuleCreateCmd)
 	tfModulesCmd.AddCommand(tfModulesListCmd)
+	tfModulesCmd.AddCommand(tfModuleGetCmd)
 }

@@ -18,17 +18,14 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/drewsonne/terraform-server/client/client/tf"
-	"github.com/drewsonne/terraform-server/server/models"
 )
 
-var nameFlag string
-var typeFlag string
-var sourceFlag string
+var idFlag string
 
-// tfModuleCreateCmd represents the tfModuleCreate command
-var tfModuleCreateCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Link a git or terraform module repository to the server",
+// tfModuleGetCmd represents the tfModuleGet command
+var tfModuleGetCmd = &cobra.Command{
+	Use:   "get",
+	Short: "Get a module by its id",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -36,31 +33,14 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		params := tf.NewCreateModuleParams().WithTerraformModule(
-			&models.CreateModuleParamsBody{
-				Name:   &nameFlag,
-				Type:   &typeFlag,
-				Source: &sourceFlag,
-			},
-		)
-		module, err := gocdClient.Tf.CreateModule(params)
+		params := tf.NewGetModuleParams().WithID(idFlag)
+		module, err := gocdClient.Tf.GetModule(params)
 
-		if err == nil {
-			handleOutput(cmd, module.Payload, useHal, err)
-		} else {
-			handleOutput(cmd, nil, useHal, err)
-		}
+		handleOutput(cmd, module, useHal, err)
 	},
 }
 
 func init() {
-
-	flags := tfModuleCreateCmd.Flags()
-	flags.StringVar(&nameFlag, "name", "", "Name of the terraform module")
-	flags.StringVar(&typeFlag, "type", "", "Type of the module. One of {git,registry,enterprise}")
-	flags.StringVar(&sourceFlag, "source", "", "Source of the terraform module")
-
-	tfModuleCreateCmd.MarkFlagRequired("name")
-	tfModuleCreateCmd.MarkFlagRequired("type")
-	tfModuleCreateCmd.MarkFlagRequired("source")
+	tfModuleGetCmd.Flags().StringVar(&idFlag, "id", "",
+		"ID of the terraform module in terraform-server")
 }
