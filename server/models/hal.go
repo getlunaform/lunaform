@@ -40,3 +40,7 @@ func (list *ResourceList) Clean() interface{} {
 func (m *ResponseListTfModules) Clean() interface{} {
 	return m.Embedded.Clean()
 }
+
+func (se *ServerError) Clean() interface{} {
+	return se
+}
