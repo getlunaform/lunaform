@@ -24,7 +24,9 @@ func (m *ResourceListTfModule) Clean() interface{} {
 	for i, rsc := range m.Resources {
 		rscs[i] = rsc.Clean()
 	}
-	return rscs
+	return map[string]interface{}{
+		"modules": rscs,
+	}
 }
 
 func (list *ResourceList) Clean() interface{} {

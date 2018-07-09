@@ -7,6 +7,8 @@ import (
 	"github.com/drewsonne/terraform-server/server/restapi/operations/tf"
 	"github.com/drewsonne/terraform-server/backend/database"
 	"github.com/pborman/uuid"
+	"encoding/json"
+	"strings"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
@@ -26,10 +28,10 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 
 		modules := make([]*models.ResourceTfModule, len(records))
 		for i, record := range records {
-			modules[i] = &models.ResourceTfModule{
-				Name:  &record.Value,
-				Links: halSelfLink(ch.FQEndpoint + "/" + record.Value),
-			}
+			mod := models.ResourceTfModule{}
+			json.Unmarshal([]byte(record.Value), &mod)
+			mod.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + mod.VcsID)
+			modules[i] = &mod
 		}
 
 		return tf.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
@@ -46,7 +48,8 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 		ch.SetRequest(params.HTTPRequest)
 
 		newId := uuid.New()
-		db.Create("tf-module", newId, params)
+		params.TerraformModule.VcsID = newId
+		db.Create("tf-module", newId, params.TerraformModule)
 
 		response := &models.ResourceTfModule{
 			Links: halRootRscLinks(ch),
