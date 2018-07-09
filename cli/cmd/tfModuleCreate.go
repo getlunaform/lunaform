@@ -17,7 +17,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"fmt"
+	"github.com/drewsonne/terraform-server/client/client/tf"
+	"github.com/drewsonne/terraform-server/server/models"
 )
 
 // tfModuleCreateCmd represents the tfModuleCreate command
@@ -31,30 +32,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		gocdClient.Tf.CreateModule()
-		module, resp, err := gocdClient.TfApi.CreateModule(ctx, map[string]interface{}{
-			"terraformModule": map[string]interface{}{
-				"name": "test",
-				"type": "test",
+		module, err := gocdClient.Tf.CreateModule(&tf.CreateModuleParams{
+			TerraformModule: &models.CreateModuleParamsBody{
+				Name: String("test"),
+				Type: String("test"),
 			},
 		})
 
-		fmt.Print(resp)
-
-		handleOutput(cmd, &module, useHal, err)
+		handleOutput(cmd, module.Payload, useHal, err)
 	},
 }
 
 func init() {
 	tfModulesCmd.AddCommand(tfModuleCreateCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tfModuleCreateCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tfModuleCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

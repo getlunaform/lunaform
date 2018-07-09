@@ -87,7 +87,9 @@ build-client:
 	swagger generate client \
 		-f swagger.yml \
 		-A terraform-server-client \
-		--client-package client && \
+		--existing-models github.com/drewsonne/terraform-server/server/models \
+		--skip-models \
+		--target client && \
 	go build -o tfs-client github.com/drewsonne/terraform-server/cli
 
 client-clean: clean-client build-client

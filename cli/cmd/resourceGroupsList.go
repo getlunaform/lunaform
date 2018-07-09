@@ -32,6 +32,6 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		resources, err := gocdClient.Resources.ListResourceGroups(nil)
 
-		handleOutput(cmd, &resources, useHal, err)
+		handleOutput(cmd, resources.Payload, useHal, err)
 	},
 }

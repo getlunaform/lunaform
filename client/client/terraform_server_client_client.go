@@ -11,8 +11,8 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/drewsonne/terraform-server/client/resources"
-	"github.com/drewsonne/terraform-server/client/tf"
+	"github.com/drewsonne/terraform-server/client/client/resources"
+	"github.com/drewsonne/terraform-server/client/client/tf"
 )
 
 // Default terraform server client HTTP client.

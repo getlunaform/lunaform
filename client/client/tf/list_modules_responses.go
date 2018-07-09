@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/drewsonne/terraform-server/models"
+	"github.com/drewsonne/terraform-server/server/models"
 )
 
 // ListModulesReader is a Reader for the ListModules structure.

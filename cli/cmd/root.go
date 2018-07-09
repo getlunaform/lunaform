@@ -23,8 +23,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"context"
-	apiclient "github.com/drewsonne/terraform-server/client"
+	apiclient "github.com/drewsonne/terraform-server/client/client"
+	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
 )
 
 var cfgFile string
@@ -93,12 +95,11 @@ func initConfig() {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 
-	gocdClient = apiclient.NewHTTPClientWithConfig(
-		strfmt.Default,
-		&apiclient.TransportConfig{
-			Host:     "localhost:8080",
-			BasePath: "/api",
-			Schemes:  []string{"http", "https"},
-		},
-	)
+	cfg := apiclient.DefaultTransportConfig().WithHost("localhost:8080").WithSchemes([]string{"http"})
+	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
+
+	transport.Producers["application/vnd.terraform.server.v1+json"] = runtime.JSONProducer()
+	transport.Consumers["application/vnd.terraform.server.v1+json"] = runtime.JSONConsumer()
+
+	gocdClient = apiclient.New(transport, strfmt.Default)
 }

@@ -32,6 +32,6 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		modules, err := gocdClient.Tf.ListModules(nil)
 
-		handleOutput(cmd, &modules, useHal, err)
+		handleOutput(cmd, modules.Payload, useHal, err)
 	},
 }

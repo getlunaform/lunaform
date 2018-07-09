@@ -6,6 +6,7 @@ import (
 	"os"
 	"github.com/spf13/cobra"
 	"strings"
+	"github.com/drewsonne/terraform-server/server/models"
 )
 
 func handlerError(err error) {
@@ -19,7 +20,7 @@ func handlerError(err error) {
 	os.Exit(1)
 }
 
-func handleOutput(action *cobra.Command, v interface{}, hal bool, err error) {
+func handleOutput(action *cobra.Command, v models.HalLinkable, hal bool, err error) {
 	if err != nil {
 		handlerError(err)
 	} else {
@@ -31,7 +32,11 @@ func handleOutput(action *cobra.Command, v interface{}, hal bool, err error) {
 			),
 		}
 
-		payload["response"] = v
+		if hal {
+			payload["response"] = v
+		} else {
+			payload["response"] = v.Clean()
+		}
 
 		fmt.Print(jsonResponse(payload))
 	}

@@ -197,7 +197,6 @@ definitions:
   response-list-resources:
     type: object
     required:
-      - _links
       - _embedded
     description: List of resources
     properties:

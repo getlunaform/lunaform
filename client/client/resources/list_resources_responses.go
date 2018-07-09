@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/drewsonne/terraform-server/models"
+	"github.com/drewsonne/terraform-server/server/models"
 )
 
 // ListResourcesReader is a Reader for the ListResources structure.
