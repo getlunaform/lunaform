@@ -33,14 +33,20 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		params := tf.NewGetModuleParams().WithID(idFlag)
-		module, err := gocdClient.Tf.GetModule(params)
+		module, err := gocdClient.Tf.GetModule(
+			tf.NewGetModuleParams().WithID(idFlag),
+		)
 
-		handleOutput(cmd, module, useHal, err)
+		if err == nil {
+			handleOutput(cmd, module.Payload, useHal, err)
+		} else {
+			handleOutput(cmd, nil, useHal, err)
+		}
 	},
 }
 
 func init() {
 	tfModuleGetCmd.Flags().StringVar(&idFlag, "id", "",
 		"ID of the terraform module in terraform-server")
+	tfModuleGetCmd.MarkFlagRequired("id")
 }
