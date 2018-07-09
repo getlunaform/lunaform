@@ -24,9 +24,9 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 			})
 		}
 
-		modules := make([]*models.ResponseTfModule, len(records))
+		modules := make([]*models.ResourceTfModule, len(records))
 		for i, record := range records {
-			modules[i] = &models.ResponseTfModule{
+			modules[i] = &models.ResourceTfModule{
 				Name:  &record.Value,
 				Links: halSelfLink(ch.FQEndpoint + "/" + record.Value),
 			}
@@ -46,15 +46,15 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 		newId := uuid.New()
 		db.Create("tf-module", newId, params)
 
-		response := &models.ResponseTfModule{
+		response := &models.ResourceTfModule{
 			Links: halRootRscLinks(ch),
-			VcsID: String(newId),
+			VcsID: newId,
 		}
 		if params.TerraformModule == nil {
 			return tf.NewCreateModuleBadRequest()
 		} else {
 			response.Name = params.TerraformModule.Name
-			response.Type = *params.TerraformModule.Type
+			response.Type = params.TerraformModule.Type
 			return tf.NewCreateModuleCreated().WithPayload(response)
 		}
 

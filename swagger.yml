@@ -144,7 +144,7 @@ paths:
                 $ref: "#/definitions/hal-rsc-links"
               name: my-tf-module
           schema:
-            $ref: "#/definitions/response-tf-module"
+            $ref: "#/definitions/resource-tf-module"
         400:
           description: Bad Request
 definitions:
@@ -172,20 +172,18 @@ definitions:
       _embedded:
         type: array
         items:
-          $ref: "#/definitions/response-tf-module"
-  response-tf-module:
+          $ref: "#/definitions/resource-tf-module"
+  resource-tf-module:
     type: object
     required:
-      - _links
       - name
-      - vcs-id
+      - type
     description: A TF module
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
       vcs-id:
         type: string
-#        format: uuid4
       name:
         type: string
       type:

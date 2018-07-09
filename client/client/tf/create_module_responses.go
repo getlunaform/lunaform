@@ -54,7 +54,7 @@ func NewCreateModuleCreated() *CreateModuleCreated {
 OK
 */
 type CreateModuleCreated struct {
-	Payload *models.ResponseTfModule
+	Payload *models.ResourceTfModule
 }
 
 func (o *CreateModuleCreated) Error() string {
@@ -63,7 +63,7 @@ func (o *CreateModuleCreated) Error() string {
 
 func (o *CreateModuleCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ResponseTfModule)
+	o.Payload = new(models.ResourceTfModule)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
