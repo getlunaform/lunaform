@@ -185,6 +185,10 @@ paths:
           description: Not Found
           schema:
             $ref: "#/definitions/server-error"
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
 
 definitions:
 #  module:
