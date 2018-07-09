@@ -33,8 +33,10 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 		}
 
 		return tf.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
-			Links:    halRootRscLinks(ch),
-			Embedded: modules,
+			Links: halRootRscLinks(ch),
+			Embedded: &models.ResourceListTfModule{
+				Resources: modules,
+			},
 		})
 	})
 }
