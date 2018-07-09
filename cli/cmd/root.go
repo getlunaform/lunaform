@@ -22,13 +22,14 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	tfs "github.com/drewsonne/terraform-server/cli/library"
 	"context"
+	apiclient "github.com/drewsonne/terraform-server/client"
+	"github.com/go-openapi/strfmt"
 )
 
 var cfgFile string
 var useHal bool
-var gocdClient *tfs.APIClient
+var gocdClient *apiclient.TerraformServerClient
 var ctx = context.Background()
 
 // rootCmd represents the base command when called without any subcommands
@@ -64,7 +65,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/tfs-client.yaml)")
-	rootCmd.PersistentFlags().BoolVar(&useHal, "hal",false, "draw HAL elements in response")
+	rootCmd.PersistentFlags().BoolVar(&useHal, "hal", false, "draw HAL elements in response")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -92,7 +93,12 @@ func initConfig() {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 
-	gocdClient = tfs.NewAPIClient(&tfs.Configuration{
-		BasePath: "http://localhost:8080/api",
-	})
+	gocdClient = apiclient.NewHTTPClientWithConfig(
+		strfmt.Default,
+		&apiclient.TransportConfig{
+			Host:     "localhost:8080",
+			BasePath: "/api",
+			Schemes:  []string{"http", "https"},
+		},
+	)
 }

@@ -88,6 +88,6 @@ build-client:
 		-f swagger.yml \
 		-A terraform-server-client \
 		--client-package client && \
-	go build -o tfs-client github.com/drewsonne/terraform-server/client
+	go build -o tfs-client github.com/drewsonne/terraform-server/cli
 
 client-clean: clean-client build-client

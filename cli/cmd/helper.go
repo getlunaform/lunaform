@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"encoding/json"
 	"os"
-	tfs "github.com/drewsonne/terraform-server/cli/library"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -20,7 +19,7 @@ func handlerError(err error) {
 	os.Exit(1)
 }
 
-func handleOutput(action *cobra.Command, v tfs.HalLinked, hal bool, err error) {
+func handleOutput(action *cobra.Command, v interface{}, hal bool, err error) {
 	if err != nil {
 		handlerError(err)
 	} else {
@@ -32,11 +31,7 @@ func handleOutput(action *cobra.Command, v tfs.HalLinked, hal bool, err error) {
 			),
 		}
 
-		if !hal {
-			payload["response"] = v.Clean()
-		} else {
-			payload["response"] = v
-		}
+		payload["response"] = v
 
 		fmt.Print(jsonResponse(payload))
 	}
@@ -58,4 +53,8 @@ func buildActionName(c *cobra.Command, names []string) []string {
 		names = buildActionName(parent, names)
 	}
 	return names
+}
+
+func String(s string) *string {
+	return &s
 }
