@@ -169,8 +169,8 @@ paths:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               name: my-tf-module
-            schema:
-              $ref: "#/definitions/resource-tf-module"
+          schema:
+            $ref: "#/definitions/resource-tf-module"
 
 definitions:
 #  module:
