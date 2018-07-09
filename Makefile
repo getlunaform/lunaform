@@ -84,10 +84,10 @@ run-docker: build-docker
 	docker run -p 8080:8080 terraform-server
 
 build-client:
-	swagger-codegen generate \
-		-i http://127.0.0.1:8080/swagger.json \
-		-l go \
-		-o client/library
+	swagger generate client \
+		-f swagger.yml \
+		-A terraform-server-client \
+		--client-package client && \
 	go build -o tfs-client github.com/drewsonne/terraform-server/client
 
 client-clean: clean-client build-client
