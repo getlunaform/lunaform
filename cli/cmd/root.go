@@ -27,6 +27,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/runtime"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 var cfgFile string
@@ -72,6 +73,8 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	jww.SetStdoutThreshold(jww.LevelTrace)
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -84,8 +87,8 @@ func initConfig() {
 		}
 
 		// Search config in home directory with name ".client" (without extension).
-		viper.AddConfigPath(home + ".config/")
-		viper.SetConfigName("tfs-client.yaml")
+		viper.AddConfigPath(home + "/.config/")
+		viper.SetConfigName("tfs-client")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -95,7 +98,13 @@ func initConfig() {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 
-	cfg := apiclient.DefaultTransportConfig().WithHost("localhost:8080").WithSchemes([]string{"http"})
+	host := viper.GetString("host")
+	port := viper.GetString("port")
+	schemes := viper.GetStringSlice("schemes")
+
+	cfg := apiclient.DefaultTransportConfig().
+		WithHost(host + ":" + port).
+		WithSchemes(schemes)
 	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
 	transport.Context = context.Background()
 
