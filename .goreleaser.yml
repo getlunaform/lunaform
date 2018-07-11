@@ -23,3 +23,18 @@ brew:
   install: |
     bin.install "terraform-server"
     bin.install "tfs-client"
+
+nfpm:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+  replacements:
+    amd64: 64-bit
+    386: 32-bit
+    darwin: macOS
+
+  vendor: Drew J. Sonne
+  homepage: https://github.com/drewsonne/terraform-server
+  maintainer: Drew J. Sonne <drew.sonne@gmail.com>
+  formats:
+    - deb
+    - rpm
