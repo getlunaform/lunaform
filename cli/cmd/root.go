@@ -52,10 +52,12 @@ var logLevelMapping = map[string]jww.Threshold{
 }
 
 type Configuration struct {
-	host      string
-	port      string
-	schemes   []string
-	log_level string
+	Host    string
+	Port    string
+	Schemes []string
+	Log struct {
+		Level string
+	}
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -126,7 +128,7 @@ func initConfig() {
 }
 
 func initLogging() {
-	logLevel := strings.ToUpper(config.log_level)
+	logLevel := strings.ToUpper(config.Log.Level)
 	jww.SetLogThreshold(
 		logLevelMapping[logLevel],
 	)
@@ -134,8 +136,8 @@ func initLogging() {
 
 func initGocdClient() {
 	cfg := apiclient.DefaultTransportConfig().
-		WithHost(config.host + ":" + config.port).
-		WithSchemes(config.schemes)
+		WithHost(config.Host + ":" + config.Port).
+		WithSchemes(config.Schemes)
 	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
 	transport.Context = context.Background()
 
