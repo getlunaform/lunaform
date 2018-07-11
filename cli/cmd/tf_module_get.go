@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/terraform-server/client/client/tf"
+	"github.com/drewsonne/terraform-server/client/client/modules"
 )
 
 var idFlag string
@@ -33,15 +33,15 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		module, err := gocdClient.Tf.GetModule(
-			tf.NewGetModuleParams().WithID(idFlag),
+		module, err := gocdClient.Modules.GetModule(
+			modules.NewGetModuleParams().WithID(idFlag),
 		)
 
 		if err == nil {
 			handleOutput(cmd, module.Payload, useHal, err)
-		} else if err1, ok := err.(*tf.GetModuleNotFound); ok {
+		} else if err1, ok := err.(*modules.GetModuleNotFound); ok {
 			handleOutput(cmd, err1.Payload, useHal, nil)
-		} else if err1, ok := err.(*tf.GetModuleInternalServerError); ok {
+		} else if err1, ok := err.(*modules.GetModuleInternalServerError); ok {
 			handleOutput(cmd, err1.Payload, useHal, nil)
 		} else {
 			handleOutput(cmd, nil, useHal, err)

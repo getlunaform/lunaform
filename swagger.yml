@@ -27,7 +27,8 @@ x-tagGroups:
       - resources
   - name: Terraform
     tags:
-      - tf
+      - modules
+      - stacks
 
 paths:
   /:
@@ -90,7 +91,7 @@ paths:
   /tf/stacks:
     post:
       tags:
-        - tf
+        - stacks
       description: Deploy a stack from a module
       operationId: deploy-stack
       produces: ["application/vnd.terraform.server.v1+json"]
@@ -116,7 +117,7 @@ paths:
   /tf/modules:
     get:
       tags:
-        - tf
+        - modules
       description: List TF modules
       operationId: list-modules
       produces: ["application/vnd.terraform.server.v1+json"]
@@ -143,7 +144,7 @@ paths:
             $ref: "#/definitions/server-error"
     post:
       tags:
-        - tf
+        - modules
       description: Upload a Terraform module
       operationId: create-module
       produces: ["application/vnd.terraform.server.v1+json"]
@@ -169,7 +170,7 @@ paths:
   /tf/stacks:
     get:
       tags:
-        - tf
+        - stacks
       description: List deployed TF modules
       operationId: list-stacks
       produces: ["application/vnd.terraform.server.v1+json"]
@@ -196,7 +197,7 @@ paths:
             $ref: "#/definitions/server-error"
     post:
       tags:
-        - tf
+        - stacks
       description: Deploy a terraform stack as a module
       operationId: deploy-stack
       parameters:
@@ -215,7 +216,7 @@ paths:
   /tf/module/{id}:
     get:
       tags:
-        - tf
+        - modules
       description: Get a Terraform module
       operationId: get-module
       parameters:

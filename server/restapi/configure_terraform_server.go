@@ -16,11 +16,14 @@ import (
 	"net/http/httputil"
 	"net/http/httptest"
 	"os"
+	"github.com/go-openapi/swag"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
 
 //go:generate swagger generate server --target ../server --name TerraformServer --spec ../swagger.yml --principal models.Principal
+
+var version string
 
 func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// configure the api here
@@ -73,16 +76,25 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.ResourcesListResourcesHandler = ListResourcesController(idp, oh)
 
 	// Controllers for /tf/modules
-	api.TfListModulesHandler = ListTfModulesController(idp, oh, db)
-	api.TfCreateModuleHandler = CreateTfModuleController(idp, oh, db)
-	api.TfGetModuleHandler = GetTfModuleController(idp, oh, db)
+	api.ModulesListModulesHandler = ListTfModulesController(idp, oh, db)
+	api.ModulesCreateModuleHandler = CreateTfModuleController(idp, oh, db)
+	api.ModulesGetModuleHandler = GetTfModuleController(idp, oh, db)
 
 	// Controllers for /tf/stacks
-	api.TfDeployStackHandler = CreateTfStackController(idp, oh, db)
-	api.TfListStacksHandler = ListTfStacksController(idp, oh, db)
+	api.StacksDeployStackHandler = CreateTfStackController(idp, oh, db)
+	api.StacksListStacksHandler = ListTfStacksController(idp, oh, db)
 
 	api.ServerShutdown = func() {
 		dbDriver.Close()
+	}
+
+	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
+		{
+			ShortDescription: "Version",
+			Options: map[string]string{
+				"one": "two",
+			},
+		},
 	}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))

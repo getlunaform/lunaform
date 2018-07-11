@@ -11,8 +11,9 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
+	"github.com/drewsonne/terraform-server/client/client/modules"
 	"github.com/drewsonne/terraform-server/client/client/resources"
-	"github.com/drewsonne/terraform-server/client/client/tf"
+	"github.com/drewsonne/terraform-server/client/client/stacks"
 )
 
 // Default terraform server client HTTP client.
@@ -58,9 +59,11 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *TerraformS
 	cli := new(TerraformServerClient)
 	cli.Transport = transport
 
+	cli.Modules = modules.New(transport, formats)
+
 	cli.Resources = resources.New(transport, formats)
 
-	cli.Tf = tf.New(transport, formats)
+	cli.Stacks = stacks.New(transport, formats)
 
 	return cli
 }
@@ -106,9 +109,11 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // TerraformServerClient is a client for terraform server client
 type TerraformServerClient struct {
+	Modules *modules.Client
+
 	Resources *resources.Client
 
-	Tf *tf.Client
+	Stacks *stacks.Client
 
 	Transport runtime.ClientTransport
 }
@@ -117,8 +122,10 @@ type TerraformServerClient struct {
 func (c *TerraformServerClient) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
+	c.Modules.SetTransport(transport)
+
 	c.Resources.SetTransport(transport)
 
-	c.Tf.SetTransport(transport)
+	c.Stacks.SetTransport(transport)
 
 }

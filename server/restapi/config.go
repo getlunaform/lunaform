@@ -48,6 +48,7 @@ func (cfg *Configuration) loadFromFile(path string) (err error) {
 //ConfigFileFlags for loading settings for the server
 type ConfigFileFlags struct {
 	ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
+	Version bool `short:"V" long:"version" description:"Print terraform-server version and quit"`
 }
 
 func parseCliConfiguration() (cfg *Configuration, err error) {
@@ -75,8 +76,8 @@ func newDefaultConfiguration() *Configuration {
 func configureFlags(api *operations.TerraformServerAPI) {
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
 		{
-			ShortDescription: "Config",
-			LongDescription:  "Configuration",
+			ShortDescription: "Terraform Server",
+			LongDescription:  "Server Configuration",
 			Options:          &cliconfig,
 		},
 	}

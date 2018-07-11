@@ -17,9 +17,10 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/terraform-server/client/client/tf"
 	"github.com/drewsonne/terraform-server/server/models"
 	"fmt"
+	"github.com/drewsonne/terraform-server/client/client/modules"
+	"github.com/drewsonne/terraform-server/client/client/stacks"
 )
 
 var flagModule string
@@ -43,8 +44,8 @@ to quickly create a Cobra application.`,
 		moduleSrcIsId := true
 		if flagModuleId == "" && flagModule != "" {
 			moduleSrcIsId = false
-			modules, err := gocdClient.Tf.ListModules(
-				tf.NewListModulesParams(),
+			modules, err := gocdClient.Modules.ListModules(
+				modules.NewListModulesParams(),
 			)
 			if err == nil {
 				for _, module = range modules.Payload.Embedded.Resources {
@@ -54,7 +55,7 @@ to quickly create a Cobra application.`,
 				}
 			}
 		} else if flagModuleId != "" {
-			moduleResponse, err := gocdClient.Tf.GetModule(tf.NewGetModuleParams().WithID(
+			moduleResponse, err := gocdClient.Modules.GetModule(modules.NewGetModuleParams().WithID(
 				flagModuleId,
 			))
 			if err == nil {
@@ -76,13 +77,13 @@ to quickly create a Cobra application.`,
 			handleOutput(cmd, nil, useHal, err)
 		}
 
-		params := tf.NewDeployStackParams().WithTerraformStack(
+		params := stacks.NewDeployStackParams().WithTerraformStack(
 			&models.ResourceTfStack{
 				ModuleID: String(module.VcsID),
 				Name:     String(flagName),
 			},
 		)
-		stack, err := gocdClient.Tf.DeployStack(params)
+		stack, err := gocdClient.Stacks.DeployStack(params)
 		if err == nil {
 			handleOutput(cmd, stack.Payload, useHal, err)
 		} else {
