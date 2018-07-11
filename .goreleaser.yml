@@ -1,9 +1,16 @@
 ---
 builds:
   - binary: terraform-server
+    main: ./server/cmd/terraform-server-server/main.go
     goos:
       - windows
       - darwin
       - linux
     goarch:
       - amd64
+  - binary: tfs-client
+    main: ./cli/main.go
+    ldflags:
+      - -X github.com/drewsonne/terraform-server/cli/cmd.version={{.Version}}
+git:
+  short_hash: true
