@@ -243,7 +243,36 @@ paths:
           description: Internal Server Error
           schema:
             $ref: "#/definitions/server-error"
-
+  /tf/stack/{id}:
+    get:
+      tags:
+        - stacks
+      description: Get a stack
+      operationId: get-stack
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Unique identifier for this stack
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-module
+          schema:
+            $ref: "#/definitions/resource-tf-stack"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/server-error"
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
 definitions:
 #  module:
 #    type: string

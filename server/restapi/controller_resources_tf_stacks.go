@@ -11,6 +11,16 @@ import (
 	"github.com/pborman/uuid"
 )
 
+const (
+	TF_STACK_STATUS_WAITING_FOR_DEPLOYMENT = "waiting_for_deployment"
+	TF_STACK_STATUS_DEPLOY_FAIL            = "deployment_failed"
+	TF_STACK_STATUS_DEPLOY_SUCEED          = "deployment_succeeded"
+	TF_DEPLOYMENT_STATUS_PENDING           = "pending"
+	TF_DEPLOYMENT_STATUS_DEPLOYING         = "deploying"
+	TF_DEPLOYMENT_STATUS_SUCCESS           = "finished"
+	TF_DEPLOYMENT_STATUS_FAIL              = "failed"
+)
+
 var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
 	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
@@ -75,3 +85,32 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 		return operations.NewDeployStackAccepted().WithPayload(response)
 	})
 }
+
+//var GetTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
+//	return operations.GetStackHandlerFunc(func(params operations.GetModuleParams) (r middleware.Responder) {
+//		ch.SetRequest(params.HTTPRequest)
+//
+//		id := params.ID
+//
+//		var module *models.ResourceTfModule
+//		err := db.Read("tf-module", id, module)
+//
+//		if err != nil {
+//			return operations.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
+//				StatusCode: Int64(500),
+//				Status:     String("Internal Server Error"),
+//				Message:    String(err.Error()),
+//			})
+//		} else if module == nil {
+//			return operations.NewGetModuleNotFound().WithPayload(&models.ServerError{
+//				StatusCode: Int64(404),
+//				Status:     String("Not Found"),
+//				Message:    String("Could not find module with id '" + id + "'"),
+//			})
+//		} else {
+//			module.Links = halSelfLink(ch.FQEndpoint)
+//			module.Links.Doc = halDocLink(ch).Doc
+//			return operations.NewGetModuleOK().WithPayload(module)
+//		}
+//	})
+//}

@@ -11,15 +11,6 @@ import (
 	operations "github.com/drewsonne/terraform-server/server/restapi/operations/modules"
 )
 
-const (
-	TF_STACK_STATUS_WAITING_FOR_DEPLOYMENT = "waiting_for_deployment"
-	TF_STACK_STATUS_DEPLOY_FAIL            = "deployment_failed"
-	TF_STACK_STATUS_DEPLOY_SUCEED          = "deployment_succeeded"
-	TF_DEPLOYMENT_STATUS_DEPLOYING         = "deploying"
-	TF_DEPLOYMENT_STATUS_SUCCESS           = "finished"
-	TF_DEPLOYMENT_STATUS_FAIL              = "failed"
-)
-
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams) (r middleware.Responder) {

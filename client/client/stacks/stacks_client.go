@@ -53,6 +53,34 @@ func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackAccepted, e
 }
 
 /*
+GetStack Get a stack
+*/
+func (a *Client) GetStack(params *GetStackParams) (*GetStackOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetStackParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "get-stack",
+		Method:             "GET",
+		PathPattern:        "/tf/stack/{id}",
+		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetStackReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetStackOK), nil
+
+}
+
+/*
 ListStacks List deployed TF modules
 */
 func (a *Client) ListStacks(params *ListStacksParams) (*ListStacksOK, error) {
