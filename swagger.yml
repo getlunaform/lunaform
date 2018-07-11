@@ -167,6 +167,33 @@ paths:
         400:
           description: Bad Request
   /tf/stacks:
+    get:
+      tags:
+        - tf
+      description: List deployed TF modules
+      operationId: list-stacks
+      produces: ["application/vnd.terraform.server.v1+json"]
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.terraform.server.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              _embedded:
+                resources:
+                  - name: template
+                    _links: {self: {href: "http://example.com/api/tf/template"}}
+                  - name: stack
+                    _links: {self: {href: "http://example.com/api/tf/stack"}}
+          schema:
+            $ref: "#/definitions/response-list-tf-stacks"
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
     post:
       tags:
         - tf
@@ -272,6 +299,27 @@ definitions:
           - git
           - registry
           - enterprise
+  response-list-tf-stacks:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of tf modules
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-stack"
+  resource-list-tf-stack:
+    type: object
+    readOnly: true
+    required:
+      - resources
+    properties:
+      resources:
+        type: array
+        items:
+          $ref: "#/definitions/resource-tf-stack"
   resource-tf-stack:
     type: object
     required:

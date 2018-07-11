@@ -147,3 +147,34 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 		return tf.NewDeployStackAccepted().WithPayload(response)
 	})
 }
+
+var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db database.Database) tf.ListStacksHandlerFunc {
+	return tf.ListStacksHandlerFunc(func(params tf.ListStacksParams) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		records, err := db.List("tf-stack")
+		if err != nil {
+			var statuscode int64 = 500
+			return tf.NewListStacksInternalServerError().WithPayload(&models.ServerError{
+				StatusCode: &statuscode,
+				Status:     String("Internal Server Error"),
+				Message:    String(err.Error()),
+			})
+		}
+
+		stacks := make([]*models.ResourceTfModule, len(records))
+		for i, record := range records {
+			mod := models.ResourceTfModule{}
+			json.Unmarshal([]byte(record.Value), &mod)
+			mod.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + mod.VcsID)
+			stacks[i] = &mod
+		}
+
+		return tf.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
+			Links: halRootRscLinks(ch),
+			Embedded: &models.ResourceListTfStack{
+				Resources: stacks,
+			},
+		})
+	})
+}
