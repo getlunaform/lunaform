@@ -25,13 +25,16 @@ func (resource *Resource) Clean() interface{} {
 }
 
 func (m *ResourceListTfModule) Clean() interface{} {
-	rscs := make([]interface{}, len(m.Resources))
-	for i, rsc := range m.Resources {
-		rscs[i] = rsc.Clean()
+	if m != nil {
+		rscs := make([]interface{}, len(m.Resources))
+		for i, rsc := range m.Resources {
+			rscs[i] = rsc.Clean()
+		}
+		return map[string]interface{}{
+			"modules": rscs,
+		}
 	}
-	return map[string]interface{}{
-		"modules": rscs,
-	}
+	return make([]interface{}, 0)
 }
 
 func (list *ResourceList) Clean() interface{} {
