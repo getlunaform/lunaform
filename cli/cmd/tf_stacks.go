@@ -23,8 +23,8 @@ import (
 
 // tfStackCmd represents the tfStack command
 var tfStackCmd = &cobra.Command{
-	Use:   "stacks",
-	Short: "A brief description of your command",
+	Use:   "stack",
+	Short: "A deployment of a terraform module",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -37,15 +37,5 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(tfStackCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tfStackCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tfStackCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tfCmd.AddCommand(tfStackCmd)
 }

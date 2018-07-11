@@ -21,8 +21,8 @@ import (
 
 // tfModulesCmd represents the tfModules command
 var tfModulesCmd = &cobra.Command{
-	Use:   "modules",
-	Short: "A brief description of your command",
+	Use:   "module",
+	Short: "Terraform modules",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

@@ -16,14 +16,18 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/drewsonne/terraform-server/client/client/tf"
+	"github.com/drewsonne/terraform-server/server/models"
 )
+
+var flagModule string
+var flagModuleId string
+var flagName string
 
 // tfStackCreateCmd represents the tfStackCreate command
 var tfStackCreateCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "deploy",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -32,20 +36,55 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tfStackCreate called")
+
+		var module *models.ResourceTfModule
+		if flagModuleId == "" && flagModule != "" {
+			modules, err := gocdClient.Tf.ListModules(
+				tf.NewListModulesParams(),
+			)
+			if err != nil {
+				handleOutput(cmd, nil, useHal, err)
+			}
+			for _, module = range modules.Payload.Embedded.Resources {
+				if *module.Name == flagModule {
+					break
+				}
+			}
+		} else if flagModuleId != "" {
+			moduleResponse, err := gocdClient.Tf.GetModule(tf.NewGetModuleParams().WithID(
+				flagModuleId,
+			))
+			if err != nil {
+				handleOutput(cmd, nil, useHal, err)
+			}
+			module = moduleResponse.Payload
+		}
+
+		tf.NewDeployStackParams().WithTerraformStack(
+			&models.ResourceTfStack{},
+		)
+		stack, err := gocdClient.Tf.DeployStack(tf.NewDeployStackParams().WithTerraformStack(
+			&models.ResourceTfStack{
+				ModuleID: String(module.VcsID),
+				Name:     String(flagName),
+			},
+		))
+		if err == nil {
+			handleOutput(cmd, stack.Payload, useHal, err)
+		} else {
+			handleOutput(cmd, nil, useHal, err)
+		}
+
 	},
 }
 
 func init() {
 	tfStackCmd.AddCommand(tfStackCreateCmd)
 
-	// Here you will define your flags and configuration settings.
+	flags := tfStackCreateCmd.Flags()
+	flags.StringVar(&flagModule, "module", "", "Name of the terraform module to deploy")
+	flags.StringVar(&flagModuleId, "module-id", "", "ID of the terraform module to deploy")
+	flags.StringVar(&flagName, "name", "", "Name of the deployed terraform module")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tfStackCreateCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tfStackCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tfStackCreateCmd.MarkFlagRequired("name")
 }

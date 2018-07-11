@@ -25,71 +25,43 @@ type DeployStackReader struct {
 func (o *DeployStackReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
-	case 201:
-		result := NewDeployStackCreated()
+	case 202:
+		result := NewDeployStackAccepted()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
-	case 400:
-		result := NewDeployStackBadRequest()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 
 	default:
 		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
 }
 
-// NewDeployStackCreated creates a DeployStackCreated with default headers values
-func NewDeployStackCreated() *DeployStackCreated {
-	return &DeployStackCreated{}
+// NewDeployStackAccepted creates a DeployStackAccepted with default headers values
+func NewDeployStackAccepted() *DeployStackAccepted {
+	return &DeployStackAccepted{}
 }
 
-/*DeployStackCreated handles this case with default header values.
+/*DeployStackAccepted handles this case with default header values.
 
-OK
+Accepted
 */
-type DeployStackCreated struct {
-	Payload *models.ResourceTfModule
+type DeployStackAccepted struct {
+	Payload *models.ResourceTfStack
 }
 
-func (o *DeployStackCreated) Error() string {
-	return fmt.Sprintf("[POST /tf/stacks][%d] deployStackCreated  %+v", 201, o.Payload)
+func (o *DeployStackAccepted) Error() string {
+	return fmt.Sprintf("[POST /tf/stacks][%d] deployStackAccepted  %+v", 202, o.Payload)
 }
 
-func (o *DeployStackCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *DeployStackAccepted) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ResourceTfModule)
+	o.Payload = new(models.ResourceTfStack)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
-
-	return nil
-}
-
-// NewDeployStackBadRequest creates a DeployStackBadRequest with default headers values
-func NewDeployStackBadRequest() *DeployStackBadRequest {
-	return &DeployStackBadRequest{}
-}
-
-/*DeployStackBadRequest handles this case with default header values.
-
-Bad Request
-*/
-type DeployStackBadRequest struct {
-}
-
-func (o *DeployStackBadRequest) Error() string {
-	return fmt.Sprintf("[POST /tf/stacks][%d] deployStackBadRequest ", 400)
-}
-
-func (o *DeployStackBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

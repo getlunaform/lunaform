@@ -65,7 +65,7 @@ for the deploy stack operation typically these are written to a http.Request
 type DeployStackParams struct {
 
 	/*TerraformStack
-	  A deployed terraform module
+	  A deployed terraform stack
 
 	*/
 	TerraformStack *models.ResourceTfStack

@@ -53,9 +53,9 @@ func (a *Client) CreateModule(params *CreateModuleParams) (*CreateModuleCreated,
 }
 
 /*
-DeployStack Deploy a stack from a module
+DeployStack Deploy a terraform stack as a module
 */
-func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackCreated, error) {
+func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeployStackParams()
@@ -76,7 +76,7 @@ func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackCreated, er
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeployStackCreated), nil
+	return result.(*DeployStackAccepted), nil
 
 }
 

@@ -13,6 +13,11 @@ func (m *ResourceTfModule) Clean() interface{} {
 	return m
 }
 
+func (s *ResourceTfStack) Clean() interface{} {
+	s.Links = nil
+	return s
+}
+
 func (resource *Resource) Clean() interface{} {
 	return &Resource{
 		Name: resource.Name,
