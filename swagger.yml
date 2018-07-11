@@ -304,6 +304,12 @@ definitions:
         $ref: "#/definitions/hal-rsc-links"
       id:
         type: string
+      status:
+        type: string
+        enum:
+          - DEPLOYING
+          - SUCCESS
+          - FAIL
   response-list-resources:
     type: object
     required:

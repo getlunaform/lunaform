@@ -12,7 +12,12 @@ import (
 )
 
 const (
-	TF_STACK_STATUS_DEPLOYING = "deploying"
+	TF_STACK_STATUS_WAITING_FOR_DEPLOYMENT = "waiting_for_deployment"
+	TF_STACK_STATUS_DEPLOY_FAIL            = "deployment_failed"
+	TF_STACK_STATUS_DEPLOY_SUCEED          = "deployment_succeeded"
+	TF_DEPLOYMENT_STATUS_DEPLOYING         = "deploying"
+	TF_DEPLOYMENT_STATUS_SUCCESS           = "finished"
+	TF_DEPLOYMENT_STATUS_FAIL              = "failed"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
@@ -113,8 +118,11 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 		ch.SetRequest(params.HTTPRequest)
 
 		tfs := params.TerraformStack
-		newId := uuid.New()
-		tfs.ID = newId
+		tfs.ID = uuid.New()
+
+		tfs.Deployments = []*models.ResourceTfDeployment{
+			{ID: uuid.New(), Status: TF_DEPLOYMENT_STATUS_DEPLOYING},
+		}
 
 		err := db.Create("tf-stack", tfs.ID, tfs)
 
@@ -132,10 +140,10 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 			return tf.NewDeployStackBadRequest()
 		} else {
 			response.Name = tfs.Name
-			response.Status = TF_STACK_STATUS_DEPLOYING
+			response.Status = TF_STACK_STATUS_WAITING_FOR_DEPLOYMENT
 			response.ModuleID = tfs.ModuleID
-			response.Deployments = make([]*models.ResourceTfDeployment, 0)
-			return tf.NewDeployStackAccepted().WithPayload(response)
+			response.Deployments = tfs.Deployments
 		}
+		return tf.NewDeployStackAccepted().WithPayload(response)
 	})
 }

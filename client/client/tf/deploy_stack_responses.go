@@ -32,6 +32,13 @@ func (o *DeployStackReader) ReadResponse(response runtime.ClientResponse, consum
 		}
 		return result, nil
 
+	case 400:
+		result := NewDeployStackBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
@@ -62,6 +69,27 @@ func (o *DeployStackAccepted) readResponse(response runtime.ClientResponse, cons
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
+
+	return nil
+}
+
+// NewDeployStackBadRequest creates a DeployStackBadRequest with default headers values
+func NewDeployStackBadRequest() *DeployStackBadRequest {
+	return &DeployStackBadRequest{}
+}
+
+/*DeployStackBadRequest handles this case with default header values.
+
+Bad Request
+*/
+type DeployStackBadRequest struct {
+}
+
+func (o *DeployStackBadRequest) Error() string {
+	return fmt.Sprintf("[POST /tf/stacks][%d] deployStackBadRequest ", 400)
+}
+
+func (o *DeployStackBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }
