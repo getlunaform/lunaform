@@ -6,8 +6,10 @@ addons:
     # needed for the nfpm pipe:
     - rpm
     - swagger
+    - glide
     sources:
     - sourceline: deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main
+    - sourceline: ppa:masterminds/glide
 
 # needed for the docker pipe
 services:
