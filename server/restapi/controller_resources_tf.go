@@ -27,9 +27,8 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 
 		records, err := db.List("tf-module")
 		if err != nil {
-			var statuscode int64 = 500
 			return tf.NewListModulesInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: &statuscode,
+				StatusCode: Int64(500),
 				Status:     String("Internal Server Error"),
 				Message:    String(err.Error()),
 			})
@@ -154,20 +153,19 @@ var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db da
 
 		records, err := db.List("tf-stack")
 		if err != nil {
-			var statuscode int64 = 500
 			return tf.NewListStacksInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: &statuscode,
+				StatusCode: Int64(500),
 				Status:     String("Internal Server Error"),
 				Message:    String(err.Error()),
 			})
 		}
 
-		stacks := make([]*models.ResourceTfModule, len(records))
+		stacks := make([]*models.ResourceTfStack, len(records))
 		for i, record := range records {
-			mod := models.ResourceTfModule{}
-			json.Unmarshal([]byte(record.Value), &mod)
-			mod.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + mod.VcsID)
-			stacks[i] = &mod
+			stack := models.ResourceTfStack{}
+			json.Unmarshal([]byte(record.Value), &stack)
+			stack.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + stack.ID)
+			stacks[i] = &stack
 		}
 
 		return tf.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
