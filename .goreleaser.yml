@@ -29,7 +29,6 @@ nfpm:
 
   replacements:
     amd64: 64-bit
-    386: 32-bit
     darwin: macOS
 
   vendor: Drew J. Sonne
