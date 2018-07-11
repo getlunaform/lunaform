@@ -19,7 +19,7 @@ before_install:
 - glide install
 
 script:
-- make test-coverage
+- make generate test-coverage
 
 after_success:
 # docker login is required if you want to push docker images.
