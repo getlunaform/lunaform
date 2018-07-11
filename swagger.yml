@@ -36,6 +36,7 @@ paths:
         - resources
       description: List the root resource groups
       operationId: list-resource-groups
+      produces: ["application/vnd.terraform.server.v1+json"]
       responses:
         404:
           description: Not Found
@@ -60,6 +61,7 @@ paths:
       tags:
         - resources
       operationId: list-resources
+      produces: ["application/vnd.terraform.server.v1+json"]
       parameters:
         - in: path
           name: group
@@ -91,6 +93,8 @@ paths:
         - tf
       description: Deploy a stack from a module
       operationId: deploy-stack
+      produces: ["application/vnd.terraform.server.v1+json"]
+      consumes: ["application/vnd.terraform.server.v1+json"]
       parameters:
         - in: body
           name: terraform-stack
@@ -104,9 +108,9 @@ paths:
             application/vnd.terraform.server.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
-              name: my-tf-module
+              name: my-tf-stack
           schema:
-            $ref: "#/definitions/resource-tf-module"
+            $ref: "#/definitions/resource-tf-stack"
         400:
           description: Bad Request
   /tf/modules:
@@ -115,6 +119,7 @@ paths:
         - tf
       description: List TF modules
       operationId: list-modules
+      produces: ["application/vnd.terraform.server.v1+json"]
       responses:
         200:
           description: OK
@@ -141,6 +146,8 @@ paths:
         - tf
       description: Upload a Terraform module
       operationId: create-module
+      produces: ["application/vnd.terraform.server.v1+json"]
+      consumes: ["application/vnd.terraform.server.v1+json"]
       parameters:
         - in: body
           name: terraform-module
@@ -159,6 +166,23 @@ paths:
             $ref: "#/definitions/resource-tf-module"
         400:
           description: Bad Request
+  /tf/stacks:
+    post:
+      tags:
+        - tf
+      description: Deploy a terraform stack as a module
+      operationId: deploy-stack
+      parameters:
+        - in: body
+          name: terraform-stack
+          description: A deployed terraform stack
+          schema:
+            $ref: "#/definitions/resource-tf-stack"
+      responses:
+        202:
+          description: Accepted
+          schema:
+            $ref: "#/definitions/resource-tf-stack"
   /tf/module/{id}:
     get:
       tags:
@@ -251,15 +275,32 @@ definitions:
     required:
       - name
       - module-id
-    description: A TF module
+    description: A TF stack
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
-      stack-id:
+      id:
         type: string
       name:
         type: string
       module-id:
+        type: string
+      status:
+        type: string
+        enum:
+          - DEPLOYING
+          - SUCCESS
+          - FAIL
+      deployments:
+        type: array
+        items:
+          $ref: "#/definitions/resource-tf-deployment"
+  resource-tf-deployment:
+    type: object
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      id:
         type: string
   response-list-resources:
     type: object

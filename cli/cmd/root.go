@@ -28,12 +28,35 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/runtime"
 	jww "github.com/spf13/jwalterweatherman"
+	"strings"
+)
+
+const (
+	TERRAFORM_SERVER_TYPE_V1 = "application/vnd.terraform.server.v1+json"
 )
 
 var cfgFile string
 var useHal bool
 var gocdClient *apiclient.TerraformServerClient
-var ctx = context.Background()
+
+var config Configuration
+
+var logLevelMapping = map[string]jww.Threshold{
+	"TRACE":    jww.LevelTrace,
+	"DEBUG":    jww.LevelDebug,
+	"INFO":     jww.LevelInfo,
+	"WARN":     jww.LevelWarn,
+	"ERROR":    jww.LevelError,
+	"CRITICAL": jww.LevelCritical,
+	"FATAL":    jww.LevelFatal,
+}
+
+type Configuration struct {
+	host      string
+	port      string
+	schemes   []string
+	log_level string
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -43,13 +66,13 @@ var rootCmd = &cobra.Command{
 These include module, and stack deployment, as well as user and permission management.
 For example:
 
-    $ tfs-client tf list-modules
-    $ tfs-client tf create-module --repo git@github.com:zeebox/my-module.git
-    $ tfs-client auth list-users
+    $ tfs-client auth users list
+    $ tfs-client tf modules list
+    $ tfs-client tf modules create \
+		--name my-module \
+		--type git \
+		--source git@github.com:zeebox/my-module.git
 `,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -63,6 +86,8 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initLogging)
+	cobra.OnInitialize(initGocdClient)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -73,7 +98,6 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	jww.SetStdoutThreshold(jww.LevelTrace)
 
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -98,18 +122,25 @@ func initConfig() {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 
-	host := viper.GetString("host")
-	port := viper.GetString("port")
-	schemes := viper.GetStringSlice("schemes")
+	viper.Unmarshal(&config)
+}
 
+func initLogging() {
+	logLevel := strings.ToUpper(config.log_level)
+	jww.SetLogThreshold(
+		logLevelMapping[logLevel],
+	)
+}
+
+func initGocdClient() {
 	cfg := apiclient.DefaultTransportConfig().
-		WithHost(host + ":" + port).
-		WithSchemes(schemes)
+		WithHost(config.host + ":" + config.port).
+		WithSchemes(config.schemes)
 	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
 	transport.Context = context.Background()
 
-	transport.Producers["application/vnd.terraform.server.v1+json"] = runtime.JSONProducer()
-	transport.Consumers["application/vnd.terraform.server.v1+json"] = runtime.JSONConsumer()
+	transport.Producers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONProducer()
+	transport.Consumers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONConsumer()
 
 	gocdClient = apiclient.New(transport, strfmt.Default)
 }
