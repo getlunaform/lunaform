@@ -18,6 +18,8 @@ BUILT_BY?=$(shell whoami)
 HOSTNAME?=$(shell hostname)
 NOW?=$(shell date +%s)
 
+VERSION?=$(shell git rev-parse --short HEAD)
+
 run-clean: clean build run
 
 run: terraform-server
@@ -90,6 +92,6 @@ build-client:
 		--existing-models github.com/drewsonne/terraform-server/server/models \
 		--skip-models \
 		--target client && \
-	go build -o tfs-client github.com/drewsonne/terraform-server/cli
+	go build -ldflags "-X github.com/drewsonne/terraform-server/cli/cmd.version=$(VERSION)" -o tfs-client github.com/drewsonne/terraform-server/cli
 
 client-clean: clean-client build-client

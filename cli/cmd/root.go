@@ -40,6 +40,7 @@ var useHal bool
 var gocdClient *apiclient.TerraformServerClient
 
 var config Configuration
+var version string
 
 var logLevelMapping = map[string]jww.Threshold{
 	"TRACE":    jww.LevelTrace,
@@ -62,7 +63,7 @@ type Configuration struct {
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "client",
+	Use:   "tfs-client",
 	Short: "A commandline application to interact with terraform-server",
 	Long: `A commandline client to perform operations on 'terraform-server'.
 These include module, and stack deployment, as well as user and permission management.
@@ -75,6 +76,7 @@ For example:
 		--type git \
 		--source git@github.com:zeebox/my-module.git
 `,
+	Version: version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
