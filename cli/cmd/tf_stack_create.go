@@ -19,6 +19,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/drewsonne/terraform-server/client/client/tf"
 	"github.com/drewsonne/terraform-server/server/models"
+	"fmt"
 )
 
 var flagModule string
@@ -58,6 +59,8 @@ to quickly create a Cobra application.`,
 				handleOutput(cmd, nil, useHal, err)
 			}
 			module = moduleResponse.Payload
+		} else {
+			handleOutput(cmd, nil, useHal, fmt.Errorf("`--module` or `--module-id` must be provided."))
 		}
 
 		tf.NewDeployStackParams().WithTerraformStack(
