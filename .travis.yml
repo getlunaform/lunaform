@@ -5,15 +5,13 @@ addons:
     packages:
     # needed for the nfpm pipe:
     - rpm
+    - swagger
     sources:
     - sourceline: deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main
 
 # needed for the docker pipe
 services:
 - docker
-
-install:
-  - sudo apt-get install swagger
 
 after_success:
 # docker login is required if you want to push docker images.
