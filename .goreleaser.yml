@@ -9,6 +9,12 @@ builds:
     goarch:
       - amd64
   - binary: tfs-client
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
     main: ./cli/main.go
     ldflags:
       - -X github.com/drewsonne/terraform-server/cli/cmd.version={{.Version}}
