@@ -11,6 +11,10 @@ import (
 	"strings"
 )
 
+const (
+	TF_STACK_STATUS_DEPLOYING = "deploying"
+)
+
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db database.Database) tf.ListModulesHandlerFunc {
 	return tf.ListModulesHandlerFunc(func(params tf.ListModulesParams) (r middleware.Responder) {
@@ -108,6 +112,30 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 	return tf.DeployStackHandlerFunc(func(params tf.DeployStackParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		params.TerraformStack
+		tfs := params.TerraformStack
+		newId := uuid.New()
+		tfs.ID = newId
+
+		err := db.Create("tf-stack", tfs.ID, tfs)
+
+		if err != nil {
+			return tf.NewDeployStackBadRequest()
+		}
+
+		response := &models.ResourceTfStack{
+			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfs.ID),
+			ID:    tfs.ID,
+		}
+		response.Links.Doc = halDocLink(ch).Doc
+
+		if tfs == nil {
+			return tf.NewDeployStackBadRequest()
+		} else {
+			response.Name = tfs.Name
+			response.Status = TF_STACK_STATUS_DEPLOYING
+			response.ModuleID = tfs.ModuleID
+			response.Deployments = make([]*models.ResourceTfDeployment, 0)
+			return tf.NewDeployStackAccepted().WithPayload(response)
+		}
 	})
 }

@@ -183,6 +183,8 @@ paths:
           description: Accepted
           schema:
             $ref: "#/definitions/resource-tf-stack"
+        400:
+          description: Bad Request
   /tf/module/{id}:
     get:
       tags:

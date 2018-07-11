@@ -76,6 +76,9 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	api.TfCreateModuleHandler = CreateTfModuleController(idp, oh, db)
 	api.TfGetModuleHandler = GetTfModuleController(idp, oh, db)
 
+	// Controllers for /tf/stacks
+	api.TfDeployStackHandler = CreateTfStackController(idp, oh, db)
+
 	api.ServerShutdown = func() {
 		dbDriver.Close()
 	}
