@@ -18,7 +18,7 @@ services:
 before_install:
 - glide install
 
-install:
+script:
 - make test-coverage
 
 after_success:
