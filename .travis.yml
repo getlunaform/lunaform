@@ -16,7 +16,7 @@ services:
 - docker
 
 before_install:
-- glide up
+- glide install
 
 after_success:
 # docker login is required if you want to push docker images.
