@@ -10,6 +10,12 @@ addons:
 services:
 - docker
 
+before_install:
+  - echo "deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main" | sudo tee -a /etc/apt/sources.list
+
+install:
+  - apt-get install swagger
+
 after_success:
 # docker login is required if you want to push docker images.
 # DOCKER_PASSWORD should be a secret in your .travis.yml configuration.
