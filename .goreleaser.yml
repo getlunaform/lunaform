@@ -35,6 +35,7 @@ nfpm:
   vendor: Drew J. Sonne
   homepage: https://github.com/drewsonne/terraform-server
   maintainer: Drew J. Sonne <drew.sonne@gmail.com>
+  license: Apache 2.0
   formats:
     - deb
     - rpm
