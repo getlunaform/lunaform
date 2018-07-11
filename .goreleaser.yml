@@ -14,3 +14,12 @@ builds:
       - -X github.com/drewsonne/terraform-server/cli/cmd.version={{.Version}}
 git:
   short_hash: true
+
+brew:
+  name: terraform-server
+  github:
+    owner: drewsonne
+    name: homebrew-tap
+  install: |
+    bin.install "terraform-server"
+    bin.install "tfs-client"
