@@ -103,3 +103,11 @@ var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db dat
 		}
 	})
 }
+
+var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) tf.DeployStackHandlerFunc {
+	return tf.DeployStackHandlerFunc(func(params tf.DeployStackParams) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		params.TerraformStack
+	})
+}

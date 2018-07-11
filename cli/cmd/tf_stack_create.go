@@ -39,39 +39,50 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var module *models.ResourceTfModule
+		var err error
+		moduleSrcIsId := true
 		if flagModuleId == "" && flagModule != "" {
+			moduleSrcIsId = false
 			modules, err := gocdClient.Tf.ListModules(
 				tf.NewListModulesParams(),
 			)
-			if err != nil {
-				handleOutput(cmd, nil, useHal, err)
-			}
-			for _, module = range modules.Payload.Embedded.Resources {
-				if *module.Name == flagModule {
-					break
+			if err == nil {
+				for _, module = range modules.Payload.Embedded.Resources {
+					if *module.Name == flagModule {
+						break
+					}
 				}
 			}
 		} else if flagModuleId != "" {
 			moduleResponse, err := gocdClient.Tf.GetModule(tf.NewGetModuleParams().WithID(
 				flagModuleId,
 			))
-			if err != nil {
-				handleOutput(cmd, nil, useHal, err)
+			if err == nil {
+				module = moduleResponse.Payload
 			}
-			module = moduleResponse.Payload
 		} else {
-			handleOutput(cmd, nil, useHal, fmt.Errorf("`--module` or `--module-id` must be provided."))
+			err = fmt.Errorf("`--module` or `--module-id` must be provided")
 		}
 
-		tf.NewDeployStackParams().WithTerraformStack(
-			&models.ResourceTfStack{},
-		)
-		stack, err := gocdClient.Tf.DeployStack(tf.NewDeployStackParams().WithTerraformStack(
+		if module == nil {
+			if moduleSrcIsId {
+				err = fmt.Errorf("could not find a module with id `" + flagModuleId + "`")
+			} else {
+				err = fmt.Errorf("could not find a module with name `" + flagModule + "`")
+			}
+		}
+
+		if err != nil {
+			handleOutput(cmd, nil, useHal, err)
+		}
+
+		params := tf.NewDeployStackParams().WithTerraformStack(
 			&models.ResourceTfStack{
 				ModuleID: String(module.VcsID),
 				Name:     String(flagName),
 			},
-		))
+		)
+		stack, err := gocdClient.Tf.DeployStack(params)
 		if err == nil {
 			handleOutput(cmd, stack.Payload, useHal, err)
 		} else {
