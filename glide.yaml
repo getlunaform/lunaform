@@ -27,7 +27,6 @@ import:
 - package: golang.org/x/net
   subpackages:
   - context
-testImport:
 - package: github.com/Flaque/filet
 - package: github.com/go-openapi/loads
 - package: github.com/stretchr/testify
