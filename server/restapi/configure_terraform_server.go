@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http/httputil"
 	"net/http/httptest"
+	"os"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -121,31 +122,34 @@ func logRequest(handler http.Handler) http.Handler {
 
 func logResponse(prefix string, h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Save a copy of this request for debugging.
-		requestDump, err := httputil.DumpRequest(r, false)
-		if err != nil {
-			log.Println(err)
+		debug := os.Getenv("DEBUG")
+		if debug == "1" {
+			// Save a copy of this request for debugging.
+			requestDump, err := httputil.DumpRequest(r, false)
+			if err != nil {
+				log.Println(err)
+			}
+			log.Println(prefix, string(requestDump))
+
+			rec := httptest.NewRecorder()
+			h.ServeHTTP(rec, r)
+
+			dump, err := httputil.DumpResponse(rec.Result(), false)
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.Println(prefix, string(dump))
+
+			// we copy the captured response headers to our new response
+			for k, v := range rec.Header() {
+				w.Header()[k] = v
+			}
+
+			// grab the captured response body
+			data := rec.Body.Bytes()
+			w.WriteHeader(rec.Code)
+
+			w.Write(data)
 		}
-		log.Println(prefix, string(requestDump))
-
-		rec := httptest.NewRecorder()
-		h.ServeHTTP(rec, r)
-
-		dump, err := httputil.DumpResponse(rec.Result(), false)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println(prefix, string(dump))
-
-		// we copy the captured response headers to our new response
-		for k, v := range rec.Header() {
-			w.Header()[k] = v
-		}
-
-		// grab the captured response body
-		data := rec.Body.Bytes()
-		w.WriteHeader(rec.Code)
-
-		w.Write(data)
 	}
 }
