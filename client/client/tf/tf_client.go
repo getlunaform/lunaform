@@ -136,6 +136,34 @@ func (a *Client) ListModules(params *ListModulesParams) (*ListModulesOK, error) 
 
 }
 
+/*
+ListStacks List deployed TF modules
+*/
+func (a *Client) ListStacks(params *ListStacksParams) (*ListStacksOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewListStacksParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "list-stacks",
+		Method:             "GET",
+		PathPattern:        "/tf/stacks",
+		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ListStacksReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*ListStacksOK), nil
+
+}
+
 // SetTransport changes the transport on the client
 func (a *Client) SetTransport(transport runtime.ClientTransport) {
 	a.transport = transport
