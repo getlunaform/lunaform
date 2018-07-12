@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/terraform-server/client/client/modules"
+	"github.com/drewsonne/lunarform/client/client/modules"
 )
 
 var idFlag string
@@ -51,6 +51,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	tfModuleGetCmd.Flags().StringVar(&idFlag, "id", "",
-		"ID of the terraform module in terraform-server")
+		"ID of the terraform module in lunarform")
 	tfModuleGetCmd.MarkFlagRequired("id")
 }

@@ -27,7 +27,7 @@ type Client struct {
 /*
 DeployStack Deploy a terraform stack as a module
 */
-func (a *Client) DeployStack(params *DeployStackParams, authInfo runtime.ClientAuthInfoWriter) (*DeployStackAccepted, error) {
+func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeployStackParams()
@@ -42,7 +42,6 @@ func (a *Client) DeployStack(params *DeployStackParams, authInfo runtime.ClientA
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &DeployStackReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -56,7 +55,7 @@ func (a *Client) DeployStack(params *DeployStackParams, authInfo runtime.ClientA
 /*
 GetStack Get a stack
 */
-func (a *Client) GetStack(params *GetStackParams, authInfo runtime.ClientAuthInfoWriter) (*GetStackOK, error) {
+func (a *Client) GetStack(params *GetStackParams) (*GetStackOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetStackParams()
@@ -71,7 +70,6 @@ func (a *Client) GetStack(params *GetStackParams, authInfo runtime.ClientAuthInf
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &GetStackReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -85,7 +83,7 @@ func (a *Client) GetStack(params *GetStackParams, authInfo runtime.ClientAuthInf
 /*
 ListStacks List deployed TF modules
 */
-func (a *Client) ListStacks(params *ListStacksParams, authInfo runtime.ClientAuthInfoWriter) (*ListStacksOK, error) {
+func (a *Client) ListStacks(params *ListStacksParams) (*ListStacksOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListStacksParams()
@@ -100,7 +98,6 @@ func (a *Client) ListStacks(params *ListStacksParams, authInfo runtime.ClientAut
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListStacksReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

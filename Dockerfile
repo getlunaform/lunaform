@@ -2,14 +2,14 @@ FROM alpine:latest
 
 EXPOSE 8080
 
-RUN adduser -S terraform-server
+RUN adduser -S lunarform
 
-ADD terraform-server /
-RUN chmod +x /terraform-server && \
-    chown terraform-server /terraform-server
+ADD lunarform /
+RUN chmod +x /lunarform && \
+    chown lunarform /lunarform
 
-USER terraform-server
+USER lunarform
 
-CMD ["/terraform-server"]
+CMD ["/lunarform"]
 
-ENTRYPOINT ["/terraform-server","--scheme=http", "--port=8080", "--host=0.0.0.0"]
+ENTRYPOINT ["/lunarform","--scheme=http", "--port=8080", "--host=0.0.0.0"]

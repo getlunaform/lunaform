@@ -6,7 +6,7 @@ import (
 	"os"
 	"github.com/spf13/cobra"
 	"strings"
-	"github.com/drewsonne/terraform-server/server/models"
+	"github.com/drewsonne/lunarform/server/models"
 )
 
 func handlerError(err error) {

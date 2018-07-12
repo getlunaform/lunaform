@@ -1,7 +1,7 @@
 ---
 builds:
-  - binary: terraform-server
-    main: ./server/cmd/terraform-server-server/main.go
+  - binary: lunarform
+    main: ./server/cmd/lunarform-server/main.go
     goos:
       - windows
       - darwin
@@ -17,17 +17,17 @@ builds:
       - amd64
     main: ./cli/main.go
     ldflags:
-      - -X github.com/drewsonne/terraform-server/cli/cmd.version={{.Version}}
+      - -X github.com/drewsonne/lunarform/cli/cmd.version={{.Version}}
 git:
   short_hash: true
 
 brew:
-  name: terraform-server
+  name: lunarform
   github:
     owner: drewsonne
     name: homebrew-tap
   install: |
-    bin.install "terraform-server"
+    bin.install "lunarform"
     bin.install "tfs-client"
 
 nfpm:
@@ -38,7 +38,7 @@ nfpm:
     darwin: macOS
 
   vendor: Drew J. Sonne
-  homepage: https://github.com/drewsonne/terraform-server
+  homepage: https://github.com/drewsonne/lunarform
   maintainer: Drew J. Sonne <drew.sonne@gmail.com>
   license: Apache 2.0
   formats:

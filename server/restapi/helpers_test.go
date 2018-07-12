@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/go-openapi/loads"
 	"github.com/stretchr/testify/assert"
-	"github.com/drewsonne/terraform-server/server/restapi/operations"
+	"github.com/drewsonne/lunarform/server/restapi/operations"
 	"io"
 	"testing"
 )

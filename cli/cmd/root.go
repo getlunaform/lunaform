@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"context"
-	apiclient "github.com/drewsonne/terraform-server/client/client"
+	apiclient "github.com/drewsonne/lunarform/client/client"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/runtime"
@@ -37,7 +37,7 @@ const (
 
 var cfgFile string
 var useHal bool
-var gocdClient *apiclient.TerraformServerClient
+var gocdClient *apiclient.LunarformClient
 
 var config Configuration
 var version string
@@ -64,8 +64,8 @@ type Configuration struct {
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tfs-client",
-	Short: "A commandline application to interact with terraform-server",
-	Long: `A commandline client to perform operations on 'terraform-server'.
+	Short: "A commandline application to interact with lunarform",
+	Long: `A commandline client to perform operations on 'lunarform'.
 These include module, and stack deployment, as well as user and permission management.
 For example:
 

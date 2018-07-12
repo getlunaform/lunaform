@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/drewsonne/terraform-server/server/restapi/operations"
+	"github.com/drewsonne/lunarform/server/restapi/operations"
 
-	"github.com/drewsonne/terraform-server/backend/database"
-	"github.com/drewsonne/terraform-server/backend/identity"
+	"github.com/drewsonne/lunarform/backend/database"
+	"github.com/drewsonne/lunarform/backend/identity"
 	"log"
 	"net/http/httputil"
 	"net/http/httptest"

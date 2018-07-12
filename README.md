@@ -1,13 +1,13 @@
-# terraform-server
+# lunarform
 Restful interface to handle terraform deploys. Similiar to the CloudFormation APIs
 
-[![GoDoc](https://godoc.org/github.com/drewsonne/terraform-server/gocd?status.svg)](https://godoc.org/github.com/drewsonne/terraform-server/gocd)
-[![Build Status](https://travis-ci.org/drewsonne/terraform-server.svg?branch=master)](https://travis-ci.org/drewsonne/terraform-server)
+[![GoDoc](https://godoc.org/github.com/drewsonne/lunarform/gocd?status.svg)](https://godoc.org/github.com/drewsonne/lunarform/gocd)
+[![Build Status](https://travis-ci.org/drewsonne/lunarform.svg?branch=master)](https://travis-ci.org/drewsonne/lunarform)
 
 ## Quickstart
 
 ```bash
-terraform-server --port=8080 --scheme=http
+lunarform --port=8080 --scheme=http
 
 cat > ~/.config/tfs-client.yaml <<EOF
 ---

@@ -15,7 +15,7 @@
 
 package main
 
-import "github.com/drewsonne/terraform-server/cli/cmd"
+import "github.com/drewsonne/lunarform/cli/cmd"
 
 func main() {
 	cmd.Execute()

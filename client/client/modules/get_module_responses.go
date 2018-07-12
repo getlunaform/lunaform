@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/drewsonne/terraform-server/server/models"
+	"github.com/drewsonne/lunarform/server/models"
 )
 
 // GetModuleReader is a Reader for the GetModule structure.

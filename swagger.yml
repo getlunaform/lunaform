@@ -1,17 +1,17 @@
 swagger: "2.0"
 info:
-  title: terraform-server
+  title: lunarform
   description: |
    This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.
    The inspiration for this project is the AWS CloudFormation API's. The intention is to implement a locking mechanism
    not only for the terraform state, but for the plan and apply of terraform modules. Once a `module` plan starts, it
-   is instantiated as a `stack` within the nomencalture of `terraform-server`.
+   is instantiated as a `stack` within the nomencalture of `lunarform`.
   version: 0.0.1-alpha
   contact:
     email: drew.sonne@gmail.com
   license:
     name: Apache 2.0
-    url: https://github.com/drewsonne/terraform-server/blob/master/LICENSE
+    url: https://github.com/drewsonne/lunarform/blob/master/LICENSE
 basePath: /api
 schemes:
   - http
@@ -290,7 +290,7 @@ definitions:
 #    type: object
 #    description: |
 #      A source of users either locally managed, or through a federation.
-#      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
+#      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `lunarform`
 #      handles all management of. The second are read-only federated IdP's.
   response-list-tf-modules:
     type: object
