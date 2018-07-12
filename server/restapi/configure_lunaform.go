@@ -122,7 +122,14 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return logResponse("", logRequest(handler))
+
+	handler = logRequest(handler)
+	debug := os.Getenv("DEBUG")
+	if debug == "1" {
+		return logResponse("lunaform",handler )
+	} else {
+		return handler
+	}
 }
 
 func logRequest(handler http.Handler) http.Handler {
@@ -135,34 +142,31 @@ func logRequest(handler http.Handler) http.Handler {
 
 func logResponse(prefix string, h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		debug := os.Getenv("DEBUG")
-		if debug == "1" {
-			// Save a copy of this request for debugging.
-			requestDump, err := httputil.DumpRequest(r, false)
-			if err != nil {
-				log.Println(err)
-			}
-			log.Println(prefix, string(requestDump))
-
-			rec := httptest.NewRecorder()
-			h.ServeHTTP(rec, r)
-
-			dump, err := httputil.DumpResponse(rec.Result(), false)
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Println(prefix, string(dump))
-
-			// we copy the captured response headers to our new response
-			for k, v := range rec.Header() {
-				w.Header()[k] = v
-			}
-
-			// grab the captured response body
-			data := rec.Body.Bytes()
-			w.WriteHeader(rec.Code)
-
-			w.Write(data)
+		// Save a copy of this request for debugging.
+		requestDump, err := httputil.DumpRequest(r, false)
+		if err != nil {
+			log.Println(err)
 		}
+		log.Println(prefix, string(requestDump))
+
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, r)
+
+		dump, err := httputil.DumpResponse(rec.Result(), false)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(prefix, string(dump))
+
+		// we copy the captured response headers to our new response
+		for k, v := range rec.Header() {
+			w.Header()[k] = v
+		}
+
+		// grab the captured response body
+		data := rec.Body.Bytes()
+		w.WriteHeader(rec.Code)
+
+		w.Write(data)
 	}
 }
