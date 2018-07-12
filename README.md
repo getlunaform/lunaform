@@ -7,6 +7,9 @@ Restful interface to handle terraform deploys. Similiar to the CloudFormation AP
 ## Quickstart
 
 ```bash
+brew tap drewsonne/tap
+brew install lunarform
+
 lunarform --port=8080 --scheme=http
 
 cat > ~/.config/tfs-client.yaml <<EOF
