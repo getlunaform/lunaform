@@ -102,6 +102,8 @@ paths:
       operationId: deploy-stack
       produces: ["application/vnd.lunaform.v1+json"]
       consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - bearer: []
       parameters:
         - in: body
           name: terraform-stack
