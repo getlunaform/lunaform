@@ -44,7 +44,7 @@ clean: clean-client
 
 
 clean-client:
-	rm -f $(CWD)/tfs-client && \
+	rm -f $(CWD)/lunarform-client && \
 	rm -rf $(CWD)/client
 
 validate-swagger:
@@ -99,6 +99,6 @@ generate-client:
 		--target client
 
 build-client: generate-client
-	go build -ldflags "-X github.com/drewsonne/lunarform/cli/cmd.version=$(VERSION)" -o tfs-client github.com/drewsonne/lunarform/cli
+	go build -ldflags "-X github.com/drewsonne/lunarform/cli/cmd.version=$(VERSION)" -o lunarform-client github.com/drewsonne/lunarform/cli
 
 client-clean: clean-client build-client

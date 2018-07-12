@@ -8,7 +8,7 @@ builds:
       - linux
     goarch:
       - amd64
-  - binary: tfs-client
+  - binary: lunarform-client
     goos:
       - windows
       - darwin
@@ -28,7 +28,7 @@ brew:
     name: homebrew-tap
   install: |
     bin.install "lunarform"
-    bin.install "tfs-client"
+    bin.install "lunarform-client"
 
 nfpm:
   name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
