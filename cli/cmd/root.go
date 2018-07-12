@@ -37,7 +37,7 @@ const (
 
 var cfgFile string
 var useHal bool
-var gocdClient *apiclient.lunaformClient
+var gocdClient *apiclient.LunaformClient
 
 var config Configuration
 var version string
