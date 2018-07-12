@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-// TestManagedIdentityProviders for terraform-server to create, update, and destroy users and groups.
-// These providers are managed by terraform-server meaning that terraform-server is responsible for being
+// TestManagedIdentityProviders for lunarform to create, update, and destroy users and groups.
+// These providers are managed by lunarform meaning that lunarform is responsible for being
 // its own identity provider. Therefore, all managed terraform servers should conform to the following conditions
 func TestManagedIdentityProvider(t *testing.T) {
 

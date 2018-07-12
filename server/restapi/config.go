@@ -48,7 +48,7 @@ func (cfg *Configuration) loadFromFile(path string) (err error) {
 //ConfigFileFlags for loading settings for the server
 type ConfigFileFlags struct {
 	ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
-	Version bool `short:"V" long:"version" description:"Print terraform-server version and quit"`
+	Version bool `short:"V" long:"version" description:"Print lunarform version and quit"`
 }
 
 func parseCliConfiguration() (cfg *Configuration, err error) {
