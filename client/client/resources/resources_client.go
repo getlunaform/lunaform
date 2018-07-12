@@ -27,7 +27,7 @@ type Client struct {
 /*
 ListResourceGroups List the root resource groups
 */
-func (a *Client) ListResourceGroups(params *ListResourceGroupsParams) (*ListResourceGroupsOK, error) {
+func (a *Client) ListResourceGroups(params *ListResourceGroupsParams, authInfo runtime.ClientAuthInfoWriter) (*ListResourceGroupsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListResourceGroupsParams()
@@ -42,6 +42,7 @@ func (a *Client) ListResourceGroups(params *ListResourceGroupsParams) (*ListReso
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListResourceGroupsReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -55,7 +56,7 @@ func (a *Client) ListResourceGroups(params *ListResourceGroupsParams) (*ListReso
 /*
 ListResources list resources API
 */
-func (a *Client) ListResources(params *ListResourcesParams) (*ListResourcesOK, error) {
+func (a *Client) ListResources(params *ListResourcesParams, authInfo runtime.ClientAuthInfoWriter) (*ListResourcesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListResourcesParams()
@@ -70,6 +71,7 @@ func (a *Client) ListResources(params *ListResourcesParams) (*ListResourcesOK, e
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListResourcesReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

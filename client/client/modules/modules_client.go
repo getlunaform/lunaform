@@ -27,7 +27,7 @@ type Client struct {
 /*
 CreateModule Upload a Terraform module
 */
-func (a *Client) CreateModule(params *CreateModuleParams) (*CreateModuleCreated, error) {
+func (a *Client) CreateModule(params *CreateModuleParams, authInfo runtime.ClientAuthInfoWriter) (*CreateModuleCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateModuleParams()
@@ -42,6 +42,7 @@ func (a *Client) CreateModule(params *CreateModuleParams) (*CreateModuleCreated,
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &CreateModuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -55,7 +56,7 @@ func (a *Client) CreateModule(params *CreateModuleParams) (*CreateModuleCreated,
 /*
 GetModule Get a Terraform module
 */
-func (a *Client) GetModule(params *GetModuleParams) (*GetModuleOK, error) {
+func (a *Client) GetModule(params *GetModuleParams, authInfo runtime.ClientAuthInfoWriter) (*GetModuleOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetModuleParams()
@@ -70,6 +71,7 @@ func (a *Client) GetModule(params *GetModuleParams) (*GetModuleOK, error) {
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &GetModuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -83,7 +85,7 @@ func (a *Client) GetModule(params *GetModuleParams) (*GetModuleOK, error) {
 /*
 ListModules List TF modules
 */
-func (a *Client) ListModules(params *ListModulesParams) (*ListModulesOK, error) {
+func (a *Client) ListModules(params *ListModulesParams, authInfo runtime.ClientAuthInfoWriter) (*ListModulesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListModulesParams()
@@ -98,6 +100,7 @@ func (a *Client) ListModules(params *ListModulesParams) (*ListModulesOK, error) 
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListModulesReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

@@ -27,7 +27,7 @@ type Client struct {
 /*
 DeployStack Deploy a terraform stack as a module
 */
-func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackAccepted, error) {
+func (a *Client) DeployStack(params *DeployStackParams, authInfo runtime.ClientAuthInfoWriter) (*DeployStackAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeployStackParams()
@@ -42,6 +42,7 @@ func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackAccepted, e
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &DeployStackReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -55,7 +56,7 @@ func (a *Client) DeployStack(params *DeployStackParams) (*DeployStackAccepted, e
 /*
 GetStack Get a stack
 */
-func (a *Client) GetStack(params *GetStackParams) (*GetStackOK, error) {
+func (a *Client) GetStack(params *GetStackParams, authInfo runtime.ClientAuthInfoWriter) (*GetStackOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetStackParams()
@@ -70,6 +71,7 @@ func (a *Client) GetStack(params *GetStackParams) (*GetStackOK, error) {
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &GetStackReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -83,7 +85,7 @@ func (a *Client) GetStack(params *GetStackParams) (*GetStackOK, error) {
 /*
 ListStacks List deployed TF modules
 */
-func (a *Client) ListStacks(params *ListStacksParams) (*ListStacksOK, error) {
+func (a *Client) ListStacks(params *ListStacksParams, authInfo runtime.ClientAuthInfoWriter) (*ListStacksOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListStacksParams()
@@ -98,6 +100,7 @@ func (a *Client) ListStacks(params *ListStacksParams) (*ListStacksOK, error) {
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListStacksReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

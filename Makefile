@@ -40,8 +40,8 @@ clean: clean-client
 
 
 clean-client:
-	rm $(CWD)/tfs-client && \
-	rm -r $(CWD)/client
+	rm -f $(CWD)/tfs-client && \
+	rm -rf $(CWD)/client
 
 validate-swagger:
 	swagger validate $(SRC_YAML)
@@ -87,6 +87,7 @@ run-docker: build-docker
 	docker run -p 8080:8080 terraform-server
 
 build-client:
+	mkdir client && \
 	swagger generate client \
 		-f swagger.yml \
 		-A terraform-server-client \

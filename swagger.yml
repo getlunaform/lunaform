@@ -24,10 +24,8 @@ produces:
 securityDefinitions:
   bearer:
     type: apiKey
-    name: Authorization
     in: header
-security:
-  - bearer:[]
+    name: x-tfs-auth
 
 x-tagGroups:
   - name: Resources
