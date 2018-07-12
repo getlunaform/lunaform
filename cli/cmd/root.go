@@ -32,7 +32,7 @@ import (
 )
 
 const (
-	TERRAFORM_SERVER_TYPE_V1 = "application/vnd.terraform.server.v1+json"
+	TERRAFORM_SERVER_TYPE_V1 = "application/vnd.lunarform.v1+json"
 )
 
 var cfgFile string

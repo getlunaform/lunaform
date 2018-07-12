@@ -68,7 +68,7 @@ generate-swagger: validate-swagger
 	swagger generate server \
 		--target=server \
 		--principal=models.Principal \
-		--name=TerraformServer \
+		--name=Lunarform \
 		--spec=$(SRC_YAML)
 
 generate:generate-swagger
