@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/tylerb/graceful"
-
 	"github.com/drewsonne/terraform-server/server/restapi/operations"
 
 	"github.com/drewsonne/terraform-server/backend/database"
@@ -111,7 +109,7 @@ func configureTLS(tlsConfig *tls.Config) {
 // If you need to modify a config, store server instance to stop it individually later, this is the place.
 // This function can be called multiple times, depending on the number of serving schemes.
 // scheme value will be set accordingly: "http", "https" or "unix"
-func configureServer(s *graceful.Server, scheme, addr string) {
+func configureServer(s *http.Server, scheme, addr string) {
 
 }
 
