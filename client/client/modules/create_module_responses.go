@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/drewsonne/lunarform/server/models"
+	"github.com/drewsonne/lunaform/server/models"
 )
 
 // CreateModuleReader is a Reader for the CreateModule structure.

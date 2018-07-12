@@ -1,4 +1,4 @@
-package: github.com/drewsonne/lunarform
+package: github.com/drewsonne/lunaform
 import:
 - package: github.com/go-openapi/errors
   version: ^0.15.0

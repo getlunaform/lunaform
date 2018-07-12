@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/swag"
-	"github.com/drewsonne/lunarform/server/restapi/operations"
+	"github.com/drewsonne/lunaform/server/restapi/operations"
 )
 
 var cliconfig = ConfigFileFlags{}
@@ -73,7 +73,7 @@ func newDefaultConfiguration() *Configuration {
 	}
 }
 
-func configureFlags(api *operations.LunarformAPI) {
+func configureFlags(api *operations.LunaformAPI) {
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
 		{
 			ShortDescription: "Terraform Server",

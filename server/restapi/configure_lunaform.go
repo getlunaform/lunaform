@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/drewsonne/lunarform/server/restapi/operations"
+	"github.com/drewsonne/lunaform/server/restapi/operations"
 
-	"github.com/drewsonne/lunarform/backend/database"
-	"github.com/drewsonne/lunarform/backend/identity"
+	"github.com/drewsonne/lunaform/backend/database"
+	"github.com/drewsonne/lunaform/backend/identity"
 	"log"
 	"net/http/httputil"
 	"net/http/httptest"
@@ -23,7 +23,7 @@ import (
 
 var version string
 
-func configureAPI(api *operations.LunarformAPI) http.Handler {
+func configureAPI(api *operations.LunaformAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 	//api.BearerAuthenticator =

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cd ~/go/src/github.com/drewsonne/lunarform
+cd ~/go/src/github.com/drewsonne/lunaform
 
-./lunarform --port=8080 --scheme=http &
+./lunaform --port=8080 --scheme=http &
 
 tfs_pid=$!
 

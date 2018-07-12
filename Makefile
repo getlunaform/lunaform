@@ -20,12 +20,12 @@ NOW?=$(shell date +%s)
 
 VERSION?=$(shell git rev-parse --short HEAD)
 
-build: generate lunarform
+build: generate lunaform
 
 run-clean: clean build run
 
-run: lunarform
-	$(CWD)/lunarform --port=8080 --scheme=http
+run: lunaform
+	$(CWD)/lunaform --port=8080 --scheme=http
 
 update-vendor:
 	glide update
@@ -38,13 +38,13 @@ clean: clean-client
 		$(CWD)/server/restapi/doc.go \
 		$(CWD)/server/restapi/embedded_spec.go \
 		$(CWD)/server/restapi/server.go \
-		$(CWD)/lunarform \
+		$(CWD)/lunaform \
 		$(CWD)/profile.txt && \
 	mv ./hal.go $(CWD)/server/models/hal.go
 
 
 clean-client:
-	rm -f $(CWD)/lunarform-client && \
+	rm -f $(CWD)/lunaform-client && \
 	rm -rf $(CWD)/client
 
 validate-swagger:
@@ -71,34 +71,34 @@ generate-swagger: validate-swagger
 	swagger generate server \
 		--target=server \
 		--principal=models.Principal \
-		--name=Lunarform \
+		--name=lunaform \
 		--spec=$(SRC_YAML)
 
 generate: generate-swagger generate-client
 
-lunarform:
+lunaform:
 	go build \
 		-a -installsuffix $(CGO) \
-		-o ./lunarform \
-		github.com/drewsonne/lunarform/server/cmd/lunarform-server
+		-o ./lunaform \
+		github.com/drewsonne/lunaform/server/cmd/lunaform-server
 
 build-docker:
-	GOOS=linux $(MAKE) lunarform
-	docker build -t lunarform .
+	GOOS=linux $(MAKE) lunaform
+	docker build -t lunaform .
 
 run-docker: build-docker
-	docker run -p 8080:8080 lunarform
+	docker run -p 8080:8080 lunaform
 
 generate-client:
 	mkdir -p client && \
 	swagger generate client \
 		-f swagger.yml \
-		-A lunarform-client \
-		--existing-models github.com/drewsonne/lunarform/server/models \
+		-A lunaform-client \
+		--existing-models github.com/drewsonne/lunaform/server/models \
 		--skip-models \
 		--target client
 
 build-client: generate-client
-	go build -ldflags "-X github.com/drewsonne/lunarform/cli/cmd.version=$(VERSION)" -o lunarform-client github.com/drewsonne/lunarform/cli
+	go build -ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" -o lunaform-client github.com/drewsonne/lunaform/cli
 
 client-clean: clean-client build-client

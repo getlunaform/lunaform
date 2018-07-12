@@ -11,12 +11,12 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/drewsonne/lunarform/client/client/modules"
-	"github.com/drewsonne/lunarform/client/client/resources"
-	"github.com/drewsonne/lunarform/client/client/stacks"
+	"github.com/drewsonne/lunaform/client/client/modules"
+	"github.com/drewsonne/lunaform/client/client/resources"
+	"github.com/drewsonne/lunaform/client/client/stacks"
 )
 
-// Default lunarform client HTTP client.
+// Default lunaform client HTTP client.
 var Default = NewHTTPClient(nil)
 
 const (
@@ -31,14 +31,14 @@ const (
 // DefaultSchemes are the default schemes found in Meta (info) section of spec file
 var DefaultSchemes = []string{"http", "https"}
 
-// NewHTTPClient creates a new lunarform client HTTP client.
-func NewHTTPClient(formats strfmt.Registry) *LunarformClient {
+// NewHTTPClient creates a new lunaform client HTTP client.
+func NewHTTPClient(formats strfmt.Registry) *LunaformClient {
 	return NewHTTPClientWithConfig(formats, nil)
 }
 
-// NewHTTPClientWithConfig creates a new lunarform client HTTP client,
+// NewHTTPClientWithConfig creates a new lunaform client HTTP client,
 // using a customizable transport config.
-func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *LunarformClient {
+func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *LunaformClient {
 	// ensure nullable parameters have default
 	if cfg == nil {
 		cfg = DefaultTransportConfig()
@@ -49,14 +49,14 @@ func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Lun
 	return New(transport, formats)
 }
 
-// New creates a new lunarform client client
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *LunarformClient {
+// New creates a new lunaform client client
+func New(transport runtime.ClientTransport, formats strfmt.Registry) *LunaformClient {
 	// ensure nullable parameters have default
 	if formats == nil {
 		formats = strfmt.Default
 	}
 
-	cli := new(LunarformClient)
+	cli := new(LunaformClient)
 	cli.Transport = transport
 
 	cli.Modules = modules.New(transport, formats)
@@ -107,8 +107,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 	return cfg
 }
 
-// LunarformClient is a client for lunarform client
-type LunarformClient struct {
+// LunaformClient is a client for lunaform client
+type LunaformClient struct {
 	Modules *modules.Client
 
 	Resources *resources.Client
@@ -119,7 +119,7 @@ type LunarformClient struct {
 }
 
 // SetTransport changes the transport on the client and all its subresources
-func (c *LunarformClient) SetTransport(transport runtime.ClientTransport) {
+func (c *LunaformClient) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
 	c.Modules.SetTransport(transport)

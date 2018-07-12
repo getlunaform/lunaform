@@ -2,7 +2,7 @@ package identity
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/drewsonne/lunarform/backend/database"
+	"github.com/drewsonne/lunaform/backend/database"
 	"testing"
 )
 

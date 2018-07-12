@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/go-openapi/loads"
 	"github.com/stretchr/testify/assert"
-	"github.com/drewsonne/lunarform/server/restapi/operations"
+	"github.com/drewsonne/lunaform/server/restapi/operations"
 	"io"
 	"testing"
 )

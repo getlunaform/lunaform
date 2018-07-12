@@ -4,7 +4,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/pkg/errors"
-	"github.com/drewsonne/lunarform/server/models"
+	"github.com/drewsonne/lunaform/server/models"
 	"net/http"
 	"strings"
 )

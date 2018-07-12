@@ -2,14 +2,14 @@ FROM alpine:latest
 
 EXPOSE 8080
 
-RUN adduser -S lunarform
+RUN adduser -S lunaform
 
-ADD lunarform /
-RUN chmod +x /lunarform && \
-    chown lunarform /lunarform
+ADD lunaform /
+RUN chmod +x /lunaform && \
+    chown lunaform /lunaform
 
-USER lunarform
+USER lunaform
 
-CMD ["/lunarform"]
+CMD ["/lunaform"]
 
-ENTRYPOINT ["/lunarform","--scheme=http", "--port=8080", "--host=0.0.0.0"]
+ENTRYPOINT ["/lunaform","--scheme=http", "--port=8080", "--host=0.0.0.0"]

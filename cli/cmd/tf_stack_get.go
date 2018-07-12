@@ -38,6 +38,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	tfModuleGetCmd.Flags().StringVar(&idFlag, "id", "",
-		"ID of the terraform module in lunarform")
+		"ID of the terraform module in lunaform")
 	tfModuleGetCmd.MarkFlagRequired("id")
 }
