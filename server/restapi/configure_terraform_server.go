@@ -83,6 +83,7 @@ func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// Controllers for /tf/stacks
 	api.StacksDeployStackHandler = CreateTfStackController(idp, oh, db)
 	api.StacksListStacksHandler = ListTfStacksController(idp, oh, db)
+	api.StacksGetStackHandler = GetTfStackController(idp, oh, db)
 
 	api.ServerShutdown = func() {
 		dbDriver.Close()

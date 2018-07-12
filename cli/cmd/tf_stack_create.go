@@ -94,8 +94,6 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	tfStackCmd.AddCommand(tfStackCreateCmd)
-
 	flags := tfStackCreateCmd.Flags()
 	flags.StringVar(&flagModule, "module", "", "Name of the terraform module to deploy")
 	flags.StringVar(&flagModuleId, "module-id", "", "ID of the terraform module to deploy")

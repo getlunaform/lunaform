@@ -86,31 +86,31 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 	})
 }
 
-//var GetTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
-//	return operations.GetStackHandlerFunc(func(params operations.GetModuleParams) (r middleware.Responder) {
-//		ch.SetRequest(params.HTTPRequest)
-//
-//		id := params.ID
-//
-//		var module *models.ResourceTfModule
-//		err := db.Read("tf-module", id, module)
-//
-//		if err != nil {
-//			return operations.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
-//				StatusCode: Int64(500),
-//				Status:     String("Internal Server Error"),
-//				Message:    String(err.Error()),
-//			})
-//		} else if module == nil {
-//			return operations.NewGetModuleNotFound().WithPayload(&models.ServerError{
-//				StatusCode: Int64(404),
-//				Status:     String("Not Found"),
-//				Message:    String("Could not find module with id '" + id + "'"),
-//			})
-//		} else {
-//			module.Links = halSelfLink(ch.FQEndpoint)
-//			module.Links.Doc = halDocLink(ch).Doc
-//			return operations.NewGetModuleOK().WithPayload(module)
-//		}
-//	})
-//}
+var GetTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.GetStackHandlerFunc {
+	return operations.GetStackHandlerFunc(func(params operations.GetStackParams) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		id := params.ID
+
+		var stack *models.ResourceTfStack
+		err := db.Read("tf-stack", id, stack)
+
+		if err != nil {
+			return operations.NewGetStackInternalServerError().WithPayload(&models.ServerError{
+				StatusCode: Int64(500),
+				Status:     String("Internal Server Error"),
+				Message:    String(err.Error()),
+			})
+		} else if stack == nil {
+			return operations.NewGetStackNotFound().WithPayload(&models.ServerError{
+				StatusCode: Int64(404),
+				Status:     String("Not Found"),
+				Message:    String("Could not find stack with id '" + id + "'"),
+			})
+		} else {
+			stack.Links = halSelfLink(ch.FQEndpoint)
+			stack.Links.Doc = halDocLink(ch).Doc
+			return operations.NewGetStackOK().WithPayload(stack)
+		}
+	})
+}

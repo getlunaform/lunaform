@@ -21,6 +21,12 @@ consumes:
 produces:
 - application/vnd.terraform.server.v1+json
 
+securityDefinitions:
+  bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
 x-tagGroups:
   - name: Resources
     tags:
