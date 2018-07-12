@@ -28,6 +28,7 @@ var version string
 func configureAPI(api *operations.TerraformServerAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
+	//api.BearerAuthenticator =
 
 	var idp identity.Provider
 	var dbDriver database.Driver

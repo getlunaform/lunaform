@@ -26,6 +26,8 @@ securityDefinitions:
     type: apiKey
     name: Authorization
     in: header
+security:
+  - bearer:[]
 
 x-tagGroups:
   - name: Resources
