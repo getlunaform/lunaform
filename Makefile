@@ -31,7 +31,7 @@ update-vendor:
 	glide update
 
 clean: clean-client
-	cp $(CWD)/server/models/hal.go ./hal.go
+	cp $(CWD)/server/models/hal.go $(CWD)/hal.go && \
 	rm -rf $(CWD)/server/cmd/ \
 		$(CWD)/server/models/ \
 		$(CWD)/server/restapi/operations \
@@ -40,7 +40,8 @@ clean: clean-client
 		$(CWD)/server/restapi/server.go \
 		$(CWD)/lunaform \
 		$(CWD)/profile.txt && \
-	mv ./hal.go $(CWD)/server/models/hal.go
+	mkdir -p $(CWD)/server/models && \
+	mv $(CWD)/hal.go $(CWD)/server/models/hal.go
 
 
 clean-client:
