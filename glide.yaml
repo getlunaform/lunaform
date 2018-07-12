@@ -1,12 +1,16 @@
 package: github.com/drewsonne/terraform-server
 import:
 - package: github.com/go-openapi/errors
+  version: ^0.15.0
 - package: github.com/go-openapi/runtime
+  version: ^0.15.0
   subpackages:
   - client
   - middleware
 - package: github.com/go-openapi/strfmt
+  version: ^0.15.0
 - package: github.com/go-openapi/swag
+  version: ^0.15.0
 - package: github.com/go-redis/redis
   version: ^6.12.0
 - package: github.com/mitchellh/go-homedir
@@ -29,10 +33,10 @@ import:
   - context
 - package: github.com/Flaque/filet
 - package: github.com/go-openapi/loads
+  version: ^0.15.0
 - package: github.com/stretchr/testify
   version: ^1.2.2
   subpackages:
   - assert
 - package: gopkg.in/yaml.v2
   version: ^2.2.1
-- package: github.com/manell/goswagger-jwt
