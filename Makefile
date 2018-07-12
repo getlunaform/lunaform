@@ -20,6 +20,8 @@ NOW?=$(shell date +%s)
 
 VERSION?=$(shell git rev-parse --short HEAD)
 
+build: generate lunarform
+
 run-clean: clean build run
 
 run: lunarform
@@ -29,6 +31,7 @@ update-vendor:
 	glide update
 
 clean: clean-client
+	cp $(CWD)/server/models/hal.go ./hal.go
 	rm -rf $(CWD)/server/cmd/ \
 		$(CWD)/server/models/ \
 		$(CWD)/server/restapi/operations \
@@ -36,7 +39,8 @@ clean: clean-client
 		$(CWD)/server/restapi/embedded_spec.go \
 		$(CWD)/server/restapi/server.go \
 		$(CWD)/lunarform \
-		$(CWD)/profile.txt \
+		$(CWD)/profile.txt && \
+	mv ./hal.go $(CWD)/server/models/hal.go
 
 
 clean-client:
@@ -46,7 +50,6 @@ clean-client:
 validate-swagger:
 	swagger validate $(SRC_YAML)
 
-build: generate-swagger lunarform
 
 test:
 	go tool vet $(GO_TARGETS)
@@ -71,7 +74,7 @@ generate-swagger: validate-swagger
 		--name=Lunarform \
 		--spec=$(SRC_YAML)
 
-generate:generate-swagger
+generate: generate-swagger generate-client
 
 lunarform:
 	go build \
@@ -86,14 +89,16 @@ build-docker:
 run-docker: build-docker
 	docker run -p 8080:8080 lunarform
 
-build-client:
-	mkdir client && \
+generate-client:
+	mkdir -p client && \
 	swagger generate client \
 		-f swagger.yml \
 		-A lunarform-client \
 		--existing-models github.com/drewsonne/lunarform/server/models \
 		--skip-models \
-		--target client && \
+		--target client
+
+build-client: generate-client
 	go build -ldflags "-X github.com/drewsonne/lunarform/cli/cmd.version=$(VERSION)" -o tfs-client github.com/drewsonne/lunarform/cli
 
 client-clean: clean-client build-client
