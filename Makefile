@@ -22,8 +22,8 @@ VERSION?=$(shell git rev-parse --short HEAD)
 
 run-clean: clean build run
 
-run: terraform-server
-	$(CWD)/terraform-server --port=8080 --scheme=http
+run: lunarform
+	$(CWD)/lunarform --port=8080 --scheme=http
 
 update-vendor:
 	glide update
@@ -35,7 +35,7 @@ clean: clean-client
 		$(CWD)/server/restapi/doc.go \
 		$(CWD)/server/restapi/embedded_spec.go \
 		$(CWD)/server/restapi/server.go \
-		$(CWD)/terraform-server \
+		$(CWD)/lunarform \
 		$(CWD)/profile.txt \
 
 
@@ -46,7 +46,7 @@ clean-client:
 validate-swagger:
 	swagger validate $(SRC_YAML)
 
-build: generate-swagger terraform-server
+build: generate-swagger lunarform
 
 test:
 	go tool vet $(GO_TARGETS)
@@ -68,32 +68,32 @@ generate-swagger: validate-swagger
 	swagger generate server \
 		--target=server \
 		--principal=models.Principal \
-		--name=TerraformServer \
+		--name=Lunarform \
 		--spec=$(SRC_YAML)
 
 generate:generate-swagger
 
-terraform-server:
+lunarform:
 	go build \
 		-a -installsuffix $(CGO) \
-		-o ./terraform-server \
-		github.com/drewsonne/terraform-server/server/cmd/terraform-server-server
+		-o ./lunarform \
+		github.com/drewsonne/lunarform/server/cmd/lunarform-server
 
 build-docker:
-	GOOS=linux $(MAKE) terraform-server
-	docker build -t terraform-server .
+	GOOS=linux $(MAKE) lunarform
+	docker build -t lunarform .
 
 run-docker: build-docker
-	docker run -p 8080:8080 terraform-server
+	docker run -p 8080:8080 lunarform
 
 build-client:
 	mkdir client && \
 	swagger generate client \
 		-f swagger.yml \
-		-A terraform-server-client \
-		--existing-models github.com/drewsonne/terraform-server/server/models \
+		-A lunarform-client \
+		--existing-models github.com/drewsonne/lunarform/server/models \
 		--skip-models \
 		--target client && \
-	go build -ldflags "-X github.com/drewsonne/terraform-server/cli/cmd.version=$(VERSION)" -o tfs-client github.com/drewsonne/terraform-server/cli
+	go build -ldflags "-X github.com/drewsonne/lunarform/cli/cmd.version=$(VERSION)" -o tfs-client github.com/drewsonne/lunarform/cli
 
 client-clean: clean-client build-client

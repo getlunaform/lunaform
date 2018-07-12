@@ -27,7 +27,7 @@ type Client struct {
 /*
 ListResourceGroups List the root resource groups
 */
-func (a *Client) ListResourceGroups(params *ListResourceGroupsParams, authInfo runtime.ClientAuthInfoWriter) (*ListResourceGroupsOK, error) {
+func (a *Client) ListResourceGroups(params *ListResourceGroupsParams) (*ListResourceGroupsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListResourceGroupsParams()
@@ -37,12 +37,11 @@ func (a *Client) ListResourceGroups(params *ListResourceGroupsParams, authInfo r
 		ID:                 "list-resource-groups",
 		Method:             "GET",
 		PathPattern:        "/",
-		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
-		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ProducesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListResourceGroupsReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -56,7 +55,7 @@ func (a *Client) ListResourceGroups(params *ListResourceGroupsParams, authInfo r
 /*
 ListResources list resources API
 */
-func (a *Client) ListResources(params *ListResourcesParams, authInfo runtime.ClientAuthInfoWriter) (*ListResourcesOK, error) {
+func (a *Client) ListResources(params *ListResourcesParams) (*ListResourcesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListResourcesParams()
@@ -66,12 +65,11 @@ func (a *Client) ListResources(params *ListResourcesParams, authInfo runtime.Cli
 		ID:                 "list-resources",
 		Method:             "GET",
 		PathPattern:        "/{group}",
-		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
-		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ProducesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListResourcesReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

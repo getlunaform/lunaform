@@ -1,25 +1,25 @@
 swagger: "2.0"
 info:
-  title: terraform-server
+  title: lunarform
   description: |
    This is a RESTful server for managing Terraform plan and apply jobs and the auditing of actions to approve those apply jobs.
    The inspiration for this project is the AWS CloudFormation API's. The intention is to implement a locking mechanism
    not only for the terraform state, but for the plan and apply of terraform modules. Once a `module` plan starts, it
-   is instantiated as a `stack` within the nomencalture of `terraform-server`.
+   is instantiated as a `stack` within the nomencalture of `lunarform`.
   version: 0.0.1-alpha
   contact:
     email: drew.sonne@gmail.com
   license:
     name: Apache 2.0
-    url: https://github.com/drewsonne/terraform-server/blob/master/LICENSE
+    url: https://github.com/drewsonne/lunarform/blob/master/LICENSE
 basePath: /api
 schemes:
   - http
   - https
 consumes:
-- application/vnd.terraform.server.v1+json
+- application/vnd.lunarform.v1+json
 produces:
-- application/vnd.terraform.server.v1+json
+- application/vnd.lunarform.v1+json
 
 securityDefinitions:
   bearer:
@@ -43,14 +43,14 @@ paths:
         - resources
       description: List the root resource groups
       operationId: list-resource-groups
-      produces: ["application/vnd.terraform.server.v1+json"]
+      produces: ["application/vnd.lunarform.v1+json"]
       responses:
         404:
           description: Not Found
         200:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               _embedded:
@@ -68,7 +68,7 @@ paths:
       tags:
         - resources
       operationId: list-resources
-      produces: ["application/vnd.terraform.server.v1+json"]
+      produces: ["application/vnd.lunarform.v1+json"]
       parameters:
         - in: path
           name: group
@@ -83,7 +83,7 @@ paths:
         200:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _embedded:
                 resources:
                   - name: groups
@@ -100,8 +100,8 @@ paths:
         - stacks
       description: Deploy a stack from a module
       operationId: deploy-stack
-      produces: ["application/vnd.terraform.server.v1+json"]
-      consumes: ["application/vnd.terraform.server.v1+json"]
+      produces: ["application/vnd.lunarform.v1+json"]
+      consumes: ["application/vnd.lunarform.v1+json"]
       parameters:
         - in: body
           name: terraform-stack
@@ -112,7 +112,7 @@ paths:
         201:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               name: my-tf-stack
@@ -126,12 +126,12 @@ paths:
         - modules
       description: List TF modules
       operationId: list-modules
-      produces: ["application/vnd.terraform.server.v1+json"]
+      produces: ["application/vnd.lunarform.v1+json"]
       responses:
         200:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               _embedded:
@@ -153,8 +153,8 @@ paths:
         - modules
       description: Upload a Terraform module
       operationId: create-module
-      produces: ["application/vnd.terraform.server.v1+json"]
-      consumes: ["application/vnd.terraform.server.v1+json"]
+      produces: ["application/vnd.lunarform.v1+json"]
+      consumes: ["application/vnd.lunarform.v1+json"]
       parameters:
         - in: body
           name: terraform-module
@@ -165,7 +165,7 @@ paths:
         201:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               name: my-tf-module
@@ -179,12 +179,12 @@ paths:
         - stacks
       description: List deployed TF modules
       operationId: list-stacks
-      produces: ["application/vnd.terraform.server.v1+json"]
+      produces: ["application/vnd.lunarform.v1+json"]
       responses:
         200:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               _embedded:
@@ -235,7 +235,7 @@ paths:
         200:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               name: my-tf-module
@@ -265,7 +265,7 @@ paths:
         200:
           description: OK
           examples:
-            application/vnd.terraform.server.v1+json:
+            application/vnd.lunarform.v1+json:
               _links:
                 $ref: "#/definitions/hal-rsc-links"
               name: my-tf-module
@@ -290,7 +290,7 @@ definitions:
 #    type: object
 #    description: |
 #      A source of users either locally managed, or through a federation.
-#      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `terraform-server`
+#      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `lunarform`
 #      handles all management of. The second are read-only federated IdP's.
   response-list-tf-modules:
     type: object

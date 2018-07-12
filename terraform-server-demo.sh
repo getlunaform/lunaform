@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cd ~/go/src/github.com/drewsonne/terraform-server
+cd ~/go/src/github.com/drewsonne/lunarform
 
-./terraform-server --port=8080 --scheme=http &
+./lunarform --port=8080 --scheme=http &
 
 tfs_pid=$!
 

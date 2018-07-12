@@ -27,7 +27,7 @@ type Client struct {
 /*
 CreateModule Upload a Terraform module
 */
-func (a *Client) CreateModule(params *CreateModuleParams, authInfo runtime.ClientAuthInfoWriter) (*CreateModuleCreated, error) {
+func (a *Client) CreateModule(params *CreateModuleParams) (*CreateModuleCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateModuleParams()
@@ -37,12 +37,11 @@ func (a *Client) CreateModule(params *CreateModuleParams, authInfo runtime.Clien
 		ID:                 "create-module",
 		Method:             "POST",
 		PathPattern:        "/tf/modules",
-		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
-		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ProducesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &CreateModuleReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -56,7 +55,7 @@ func (a *Client) CreateModule(params *CreateModuleParams, authInfo runtime.Clien
 /*
 GetModule Get a Terraform module
 */
-func (a *Client) GetModule(params *GetModuleParams, authInfo runtime.ClientAuthInfoWriter) (*GetModuleOK, error) {
+func (a *Client) GetModule(params *GetModuleParams) (*GetModuleOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetModuleParams()
@@ -66,12 +65,11 @@ func (a *Client) GetModule(params *GetModuleParams, authInfo runtime.ClientAuthI
 		ID:                 "get-module",
 		Method:             "GET",
 		PathPattern:        "/tf/module/{id}",
-		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
-		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ProducesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &GetModuleReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -85,7 +83,7 @@ func (a *Client) GetModule(params *GetModuleParams, authInfo runtime.ClientAuthI
 /*
 ListModules List TF modules
 */
-func (a *Client) ListModules(params *ListModulesParams, authInfo runtime.ClientAuthInfoWriter) (*ListModulesOK, error) {
+func (a *Client) ListModules(params *ListModulesParams) (*ListModulesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListModulesParams()
@@ -95,12 +93,11 @@ func (a *Client) ListModules(params *ListModulesParams, authInfo runtime.ClientA
 		ID:                 "list-modules",
 		Method:             "GET",
 		PathPattern:        "/tf/modules",
-		ProducesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
-		ConsumesMediaTypes: []string{"application/vnd.terraform.server.v1+json"},
+		ProducesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunarform.v1+json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &ListModulesReader{formats: a.formats},
-		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

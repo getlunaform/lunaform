@@ -17,10 +17,10 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/terraform-server/server/models"
+	"github.com/drewsonne/lunarform/server/models"
 	"fmt"
-	"github.com/drewsonne/terraform-server/client/client/modules"
-	"github.com/drewsonne/terraform-server/client/client/stacks"
+	"github.com/drewsonne/lunarform/client/client/modules"
+	"github.com/drewsonne/lunarform/client/client/stacks"
 )
 
 var flagModule string

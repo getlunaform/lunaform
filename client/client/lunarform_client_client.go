@@ -11,12 +11,12 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/drewsonne/terraform-server/client/client/modules"
-	"github.com/drewsonne/terraform-server/client/client/resources"
-	"github.com/drewsonne/terraform-server/client/client/stacks"
+	"github.com/drewsonne/lunarform/client/client/modules"
+	"github.com/drewsonne/lunarform/client/client/resources"
+	"github.com/drewsonne/lunarform/client/client/stacks"
 )
 
-// Default terraform server client HTTP client.
+// Default lunarform client HTTP client.
 var Default = NewHTTPClient(nil)
 
 const (
@@ -31,14 +31,14 @@ const (
 // DefaultSchemes are the default schemes found in Meta (info) section of spec file
 var DefaultSchemes = []string{"http", "https"}
 
-// NewHTTPClient creates a new terraform server client HTTP client.
-func NewHTTPClient(formats strfmt.Registry) *TerraformServerClient {
+// NewHTTPClient creates a new lunarform client HTTP client.
+func NewHTTPClient(formats strfmt.Registry) *LunarformClient {
 	return NewHTTPClientWithConfig(formats, nil)
 }
 
-// NewHTTPClientWithConfig creates a new terraform server client HTTP client,
+// NewHTTPClientWithConfig creates a new lunarform client HTTP client,
 // using a customizable transport config.
-func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *TerraformServerClient {
+func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *LunarformClient {
 	// ensure nullable parameters have default
 	if cfg == nil {
 		cfg = DefaultTransportConfig()
@@ -49,14 +49,14 @@ func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Ter
 	return New(transport, formats)
 }
 
-// New creates a new terraform server client client
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *TerraformServerClient {
+// New creates a new lunarform client client
+func New(transport runtime.ClientTransport, formats strfmt.Registry) *LunarformClient {
 	// ensure nullable parameters have default
 	if formats == nil {
 		formats = strfmt.Default
 	}
 
-	cli := new(TerraformServerClient)
+	cli := new(LunarformClient)
 	cli.Transport = transport
 
 	cli.Modules = modules.New(transport, formats)
@@ -107,8 +107,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 	return cfg
 }
 
-// TerraformServerClient is a client for terraform server client
-type TerraformServerClient struct {
+// LunarformClient is a client for lunarform client
+type LunarformClient struct {
 	Modules *modules.Client
 
 	Resources *resources.Client
@@ -119,7 +119,7 @@ type TerraformServerClient struct {
 }
 
 // SetTransport changes the transport on the client and all its subresources
-func (c *TerraformServerClient) SetTransport(transport runtime.ClientTransport) {
+func (c *LunarformClient) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
 	c.Modules.SetTransport(transport)

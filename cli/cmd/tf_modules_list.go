@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/terraform-server/client/client/modules"
+	"github.com/drewsonne/lunarform/client/client/modules"
 )
 
 // tfModulesListCmd represents the tfModulesList command

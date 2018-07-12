@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/swag"
-	"github.com/drewsonne/terraform-server/server/restapi/operations"
+	"github.com/drewsonne/lunarform/server/restapi/operations"
 )
 
 var cliconfig = ConfigFileFlags{}
@@ -48,7 +48,7 @@ func (cfg *Configuration) loadFromFile(path string) (err error) {
 //ConfigFileFlags for loading settings for the server
 type ConfigFileFlags struct {
 	ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
-	Version bool `short:"V" long:"version" description:"Print terraform-server version and quit"`
+	Version bool `short:"V" long:"version" description:"Print lunarform version and quit"`
 }
 
 func parseCliConfiguration() (cfg *Configuration, err error) {
@@ -73,7 +73,7 @@ func newDefaultConfiguration() *Configuration {
 	}
 }
 
-func configureFlags(api *operations.TerraformServerAPI) {
+func configureFlags(api *operations.LunarformAPI) {
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
 		{
 			ShortDescription: "Terraform Server",
