@@ -1,4 +1,5 @@
-# lunaform
+![lunaform](https://raw.githubusercontent.com/drewsonne/lunaform/master/lunaform.jpeg | width=420)
+
 Restful interface to handle terraform deploys. Similiar to the CloudFormation APIs
 
 [![GoDoc](https://godoc.org/github.com/drewsonne/lunaform/gocd?status.svg)](https://godoc.org/github.com/drewsonne/lunaform/gocd)
