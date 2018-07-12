@@ -73,7 +73,7 @@ func newDefaultConfiguration() *Configuration {
 	}
 }
 
-func configureFlags(api *operations.TerraformServerAPI) {
+func configureFlags(api *operations.LunarformAPI) {
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
 		{
 			ShortDescription: "Terraform Server",

@@ -23,7 +23,7 @@ import (
 
 var version string
 
-func configureAPI(api *operations.TerraformServerAPI) http.Handler {
+func configureAPI(api *operations.LunarformAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 	//api.BearerAuthenticator =
