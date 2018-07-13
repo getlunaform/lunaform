@@ -1,36 +1,43 @@
+.DEFAULT_GOAL := default
+
 SRC_YAML?="swagger.yml"
 CGO?=cgo
 
 CWD?=$(shell pwd)
 
 SHELL:=/bin/bash
-GO_PIPELINE_LABEL?=BUILD_ID
 ENVIRONMENT?=DEVELOPMENT
 
-BUILD_NUMBER?=$(GO_PIPELINE_LABEL)
 BUILD_ID?=$(ENVIRONMENT)
 
 GO_TARGETS= ./server ./backend
 GOR_TARGETS= ./server/... ./backend/...
 
-SHA?=$(shell git rev-parse HEAD)
-BUILT_BY?=$(shell whoami)
-HOSTNAME?=$(shell hostname)
-NOW?=$(shell date +%s)
-
 VERSION?=$(shell git rev-parse --short HEAD)
 
-build: generate lunaform
+##################
+# Global Targets #
+##################
+build: build-server build-client
+clean: clean-server clean-client
+generate: generate-server generate-client
 
-run-clean: clean build run
-
-run: lunaform
-	$(CWD)/lunaform --port=8080 --scheme=http
+default: clean generate build
 
 update-vendor:
 	glide update
 
-clean: clean-client
+##################
+# Server targets #
+##################
+
+build-server:
+	go build \
+		-a -installsuffix $(CGO) \
+		-o ./lunaform-server \
+		github.com/drewsonne/lunaform/server/cmd/lunaform-server
+
+clean-server:
 	cp $(CWD)/server/models/hal.go $(CWD)/hal.go && \
 	rm -rf $(CWD)/server/cmd/ \
 		$(CWD)/server/models/ \
@@ -43,15 +50,40 @@ clean: clean-client
 	mkdir -p $(CWD)/server/models && \
 	mv $(CWD)/hal.go $(CWD)/server/models/hal.go
 
+generate-server:
+	swagger generate server \
+		--target=server \
+		--principal=models.Principal \
+		--name=lunaform \
+		--spec=$(SRC_YAML)
+
+run-server:
+	$(CWD)/lunaform --port=8080 --scheme=http
+
+##################
+# Client targets #
+##################
+
+build-client:
+	go build -ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" -o lunaform-client github.com/drewsonne/lunaform/cli
 
 clean-client:
-	rm -f $(CWD)/lunaform-client && \
-	rm -rf $(CWD)/client
+	rm -f $(CWD)/lunaform && \
+	rm -rf $(CWD)/client && \
+	touch $(CWD)/client/.gitkeep
 
-validate-swagger:
-	swagger validate $(SRC_YAML)
+generate-client:
+	mkdir -p client && \
+	swagger generate client \
+		-f swagger.yml \
+		-A lunaform \
+		--existing-models github.com/drewsonne/lunaform/server/models \
+		--skip-models
 
 
+################
+# Test targets #
+################
 test:
 	go tool vet $(GO_TARGETS)
 	go test $(GOR_TARGETS)
@@ -59,6 +91,9 @@ test:
 test-coverage:
 	@sh $(CWD)/scripts/test-coverage.sh $(CWD) "$(GO_TARGETS)"
 	go tool cover -html=$(CWD)/profile.out -o $(CWD)/coverage.html
+
+validate-swagger:
+	swagger validate $(SRC_YAML)
 
 format:
 	go fmt $(shell go list ./...)
@@ -68,37 +103,13 @@ lint:
 	diff -u <(echo -n) <(gofmt -d -s $(shell find backend -type d))
 	golint -set_exit_status . $(GOR_TARGETS)
 
-generate-swagger: validate-swagger
-	swagger generate server \
-		--target=server \
-		--principal=models.Principal \
-		--name=lunaform \
-		--spec=$(SRC_YAML)
 
-generate: generate-swagger generate-client
-
-lunaform:
-	go build \
-		-a -installsuffix $(CGO) \
-		-o ./lunaform \
-		github.com/drewsonne/lunaform/server/cmd/lunaform-server
-
+##################
+# Docker targets #
+##################
 build-docker:
 	GOOS=linux $(MAKE) lunaform
 	docker build -t lunaform .
 
 run-docker: build-docker
 	docker run -p 8080:8080 lunaform
-
-generate-client:
-	mkdir -p client && \
-	swagger generate client \
-		-f swagger.yml \
-		-A lunaform-client \
-		--existing-models github.com/drewsonne/lunaform/server/models \
-		--skip-models
-
-build-client: generate-client
-	go build -ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" -o lunaform-client github.com/drewsonne/lunaform/cli
-
-client-clean: clean-client build-client

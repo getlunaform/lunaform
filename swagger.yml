@@ -25,7 +25,7 @@ securityDefinitions:
   api-key:
     type: apiKey
     in: header
-    name: x-tfs-auth
+    name: x-lunaform-auth
 
 x-tagGroups:
   - name: Resources
@@ -458,3 +458,5 @@ definitions:
         type: string
       message:
         type: string
+  principal:
+    type: string

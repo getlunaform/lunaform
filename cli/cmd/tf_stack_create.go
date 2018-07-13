@@ -46,6 +46,7 @@ to quickly create a Cobra application.`,
 			moduleSrcIsId = false
 			modules, err := gocdClient.Modules.ListModules(
 				modules.NewListModulesParams(),
+				authHandler,
 			)
 			if err == nil {
 				for _, module = range modules.Payload.Embedded.Resources {
