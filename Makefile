@@ -34,7 +34,7 @@ update-vendor:
 build-server:
 	go build \
 		-a -installsuffix $(CGO) \
-		-o ./lunaform-server \
+		-o $(CWD)/lunaform-server \
 		github.com/drewsonne/lunaform/server/cmd/lunaform-server
 
 clean-server:
@@ -65,7 +65,11 @@ run-server:
 ##################
 
 build-client:
-	go build -ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" -o lunaform github.com/drewsonne/lunaform/cli
+	go build \
+		-ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" \
+		-a -installsuffix $(CGO) \
+		-o $(CWD)/lunaform \
+		github.com/drewsonne/lunaform/cli
 
 clean-client:
 	rm -f $(CWD)/lunaform && \

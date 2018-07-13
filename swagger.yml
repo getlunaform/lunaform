@@ -398,6 +398,23 @@ definitions:
           - DEPLOYING
           - SUCCESS
           - FAIL
+  resource-auth-user:
+    type: object
+    properties:
+      shortname:
+        type: string
+      name:
+        type: string
+      id:
+        type: string
+      groups:
+        type: array
+        items:
+          type: string
+      api-keys:
+        type: array
+        items:
+          type: string
   response-list-resources:
     type: object
     required:
@@ -459,4 +476,4 @@ definitions:
       message:
         type: string
   principal:
-    type: string
+    $ref: "#/definitions/resource-auth-user"

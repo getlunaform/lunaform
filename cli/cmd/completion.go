@@ -27,12 +27,12 @@ var completionCmd = &cobra.Command{
 	Short: "Generates bash completion scripts",
 	Long: `To load completion run
 
-. <(tfs-client completion)
+. <(lunaform completion)
 
 To configure your bash shell to load completions for each session add to your bashrc
 
 # ~/.bashrc or ~/.profile
-. <(tfs-client completion)
+. <(lunaform completion)
 `,	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("completion called")
 	},

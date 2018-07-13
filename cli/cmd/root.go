@@ -66,15 +66,15 @@ type Configuration struct {
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "tfs-client",
+	Use:   "lunaform",
 	Short: "A commandline application to interact with lunaform",
 	Long: `A commandline client to perform operations on 'lunaform'.
 These include module, and stack deployment, as well as user and permission management.
 For example:
 
-    $ tfs-client auth users list
-    $ tfs-client tf modules list
-    $ tfs-client tf modules create \
+    $ lunaform auth users list
+    $ lunaform tf modules list
+    $ lunaform tf modules create \
 		--name my-module \
 		--type git \
 		--source git@github.com:zeebox/my-module.git
@@ -100,7 +100,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/tfs-client.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/lunaform.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&useHal, "hal", false, "draw HAL elements in response")
 }
 
@@ -120,7 +120,7 @@ func initConfig() {
 
 		// Search config in home directory with name ".client" (without extension).
 		viper.AddConfigPath(home + "/.config/")
-		viper.SetConfigName("tfs-client")
+		viper.SetConfigName("lunaform")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

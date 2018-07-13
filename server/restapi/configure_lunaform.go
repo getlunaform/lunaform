@@ -15,6 +15,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"github.com/go-openapi/swag"
+	"github.com/drewsonne/lunaform/server/models"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -68,7 +69,14 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 
 	oh := NewContextHelper(api.Context())
 
-	//api.APIKeyAuth
+	api.APIKeyAuth = func(s string) (*models.Principal, error) {
+		user := models.Principal{
+			models.ResourceAuthUser{
+				APIKeys: []string{s},
+			},
+		}
+		return &user, nil
+	}
 
 	// Controllers for /
 	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(idp, oh)
@@ -128,7 +136,7 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	handler = logRequest(handler)
 	debug := os.Getenv("DEBUG")
 	if debug == "1" {
-		return logResponse("lunaform",handler )
+		return logResponse("lunaform", handler)
 	} else {
 		return handler
 	}
