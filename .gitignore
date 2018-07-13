@@ -20,3 +20,4 @@ vendor
 /dist
 /lunaform-client
 /client/*
+/lunaform-server

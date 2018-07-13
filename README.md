@@ -1,4 +1,4 @@
-![lunaform](/lunaform.jpeg)
+![lunaform](./docs/lunaform.jpeg)
 
 Restful interface to handle terraform deploys. Similiar to the CloudFormation APIs
 

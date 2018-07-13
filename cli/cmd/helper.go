@@ -7,13 +7,26 @@ import (
 	"github.com/spf13/cobra"
 	"strings"
 	"github.com/drewsonne/lunaform/server/models"
+	"github.com/go-openapi/runtime"
 )
 
 func handlerError(err error) {
+
+	var errResponse interface{}
+	if errApi, isApiError := err.(*runtime.APIError); isApiError {
+		response := map[string]interface{}{
+			"code":           errApi.Code,
+			"operation-name": errApi.OperationName,
+		}
+		
+		errResponse = response
+	} else {
+		errResponse = err.Error()
+	}
 	fmt.Print(
 		jsonResponse(
-			map[string]string{
-				"error": err.Error(),
+			map[string]interface{}{
+				"error": errResponse,
 			},
 		),
 	)

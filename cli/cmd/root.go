@@ -37,10 +37,12 @@ const (
 
 var cfgFile string
 var useHal bool
-var gocdClient *apiclient.LunaformClient
+var gocdClient *apiclient.Lunaform
 
 var config Configuration
 var version string
+
+var authHandler runtime.ClientAuthInfoWriterFunc
 
 var logLevelMapping = map[string]jww.Threshold{
 	"TRACE":    jww.LevelTrace,
@@ -59,6 +61,7 @@ type Configuration struct {
 	Log struct {
 		Level string
 	}
+	ApiKey string
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -92,6 +95,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	cobra.OnInitialize(initLogging)
 	cobra.OnInitialize(initGocdClient)
+	cobra.OnInitialize(initAuthHandler)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -147,4 +151,10 @@ func initGocdClient() {
 	transport.Consumers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONConsumer()
 
 	gocdClient = apiclient.New(transport, strfmt.Default)
+}
+
+func initAuthHandler() {
+	authHandler = func(request runtime.ClientRequest, reg strfmt.Registry) (err error) {
+		return request.SetHeaderParam("X-Lunaform-Auth", config.ApiKey)
+	}
 }

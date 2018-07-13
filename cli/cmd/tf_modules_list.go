@@ -18,6 +18,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/drewsonne/lunaform/client/modules"
+	"github.com/drewsonne/lunaform/server/models"
 )
 
 // tfModulesListCmd represents the tfModulesList command
@@ -31,8 +32,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		modules, err := gocdClient.Modules.ListModules(modules.NewListModulesParams())
+		modules, err := gocdClient.Modules.ListModules(
+			modules.NewListModulesParams(),
+			authHandler,
+		)
 
-		handleOutput(cmd, modules.Payload, useHal, err)
+		var response models.HalLinkable
+		if err != nil {
+			response = nil
+		} else {
+			response = modules.Payload
+		}
+		handleOutput(cmd, response, useHal, err)
 	},
 }

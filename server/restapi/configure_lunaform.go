@@ -68,6 +68,8 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 
 	oh := NewContextHelper(api.Context())
 
+	//api.APIKeyAuth
+
 	// Controllers for /
 	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(idp, oh)
 

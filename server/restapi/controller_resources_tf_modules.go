@@ -13,7 +13,7 @@ import (
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
-	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams) (r middleware.Responder) {
+	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		records, err := db.List("tf-module")

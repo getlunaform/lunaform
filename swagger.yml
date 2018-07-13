@@ -22,10 +22,10 @@ produces:
 - application/vnd.lunaform.v1+json
 
 securityDefinitions:
-  bearer:
+  api-key:
     type: apiKey
     in: header
-    name: x-tfs-auth
+    name: x-lunaform-auth
 
 x-tagGroups:
   - name: Resources
@@ -102,6 +102,8 @@ paths:
       operationId: deploy-stack
       produces: ["application/vnd.lunaform.v1+json"]
       consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
       parameters:
         - in: body
           name: terraform-stack
@@ -127,6 +129,8 @@ paths:
       description: List TF modules
       operationId: list-modules
       produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
       responses:
         200:
           description: OK
@@ -454,3 +458,5 @@ definitions:
         type: string
       message:
         type: string
+  principal:
+    type: string
