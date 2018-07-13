@@ -11,9 +11,9 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/drewsonne/lunaform/client/client/modules"
-	"github.com/drewsonne/lunaform/client/client/resources"
-	"github.com/drewsonne/lunaform/client/client/stacks"
+	"github.com/drewsonne/lunaform/client/modules"
+	"github.com/drewsonne/lunaform/client/resources"
+	"github.com/drewsonne/lunaform/client/stacks"
 )
 
 // Default lunaform client HTTP client.

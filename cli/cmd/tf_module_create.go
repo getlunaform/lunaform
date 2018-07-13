@@ -18,7 +18,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/drewsonne/lunaform/server/models"
-	"github.com/drewsonne/lunaform/client/client/modules"
+	"github.com/drewsonne/lunaform/client/modules"
 )
 
 var nameFlag string

@@ -96,8 +96,7 @@ generate-client:
 		-f swagger.yml \
 		-A lunaform-client \
 		--existing-models github.com/drewsonne/lunaform/server/models \
-		--skip-models \
-		--target client
+		--skip-models
 
 build-client: generate-client
 	go build -ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" -o lunaform-client github.com/drewsonne/lunaform/cli

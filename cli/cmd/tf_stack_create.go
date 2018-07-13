@@ -19,8 +19,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/drewsonne/lunaform/server/models"
 	"fmt"
-	"github.com/drewsonne/lunaform/client/client/modules"
-	"github.com/drewsonne/lunaform/client/client/stacks"
+	"github.com/drewsonne/lunaform/client/modules"
+	"github.com/drewsonne/lunaform/client/stacks"
 )
 
 var flagModule string
