@@ -65,7 +65,7 @@ run-server:
 ##################
 
 build-client:
-	go build -ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" -o lunaform-client github.com/drewsonne/lunaform/cli
+	go build -ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" -o lunaform github.com/drewsonne/lunaform/cli
 
 clean-client:
 	rm -f $(CWD)/lunaform && \
