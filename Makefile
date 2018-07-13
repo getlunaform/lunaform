@@ -70,10 +70,10 @@ build-client:
 clean-client:
 	rm -f $(CWD)/lunaform && \
 	rm -rf $(CWD)/client && \
+	mkdir -p $(CWD)/client && \
 	touch $(CWD)/client/.gitkeep
 
 generate-client:
-	mkdir -p client && \
 	swagger generate client \
 		-f swagger.yml \
 		-A lunaform \
