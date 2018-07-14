@@ -45,7 +45,11 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 		tfw.Modules = []*models.ResourceTfModule{}
 
 		if err := db.Create("lf-workspace", *tfw.Name, tfw); err != nil {
-			return operations.NewCreateWorkspaceBadRequest()
+			return operations.NewCreateWorkspaceBadRequest().WithPayload(&models.ServerError{
+				StatusCode: helpers.Int64(400),
+				Status:     helpers.String("Bad Request"),
+				Message:    helpers.String(err.Error()),
+			})
 		}
 
 		if tfw == nil {
