@@ -21,11 +21,11 @@ const (
 )
 
 var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
-	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams) (r middleware.Responder) {
+	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		stacks := make([]*models.ResourceTfStack, 0)
-		err := db.List("tf-stack",&stacks)
+		err := db.List("tf-stack", &stacks)
 		if err != nil {
 			return operations.NewListStacksInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: Int64(500),
@@ -51,7 +51,7 @@ var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db da
 }
 
 var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.DeployStackHandlerFunc {
-	return operations.DeployStackHandlerFunc(func(params operations.DeployStackParams) (r middleware.Responder) {
+	return operations.DeployStackHandlerFunc(func(params operations.DeployStackParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		tfs := params.TerraformStack
@@ -86,7 +86,7 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 }
 
 var GetTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.GetStackHandlerFunc {
-	return operations.GetStackHandlerFunc(func(params operations.GetStackParams) (r middleware.Responder) {
+	return operations.GetStackHandlerFunc(func(params operations.GetStackParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		id := params.ID

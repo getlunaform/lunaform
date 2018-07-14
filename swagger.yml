@@ -159,6 +159,8 @@ paths:
       operationId: create-module
       produces: ["application/vnd.lunaform.v1+json"]
       consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
       parameters:
         - in: body
           name: terraform-module
@@ -184,6 +186,8 @@ paths:
       description: List deployed TF modules
       operationId: list-stacks
       produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
       responses:
         200:
           description: OK
@@ -210,6 +214,8 @@ paths:
         - stacks
       description: Deploy a terraform stack as a module
       operationId: deploy-stack
+      security:
+        - api-key: []
       parameters:
         - in: body
           name: terraform-stack
@@ -229,6 +235,8 @@ paths:
         - modules
       description: Get a Terraform module
       operationId: get-module
+      security:
+        - api-key: []
       parameters:
         - in: path
           name: id
@@ -259,6 +267,8 @@ paths:
         - stacks
       description: Get a stack
       operationId: get-stack
+      security:
+        - api-key: []
       parameters:
         - in: path
           name: id

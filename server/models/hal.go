@@ -37,6 +37,19 @@ func (m *ResourceListTfModule) Clean() interface{} {
 	return make([]interface{}, 0)
 }
 
+func (m *ResourceListTfStack) Clean() interface{} {
+	if m != nil {
+		rscs := make([]interface{}, len(m.Resources))
+		for i, rsc := range m.Resources {
+			rscs[i] = rsc.Clean()
+		}
+		return map[string]interface{}{
+			"stacks": rscs,
+		}
+	}
+	return make([]interface{}, 0)
+}
+
 func (list *ResourceList) Clean() interface{} {
 	rscs := make([]interface{}, len(list.Resources))
 	for i, rsc := range list.Resources {
@@ -46,6 +59,10 @@ func (list *ResourceList) Clean() interface{} {
 }
 
 func (m *ResponseListTfModules) Clean() interface{} {
+	return m.Embedded.Clean()
+}
+
+func (m *ResponseListTfStacks) Clean() interface{} {
 	return m.Embedded.Clean()
 }
 

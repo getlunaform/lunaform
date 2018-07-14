@@ -56,9 +56,10 @@ to quickly create a Cobra application.`,
 				}
 			}
 		} else if flagModuleId != "" {
-			moduleResponse, err := gocdClient.Modules.GetModule(modules.NewGetModuleParams().WithID(
-				flagModuleId,
-			))
+			moduleResponse, err := gocdClient.Modules.GetModule(
+				modules.NewGetModuleParams().WithID(flagModuleId),
+				authHandler,
+			)
 			if err == nil {
 				module = moduleResponse.Payload
 			}
@@ -84,7 +85,7 @@ to quickly create a Cobra application.`,
 				Name:     String(flagName),
 			},
 		)
-		stack, err := gocdClient.Stacks.DeployStack(params)
+		stack, err := gocdClient.Stacks.DeployStack(params, authHandler)
 		if err == nil {
 			handleOutput(cmd, stack.Payload, useHal, err)
 		} else {

@@ -35,6 +35,7 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		module, err := gocdClient.Modules.GetModule(
 			modules.NewGetModuleParams().WithID(idFlag),
+			authHandler,
 		)
 
 		if err == nil {

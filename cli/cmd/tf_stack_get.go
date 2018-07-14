@@ -16,15 +16,14 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/drewsonne/lunaform/client/stacks"
 )
 
 // tfStackGetCmd represents the tfStackGet command
 var tfStackGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: "A brief description of your command",
+	Short: "Get a stack by its id",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -32,7 +31,20 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tfStackGet called")
+		stack, err := gocdClient.Stacks.GetStack(
+			stacks.NewGetStackParams().WithID(idFlag),
+			authHandler,
+		)
+		if err == nil {
+			handleOutput(cmd, stack.Payload, useHal, err)
+		} else if err1, ok := err.(*stacks.GetStackNotFound); ok {
+			handleOutput(cmd, err1.Payload, useHal, nil)
+		} else if err1, ok := err.(*stacks.GetStackInternalServerError); ok {
+			handleOutput(cmd, err1.Payload, useHal, nil)
+		} else {
+			handleOutput(cmd, nil, useHal, err)
+		}
+
 	},
 }
 

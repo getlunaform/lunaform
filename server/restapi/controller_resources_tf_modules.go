@@ -15,9 +15,8 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		modules := []*models.ResourceTfModule{}
-		err := db.List("tf-module", &modules)
-		if err != nil {
+		var modules []*models.ResourceTfModule
+		if err := db.List("tf-module", &modules); err != nil {
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: Int64(500),
 				Status:     String("Internal Server Error"),
@@ -35,46 +34,33 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 }
 
 var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.CreateModuleHandlerFunc {
-	return operations.CreateModuleHandlerFunc(func(params operations.CreateModuleParams) (r middleware.Responder) {
+	return operations.CreateModuleHandlerFunc(func(params operations.CreateModuleParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		tfm := params.TerraformModule
-
 		tfm.VcsID = uuid.New()
 
-		err := db.Create("tf-module", tfm.VcsID, tfm)
-
-		if err != nil {
+		if err := db.Create("tf-module", tfm.VcsID, tfm); err != nil {
 			return operations.NewCreateModuleBadRequest()
 		}
-
-		response := &models.ResourceTfModule{
-			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID),
-			VcsID: tfm.VcsID,
-		}
-		response.Links.Doc = halDocLink(ch).Doc
 
 		if tfm == nil {
 			return operations.NewCreateModuleBadRequest()
 		} else {
-			response.Name = tfm.Name
-			response.Type = tfm.Type
-			response.Source = tfm.Source
-			return operations.NewCreateModuleCreated().WithPayload(response)
+			tfm.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID)
+			tfm.Links.Doc = halDocLink(ch).Doc
+			return operations.NewCreateModuleCreated().WithPayload(tfm)
 		}
 	})
 }
 
 var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
-	return operations.GetModuleHandlerFunc(func(params operations.GetModuleParams) (r middleware.Responder) {
+	return operations.GetModuleHandlerFunc(func(params operations.GetModuleParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		id := params.ID
-
 		var module *models.ResourceTfModule
-		err := db.Read("tf-module", id, module)
-
-		if err != nil {
+		id := params.ID
+		if err := db.Read("tf-module", id, module); err != nil {
 			return operations.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: Int64(500),
 				Status:     String("Internal Server Error"),
