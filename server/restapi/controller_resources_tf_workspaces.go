@@ -14,7 +14,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 	return operations.ListWorkspacesHandlerFunc(func(params operations.ListWorkspacesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		workspaces := []*models.ResourceListTfWorkspaceWorkspacesItems0{}
+		workspaces := []*models.ResourceTfWorkspace{}
 		err := db.List("tf-workspace", &workspaces)
 		if err != nil {
 			return operations.NewListWorkspacesInternalServerError().WithPayload(&models.ServerError{
@@ -22,6 +22,11 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 				Status:     helpers.String("Internal Server Error"),
 				Message:    helpers.String(err.Error()),
 			})
+		}
+
+		for _, workspace := range workspaces {
+			workspace.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + *workspace.Name)
+			workspace.Links.Doc = helpers.HalDocLink(ch).Doc
 		}
 
 		return operations.NewListWorkspacesOK().WithPayload(&models.ResponseListTfWorkspaces{

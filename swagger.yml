@@ -464,10 +464,7 @@ definitions:
       workspaces:
         type: array
         items:
-          type: object
-          properties:
-            name:
-              type: string
+          $ref: "#/definitions/resource-tf-workspace"
   response-list-tf-stacks:
     type: object
     required:
