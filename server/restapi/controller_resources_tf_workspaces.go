@@ -52,13 +52,9 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 			})
 		}
 
-		if tfw == nil {
-			return operations.NewCreateWorkspaceBadRequest()
-		} else {
-			tfw.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + *tfw.Name)
-			tfw.Links.Doc = helpers.HalDocLink(ch).Doc
-			return operations.NewCreateWorkspaceCreated().WithPayload(tfw)
-		}
+		tfw.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + *tfw.Name)
+		tfw.Links.Doc = helpers.HalDocLink(ch).Doc
+		return operations.NewCreateWorkspaceCreated().WithPayload(tfw)
 	})
 }
 
