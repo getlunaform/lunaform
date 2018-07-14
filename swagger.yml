@@ -123,6 +123,8 @@ paths:
             $ref: "#/definitions/resource-tf-stack"
         400:
           description: Bad Request
+          schema:
+            $ref: "#/definitions/server-error"
   /tf/modules:
     get:
       tags:
@@ -180,6 +182,8 @@ paths:
             $ref: "#/definitions/resource-tf-module"
         400:
           description: Bad Request
+          schema:
+            $ref: "#/definitions/server-error"
   /tf/workspaces:
     get:
       tags:
@@ -239,6 +243,8 @@ paths:
             $ref: "#/definitions/resource-tf-workspace"
         400:
           description: Bad Request
+          schema:
+            $ref: "#/definitions/server-error"
   /tf/stacks:
     get:
       tags:
@@ -289,6 +295,8 @@ paths:
             $ref: "#/definitions/resource-tf-stack"
         400:
           description: Bad Request
+          schema:
+            $ref: "#/definitions/server-error"
         500:
           description: Internal Server Error
           schema:

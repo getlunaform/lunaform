@@ -15,7 +15,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 		ch.SetRequest(params.HTTPRequest)
 
 		workspaces := []*models.ResourceTfWorkspace{}
-		err := db.List("tf-workspace", &workspaces)
+		err := db.List("lf-workspace", &workspaces)
 		if err != nil {
 			return operations.NewListWorkspacesInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: helpers.Int64(500),
@@ -26,9 +26,6 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 
 		for _, workspace := range workspaces {
 			workspace.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + *workspace.Name)
-			if len(workspace.Modules) == 0 {
-				workspace.Modules = []*models.ResourceTfModule{}
-			}
 		}
 
 		return operations.NewListWorkspacesOK().WithPayload(&models.ResponseListTfWorkspaces{
@@ -45,8 +42,9 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 		ch.SetRequest(params.HTTPRequest)
 
 		tfw := params.TerraformWorkspace
+		tfw.Modules = []*models.ResourceTfModule{}
 
-		if err := db.Create("tf-workspace", *tfw.Name, tfw); err != nil {
+		if err := db.Create("lf-workspace", *tfw.Name, tfw); err != nil {
 			return operations.NewCreateWorkspaceBadRequest()
 		}
 
@@ -65,7 +63,7 @@ var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHel
 		ch.SetRequest(params.HTTPRequest)
 
 		var module *models.ResourceTfWorkspace
-		if err := db.Read("tf-workspace", params.Name, module); err != nil {
+		if err := db.Read("lf-workspace", params.Name, module); err != nil {
 			return operations.NewDescribeWorkspaceInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: helpers.Int64(500),
 				Status:     helpers.String("Internal Server Error"),
