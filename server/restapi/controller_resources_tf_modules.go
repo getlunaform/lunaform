@@ -28,7 +28,7 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
 			Links: helpers.HalRootRscLinks(ch),
 			Embedded: &models.ResourceListTfModule{
-				Resources: modules,
+				Modules: modules,
 			},
 		})
 	})

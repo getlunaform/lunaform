@@ -38,7 +38,7 @@ var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelpe
 		return operations.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
 			Links: helpers.HalRootRscLinks(ch),
 			Embedded: &models.ResourceListTfStack{
-				Resources: stacks,
+				Stacks: stacks,
 			},
 		})
 	})

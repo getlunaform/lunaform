@@ -49,7 +49,7 @@ to quickly create a Cobra application.`,
 				authHandler,
 			)
 			if err == nil {
-				for _, module = range modules.Payload.Embedded.Resources {
+				for _, module = range modules.Payload.Embedded.Modules {
 					if *module.Name == flagModule {
 						break
 					}
