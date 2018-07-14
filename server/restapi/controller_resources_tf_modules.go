@@ -38,16 +38,16 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 		ch.SetRequest(params.HTTPRequest)
 
 		tfm := params.TerraformModule
-		tfm.VcsID = uuid.New()
+		tfm.ID = uuid.New()
 
-		if err := db.Create("tf-module", tfm.VcsID, tfm); err != nil {
+		if err := db.Create("tf-module", tfm.ID, tfm); err != nil {
 			return operations.NewCreateModuleBadRequest()
 		}
 
 		if tfm == nil {
 			return operations.NewCreateModuleBadRequest()
 		} else {
-			tfm.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID)
+			tfm.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.ID)
 			tfm.Links.Doc = halDocLink(ch).Doc
 			return operations.NewCreateModuleCreated().WithPayload(tfm)
 		}

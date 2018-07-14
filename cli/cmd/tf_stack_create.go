@@ -81,7 +81,7 @@ to quickly create a Cobra application.`,
 
 		params := stacks.NewDeployStackParams().WithTerraformStack(
 			&models.ResourceTfStack{
-				ModuleID: String(module.VcsID),
+				ModuleID: String(module.ID),
 				Name:     String(flagName),
 			},
 		)

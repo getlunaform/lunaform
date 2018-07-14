@@ -35,6 +35,7 @@ x-tagGroups:
     tags:
       - modules
       - stacks
+      - workspaces
 
 paths:
   /:
@@ -179,6 +180,38 @@ paths:
             $ref: "#/definitions/resource-tf-module"
         400:
           description: Bad Request
+  /tf/workspaces:
+    get:
+      tags:
+        - workspaces
+      description: List approved terraform workspaces
+      operationId: list-workspaces
+      produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              _embedded:
+                workspaces:
+                  - name: test
+                    _links: {self: {href: "http://example.com/api/tf/template"}}
+                  - name: stage
+                    _links: {self: {href: "http://example.com/api/tf/stack"}}
+                  - name: live
+                    _links: {self: {href: "http://example.com/api/tf/stack"}}
+          schema:
+            $ref: "#/definitions/response-list-tf-workspaces"
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
   /tf/stacks:
     get:
       tags:
@@ -337,7 +370,7 @@ definitions:
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
-      vcs-id:
+      id:
         type: string
       name:
         type: string
@@ -349,6 +382,29 @@ definitions:
           - git
           - registry
           - enterprise
+  response-list-tf-workspaces:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of terraform workspaces
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-workspace"
+  resource-list-tf-workspace:
+    type: object
+    required:
+      - workspaces
+    properties:
+      workspaces:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
   response-list-tf-stacks:
     type: object
     required:
@@ -370,6 +426,22 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/resource-tf-stack"
+  resource-tf-workspace:
+    type: object
+    required:
+     - name
+    description: A terraform workspace
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      id:
+        type: string
+      name:
+        type: string
+      modules:
+        type: array
+        items:
+          $ref: "#/definitions/resource-tf-module"
   resource-tf-stack:
     type: object
     required:
