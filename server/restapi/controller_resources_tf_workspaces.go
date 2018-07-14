@@ -51,3 +51,28 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch ContextHelper, 
 		}
 	})
 }
+
+var GetTfWorkspaceController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.DescribeWorkspaceHandlerFunc {
+	return operations.DescribeWorkspaceHandlerFunc(func(params operations.DescribeWorkspaceParams, p *models.Principal) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		var module *models.ResourceTfWorkspace
+		if err := db.Read("tf-module", params.Name, module); err != nil {
+			return operations.NewDescribeWorkspaceInternalServerError().WithPayload(&models.ServerError{
+				StatusCode: Int64(500),
+				Status:     String("Internal Server Error"),
+				Message:    String(err.Error()),
+			})
+		} else if module == nil {
+			return operations.NewDescribeWorkspaceNotFound().WithPayload(&models.ServerError{
+				StatusCode: Int64(404),
+				Status:     String("Not Found"),
+				Message:    String("Could not find workspace with name '" + params.Name + "'"),
+			})
+		} else {
+			module.Links = halSelfLink(ch.FQEndpoint)
+			module.Links.Doc = halDocLink(ch).Doc
+			return operations.NewDescribeWorkspaceOK().WithPayload(module)
+		}
+	})
+}

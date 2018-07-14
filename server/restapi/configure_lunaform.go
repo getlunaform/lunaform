@@ -98,6 +98,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.StacksGetStackHandler = GetTfStackController(idp, oh, db)
 
 	// Controllers for /tf/workspaces
+	api.WorkspacesDescribeWorkspaceHandler = GetTfWorkspaceController(idp, oh, db)
 	api.WorkspacesListWorkspacesHandler = ListTfWorkspacesController(idp, oh, db)
 	api.WorkspacesCreateWorkspaceHandler = CreateTfWorkspaceController(idp, oh, db)
 
