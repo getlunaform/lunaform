@@ -5,10 +5,11 @@ import (
 	"github.com/drewsonne/lunaform/backend/identity"
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/drewsonne/lunaform/server/restapi/operations/resources"
+	"github.com/drewsonne/lunaform/server/helpers"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListResourcesController = func(idp identity.Provider, ch ContextHelper) resources.ListResourcesHandlerFunc {
+var ListResourcesController = func(idp identity.Provider, ch helpers.ContextHelper) resources.ListResourcesHandlerFunc {
 	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -25,7 +26,7 @@ var ListResourcesController = func(idp identity.Provider, ch ContextHelper) reso
 		if len(rsc) > 0 {
 			r := resources.NewListResourcesOK()
 			r.SetPayload(&models.ResponseListResources{
-				Links:    models.HalRootRscLinks(ch),
+				Links:    helpers.HalRootRscLinks(ch),
 				Embedded: buildResourceGroupResponse(rsc, ch),
 			})
 			return r
@@ -36,7 +37,7 @@ var ListResourcesController = func(idp identity.Provider, ch ContextHelper) reso
 }
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
-var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper) resources.ListResourceGroupsHandlerFunc {
+var ListResourceGroupsController = func(idp identity.Provider, ch helpers.ContextHelper) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -44,7 +45,7 @@ var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper)
 
 		r := resources.NewListResourceGroupsOK()
 		r.SetPayload(&models.ResponseListResources{
-			Links:    models.HalRootRscLinks(ch),
+			Links:    helpers.HalRootRscLinks(ch),
 			Embedded: rg,
 		})
 
@@ -52,14 +53,14 @@ var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper)
 	})
 }
 
-func buildResourceGroupResponse(rscs []string, ch ContextHelper) (rsclist *models.ResourceList) {
+func buildResourceGroupResponse(rscs []string, ch helpers.ContextHelper) (rsclist *models.ResourceList) {
 	rsclist = &models.ResourceList{
 		Resources: make([]*models.Resource, len(rscs)),
 	}
 	for i, rsc := range rscs {
 		rsclist.Resources[i] = &models.Resource{
-			Name:  str(rsc),
-			Links: halSelfLink(ch.FQEndpoint + "/" + rsc),
+			Name:  helpers.String(rsc),
+			Links: helpers.HalSelfLink(ch.FQEndpoint + "/" + rsc),
 		}
 	}
 	return

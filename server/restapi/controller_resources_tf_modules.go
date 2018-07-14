@@ -8,24 +8,25 @@ import (
 	"github.com/pborman/uuid"
 	"strings"
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/modules"
+	"github.com/drewsonne/lunaform/server/helpers"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
+var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		var modules []*models.ResourceTfModule
 		if err := db.List("tf-module", &modules); err != nil {
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: Int64(500),
-				Status:     String("Internal Server Error"),
-				Message:    String(err.Error()),
+				StatusCode: helpers.Int64(500),
+				Status:     helpers.String("Internal Server Error"),
+				Message:    helpers.String(err.Error()),
 			})
 		}
 
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
-			Links: models.HalRoot(ch),
+			Links: helpers.HalRoot(ch),
 			Embedded: &models.ResourceListTfModule{
 				Resources: modules,
 			},
@@ -33,7 +34,7 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 	})
 }
 
-var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.CreateModuleHandlerFunc {
+var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.CreateModuleHandlerFunc {
 	return operations.CreateModuleHandlerFunc(func(params operations.CreateModuleParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -54,22 +55,22 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 	})
 }
 
-var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
+var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
 	return operations.GetModuleHandlerFunc(func(params operations.GetModuleParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		var module *models.ResourceTfModule
 		if err := db.Read("tf-module", params.ID, module); err != nil {
 			return operations.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: Int64(500),
-				Status:     String("Internal Server Error"),
-				Message:    String(err.Error()),
+				StatusCode: helpers.Int64(500),
+				Status:     helpers.String("Internal Server Error"),
+				Message:    helpers.String(err.Error()),
 			})
 		} else if module == nil {
 			return operations.NewGetModuleNotFound().WithPayload(&models.ServerError{
-				StatusCode: Int64(404),
-				Status:     String("Not Found"),
-				Message:    String("Could not find module with id '" + params.ID + "'"),
+				StatusCode: helpers.Int64(404),
+				Status:     helpers.String("Not Found"),
+				Message:    helpers.String("Could not find module with id '" + params.ID + "'"),
 			})
 		} else {
 			module.Links = models.HalSelfLink(ch.FQEndpoint)
