@@ -97,6 +97,10 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.StacksListStacksHandler = ListTfStacksController(idp, oh, db)
 	api.StacksGetStackHandler = GetTfStackController(idp, oh, db)
 
+	// Controllers for /tf/workspaces
+	api.WorkspacesListWorkspacesHandler = ListTfWorkspacesController(idp, oh, db)
+	api.WorkspacesCreateWorkspaceHandler = CreateTfWorkspaceController(idp, oh, db)
+
 	api.ServerShutdown = func() {
 		dbDriver.Close()
 	}

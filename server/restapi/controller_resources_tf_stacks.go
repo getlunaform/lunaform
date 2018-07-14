@@ -34,13 +34,6 @@ var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db da
 			})
 		}
 
-		//for i, record := range records {
-		//	stack := models.ResourceTfStack{}
-		//	json.Unmarshal([]byte(record.Value), &stack)
-		//	stack.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + stack.ID)
-		//	stacks[i] = &stack
-		//}
-
 		return operations.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
 			Links: halRootRscLinks(ch),
 			Embedded: &models.ResourceListTfStack{
