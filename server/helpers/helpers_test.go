@@ -1,12 +1,8 @@
 package helpers
 
 import (
-	"github.com/go-openapi/loads"
 	"github.com/stretchr/testify/assert"
-	"github.com/drewsonne/lunaform/server/restapi/operations"
 	"testing"
-	"github.com/drewsonne/lunaform/server/models"
-	"github.com/drewsonne/lunaform/server/restapi"
 )
 
 func TestPointerString(t *testing.T) {
@@ -15,7 +11,7 @@ func TestPointerString(t *testing.T) {
 		"hello",
 	} {
 		var s interface{}
-		s = str(test)
+		s = String(test)
 		_, ok := s.(*string)
 		assert.True(t, ok)
 	}
@@ -28,7 +24,7 @@ func TestHALSelfLink(t *testing.T) {
 	}{
 		{url: "http://example.com/hello-world"},
 	} {
-		l := halSelfLink(test.url)
+		l := HalSelfLink(test.url)
 		assert.NotNil(t, l)
 		assert.Nil(t, l.Doc)
 		assert.NotNil(t, l.Self)
@@ -52,7 +48,7 @@ func TestHALRootRscLinks(t *testing.T) {
 			docURL: "http://example.com/docs#operation/my-operation",
 		},
 	} {
-		l := models.HalRootRscLinks(ContextHelper{
+		l := HalRootRscLinks(ContextHelper{
 			FQEndpoint:  test.fqe,
 			ServerURL:   test.server,
 			OperationID: test.opid,
@@ -83,17 +79,4 @@ func TestUrlPrefix(t *testing.T) {
 			ch.urlPrefix(test.host, test.uri, test.https),
 		)
 	}
-}
-
-
-func init() {
-	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
-	if err != nil {
-		panic(err)
-	}
-
-	api = operations.NewLunaformAPI(swaggerSpec)
-	configureAPI(api)
-
-	return
 }
