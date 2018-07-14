@@ -6,7 +6,12 @@ import (
 	"github.com/drewsonne/lunaform/server/restapi/operations"
 	"gopkg.in/yaml.v2"
 	"testing"
+	"io"
+	"encoding/json"
+	"github.com/go-openapi/loads"
 )
+
+var api *operations.LunaformAPI
 
 var defaultConfigPayload = `
 ---
@@ -39,7 +44,7 @@ func TestConfigFile(t *testing.T) {
 }
 
 func TestCliOptions(t *testing.T) {
-	api := operations.TerraformServerAPI{}
+	api := operations.LunaformAPI{}
 
 	assert.Empty(t, api.CommandLineOptionsGroups)
 
@@ -48,8 +53,8 @@ func TestCliOptions(t *testing.T) {
 	assert.Len(t, api.CommandLineOptionsGroups, 1)
 	opt := api.CommandLineOptionsGroups[0]
 
-	assert.Equal(t, "Config", opt.ShortDescription)
-	assert.Equal(t, "Configuration", opt.LongDescription)
+	assert.Equal(t, "Terraform Server", opt.ShortDescription)
+	assert.Equal(t, "Server Configuration", opt.LongDescription)
 
 	assert.NotNil(t, opt.Options)
 	assert.IsType(t, &ConfigFileFlags{}, opt.Options)
@@ -70,4 +75,27 @@ func TestLoadCliConfiguration(t *testing.T) {
 	assert.NotNil(t, cfg)
 	assert.IsType(t, &Configuration{}, cfg)
 
+}
+
+type mockProducer struct {
+	ProducerHandler func(w io.Writer, i interface{}) (err error)
+}
+
+func (mp mockProducer) Produce(w io.Writer, i interface{}) (err error) {
+	var b []byte
+	b, err = json.Marshal(i)
+	w.Write(b)
+	return
+}
+
+func init() {
+	swaggerSpec, err := loads.Analyzed(SwaggerJSON, "")
+	if err != nil {
+		panic(err)
+	}
+
+	api = operations.NewLunaformAPI(swaggerSpec)
+	configureAPI(api)
+
+	return
 }

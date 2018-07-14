@@ -9,10 +9,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/drewsonne/lunaform/server/restapi/operations/resources"
+	"github.com/drewsonne/lunaform/server/helpers"
 )
 
 func TestResourceGroupsController(t *testing.T) {
-	oh := NewContextHelper(api.Context())
+	oh := helpers.NewContextHelper(api.Context())
 	requestHost := "example.com"
 
 	for _, test := range []struct {
@@ -59,7 +60,7 @@ func TestResourceGroupsController(t *testing.T) {
 
 func TestResourcesController(t *testing.T) {
 
-	oh := NewContextHelper(api.Context())
+	oh := helpers.NewContextHelper(api.Context())
 	requestHost := "example.com"
 
 	for _, test := range []struct {

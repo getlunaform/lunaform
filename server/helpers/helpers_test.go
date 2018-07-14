@@ -1,25 +1,13 @@
 package helpers
 
 import (
-	"encoding/json"
 	"github.com/go-openapi/loads"
 	"github.com/stretchr/testify/assert"
 	"github.com/drewsonne/lunaform/server/restapi/operations"
-	"io"
 	"testing"
 	"github.com/drewsonne/lunaform/server/models"
+	"github.com/drewsonne/lunaform/server/restapi"
 )
-
-type mockProducer struct {
-	ProducerHandler func(w io.Writer, i interface{}) (err error)
-}
-
-func (mp mockProducer) Produce(w io.Writer, i interface{}) (err error) {
-	var b []byte
-	b, err = json.Marshal(i)
-	w.Write(b)
-	return
-}
 
 func TestPointerString(t *testing.T) {
 
@@ -97,15 +85,14 @@ func TestUrlPrefix(t *testing.T) {
 	}
 }
 
-var api *operations.TerraformServerAPI
 
 func init() {
-	swaggerSpec, err := loads.Analyzed(SwaggerJSON, "")
+	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
 	if err != nil {
 		panic(err)
 	}
 
-	api = operations.NewTerraformServerAPI(swaggerSpec)
+	api = operations.NewLunaformAPI(swaggerSpec)
 	configureAPI(api)
 
 	return
