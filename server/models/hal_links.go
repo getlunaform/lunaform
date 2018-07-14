@@ -1,11 +1,11 @@
 package models
 
 import (
-	"github.com/drewsonne/lunaform/server/restapi"
 	"github.com/go-openapi/strfmt"
+	"github.com/drewsonne/lunaform/server"
 )
 
-func HalRootRscLinks(ch restapi.ContextHelper) *HalRscLinks {
+func HalRootRscLinks(ch server.ContextHelper) *HalRscLinks {
 	lnks := HalSelfLink(ch.FQEndpoint)
 	lnks.Doc = HalDocLink(ch).Doc
 	return lnks
@@ -17,7 +17,7 @@ func HalSelfLink(href string) *HalRscLinks {
 	}
 }
 
-func HalDocLink(ch restapi.ContextHelper) *HalRscLinks {
+func HalDocLink(ch server.ContextHelper) *HalRscLinks {
 	return &HalRscLinks{
 		Doc: &HalHref{
 			Href: strfmt.URI(

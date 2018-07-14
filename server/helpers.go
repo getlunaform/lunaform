@@ -1,4 +1,4 @@
-package restapi
+package server
 
 import (
 	"github.com/go-openapi/runtime/middleware"

@@ -1,4 +1,4 @@
-package restapi
+package server
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"github.com/drewsonne/lunaform/server/restapi/operations"
 	"io"
 	"testing"
+	"github.com/drewsonne/lunaform/server/models"
 )
 
 type mockProducer struct {
