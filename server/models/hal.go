@@ -18,10 +18,19 @@ func (s *ResourceTfStack) Clean() interface{} {
 	return s
 }
 
-func (resource *Resource) Clean() interface{} {
+func (w *ResourceTfWorkspace) Clean() interface{} {
+	w.Links = nil
+	return w
+}
+
+func (r *Resource) Clean() interface{} {
 	return &Resource{
-		Name: resource.Name,
+		Name: r.Name,
 	}
+}
+
+func (w *ResourceListTfWorkspaceWorkspacesItems0) Clean() interface{} {
+	return w
 }
 
 func (m *ResourceListTfModule) Clean() interface{} {
@@ -50,6 +59,19 @@ func (m *ResourceListTfStack) Clean() interface{} {
 	return make([]interface{}, 0)
 }
 
+func (w *ResourceListTfWorkspace) Clean() interface{} {
+	if w != nil {
+		workspaces := make([]interface{}, len(w.Workspaces))
+		for i, workspace := range w.Workspaces {
+			workspaces[i] = workspace.Clean()
+		}
+		return map[string]interface{}{
+			"workspaces": workspaces,
+		}
+	}
+	return make([]interface{}, 0)
+}
+
 func (list *ResourceList) Clean() interface{} {
 	rscs := make([]interface{}, len(list.Resources))
 	for i, rsc := range list.Resources {
@@ -64,6 +86,10 @@ func (m *ResponseListTfModules) Clean() interface{} {
 
 func (m *ResponseListTfStacks) Clean() interface{} {
 	return m.Embedded.Clean()
+}
+
+func (w *ResponseListTfWorkspaces) Clean() interface{} {
+	return w.Embedded.Clean()
 }
 
 func (se *ServerError) Clean() interface{} {

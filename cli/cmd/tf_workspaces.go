@@ -19,10 +19,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// tfCmd represents the tf command
-var tfCmd = &cobra.Command{
-	Use:   "terraform",
-	Short: "Terraform resources",
+// tfWorkspacesCmd represents the tfWorkspaces command
+var tfWorkspacesCmd = &cobra.Command{
+	Use:   "workspace",
+	Short: "Terraform workspace",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -35,15 +35,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(tfCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tfCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tfCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tfCmd.AddCommand(tfWorkspacesCmd)
+	tfWorkspacesCmd.AddCommand(tfWorkspaceCreateCmd)
+	tfWorkspacesCmd.AddCommand(tfWorkspacesListCmd)
 }
