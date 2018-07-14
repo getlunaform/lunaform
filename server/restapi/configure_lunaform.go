@@ -17,6 +17,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/pborman/uuid"
+	"github.com/drewsonne/lunaform/server/helpers"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -68,7 +69,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	oh := NewContextHelper(api.Context())
+	oh := helpers.NewContextHelper(api.Context())
 
 	api.APIKeyAuth = func(s string) (p *models.Principal, err error) {
 		user := models.ResourceAuthUser{}
