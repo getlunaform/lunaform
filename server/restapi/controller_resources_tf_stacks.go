@@ -8,6 +8,7 @@ import (
 	"github.com/drewsonne/lunaform/server/models"
 	"strings"
 	"github.com/pborman/uuid"
+	"github.com/drewsonne/lunaform/server/helpers"
 )
 
 const (
@@ -20,7 +21,7 @@ const (
 	TF_DEPLOYMENT_STATUS_FAIL              = "failed"
 )
 
-var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
+var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
 	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -28,14 +29,14 @@ var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db da
 		err := db.List("tf-stack", &stacks)
 		if err != nil {
 			return operations.NewListStacksInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: Int64(500),
-				Status:     String("Internal Server Error"),
-				Message:    String(err.Error()),
+				StatusCode: helpers.Int64(500),
+				Status:     helpers.String("Internal Server Error"),
+				Message:    helpers.String(err.Error()),
 			})
 		}
 
 		return operations.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
-			Links: models.HalRootRscLinks(ch),
+			Links: helpers.HalRootRscLinks(ch),
 			Embedded: &models.ResourceListTfStack{
 				Resources: stacks,
 			},
@@ -43,7 +44,7 @@ var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db da
 	})
 }
 
-var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.DeployStackHandlerFunc {
+var CreateTfStackController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.DeployStackHandlerFunc {
 	return operations.DeployStackHandlerFunc(func(params operations.DeployStackParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -61,10 +62,10 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 		}
 
 		response := &models.ResourceTfStack{
-			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfs.ID),
+			Links: helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfs.ID),
 			ID:    tfs.ID,
 		}
-		response.Links.Doc = halDocLink(ch).Doc
+		response.Links.Doc = helpers.HalDocLink(ch).Doc
 
 		if tfs == nil {
 			return operations.NewDeployStackBadRequest()
@@ -78,7 +79,7 @@ var CreateTfStackController = func(idp identity.Provider, ch ContextHelper, db d
 	})
 }
 
-var GetTfStackController = func(idp identity.Provider, ch ContextHelper, db database.Database) operations.GetStackHandlerFunc {
+var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.GetStackHandlerFunc {
 	return operations.GetStackHandlerFunc(func(params operations.GetStackParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -89,19 +90,19 @@ var GetTfStackController = func(idp identity.Provider, ch ContextHelper, db data
 
 		if err != nil {
 			return operations.NewGetStackInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: Int64(500),
-				Status:     String("Internal Server Error"),
-				Message:    String(err.Error()),
+				StatusCode: helpers.Int64(500),
+				Status:     helpers.String("Internal Server Error"),
+				Message:    helpers.String(err.Error()),
 			})
 		} else if stack == nil {
 			return operations.NewGetStackNotFound().WithPayload(&models.ServerError{
-				StatusCode: Int64(404),
-				Status:     String("Not Found"),
-				Message:    String("Could not find stack with id '" + id + "'"),
+				StatusCode: helpers.Int64(404),
+				Status:     helpers.String("Not Found"),
+				Message:    helpers.String("Could not find stack with id '" + id + "'"),
 			})
 		} else {
-			stack.Links = halSelfLink(ch.FQEndpoint)
-			stack.Links.Doc = halDocLink(ch).Doc
+			stack.Links = helpers.HalSelfLink(ch.FQEndpoint)
+			stack.Links.Doc = helpers.HalDocLink(ch).Doc
 			return operations.NewGetStackOK().WithPayload(stack)
 		}
 	})
