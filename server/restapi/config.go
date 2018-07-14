@@ -49,6 +49,7 @@ func (cfg *Configuration) loadFromFile(path string) (err error) {
 type ConfigFileFlags struct {
 	ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
 	Version bool `short:"V" long:"version" description:"Print lunarform version and quit"`
+	AdminApiKey string `long:"api-key" description:"Override the admin user's api key.'"`
 }
 
 func parseCliConfiguration() (cfg *Configuration, err error) {

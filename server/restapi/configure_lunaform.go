@@ -16,6 +16,7 @@ import (
 	"os"
 	"github.com/go-openapi/swag"
 	"github.com/drewsonne/lunaform/server/models"
+	"github.com/pborman/uuid"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -70,13 +71,8 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	oh := NewContextHelper(api.Context())
 
 	api.APIKeyAuth = func(s string) (p *models.Principal, err error) {
-		userId := ""
-		if err = db.Read("tf-auth-apikey", s, &userId); err != nil {
-			return
-		}
-
 		user := models.ResourceAuthUser{}
-		if err = db.Read("tf-auth-user", userId, &user); err != nil {
+		if err = db.Read("lf-auth-apikeys", s, &user); err != nil {
 			return
 		}
 
@@ -189,9 +185,41 @@ func logResponse(prefix string, h http.Handler) http.HandlerFunc {
 }
 
 func configureRootUser(db *database.Database) (err error) {
-	userRecords := []*database.Record{}
-	if err = db.List("lf-auth-user", userRecords); err != nil {
+	userRecords := []*models.ResourceAuthUser{}
+	if err = db.List("lf-auth-user", &userRecords); err != nil {
 		return
 	}
+
+	var foundAdmin bool
+	for _, user := range userRecords {
+		if user.Name == "admin" {
+			foundAdmin = true
+		}
+	}
+
+	if !foundAdmin || cliconfig.AdminApiKey != "" {
+
+		if cliconfig.AdminApiKey == "" {
+			cliconfig.AdminApiKey = uuid.New()
+		}
+
+		adminUser := &models.ResourceAuthUser{
+			Name:      "Adminstrator",
+			Shortname: "admin",
+			Groups:    []string{"admin"},
+			ID:        uuid.New(),
+			APIKeys:   []string{cliconfig.AdminApiKey},
+		}
+		if err = db.Create("lf-auth-user", adminUser.ID, adminUser); err != nil {
+			return
+		}
+		for _, keys := range adminUser.APIKeys {
+			if err = db.Create("lf-auth-apikeys", keys, adminUser); err != nil {
+				return
+			}
+			fmt.Printf("Generated api-key for admin user '%s'", keys)
+		}
+	}
+
 	return
 }

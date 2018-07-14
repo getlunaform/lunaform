@@ -15,8 +15,7 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		modules := make([]*models.ResourceTfModule, 0)
-
+		modules := []*models.ResourceTfModule{}
 		err := db.List("tf-module", &modules)
 		if err != nil {
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
@@ -25,13 +24,6 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 				Message:    String(err.Error()),
 			})
 		}
-
-		//for i, record := range records {
-		//	mod := models.ResourceTfModule{}
-		//	json.Unmarshal([]byte(record.Value), &mod)
-		//	mod.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + mod.VcsID)
-		//	modules[i] = &mod
-		//}
 
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
 			Links: halRootRscLinks(ch),
@@ -48,10 +40,9 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 
 		tfm := params.TerraformModule
 
-		newId := uuid.New()
-		tfm.VcsID = newId
+		tfm.VcsID = uuid.New()
 
-		err := db.Create("tf-module", newId, tfm)
+		err := db.Create("tf-module", tfm.VcsID, tfm)
 
 		if err != nil {
 			return operations.NewCreateModuleBadRequest()
@@ -59,7 +50,7 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 
 		response := &models.ResourceTfModule{
 			Links: halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.VcsID),
-			VcsID: newId,
+			VcsID: tfm.VcsID,
 		}
 		response.Links.Doc = halDocLink(ch).Doc
 
