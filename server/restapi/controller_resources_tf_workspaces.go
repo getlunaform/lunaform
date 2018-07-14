@@ -26,7 +26,9 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 
 		for _, workspace := range workspaces {
 			workspace.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + *workspace.Name)
-			workspace.Links.Doc = helpers.HalDocLink(ch).Doc
+			if len(workspace.Modules) == 0 {
+				workspace.Modules = []*models.ResourceTfModule{}
+			}
 		}
 
 		return operations.NewListWorkspacesOK().WithPayload(&models.ResponseListTfWorkspaces{
