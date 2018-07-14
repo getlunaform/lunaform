@@ -425,9 +425,9 @@ definitions:
     type: object
     readOnly: true
     required:
-      - resources
+      - modules
     properties:
-      resources:
+      modules:
         type: array
         items:
           $ref: "#/definitions/resource-tf-module"
@@ -488,9 +488,9 @@ definitions:
     type: object
     readOnly: true
     required:
-      - resources
+      - stacks
     properties:
-      resources:
+      stacks:
         type: array
         items:
           $ref: "#/definitions/resource-tf-stack"
