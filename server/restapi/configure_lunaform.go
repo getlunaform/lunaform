@@ -69,14 +69,21 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 
 	oh := NewContextHelper(api.Context())
 
-	api.APIKeyAuth = func(s string) (*models.Principal, error) {
-		user := models.Principal{
-			models.ResourceAuthUser{
-				APIKeys: []string{s},
-			},
+	api.APIKeyAuth = func(s string) (p *models.Principal, err error) {
+		userId := ""
+		if err = db.Read("tf-auth-apikey", s, &userId); err != nil {
+			return
 		}
-		return &user, nil
+
+		user := models.ResourceAuthUser{}
+		if err = db.Read("tf-auth-user", userId, &user); err != nil {
+			return
+		}
+
+		return &models.Principal{user}, nil
 	}
+
+	configureRootUser(&db)
 
 	// Controllers for /
 	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(idp, oh)
@@ -179,4 +186,12 @@ func logResponse(prefix string, h http.Handler) http.HandlerFunc {
 
 		w.Write(data)
 	}
+}
+
+func configureRootUser(db *database.Database) (err error) {
+	userRecords := []*database.Record{}
+	if err = db.List("lf-auth-user", userRecords); err != nil {
+		return
+	}
+	return
 }

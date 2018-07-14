@@ -110,7 +110,8 @@ func TestDriverInterface(t *testing.T) {
 			})
 
 			t.Run("I can get a collection list", func(t *testing.T) {
-				records, err := db.List(dbTestType)
+				records := []*Record{}
+				err := db.List(dbTestType, &records)
 				assert.NoError(t, err)
 				assert.Equal(t, []*Record{
 					{

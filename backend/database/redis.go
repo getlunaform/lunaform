@@ -113,15 +113,15 @@ func (r redisDatabase) Delete(recordType, key string) error {
 	return r.client.Del(k).Err()
 }
 
-func (r redisDatabase) List(recordType string) (rs []*Record, err error) {
+func (r redisDatabase) List(recordType string, i interface{}) (err error) {
 	k := r.key(recordType, "*")
 	keys, err := r.client.Keys(k).Result()
 	if err != nil {
-		return nil, err
+		return  err
 	}
 	results, err := r.client.MGet(keys...).Result()
 
-	rs = make([]*Record, len(results))
+	rs := make([]*Record, len(results))
 
 	for i, result := range results {
 		rs[i] = &Record{}

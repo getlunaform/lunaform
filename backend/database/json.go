@@ -79,8 +79,8 @@ func (jdb jsonDatabase) Read(recordType, key string, i interface{}) (err error) 
 }
 
 // List all records of a given type from the JSON file on disk
-func (jdb jsonDatabase) List(recordType string) (rs []*Record, err error) {
-	return jdb.db.List(recordType)
+func (jdb jsonDatabase) List(recordType string, i interface{}) (err error) {
+	return jdb.db.List(recordType, i)
 }
 
 // Update a record in the JSON file on disk

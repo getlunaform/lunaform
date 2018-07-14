@@ -6,7 +6,6 @@ import (
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/stacks"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/drewsonne/lunaform/server/models"
-	"encoding/json"
 	"strings"
 	"github.com/pborman/uuid"
 )
@@ -25,7 +24,8 @@ var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db da
 	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		records, err := db.List("tf-stack")
+		stacks := make([]*models.ResourceTfStack, 0)
+		err := db.List("tf-stack",&stacks)
 		if err != nil {
 			return operations.NewListStacksInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: Int64(500),
@@ -34,13 +34,12 @@ var ListTfStacksController = func(idp identity.Provider, ch ContextHelper, db da
 			})
 		}
 
-		stacks := make([]*models.ResourceTfStack, len(records))
-		for i, record := range records {
-			stack := models.ResourceTfStack{}
-			json.Unmarshal([]byte(record.Value), &stack)
-			stack.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + stack.ID)
-			stacks[i] = &stack
-		}
+		//for i, record := range records {
+		//	stack := models.ResourceTfStack{}
+		//	json.Unmarshal([]byte(record.Value), &stack)
+		//	stack.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + stack.ID)
+		//	stacks[i] = &stack
+		//}
 
 		return operations.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
 			Links: halRootRscLinks(ch),

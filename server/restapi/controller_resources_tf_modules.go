@@ -6,7 +6,6 @@ import (
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/drewsonne/lunaform/backend/database"
 	"github.com/pborman/uuid"
-	"encoding/json"
 	"strings"
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/modules"
 )
@@ -16,7 +15,9 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		records, err := db.List("tf-module")
+		modules := make([]*models.ResourceTfModule, 0)
+
+		err := db.List("tf-module", &modules)
 		if err != nil {
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: Int64(500),
@@ -25,13 +26,12 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 			})
 		}
 
-		modules := make([]*models.ResourceTfModule, len(records))
-		for i, record := range records {
-			mod := models.ResourceTfModule{}
-			json.Unmarshal([]byte(record.Value), &mod)
-			mod.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + mod.VcsID)
-			modules[i] = &mod
-		}
+		//for i, record := range records {
+		//	mod := models.ResourceTfModule{}
+		//	json.Unmarshal([]byte(record.Value), &mod)
+		//	mod.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + mod.VcsID)
+		//	modules[i] = &mod
+		//}
 
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
 			Links: halRootRscLinks(ch),

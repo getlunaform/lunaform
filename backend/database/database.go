@@ -13,7 +13,7 @@ type Record struct {
 type Driver interface {
 	Create(recordType, key string, doc interface{}) error
 	Read(recordType, key string, i interface{}) error
-	List(recordType string) ([]*Record, error)
+	List(recordType string, i interface{}) (error)
 	Update(recordType, key string, doc interface{}) error
 	Delete(recordType, key string) error
 
@@ -48,8 +48,8 @@ func (db *Database) Read(recordType, key string, i interface{}) error {
 	return db.driver.Read(recordType, key, i)
 }
 
-func (db *Database) List(recordType string) (r []*Record, err error) {
-	return db.driver.List(recordType)
+func (db *Database) List(recordType string, i interface{}) (err error) {
+	return db.driver.List(recordType, i)
 }
 
 func (db *Database) Update(recordType, key string, doc interface{}) error {

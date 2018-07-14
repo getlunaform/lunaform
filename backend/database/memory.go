@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"reflect"
 )
 
 // memoryDatabase represents an in memory store for our server.
@@ -86,12 +87,21 @@ func (md memoryDatabase) Read(recordType, key string, i interface{}) (err error)
 }
 
 // List records of a given type from memory
-func (md memoryDatabase) List(recordType string) (rs []*Record, err error) {
-	rs = make([]*Record, 0)
+func (md memoryDatabase) List(recordType string, i interface{}) (err error) {
+	slicePtr := reflect.ValueOf(i)
+	sliceType := reflect.TypeOf(i)
+	slice := slicePtr.Elem()
 
+	dest := reflect.MakeSlice(
+		reflect.SliceOf(sliceType),
+		0, 0)
 	for _, r := range md.collections {
 		if r.Type == recordType {
-			rs = append(rs, r)
+			json.Unmarshal([]byte(r.Value), &slice)
+
+			dest.Set(
+				reflect.Append(slice, reflect.ValueOf(55)),
+			)
 		}
 	}
 
