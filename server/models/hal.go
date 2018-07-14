@@ -29,10 +29,6 @@ func (r *Resource) Clean() interface{} {
 	}
 }
 
-func (w *ResourceListTfWorkspaceWorkspacesItems0) Clean() interface{} {
-	return w
-}
-
 func (m *ResourceListTfModule) Clean() interface{} {
 	if m != nil {
 		rscs := make([]interface{}, len(m.Resources))
