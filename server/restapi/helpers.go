@@ -2,32 +2,10 @@ package restapi
 
 import (
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/pkg/errors"
-	"github.com/drewsonne/lunaform/server/models"
 	"net/http"
 	"strings"
 )
-
-func str(v string) *string { return &v }
-
-func halRootRscLinks(ch ContextHelper) *models.HalRscLinks {
-	lnks := halSelfLink(ch.FQEndpoint)
-	lnks.Doc = halDocLink(ch).Doc
-	return lnks
-}
-
-func halSelfLink(href string) *models.HalRscLinks {
-	return &models.HalRscLinks{
-		Self: &models.HalHref{Href: strfmt.URI(href)},
-	}
-}
-
-func halDocLink(ch ContextHelper) *models.HalRscLinks {
-	return &models.HalRscLinks{
-		Doc: &models.HalHref{Href: strfmt.URI(ch.ServerURL + "/docs#operation/" + ch.OperationID)},
-	}
-}
 
 // NewContextHelper to easily get URL parts for generating HAL resources
 func NewContextHelper(ctx *middleware.Context) ContextHelper {

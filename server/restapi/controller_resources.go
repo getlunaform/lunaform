@@ -25,7 +25,7 @@ var ListResourcesController = func(idp identity.Provider, ch ContextHelper) reso
 		if len(rsc) > 0 {
 			r := resources.NewListResourcesOK()
 			r.SetPayload(&models.ResponseListResources{
-				Links:    halRootRscLinks(ch),
+				Links:    models.HalRootRscLinks(ch),
 				Embedded: buildResourceGroupResponse(rsc, ch),
 			})
 			return r
@@ -44,7 +44,7 @@ var ListResourceGroupsController = func(idp identity.Provider, ch ContextHelper)
 
 		r := resources.NewListResourceGroupsOK()
 		r.SetPayload(&models.ResponseListResources{
-			Links:    halRootRscLinks(ch),
+			Links:    models.HalRootRscLinks(ch),
 			Embedded: rg,
 		})
 

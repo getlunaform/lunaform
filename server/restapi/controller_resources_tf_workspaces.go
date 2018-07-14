@@ -13,8 +13,8 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch ContextHelper, d
 	return operations.ListWorkspacesHandlerFunc(func(params operations.ListWorkspacesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		workspaces := make([]*models.ResourceListTfWorkspaceWorkspacesItems0, 0)
-		err := db.List("tf-workspaces", &workspaces)
+		workspaces := []*models.ResourceListTfWorkspaceWorkspacesItems0{}
+		err := db.List("tf-workspace", &workspaces)
 		if err != nil {
 			return operations.NewListWorkspacesInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: Int64(500),
@@ -24,7 +24,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch ContextHelper, d
 		}
 
 		return operations.NewListWorkspacesOK().WithPayload(&models.ResponseListTfWorkspaces{
-			Links: halRootRscLinks(ch),
+			Links: models.HalRootRscLinks(ch),
 			Embedded: &models.ResourceListTfWorkspace{
 				Workspaces: workspaces,
 			},
@@ -38,7 +38,7 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch ContextHelper, 
 
 		tfw := params.TerraformWorkspace
 
-		if err := db.Create("tf-module", *tfw.Name, tfw); err != nil {
+		if err := db.Create("tf-workspace", *tfw.Name, tfw); err != nil {
 			return operations.NewCreateWorkspaceBadRequest()
 		}
 
@@ -57,7 +57,7 @@ var GetTfWorkspaceController = func(idp identity.Provider, ch ContextHelper, db 
 		ch.SetRequest(params.HTTPRequest)
 
 		var module *models.ResourceTfWorkspace
-		if err := db.Read("tf-module", params.Name, module); err != nil {
+		if err := db.Read("tf-workspace", params.Name, module); err != nil {
 			return operations.NewDescribeWorkspaceInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: Int64(500),
 				Status:     String("Internal Server Error"),

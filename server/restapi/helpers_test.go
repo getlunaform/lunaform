@@ -63,7 +63,7 @@ func TestHALRootRscLinks(t *testing.T) {
 			docURL: "http://example.com/docs#operation/my-operation",
 		},
 	} {
-		l := halRootRscLinks(ContextHelper{
+		l := models.HalRootRscLinks(ContextHelper{
 			FQEndpoint:  test.fqe,
 			ServerURL:   test.server,
 			OperationID: test.opid,

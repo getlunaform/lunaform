@@ -25,7 +25,7 @@ var ListTfModulesController = func(idp identity.Provider, ch ContextHelper, db d
 		}
 
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
-			Links: halRootRscLinks(ch),
+			Links: models.HalRoot(ch),
 			Embedded: &models.ResourceListTfModule{
 				Resources: modules,
 			},
@@ -47,8 +47,8 @@ var CreateTfModuleController = func(idp identity.Provider, ch ContextHelper, db 
 		if tfm == nil {
 			return operations.NewCreateModuleBadRequest()
 		} else {
-			tfm.Links = halSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.ID)
-			tfm.Links.Doc = halDocLink(ch).Doc
+			tfm.Links = models.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.ID)
+			tfm.Links.Doc = models.HalDocLink(ch).Doc
 			return operations.NewCreateModuleCreated().WithPayload(tfm)
 		}
 	})
@@ -72,8 +72,8 @@ var GetTfModuleController = func(idp identity.Provider, ch ContextHelper, db dat
 				Message:    String("Could not find module with id '" + params.ID + "'"),
 			})
 		} else {
-			module.Links = halSelfLink(ch.FQEndpoint)
-			module.Links.Doc = halDocLink(ch).Doc
+			module.Links = models.HalSelfLink(ch.FQEndpoint)
+			module.Links.Doc = models.HalDocLink(ch).Doc
 			return operations.NewGetModuleOK().WithPayload(module)
 		}
 	})

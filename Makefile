@@ -39,6 +39,7 @@ build-server:
 
 clean-server:
 	cp $(CWD)/server/models/hal.go $(CWD)/hal.go && \
+	cp $(CWD)/server/models/hal_links.go $(CWD)/hal_links.go && \
 	rm -rf $(CWD)/server/cmd/ \
 		$(CWD)/server/models/ \
 		$(CWD)/server/restapi/operations \
@@ -49,6 +50,7 @@ clean-server:
 		$(CWD)/profile.txt && \
 	mkdir -p $(CWD)/server/models && \
 	mv $(CWD)/hal.go $(CWD)/server/models/hal.go
+	mv $(CWD)/hal_links.go $(CWD)/server/models/hal_links.go
 
 generate-server:
 	swagger generate server \

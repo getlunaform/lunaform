@@ -21,6 +21,8 @@ import (
 	"github.com/drewsonne/lunaform/server/models"
 )
 
+var workspaceNameFlag string
+
 // tfWorkspaceCreateCmd represents the tfWorkspaceCreate command
 var tfWorkspaceCreateCmd = &cobra.Command{
 	Use:   "create",
@@ -32,12 +34,14 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		params := workspaces.NewCreateWorkspaceParams().WithTerraformWorkspace(
+			&models.ResourceTfWorkspace{
+				Name: String(workspaceNameFlag),
+			},
+		)
+
 		workspace, err := gocdClient.Workspaces.CreateWorkspace(
-			workspaces.NewCreateWorkspaceParams().WithTerraformWorkspace(
-				&models.ResourceTfWorkspace{
-					Name: String(nameFlag),
-				},
-			),
+			params,
 			authHandler,
 		)
 		if err == nil {
@@ -51,6 +55,6 @@ to quickly create a Cobra application.`,
 func init() {
 	tfWorkspaceCreateCmd.
 		Flags().
-		StringVar(&flagName, "name", "", "Name of the terraform workspace")
+		StringVar(&workspaceNameFlag, "name", "", "Name of the terraform workspace")
 	tfWorkspaceCreateCmd.MarkFlagRequired("name")
 }
