@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"strings"
+	"reflect"
 )
 
 const (
@@ -117,22 +118,21 @@ func (r redisDatabase) List(recordType string, i interface{}) (err error) {
 	k := r.key(recordType, "*")
 	keys, err := r.client.Keys(k).Result()
 	if err != nil {
-		return  err
+		return err
 	}
 	results, err := r.client.MGet(keys...).Result()
 
-	rs := make([]*Record, len(results))
+	elemType := getElemType(i)
+	slice := reflect.ValueOf(i).Elem()
 
-	for i, result := range results {
-		rs[i] = &Record{}
-
-		_, _, key := r.keyParts(keys[i])
-		rs[i].Type = recordType
-		rs[i].Key = key
-		rs[i].Value, err = strconv.Unquote(result.(string))
+	for _, result := range results {
+		recType := reflect.New(elemType)
+		jsonResult, err := strconv.Unquote(result.(string))
 		if err != nil {
-			return
+			return err
 		}
+		json.Unmarshal([]byte(jsonResult), recType.Interface())
+		slice.Set(reflect.Append(slice, recType))
 	}
 
 	return

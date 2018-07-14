@@ -88,20 +88,15 @@ func (md memoryDatabase) Read(recordType, key string, i interface{}) (err error)
 
 // List records of a given type from memory
 func (md memoryDatabase) List(recordType string, i interface{}) (err error) {
-	slicePtr := reflect.ValueOf(i)
-	sliceType := reflect.TypeOf(i)
-	slice := slicePtr.Elem()
+	elemType := getElemType(i)
 
-	dest := reflect.MakeSlice(
-		reflect.SliceOf(sliceType),
-		0, 0)
+	slice := reflect.ValueOf(i).Elem()
+
 	for _, r := range md.collections {
 		if r.Type == recordType {
-			json.Unmarshal([]byte(r.Value), &slice)
-
-			dest.Set(
-				reflect.Append(slice, reflect.ValueOf(55)),
-			)
+			recType := reflect.New(elemType)
+			json.Unmarshal([]byte(r.Value), recType.Interface())
+			slice.Set(reflect.Append(slice, recType))
 		}
 	}
 

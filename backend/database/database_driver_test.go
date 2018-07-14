@@ -110,19 +110,15 @@ func TestDriverInterface(t *testing.T) {
 			})
 
 			t.Run("I can get a collection list", func(t *testing.T) {
-				records := []*Record{}
+				records := []*map[string]string{}
 				err := db.List(dbTestType, &records)
 				assert.NoError(t, err)
-				assert.Equal(t, []*Record{
+				assert.Equal(t, []*map[string]string{
 					{
-						Key:   dbTestKey,
-						Type:  dbTestType,
-						Value: "{\"jello\":\"whirled\"}",
+						"jello": "whirled",
 					},
 					{
-						Key:   dbDuplicateKey,
-						Type:  dbTestType,
-						Value: "{\"hello\":\"world\"}",
+						"hello": "world",
 					},
 				}, records)
 
