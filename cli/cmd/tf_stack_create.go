@@ -100,6 +100,8 @@ func init() {
 	flags.StringVar(&flagModule, "module", "", "Name of the terraform module to deploy")
 	flags.StringVar(&flagModuleId, "module-id", "", "ID of the terraform module to deploy")
 	flags.StringVar(&flagName, "name", "", "Name of the deployed terraform module")
+	flags.StringVar(&workspaceFlag, "workspace", "", "Terraform workspace to deploy into.")
 
 	tfStackCreateCmd.MarkFlagRequired("name")
+	tfModuleCreateCmd.MarkFlagRequired("workspace")
 }

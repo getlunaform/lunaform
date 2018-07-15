@@ -60,10 +60,8 @@ func init() {
 	flags.StringVar(&nameFlag, "name", "", "Name of the terraform module")
 	flags.StringVar(&typeFlag, "type", "", "Type of the module. One of {git,registry,enterprise}")
 	flags.StringVar(&sourceFlag, "source", "", "Source of the terraform module")
-	flags.StringVar(&workspaceFlag, "workspace", "", "Terraform workspace to deploy into.")
 
 	tfModuleCreateCmd.MarkFlagRequired("name")
 	tfModuleCreateCmd.MarkFlagRequired("type")
 	tfModuleCreateCmd.MarkFlagRequired("source")
-	tfModuleCreateCmd.MarkFlagRequired("workspace")
 }
