@@ -24,6 +24,7 @@ import (
 var nameFlag string
 var typeFlag string
 var sourceFlag string
+var workspaceFlag string
 
 // tfModuleCreateCmd represents the tfModuleCreate command
 var tfModuleCreateCmd = &cobra.Command{
@@ -59,8 +60,10 @@ func init() {
 	flags.StringVar(&nameFlag, "name", "", "Name of the terraform module")
 	flags.StringVar(&typeFlag, "type", "", "Type of the module. One of {git,registry,enterprise}")
 	flags.StringVar(&sourceFlag, "source", "", "Source of the terraform module")
+	flags.StringVar(&workspaceFlag, "workspace", "", "Terraform workspace to deploy into.")
 
 	tfModuleCreateCmd.MarkFlagRequired("name")
 	tfModuleCreateCmd.MarkFlagRequired("type")
 	tfModuleCreateCmd.MarkFlagRequired("source")
+	tfModuleCreateCmd.MarkFlagRequired("workspace")
 }

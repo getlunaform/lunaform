@@ -513,6 +513,7 @@ definitions:
     required:
       - name
       - module-id
+      - workspace
     description: A TF stack
     properties:
       _links:
@@ -529,6 +530,8 @@ definitions:
           - DEPLOYING
           - SUCCESS
           - FAIL
+      workspace:
+        type: string
       deployments:
         type: array
         items:
