@@ -6,6 +6,26 @@ import (
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/drewsonne/lunaform/server/restapi/operations/resources"
 	"github.com/drewsonne/lunaform/server/helpers"
+	"net/http"
+)
+
+const (
+	DB_TABLE_TF_WORKSPACE = "lf-workspace"
+	DB_TABLE_TF_MODULE    = "lf-module"
+	DB_TABLE_TF_STACK     = "lf-stack"
+	DB_TABLE_AUTH_USER    = "lf-auth-user"
+)
+
+var (
+	// 400
+	HTTP_BAD_REQUEST        = helpers.Int64(http.StatusBadRequest)
+	HTTP_BAD_REQUEST_STATUS = helpers.String(http.StatusText(http.StatusBadRequest))
+	// 404
+	HTTP_NOT_FOUND        = helpers.Int64(http.StatusNotFound)
+	HTTP_NOT_FOUND_STATUS = helpers.String(http.StatusText(http.StatusNotFound))
+	// 500
+	HTTP_INTERNAL_SERVER_ERROR        = helpers.Int64(http.StatusInternalServerError)
+	HTTP_INTERNAL_SERVER_ERROR_STATUS = helpers.String(http.StatusText(http.StatusInternalServerError))
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.

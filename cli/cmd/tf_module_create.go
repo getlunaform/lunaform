@@ -24,7 +24,6 @@ import (
 var nameFlag string
 var typeFlag string
 var sourceFlag string
-var workspaceFlag string
 
 // tfModuleCreateCmd represents the tfModuleCreate command
 var tfModuleCreateCmd = &cobra.Command{

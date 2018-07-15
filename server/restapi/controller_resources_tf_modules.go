@@ -17,7 +17,7 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 		ch.SetRequest(params.HTTPRequest)
 
 		modules := []*models.ResourceTfModule{}
-		if err := db.List("tf-module", &modules); err != nil {
+		if err := db.List(DB_TABLE_TF_MODULE, &modules); err != nil {
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: helpers.Int64(500),
 				Status:     helpers.String("Internal Server Error"),
@@ -41,7 +41,7 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		tfm := params.TerraformModule
 		tfm.ID = uuid.New()
 
-		if err := db.Create("tf-module", tfm.ID, tfm); err != nil {
+		if err := db.Create(DB_TABLE_TF_MODULE, tfm.ID, tfm); err != nil {
 			return operations.NewCreateModuleBadRequest()
 		}
 
@@ -60,16 +60,16 @@ var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper
 		ch.SetRequest(params.HTTPRequest)
 
 		var module *models.ResourceTfModule
-		if err := db.Read("tf-module", params.ID, module); err != nil {
+		if err := db.Read(DB_TABLE_TF_MODULE, params.ID, module); err != nil {
 			return operations.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(500),
-				Status:     helpers.String("Internal Server Error"),
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
 				Message:    helpers.String(err.Error()),
 			})
 		} else if module == nil {
 			return operations.NewGetModuleNotFound().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(404),
-				Status:     helpers.String("Not Found"),
+				StatusCode: HTTP_NOT_FOUND,
+				Status:     HTTP_NOT_FOUND_STATUS,
 				Message:    helpers.String("Could not find module with id '" + params.ID + "'"),
 			})
 		} else {

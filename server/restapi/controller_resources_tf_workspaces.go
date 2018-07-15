@@ -15,11 +15,11 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 		ch.SetRequest(params.HTTPRequest)
 
 		workspaces := []*models.ResourceTfWorkspace{}
-		err := db.List("lf-workspace", &workspaces)
+		err := db.List(DB_TABLE_TF_WORKSPACE, &workspaces)
 		if err != nil {
 			return operations.NewListWorkspacesInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(500),
-				Status:     helpers.String("Internal Server Error"),
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
 				Message:    helpers.String(err.Error()),
 			})
 		}
@@ -44,10 +44,10 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 		tfw := params.TerraformWorkspace
 		tfw.Modules = []*models.ResourceTfModule{}
 
-		if err := db.Create("lf-workspace", *tfw.Name, tfw); err != nil {
+		if err := db.Create(DB_TABLE_TF_WORKSPACE, *tfw.Name, tfw); err != nil {
 			return operations.NewCreateWorkspaceBadRequest().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(400),
-				Status:     helpers.String("Bad Request"),
+				StatusCode: HTTP_BAD_REQUEST,
+				Status:     HTTP_BAD_REQUEST_STATUS,
 				Message:    helpers.String(err.Error()),
 			})
 		}
@@ -63,16 +63,16 @@ var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHel
 		ch.SetRequest(params.HTTPRequest)
 
 		workspace := &models.ResourceTfWorkspace{}
-		if err := db.Read("lf-workspace", params.Name, workspace); err != nil {
+		if err := db.Read(DB_TABLE_TF_WORKSPACE, params.Name, workspace); err != nil {
 			return operations.NewDescribeWorkspaceInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(500),
-				Status:     helpers.String("Internal Server Error"),
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
 				Message:    helpers.String(err.Error()),
 			})
 		} else if workspace == nil {
 			return operations.NewDescribeWorkspaceNotFound().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(404),
-				Status:     helpers.String("Not Found"),
+				StatusCode: HTTP_NOT_FOUND,
+				Status:     HTTP_NOT_FOUND_STATUS,
 				Message:    helpers.String("Could not find workspace with name '" + params.Name + "'"),
 			})
 		} else {
