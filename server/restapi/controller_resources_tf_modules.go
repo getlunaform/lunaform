@@ -19,8 +19,8 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 		modules := []*models.ResourceTfModule{}
 		if err := db.List(DB_TABLE_TF_MODULE, &modules); err != nil {
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(500),
-				Status:     helpers.String("Internal Server Error"),
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
 				Message:    helpers.String(err.Error()),
 			})
 		}
@@ -42,16 +42,16 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		tfm.ID = uuid.New()
 
 		if err := db.Create(DB_TABLE_TF_MODULE, tfm.ID, tfm); err != nil {
-			return operations.NewCreateModuleBadRequest()
+			return operations.NewCreateModuleBadRequest().WithPayload(&models.ServerError{
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+				Message:    helpers.String(err.Error()),
+			})
 		}
 
-		if tfm == nil {
-			return operations.NewCreateModuleBadRequest()
-		} else {
-			tfm.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.ID)
-			tfm.Links.Doc = helpers.HalDocLink(ch).Doc
-			return operations.NewCreateModuleCreated().WithPayload(tfm)
-		}
+		tfm.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.ID)
+		tfm.Links.Doc = helpers.HalDocLink(ch).Doc
+		return operations.NewCreateModuleCreated().WithPayload(tfm)
 	})
 }
 
