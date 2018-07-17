@@ -1,5 +1,5 @@
-hash: f85a412074a324ceeb996fa470ff9cf4c0846f9e696e1a09fe368e402a1d93b1
-updated: 2018-07-14T21:22:55.109841+01:00
+hash: 799781650794c58800ce76f90348d4576b431991af0a8d3c8df692a042da058e
+updated: 2018-07-17T15:06:05.537145+01:00
 imports:
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
@@ -106,6 +106,8 @@ imports:
   - assert
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
+- name: github.com/vardius/worker-pool
+  version: a6bce63bee3a1897bf33173304b21b144b9b3f59
 - name: golang.org/x/crypto
   version: a49355c7e3f8fe157a85be2f77e6e269a0f89602
   subpackages:
