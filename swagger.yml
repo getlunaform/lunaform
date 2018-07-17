@@ -274,6 +274,35 @@ paths:
           schema:
             $ref: "#/definitions/server-error"
   /tf/state-backends:
+    get:
+      tags:
+        - state-backends
+      description: List TF State Backends
+      operationId: list-state-backends
+      produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              _embedded:
+                resources:
+                  - name: template
+                    _links: {self: {href: "http://example.com/api/tf/template"}}
+                  - name: stack
+                    _links: {self: {href: "http://example.com/api/tf/stack"}}
+          schema:
+            $ref: "#/definitions/response-list-tf-state-backends"
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
     post:
       tags:
         - state-backends
@@ -490,6 +519,27 @@ definitions:
 #      A source of users either locally managed, or through a federation.
 #      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `lunaform`
 #      handles all management of. The second are read-only federated IdP's.
+  response-list-tf-state-backends:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of tf state backends
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-state-backend"
+  resource-list-tf-state-backend:
+    type: object
+    readOnly: true
+    required:
+      - modules
+    properties:
+      state-backends:
+        type: array
+        items:
+          $ref: "#/definitions/resource-tf-state-backend"
   response-list-tf-modules:
     type: object
     required:

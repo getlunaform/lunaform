@@ -16,12 +16,14 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/drewsonne/lunaform/server/models"
+	"github.com/drewsonne/lunaform/client/state_backends"
 )
 
-// tfStatebackendCmd represents the tfStatebackend command
-var tfStatebackendCmd = &cobra.Command{
-	Use:   "state-backend",
-	Short: "Terraform state backends",
+// tfStateBackendsListCmd represents the tfStateBackendsList command
+var tfStateBackendsListCmd = &cobra.Command{
+	Use:   "tfStateBackendsList",
+	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -29,12 +31,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+		backends, err := gocdClient.StateBackends.ListStateBackends(
+			state_backends.NewListStateBackendsParams(),
+			authHandler,
+		)
+		var response models.HalLinkable
+		if err != nil {
+			response = nil
+		} else {
+			response = backends.Payload
+		}
+		handleOutput(cmd, response, useHal, err)
 	},
 }
 
-func init() {
-	tfCmd.AddCommand(tfStatebackendCmd)
-	tfStatebackendCmd.AddCommand(tfStatebackendCreateCmd)
-	tfStatebackendCmd.AddCommand(tfStateBackendsListCmd)
-}

@@ -105,6 +105,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.WorkspacesCreateWorkspaceHandler = CreateTfWorkspaceController(idp, oh, db)
 
 	// Controllers for /tf/state-backends
+	api.StateBackendsListStateBackendsHandler = ListTfStateBackendsController(idp, oh, db)
 	api.StateBackendsCreateStateBackendHandler = CreateTfStateBackendsController(idp, oh, db)
 	api.StateBackendsUpdateStateBackendHandler = UpdateTfStateBackendsController(idp, oh, db)
 

@@ -34,6 +34,13 @@ func (r *Resource) Clean() interface{} {
 	}
 }
 
+func (m *ResourceListTfStateBackend) Clean() interface{} {
+	if m != nil {
+		rscs := make([]interface{}, len())
+	}
+	return make([]interface{}, 0)
+}
+
 func (m *ResourceListTfModule) Clean() interface{} {
 	if m != nil {
 		rscs := make([]interface{}, len(m.Modules))
@@ -91,6 +98,10 @@ func (m *ResponseListTfStacks) Clean() interface{} {
 
 func (w *ResponseListTfWorkspaces) Clean() interface{} {
 	return w.Embedded.Clean()
+}
+
+func (m *ResponseListTfStateBackends) Clean() interface{} {
+	return m.Embedded.Clean()
 }
 
 func (se *ServerError) Clean() interface{} {

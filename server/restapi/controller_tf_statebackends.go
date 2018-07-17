@@ -34,6 +34,30 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 	})
 }
 
+var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListStateBackendsHandlerFunc {
+	return operations.ListStateBackendsHandlerFunc(func(params operations.ListStateBackendsParams, p *models.Principal) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		statebackends := []*models.ResourceTfStateBackend{}
+		if err := db.List(DB_TABLE_TF_STATEBACKEND, &statebackends); err != nil {
+			return operations.NewListStateBackendsInternalServerError().WithPayload(&models.ServerError{
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+				Message:    helpers.String(err.Error()),
+			})
+		}
+
+		return operations.NewListStateBackendsOK().WithPayload(&models.ResponseListTfStateBackends{
+			Links: helpers.HalRootRscLinks(ch),
+			Embedded: &models.ResourceListTfStateBackend{
+				Modules: statebackends,
+			},
+		})
+
+		return nil
+	})
+}
+
 var UpdateTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.UpdateStateBackendHandlerFunc {
 	return operations.UpdateStateBackendHandlerFunc(func(params operations.UpdateStateBackendParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
