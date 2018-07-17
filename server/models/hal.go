@@ -23,6 +23,11 @@ func (w *ResourceTfWorkspace) Clean() interface{} {
 	return w
 }
 
+func (w *ResourceTfStateBackend) Clean() interface{} {
+	w.Links = nil
+	return w
+}
+
 func (r *Resource) Clean() interface{} {
 	return &Resource{
 		Name: r.Name,

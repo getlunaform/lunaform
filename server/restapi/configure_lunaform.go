@@ -73,7 +73,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 
 	api.APIKeyAuth = func(s string) (p *models.Principal, err error) {
 		user := models.ResourceAuthUser{}
-		if err = db.Read("lf-auth-apikeys", s, &user); err != nil {
+		if err = db.Read(DB_TABLE_AUTH_APIKEY, s, &user); err != nil {
 			if _, isErrNotFound := err.(database.RecordDoesNotExistError); isErrNotFound {
 				return nil, errors.Unauthenticated("http")
 			}
@@ -197,7 +197,7 @@ func logResponse(prefix string, h http.Handler) http.HandlerFunc {
 
 func configureRootUser(db *database.Database) (err error) {
 	userRecords := []*models.ResourceAuthUser{}
-	if err = db.List("lf-auth-user", &userRecords); err != nil {
+	if err = db.List(DB_TABLE_AUTH_USER, &userRecords); err != nil {
 		return
 	}
 
@@ -221,11 +221,11 @@ func configureRootUser(db *database.Database) (err error) {
 			ID:        uuid.New(),
 			APIKeys:   []string{cliconfig.AdminApiKey},
 		}
-		if err = db.Create("lf-auth-user", adminUser.ID, adminUser); err != nil {
+		if err = db.Create(DB_TABLE_AUTH_USER, adminUser.ID, adminUser); err != nil {
 			return
 		}
 		for _, keys := range adminUser.APIKeys {
-			if err = db.Create("lf-auth-apikeys", keys, adminUser); err != nil {
+			if err = db.Create(DB_TABLE_AUTH_USER, keys, adminUser); err != nil {
 				return
 			}
 			fmt.Printf("Generated api-key for admin user '%s'\n", keys)
