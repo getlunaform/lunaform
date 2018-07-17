@@ -216,35 +216,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: "#/definitions/server-error"
-    post:
-      tags:
-        - workspaces
-      description: Create a Terraform workspace
-      operationId: create-workspace
-      produces: ["application/vnd.lunaform.v1+json"]
-      consumes: ["application/vnd.lunaform.v1+json"]
-      security:
-        - api-key: []
-      parameters:
-        - in: body
-          name: terraform-workspace
-          description: A terraform workspace
-          schema:
-            $ref: "#/definitions/resource-tf-workspace"
-      responses:
-        201:
-          description: OK
-          examples:
-            application/vnd.lunaform.v1+json:
-              _links:
-                $ref: "#/definitions/hal-rsc-links"
-              name: my-tf-module
-          schema:
-            $ref: "#/definitions/resource-tf-workspace"
-        400:
-          description: Bad Request
-          schema:
-            $ref: "#/definitions/server-error"
   /tf/stacks:
     get:
       tags:
@@ -302,6 +273,53 @@ paths:
           schema:
             $ref: "#/definitions/server-error"
   /tf/workspace/{name}:
+    put:
+      tags:
+        - workspaces
+      description: Create a Terraform workspace
+      operationId: create-workspace
+      produces: ["application/vnd.lunaform.v1+json"]
+      consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          type: string
+          description: A terraform workspace
+        - in: body
+          name: terraform-workspace
+          description: A terraform workspace
+          schema:
+            $ref: "#/definitions/resource-tf-workspace"
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-module
+          schema:
+            $ref: "#/definitions/resource-tf-workspace"
+        201:
+          description: Created
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-module
+          schema:
+            $ref: "#/definitions/resource-tf-workspace"
+        400:
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/server-error"
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
     get:
       tags:
         - workspaces

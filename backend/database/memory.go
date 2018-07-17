@@ -53,7 +53,7 @@ func (md memoryDatabase) Ping() error {
 // Create a record in memory
 func (md *memoryDatabase) Create(recordType, key string, doc interface{}) (err error) {
 	if md.exists(recordType, key) {
-		return fmt.Errorf("%q %q already exists", recordType, key)
+		return RecordExistsError(fmt.Errorf("%q %q already exists", recordType, key).(RecordExistsError))
 	}
 
 	if data, err := md.serialize(doc); err == nil {
@@ -73,7 +73,7 @@ func (md *memoryDatabase) Create(recordType, key string, doc interface{}) (err e
 // Read a record from memory
 func (md memoryDatabase) Read(recordType, key string, i interface{}) (err error) {
 	if !md.exists(recordType, key) {
-		return fmt.Errorf("%q %q does not exist", recordType, key)
+		return RecordDoesNotExistError(fmt.Errorf("%q %q does not exist", recordType, key))
 	}
 
 	for _, record := range md.collections {
@@ -83,7 +83,7 @@ func (md memoryDatabase) Read(recordType, key string, i interface{}) (err error)
 		}
 	}
 
-	return nil
+	return
 }
 
 // List records of a given type from memory
@@ -106,7 +106,7 @@ func (md memoryDatabase) List(recordType string, i interface{}) (err error) {
 // Update a record in memory
 func (md *memoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	if !md.exists(recordType, key) {
-		return fmt.Errorf("%q %q does not exist", recordType, key)
+		return RecordDoesNotExistError(fmt.Errorf("%q %q does not exist", recordType, key))
 	}
 
 	var data string

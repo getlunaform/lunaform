@@ -67,3 +67,6 @@ func (db *Database) Ping() error {
 func (db *Database) Close() error {
 	return db.driver.Close()
 }
+
+type RecordExistsError error
+type RecordDoesNotExistError error

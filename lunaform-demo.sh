@@ -19,6 +19,7 @@ schemes:
   - http
 log:
   level: error
+apikey: dev-key
 EOF
 
 ./lunaform terraform workspace create --name live
@@ -37,4 +38,4 @@ EOF
     --module tf-vpc \
     --workspace live
 
-kill $tfs_pid
+kill $tfs_pidsla

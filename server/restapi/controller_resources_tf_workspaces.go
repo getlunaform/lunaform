@@ -42,19 +42,45 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 		ch.SetRequest(params.HTTPRequest)
 
 		tfw := params.TerraformWorkspace
+		tfw.Name = helpers.String(params.Name)
 		tfw.Modules = []*models.ResourceTfModule{}
 
-		if err := db.Create(DB_TABLE_TF_WORKSPACE, *tfw.Name, tfw); err != nil {
-			return operations.NewCreateWorkspaceBadRequest().WithPayload(&models.ServerError{
-				StatusCode: HTTP_BAD_REQUEST,
-				Status:     HTTP_BAD_REQUEST_STATUS,
-				Message:    helpers.String(err.Error()),
-			})
+		existingWorkspace := models.ResourceTfWorkspace{}
+
+		halRscLinks := helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + params.Name)
+		halRscLinks.Doc = helpers.HalDocLink(ch).Doc
+
+		if err := db.Read(DB_TABLE_TF_WORKSPACE, params.Name, &existingWorkspace); err != nil {
+			if _, isNotFound := err.(database.RecordDoesNotExistError); isNotFound {
+				if err := db.Create(DB_TABLE_TF_WORKSPACE, params.Name, tfw); err == nil {
+					r = operations.NewCreateWorkspaceCreated().WithPayload(tfw)
+				} else {
+					r = operations.NewCreateWorkspaceBadRequest().WithPayload(&models.ServerError{
+						StatusCode: HTTP_BAD_REQUEST,
+						Status:     HTTP_BAD_REQUEST_STATUS,
+						Message:    helpers.String(err.Error()),
+					})
+				}
+			} else {
+				r = operations.NewCreateWorkspaceInternalServerError().WithPayload(&models.ServerError{
+					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+					Message:    helpers.String(err.Error()),
+				})
+			}
+		} else {
+			if err := db.Update(DB_TABLE_TF_WORKSPACE, params.Name, existingWorkspace); err != nil {
+				r = operations.NewCreateWorkspaceInternalServerError().WithPayload(&models.ServerError{
+					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+					Message:    helpers.String(err.Error()),
+				})
+			} else {
+				r = operations.NewCreateWorkspaceOK().WithPayload(tfw)
+			}
 		}
 
-		tfw.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + *tfw.Name)
-		tfw.Links.Doc = helpers.HalDocLink(ch).Doc
-		return operations.NewCreateWorkspaceCreated().WithPayload(tfw)
+		return
 	})
 }
 

@@ -32,7 +32,8 @@ import (
 )
 
 const (
-	TERRAFORM_SERVER_TYPE_V1 = "application/vnd.lunaform.v1+json"
+	TERRAFORM_SERVER_TYPE_V1     = "application/vnd.lunaform.v1+json"
+	TERRAFORM_SERVER_AUTH_HEADER = "X-Lunaform-Auth"
 )
 
 var cfgFile string
@@ -155,6 +156,6 @@ func initGocdClient() {
 
 func initAuthHandler() {
 	authHandler = func(request runtime.ClientRequest, reg strfmt.Registry) (err error) {
-		return request.SetHeaderParam("X-Lunaform-Auth", config.ApiKey)
+		return request.SetHeaderParam(TERRAFORM_SERVER_AUTH_HEADER, config.ApiKey)
 	}
 }

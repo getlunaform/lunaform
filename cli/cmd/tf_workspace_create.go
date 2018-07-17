@@ -38,14 +38,24 @@ to quickly create a Cobra application.`,
 			&models.ResourceTfWorkspace{
 				Name: String(workspaceNameFlag),
 			},
-		)
+		).WithName(workspaceNameFlag)
 
-		workspace, err := gocdClient.Workspaces.CreateWorkspace(
+		workspaceUpdated, workspaceCreated, err := gocdClient.Workspaces.CreateWorkspace(
 			params,
 			authHandler,
 		)
+
+		var workspace *models.ResourceTfWorkspace
+		if workspaceCreated != nil {
+			workspace = workspaceCreated.Payload
+		} else if workspaceUpdated != nil {
+			workspace = workspaceUpdated.Payload
+		}
+
 		if err == nil {
-			handleOutput(cmd, workspace.Payload, useHal, err)
+			handleOutput(cmd, workspace, useHal, err)
+		} else if err1, ok := err.(*workspaces.CreateWorkspaceBadRequest); ok {
+			handleOutput(cmd, err1.Payload, useHal, nil)
 		} else {
 			handleOutput(cmd, nil, useHal, err)
 		}
@@ -53,8 +63,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	tfWorkspaceCreateCmd.
-		Flags().
+	tfWorkspaceCreateCmd.Flags().
 		StringVar(&workspaceNameFlag, "name", "", "Name of the terraform workspace")
 	tfWorkspaceCreateCmd.MarkFlagRequired("name")
 }
