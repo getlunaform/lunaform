@@ -74,6 +74,9 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.APIKeyAuth = func(s string) (p *models.Principal, err error) {
 		user := models.ResourceAuthUser{}
 		if err = db.Read("lf-auth-apikeys", s, &user); err != nil {
+			if _, isErrNotFound := err.(database.RecordDoesNotExistError); isErrNotFound {
+				return nil, errors.Unauthenticated("http")
+			}
 			return
 		}
 
@@ -84,8 +87,6 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 
 	// Controllers for /
 	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(idp, oh)
-
-	// Controllers for /{group}
 	api.ResourcesListResourcesHandler = ListResourcesController(idp, oh)
 
 	// Controllers for /tf/modules
@@ -102,6 +103,10 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.WorkspacesDescribeWorkspaceHandler = GetTfWorkspaceController(idp, oh, db)
 	api.WorkspacesListWorkspacesHandler = ListTfWorkspacesController(idp, oh, db)
 	api.WorkspacesCreateWorkspaceHandler = CreateTfWorkspaceController(idp, oh, db)
+
+	// Controllers for /tf/state-backends
+	api.StateBackendsCreateStateBackendHandler = CreateTfStateBackendsController(idp, oh, db)
+	api.StateBackendsUpdateStateBackendHandler = UpdateTfStateBackendsController(idp, oh, db)
 
 	api.ServerShutdown = func() {
 		dbDriver.Close()

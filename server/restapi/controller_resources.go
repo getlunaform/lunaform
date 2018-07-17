@@ -44,12 +44,10 @@ var ListResourcesController = func(idp identity.Provider, ch helpers.ContextHelp
 		}
 
 		if len(rsc) > 0 {
-			r := resources.NewListResourcesOK()
-			r.SetPayload(&models.ResponseListResources{
+			return resources.NewListResourcesOK().WithPayload(&models.ResponseListResources{
 				Links:    helpers.HalRootRscLinks(ch),
 				Embedded: buildResourceGroupResponse(rsc, ch),
 			})
-			return r
 		}
 
 		return resources.NewListResourceGroupsNotFound()

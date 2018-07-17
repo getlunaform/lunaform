@@ -90,13 +90,13 @@ var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHel
 
 		workspace := &models.ResourceTfWorkspace{}
 		if err := db.Read(DB_TABLE_TF_WORKSPACE, params.Name, workspace); err != nil {
-			return operations.NewDescribeWorkspaceInternalServerError().WithPayload(&models.ServerError{
+			r = operations.NewDescribeWorkspaceInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
 				Message:    helpers.String(err.Error()),
 			})
 		} else if workspace == nil {
-			return operations.NewDescribeWorkspaceNotFound().WithPayload(&models.ServerError{
+			r = operations.NewDescribeWorkspaceNotFound().WithPayload(&models.ServerError{
 				StatusCode: HTTP_NOT_FOUND,
 				Status:     HTTP_NOT_FOUND_STATUS,
 				Message:    helpers.String("Could not find workspace with name '" + params.Name + "'"),
@@ -104,7 +104,8 @@ var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHel
 		} else {
 			workspace.Links = helpers.HalSelfLink(ch.FQEndpoint)
 			workspace.Links.Doc = helpers.HalDocLink(ch).Doc
-			return operations.NewDescribeWorkspaceOK().WithPayload(workspace)
+			r = operations.NewDescribeWorkspaceOK().WithPayload(workspace)
 		}
+		return
 	})
 }
