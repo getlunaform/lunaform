@@ -711,7 +711,11 @@ definitions:
   resource-tf-state-backend:
     type: object
     properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
       name:
+        type: string
+      id:
         type: string
       configuration:
         type: object

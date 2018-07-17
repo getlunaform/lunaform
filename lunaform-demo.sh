@@ -4,7 +4,7 @@ cd ~/go/src/github.com/drewsonne/lunaform
 
 make
 
-./lunaform-server --port=8080 --scheme=http &
+./lunaform-server --port=8080 --scheme=http --api-key dev-key &
 
 tfs_pid=$!
 

@@ -11,9 +11,12 @@ Restful interface to handle terraform deploys. Similiar to the CloudFormation AP
 brew tap drewsonne/tap
 brew install lunaform
 
-lunaform-server --port=8080 --scheme=http
+lunaform-server \
+    --port=8080 \
+    --scheme=http \
+    --api-key=dev-key
 
-cat > ~/.config/tfs-client.yaml <<EOF
+cat > ~/.config/lunaform.yaml <<EOF
 ---
 host: localhost
 port: 8080
@@ -21,18 +24,24 @@ schemes:
   - http
 log:
   level: error
+apikey: dev-key
 EOF
 
-lunaform tf module create \
+lunaform terraform module create \
     --name tf-vpc \
     --source github.com/drewsonne/tf-vpc \
     --type git
+lunaform terraform module list
 
-lunaform tf module list
+lunaform terraform workspace create \
+    --name live
+lunaform terraform workspace list
+
     
-lunaform tf stack deploy \
+lunaform terraform stack deploy \
     --name my-vpc \
-    --module tf-vpc
+    --module tf-vpc \
+    --workspace live
 
 open http://localhost:8080/api/docs
 
