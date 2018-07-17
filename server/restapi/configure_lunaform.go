@@ -223,7 +223,7 @@ func configureRootUser(db *database.Database) (err error) {
 			if err = db.Create("lf-auth-apikeys", keys, adminUser); err != nil {
 				return
 			}
-			fmt.Printf("Generated api-key for admin user '%s'", keys)
+			fmt.Printf("Generated api-key for admin user '%s'\n", keys)
 		}
 	}
 
