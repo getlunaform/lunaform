@@ -21,3 +21,4 @@ vendor
 /lunaform-client
 /client/*
 /lunaform-server
+/.idea

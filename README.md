@@ -49,4 +49,11 @@ brew tap go-swagger/go-swagger
 brew install go-swagger
 ```
 
+For dependency management we use glide:
+
+```bash
+brew install glide
+glide install
+```
+
 For other distributions, see the  [project homepage](https://github.com/go-swagger/go-swagger).
