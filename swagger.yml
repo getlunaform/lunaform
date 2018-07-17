@@ -363,6 +363,14 @@ paths:
               name: my-tf-state-backend
           schema:
             $ref: "#/definitions/resource-tf-state-backend"
+        404:
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/server-error"
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
   /tf/workspace/{name}:
     put:
       tags:
@@ -534,7 +542,7 @@ definitions:
     type: object
     readOnly: true
     required:
-      - modules
+      - state-backends
     properties:
       state-backends:
         type: array

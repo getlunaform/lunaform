@@ -37,4 +37,5 @@ func init() {
 	tfCmd.AddCommand(tfStatebackendCmd)
 	tfStatebackendCmd.AddCommand(tfStatebackendCreateCmd)
 	tfStatebackendCmd.AddCommand(tfStateBackendsListCmd)
+	tfStatebackendCmd.AddCommand(tfStateBackendsUpdateCmd)
 }

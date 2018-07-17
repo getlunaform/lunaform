@@ -36,7 +36,13 @@ func (r *Resource) Clean() interface{} {
 
 func (m *ResourceListTfStateBackend) Clean() interface{} {
 	if m != nil {
-		rscs := make([]interface{}, len())
+		rscs := make([]interface{}, len(m.StateBackends))
+		for i, rsc := range m.StateBackends {
+			rscs[i] = rsc.Clean()
+		}
+		return map[string]interface{}{
+			"state-backends": rscs,
+		}
 	}
 	return make([]interface{}, 0)
 }

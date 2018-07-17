@@ -29,8 +29,6 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 		statebackend.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + statebackend.ID)
 		statebackend.Links.Doc = helpers.HalDocLink(ch).Doc
 		return operations.NewCreateStateBackendCreated().WithPayload(statebackend)
-
-		return nil
 	})
 }
 
@@ -50,7 +48,7 @@ var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.Conte
 		return operations.NewListStateBackendsOK().WithPayload(&models.ResponseListTfStateBackends{
 			Links: helpers.HalRootRscLinks(ch),
 			Embedded: &models.ResourceListTfStateBackend{
-				Modules: statebackends,
+				StateBackends: statebackends,
 			},
 		})
 
@@ -62,6 +60,39 @@ var UpdateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 	return operations.UpdateStateBackendHandlerFunc(func(params operations.UpdateStateBackendParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		return nil
+		statebackend := &models.ResourceTfStateBackend{}
+		if err := db.Read(DB_TABLE_TF_STATEBACKEND, params.ID, statebackend); err != nil {
+			if _, notFound := err.(database.RecordDoesNotExistError); notFound {
+				return operations.NewUpdateStateBackendNotFound().WithPayload(&models.ServerError{
+					StatusCode: HTTP_NOT_FOUND,
+					Status:     HTTP_NOT_FOUND_STATUS,
+					Message:    helpers.String(err.Error()),
+				})
+			} else {
+				return operations.NewCreateStateBackendBadRequest().WithPayload(&models.ServerError{
+					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+					Message:    helpers.String(err.Error()),
+				})
+			}
+		}
+
+		if params.TerraformStateBackend.Name != "" {
+			statebackend.Name = params.TerraformStateBackend.Name
+		}
+
+		if params.TerraformStateBackend.Configuration != nil {
+			statebackend.Configuration = params.TerraformStateBackend.Configuration
+		}
+
+		if err := db.Update(DB_TABLE_TF_STATEBACKEND, params.ID, statebackend); err != nil {
+			return operations.NewCreateStateBackendBadRequest().WithPayload(&models.ServerError{
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+				Message:    helpers.String(err.Error()),
+			})
+		}
+
+		return operations.NewUpdateStateBackendOK().WithPayload(statebackend)
 	})
 }

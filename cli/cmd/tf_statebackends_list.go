@@ -22,8 +22,8 @@ import (
 
 // tfStateBackendsListCmd represents the tfStateBackendsList command
 var tfStateBackendsListCmd = &cobra.Command{
-	Use:   "tfStateBackendsList",
-	Short: "A brief description of your command",
+	Use:   "list",
+	Short: "List terraform state backends",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -44,4 +44,3 @@ to quickly create a Cobra application.`,
 		handleOutput(cmd, response, useHal, err)
 	},
 }
-

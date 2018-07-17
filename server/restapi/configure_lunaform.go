@@ -226,7 +226,7 @@ func configureRootUser(db *database.Database) (err error) {
 			return
 		}
 		for _, keys := range adminUser.APIKeys {
-			if err = db.Create(DB_TABLE_AUTH_USER, keys, adminUser); err != nil {
+			if err = db.Create(DB_TABLE_AUTH_APIKEY, keys, adminUser); err != nil {
 				return
 			}
 			fmt.Printf("Generated api-key for admin user '%s'\n", keys)
