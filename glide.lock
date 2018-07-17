@@ -1,5 +1,5 @@
-hash: 799781650794c58800ce76f90348d4576b431991af0a8d3c8df692a042da058e
-updated: 2018-07-17T15:06:05.537145+01:00
+hash: 4a3a846af4910b9d491b9f1c8b0f20adbb8b8531e832b0f603268c0f2f6ef17a
+updated: 2018-07-17T15:14:54.376983+01:00
 imports:
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
@@ -9,6 +9,8 @@ imports:
   version: dbf95344df50497dba92c62da869a873be2968e9
 - name: github.com/fsnotify/fsnotify
   version: c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9
+- name: github.com/gammazero/workerpool
+  version: d9f490b52b8724669b5cfb1933cf1461e2a03b41
 - name: github.com/go-openapi/analysis
   version: 3c8fe72ed5d307113ef76c7c3035964d7e4d4b73
 - name: github.com/go-openapi/errors
