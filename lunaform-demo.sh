@@ -2,13 +2,16 @@
 
 cd ~/go/src/github.com/drewsonne/lunaform
 
-./lunaform --port=8080 --scheme=http &
+make
+
+./lunaform-server --port=8080 --scheme=http &
 
 tfs_pid=$!
 
 sleep 4
 
-cat > ~/.config/tfs-client.yaml <<EOF
+mkdir -p ~/.config/
+cat > ~/.config/lunaform.yaml <<EOF
 ---
 host: localhost
 port: 8080
@@ -18,17 +21,20 @@ log:
   level: error
 EOF
 
-./tfs-client tf module list
+./lunaform terraform workspace create --name live
 
-./tfs-client tf module create \
+./lunaform terraform module list
+
+./lunaform terraform module create \
     --name tf-vpc \
     --source github.com/drewsonne/tf-vpc \
     --type git
 
-./tfs-client tf module list
-./tfs-client tf stack list
-./tfs-client tf stack deploy \
+./lunaform terraform module list
+./lunaform terraform stack list
+./lunaform terraform stack deploy \
     --name my-vpc \
-    --module tf-vpc
+    --module tf-vpc \
+    --workspace live
 
 kill $tfs_pid
