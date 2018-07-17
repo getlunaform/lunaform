@@ -36,6 +36,7 @@ x-tagGroups:
       - modules
       - stacks
       - workspaces
+      - state-backends
 
 paths:
   /:
@@ -272,12 +273,73 @@ paths:
           description: Internal Server Error
           schema:
             $ref: "#/definitions/server-error"
+  /tf/state-backends:
+    post:
+      tags:
+        - state-backends
+      description: Define a Terraform state backend
+      operationId: create-state-backend
+      produces: ["application/vnd.lunaform.v1+json"]
+      consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: body
+          name: terraform-state-backend
+          description: A terraform state backend
+          schema:
+            $ref: "#/definitions/resource-tf-state-backend"
+      responses:
+        201:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-state-backend
+          schema:
+            $ref: "#/definitions/resource-tf-state-backend"
+        400:
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/server-error"
+  /tf/state-backend/{id}:
+    put:
+      tags:
+        - state-backends
+      description: Define a Terraform state backend
+      operationId: update-state-backend
+      produces: ["application/vnd.lunaform.v1+json"]
+      consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: ID of a terraform state backend
+        - in: body
+          name: terraform-state-backend
+          description: A terraform state backend
+          schema:
+            $ref: "#/definitions/resource-tf-state-backend"
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-state-backend
+          schema:
+            $ref: "#/definitions/resource-tf-state-backend"
   /tf/workspace/{name}:
     put:
       tags:
         - workspaces
       description: Create a Terraform workspace
-      operationId: create-workspace
+      operationId: create-workspace,
       produces: ["application/vnd.lunaform.v1+json"]
       consumes: ["application/vnd.lunaform.v1+json"]
       security:
@@ -646,3 +708,10 @@ definitions:
         type: string
   principal:
     $ref: "#/definitions/resource-auth-user"
+  resource-tf-state-backend:
+    type: object
+    properties:
+      name:
+        type: string
+      configuration:
+        type: object

@@ -45,14 +45,15 @@ to quickly create a Cobra application.`,
 			authHandler,
 		)
 
-		var workspace *models.ResourceTfWorkspace
-		if workspaceCreated != nil {
-			workspace = workspaceCreated.Payload
-		} else if workspaceUpdated != nil {
-			workspace = workspaceUpdated.Payload
-		}
-
 		if err == nil {
+
+			var workspace *models.ResourceTfWorkspace
+			if workspaceCreated != nil {
+				workspace = workspaceCreated.Payload
+			} else if workspaceUpdated != nil {
+				workspace = workspaceUpdated.Payload
+			}
+
 			handleOutput(cmd, workspace, useHal, err)
 		} else if err1, ok := err.(*workspaces.CreateWorkspaceBadRequest); ok {
 			handleOutput(cmd, err1.Payload, useHal, nil)
