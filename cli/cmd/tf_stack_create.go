@@ -26,7 +26,7 @@ import (
 var flagModule string
 var flagModuleId string
 var flagName string
-var flagWorkspace string
+var flagStackCreateWorkspace string
 
 // tfStackCreateCmd represents the tfStackCreate command
 var tfStackCreateCmd = &cobra.Command{
@@ -82,8 +82,9 @@ to quickly create a Cobra application.`,
 
 		params := stacks.NewDeployStackParams().WithTerraformStack(
 			&models.ResourceTfStack{
-				ModuleID: String(module.ID),
-				Name:     String(flagName),
+				ModuleID:  String(module.ID),
+				Name:      String(flagName),
+				Workspace: String(flagStackCreateWorkspace),
 			},
 		)
 		stack, err := gocdClient.Stacks.DeployStack(params, authHandler)
@@ -101,7 +102,7 @@ func init() {
 	flags.StringVar(&flagModule, "module", "", "Name of the terraform module to deploy")
 	flags.StringVar(&flagModuleId, "module-id", "", "ID of the terraform module to deploy")
 	flags.StringVar(&flagName, "name", "", "Name of the deployed terraform module")
-	flags.StringVar(&flagWorkspace, "workspace", "", "Terraform workspace to deploy into.")
+	flags.StringVar(&flagStackCreateWorkspace, "workspace", "", "Terraform workspace to deploy into.")
 
 	tfStackCreateCmd.MarkFlagRequired("name")
 	tfStackCreateCmd.MarkFlagRequired("workspace")

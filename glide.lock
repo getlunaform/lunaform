@@ -1,5 +1,5 @@
 hash: 4a3a846af4910b9d491b9f1c8b0f20adbb8b8531e832b0f603268c0f2f6ef17a
-updated: 2018-07-17T15:14:54.376983+01:00
+updated: 2018-07-17T15:29:44.699549+01:00
 imports:
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
@@ -9,6 +9,8 @@ imports:
   version: dbf95344df50497dba92c62da869a873be2968e9
 - name: github.com/fsnotify/fsnotify
   version: c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9
+- name: github.com/gammazero/deque
+  version: b106e3c6d0a1c0aa9b236c635c0d799d4467ee63
 - name: github.com/gammazero/workerpool
   version: d9f490b52b8724669b5cfb1933cf1461e2a03b41
 - name: github.com/go-openapi/analysis
@@ -108,8 +110,6 @@ imports:
   - assert
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
-- name: github.com/vardius/worker-pool
-  version: a6bce63bee3a1897bf33173304b21b144b9b3f59
 - name: golang.org/x/crypto
   version: a49355c7e3f8fe157a85be2f77e6e269a0f89602
   subpackages:

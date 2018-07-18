@@ -13,11 +13,11 @@ import (
 	"log"
 	"net/http/httputil"
 	"net/http/httptest"
-	"os"
 	"github.com/go-openapi/swag"
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/pborman/uuid"
 	"github.com/drewsonne/lunaform/server/helpers"
+	"github.com/drewsonne/lunaform/backend/workers"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -29,11 +29,13 @@ var version string
 func configureAPI(api *operations.LunaformAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
-	//api.BearerAuthenticator =
 
-	var idp identity.Provider
 	var dbDriver database.Driver
+	var idp identity.Provider
 	var err error
+
+	var workerPool *workers.TfAgentPool
+	var db database.Database
 
 	cfg, err := parseCliConfiguration()
 	if err != nil {
@@ -51,7 +53,10 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 		panic(err)
 	}
 
-	db := database.NewDatabaseWithDriver(dbDriver)
+	db = database.NewDatabaseWithDriver(dbDriver)
+	workerPool = workers.NewAgentPool(5).
+		WithDB(db).
+		Start()
 
 	switch cfg.Backend.IdentityType {
 	case "memory":
@@ -84,6 +89,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	}
 
 	configureRootUser(&db)
+	configureDefaultWorkspace(&db)
 
 	// Controllers for /
 	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(idp, oh)
@@ -95,7 +101,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.ModulesGetModuleHandler = GetTfModuleController(idp, oh, db)
 
 	// Controllers for /tf/stacks
-	api.StacksDeployStackHandler = CreateTfStackController(idp, oh, db)
+	api.StacksDeployStackHandler = CreateTfStackController(idp, oh, db, workerPool)
 	api.StacksListStacksHandler = ListTfStacksController(idp, oh, db)
 	api.StacksGetStackHandler = GetTfStackController(idp, oh, db)
 
@@ -113,14 +119,12 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 		dbDriver.Close()
 	}
 
-	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
-		{
-			ShortDescription: "Version",
-			Options: map[string]string{
-				"one": "two",
-			},
+	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{{
+		ShortDescription: "Version",
+		Options: map[string]string{
+			"one": "two",
 		},
-	}
+	}}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }
@@ -149,8 +153,7 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
 
 	handler = logRequest(handler)
-	debug := os.Getenv("DEBUG")
-	if debug == "1" {
+	if Debug {
 		return logResponse("lunaform", handler)
 	} else {
 		return handler
@@ -196,6 +199,23 @@ func logResponse(prefix string, h http.Handler) http.HandlerFunc {
 	}
 }
 
+func configureDefaultWorkspace(db *database.Database) (err error) {
+
+	defaultWorkspace := &models.ResourceTfWorkspace{}
+	if err = db.Read(DB_TABLE_TF_WORKSPACE, "default", &defaultWorkspace); err != nil {
+		if _, noDefaultWorkspace := err.(database.RecordDoesNotExistError); !noDefaultWorkspace {
+			return
+		} else if err = db.Create(DB_TABLE_TF_WORKSPACE, "default", &models.ResourceTfWorkspace{
+			Modules: []*models.ResourceTfModule{},
+			Name:    helpers.String("default"),
+		}); err != nil {
+			return
+		}
+	}
+
+	return
+}
+
 func configureRootUser(db *database.Database) (err error) {
 	userRecords := []*models.ResourceAuthUser{}
 	if err = db.List(DB_TABLE_AUTH_USER, &userRecords); err != nil {
@@ -216,7 +236,7 @@ func configureRootUser(db *database.Database) (err error) {
 		}
 
 		adminUser := &models.ResourceAuthUser{
-			Name:      "Adminstrator",
+			Name:      "Administrator",
 			Shortname: "admin",
 			Groups:    []string{"admin"},
 			ID:        uuid.New(),

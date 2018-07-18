@@ -6,10 +6,11 @@ import (
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/stacks"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/drewsonne/lunaform/server/models"
-	"strings"
-	"github.com/pborman/uuid"
 	"github.com/drewsonne/lunaform/server/helpers"
+	"github.com/pborman/uuid"
 	"fmt"
+	"strings"
+	"github.com/drewsonne/lunaform/backend/workers"
 )
 
 const (
@@ -45,7 +46,11 @@ var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelpe
 	})
 }
 
-var CreateTfStackController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.DeployStackHandlerFunc {
+var CreateTfStackController = func(
+	idp identity.Provider, ch helpers.ContextHelper,
+	db database.Database,
+wp *workers.TfAgentPool,
+) operations.DeployStackHandlerFunc {
 	return operations.DeployStackHandlerFunc(func(params operations.DeployStackParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -55,7 +60,7 @@ var CreateTfStackController = func(idp identity.Provider, ch helpers.ContextHelp
 		workspace := models.ResourceTfWorkspace{
 			Name: params.TerraformStack.Workspace,
 		}
-		if err := db.Read(DB_TABLE_TF_WORKSPACE, *workspace.Name, &workspace); err != nil {
+		if err := db.Read(DB_TABLE_TF_WORKSPACE, *tfs.Workspace, &workspace); err != nil {
 			return operations.NewDeployStackBadRequest().WithPayload(&models.ServerError{
 				StatusCode: HTTP_BAD_REQUEST,
 				Status:     HTTP_BAD_REQUEST_STATUS,
@@ -69,6 +74,8 @@ var CreateTfStackController = func(idp identity.Provider, ch helpers.ContextHelp
 			ID:     uuid.New(),
 			Status: TF_DEPLOYMENT_STATUS_DEPLOYING,
 		}}
+
+		wp.DoPlan(tfs)
 
 		if err := db.Create(DB_TABLE_TF_STACK, tfs.ID, tfs); err != nil {
 			return operations.NewDeployStackBadRequest()
