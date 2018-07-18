@@ -1,0 +1,21 @@
+{
+  "name": "lunaform",
+  "version": "0.0.1-alpha",
+  "description": "This_is_a_RESTful_server_for_managing_Terraform_plan_and_apply_jobs_and_the_auditing_of_actions_to_approve_those_apply_jobs_The_inspiration_for_this_project_is_the_AWS_CloudFormation_APIs__The_intention_is_to_implement_a_locking_mechanismnot_only_for_the_terraform_state_but_for_the_plan_and_apply_of_terraform_modules__Once_a_module_plan_starts_itis_instantiated_as_a_stack_within_the_nomencalture_of_lunaform_",
+  "license": "Apache 2.0",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --recursive"
+  },
+  "browser": {
+    "fs": false
+  },
+  "dependencies": {
+    "superagent": "3.5.2"
+  },
+  "devDependencies": {
+    "mocha": "~2.3.4",
+    "sinon": "1.17.3",
+    "expect.js": "~0.3.1"
+  }
+}
