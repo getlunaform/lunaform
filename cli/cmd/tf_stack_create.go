@@ -87,8 +87,8 @@ to quickly create a Cobra application.`,
 				Workspace: String(flagStackCreateWorkspace),
 			},
 		)
-		stack, err := gocdClient.Stacks.DeployStack(params, authHandler)
-		if err == nil {
+
+		if stack, err := gocdClient.Stacks.DeployStack(params, authHandler); err == nil {
 			handleOutput(cmd, stack.Payload, useHal, err)
 		} else {
 			handleOutput(cmd, nil, useHal, err)

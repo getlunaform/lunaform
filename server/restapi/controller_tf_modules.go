@@ -16,13 +16,17 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		modules := []*models.ResourceTfModule{}
+		modules := make([]*models.ResourceTfModule, 0)
 		if err := db.List(DB_TABLE_TF_MODULE, &modules); err != nil {
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
 				Message:    helpers.String(err.Error()),
 			})
+		}
+
+		for _, module := range modules {
+			module.GenerateLinks(strings.TrimSuffix(ch.FQEndpoint, "s"))
 		}
 
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{

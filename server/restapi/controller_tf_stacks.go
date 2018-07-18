@@ -49,7 +49,7 @@ var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelpe
 var CreateTfStackController = func(
 	idp identity.Provider, ch helpers.ContextHelper,
 	db database.Database,
-wp *workers.TfAgentPool,
+	workerPool *workers.TfAgentPool,
 ) operations.DeployStackHandlerFunc {
 	return operations.DeployStackHandlerFunc(func(params operations.DeployStackParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
@@ -70,12 +70,16 @@ wp *workers.TfAgentPool,
 			})
 		}
 
-		tfs.Deployments = []*models.ResourceTfDeployment{{
-			ID:     uuid.New(),
-			Status: TF_DEPLOYMENT_STATUS_DEPLOYING,
-		}}
+		dep := NewTfDeployment(
+			*workspace.Name,
+		)
 
-		wp.DoPlan(tfs)
+		tfs.Deployments = []*models.ResourceTfDeployment{dep}
+
+		workerPool.DoPlan(&workers.TfActionPlan{
+			Stack:      tfs,
+			Deployment: dep,
+		})
 
 		if err := db.Create(DB_TABLE_TF_STACK, tfs.ID, tfs); err != nil {
 			return operations.NewDeployStackBadRequest()
@@ -96,9 +100,8 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 		id := params.ID
 
 		var stack *models.ResourceTfStack
-		err := db.Read(DB_TABLE_TF_STACK, id, stack)
 
-		if err != nil {
+		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
 			return operations.NewGetStackInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
@@ -115,5 +118,44 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 			stack.Links.Doc = helpers.HalDocLink(ch).Doc
 			return operations.NewGetStackOK().WithPayload(stack)
 		}
+	})
+}
+
+var ListTfStackDeploymentsController = func(
+	idp identity.Provider, ch helpers.ContextHelper,
+	db database.Database,
+	workerPool *workers.TfAgentPool,
+) operations.ListDeploymentsHandlerFunc {
+	return operations.ListDeploymentsHandlerFunc(func(params operations.ListDeploymentsParams, p *models.Principal) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		id := params.ID
+
+		var stack *models.ResourceTfStack
+		var deployments *models.ResponseListTfDeployments
+
+		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
+			return operations.NewListStacksInternalServerError().WithPayload(&models.ServerError{
+				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+				Message:    helpers.String(err.Error()),
+			})
+		} else if stack == nil {
+			return operations.NewGetStackNotFound().WithPayload(&models.ServerError{
+				StatusCode: HTTP_NOT_FOUND,
+				Status:     HTTP_NOT_FOUND_STATUS,
+				Message:    helpers.String("Could not find stack with id '" + id + "'"),
+			})
+		} else {
+			deployments.Embedded.Deployments = stack.Deployments
+			deployments.Embedded.Stack = stack
+			stack.Deployments = nil
+
+			deployments.Links = helpers.HalSelfLink(ch.FQEndpoint)
+			deployments.Links.Doc = helpers.HalDocLink(ch).Doc
+
+			return operations.NewListDeploymentsOK().WithPayload(deployments)
+		}
+		return
 	})
 }

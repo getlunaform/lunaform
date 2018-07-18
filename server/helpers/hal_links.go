@@ -26,3 +26,4 @@ func HalDocLink(ch ContextHelper) *models.HalRscLinks {
 		},
 	}
 }
+

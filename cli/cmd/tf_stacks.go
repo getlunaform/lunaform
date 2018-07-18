@@ -39,4 +39,5 @@ func init() {
 	tfStackCmd.AddCommand(tfStackCreateCmd)
 	tfStackCmd.AddCommand(tfStackListCmd)
 	tfStackCmd.AddCommand(tfStackGetCmd)
+	tfStackCmd.AddCommand(tfStackDeploymentsListCmd)
 }

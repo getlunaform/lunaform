@@ -8,7 +8,7 @@ info:
    is instantiated as a `stack` within the nomencalture of `lunaform`.
   version: 0.0.1-alpha
   contact:
-    email: drew.sonne@gmail.com
+    email: "drew.sonne@gmail.com"
   license:
     name: Apache 2.0
     url: https://github.com/drewsonne/lunaform/blob/master/LICENSE
@@ -514,6 +514,31 @@ paths:
           description: Internal Server Error
           schema:
             $ref: "#/definitions/server-error"
+  /tf/stack/{id}/deployments:
+    get:
+      tags:
+        - stacks
+      description: List the deployments for this stack
+      operationId: list-deployments
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Unique identifier for this stack
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v2+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              _embedded:
+                deployments:
+          schema:
+            $ref: "#/definitions/response-list-tf-deployments"
 definitions:
 #  module:
 #    type: string
@@ -527,6 +552,30 @@ definitions:
 #      A source of users either locally managed, or through a federation.
 #      Two types of Identity Providers (IdP) are offered. The first are locally managed IdP's which `lunaform`
 #      handles all management of. The second are read-only federated IdP's.
+  response-list-tf-deployments:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of deployments for this stack
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-deployment"
+  resource-list-tf-deployment:
+    type: object
+    readOnly: true
+    required:
+      - stack
+      - deployments
+    properties:
+      deployments:
+        type: array
+        items:
+          $ref: "#/definitions/resource-tf-deployment"
+      stack:
+        $ref: "#/definitions/resource-tf-stack"
   response-list-tf-state-backends:
     type: object
     required:
@@ -687,6 +736,8 @@ definitions:
           - DEPLOYING
           - SUCCESS
           - FAIL
+      workspace:
+        type: string
   resource-auth-user:
     type: object
     properties:

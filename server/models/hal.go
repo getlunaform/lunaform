@@ -1,37 +1,56 @@
 package models
 
+import (
+	"github.com/go-openapi/strfmt"
+)
+
 type HalLinkable interface {
 	Clean() interface{}
 }
 
-func (m *ResponseListResources) Clean() interface{} {
-	return m.Embedded.Clean()
-}
-
-func (m *ResourceTfModule) Clean() interface{} {
+func (m ResourceTfModule) Clean() interface{} {
 	m.Links = nil
 	return m
 }
 
-func (s *ResourceTfStack) Clean() interface{} {
+func (s ResourceTfStack) Clean() interface{} {
 	s.Links = nil
 	return s
 }
 
-func (w *ResourceTfWorkspace) Clean() interface{} {
+func (w ResourceTfWorkspace) Clean() interface{} {
 	w.Links = nil
 	return w
 }
 
-func (w *ResourceTfStateBackend) Clean() interface{} {
+func (w ResourceTfStateBackend) Clean() interface{} {
 	w.Links = nil
 	return w
+}
+
+func (d ResourceTfDeployment) Clean() interface{} {
+	d.Links = nil
+	return d
 }
 
 func (r *Resource) Clean() interface{} {
 	return &Resource{
 		Name: r.Name,
 	}
+}
+
+func (d *ResourceListTfDeployment) Clean() interface{} {
+	if d != nil {
+		rscs := make([]interface{}, len(d.Deployments))
+		for i, rsc := range d.Deployments {
+			rscs[i] = rsc.Clean()
+		}
+		return map[string]interface{}{
+			"deployments": rscs,
+			"stack":       d.Stack.Clean(),
+		}
+	}
+	return make([]interface{}, 0)
 }
 
 func (m *ResourceListTfStateBackend) Clean() interface{} {
@@ -110,6 +129,29 @@ func (m *ResponseListTfStateBackends) Clean() interface{} {
 	return m.Embedded.Clean()
 }
 
+func (m *ResponseListTfDeployments) Clean() interface{} {
+	return m.Embedded.Clean()
+}
+
+func (m *ResponseListResources) Clean() interface{} {
+	return m.Embedded.Clean()
+}
+
 func (se *ServerError) Clean() interface{} {
 	return se
+}
+
+// generate links
+func (s *ResourceTfStack) GenerateLinks(fqEndpoint string) {
+	s.Links = &HalRscLinks{
+		Self: &HalHref{Href: strfmt.URI(fqEndpoint)},
+	}
+	//s.Links.Doc = helpers.HalDocLink(ch).Doc
+}
+
+func (m *ResourceTfModule) GenerateLinks(moduleEndpoint string) {
+	m.Links = &HalRscLinks{
+		Self: &HalHref{Href: strfmt.URI(moduleEndpoint + "/" + m.ID)},
+	}
+	//m.Links.Doc = helpers.HalDocLink(ch).Doc
 }

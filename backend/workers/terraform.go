@@ -1,7 +1,6 @@
 package workers
 
 import (
-	"github.com/drewsonne/lunaform/server/models"
 	"fmt"
 	"os/exec"
 	"io"
@@ -30,7 +29,7 @@ func NewTerraformClient() *Terraform {
 	return &Terraform{}
 }
 
-func (tf *Terraform) Plan(s *models.ResourceTfStack) (a *TerraformAction, out *TerraformOutput) {
+func (tf *Terraform) Plan(s TfAction) (a *TerraformAction, out *TerraformOutput) {
 
 	fmt.Print("Called Terraform.Plan")
 	fmt.Print(s)

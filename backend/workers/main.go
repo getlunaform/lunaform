@@ -5,7 +5,31 @@ import (
 	"github.com/drewsonne/lunaform/backend/database"
 	"github.com/drewsonne/lunaform/server/models"
 	"fmt"
+	"github.com/drewsonne/lunaform/server/helpers"
 )
+
+const (
+	TF_ACTION_PLAN_TYPE = "plan"
+)
+
+type TfAction interface {
+	Type() *string
+}
+
+type TfActionPlan struct {
+	Stack      *models.ResourceTfStack
+	Deployment *models.ResourceTfDeployment
+}
+
+func (tap *TfActionPlan) Type() *string {
+	return helpers.String(TF_ACTION_PLAN_TYPE)
+}
+
+type TfAgentPool struct {
+	maxWorkers int
+	db         database.Database
+	pool       *workerpool.WorkerPool
+}
 
 func NewAgentPool(maxWorkers int) *TfAgentPool {
 	return &TfAgentPool{
@@ -13,12 +37,8 @@ func NewAgentPool(maxWorkers int) *TfAgentPool {
 	}
 }
 
-type TfAgentPool struct {
-	maxWorkers int
-
-	DB database.Database
-
-	pool *workerpool.WorkerPool
+func (p *TfAgentPool) Shutdown() bool {
+	return true
 }
 
 func (p *TfAgentPool) Start() *TfAgentPool {
@@ -27,13 +47,13 @@ func (p *TfAgentPool) Start() *TfAgentPool {
 }
 
 func (p *TfAgentPool) WithDB(db database.Database) *TfAgentPool {
-	p.DB = db
+	p.db = db
 	return p
 }
 
-func (p *TfAgentPool) DoPlan(s *models.ResourceTfStack) {
+func (p *TfAgentPool) DoPlan(a *TfActionPlan) {
 	p.pool.Submit(func() {
-		action, output := NewTerraformClient().Plan(s)
+		action, output := NewTerraformClient().Plan(a)
 		action.Run()
 		fmt.Print(action)
 		fmt.Print(output)
