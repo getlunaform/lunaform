@@ -26,11 +26,12 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 		}
 
 		for _, workspace := range workspaces {
-			workspace.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + *workspace.Name)
+			workspace.Links = helpers.HalSelfLink(nil, strings.TrimSuffix(ch.Endpoint, "s") + "/" + *workspace.Name)
+			workspace.Links.Curies = nil
 		}
 
 		return operations.NewListWorkspacesOK().WithPayload(&models.ResponseListTfWorkspaces{
-			Links: helpers.HalRootRscLinks(ch),
+			Links: helpers.HalAddCuries(ch, helpers.HalRootRscLinks(ch)),
 			Embedded: &models.ResourceListTfWorkspace{
 				Workspaces: workspaces,
 			},
@@ -48,8 +49,8 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 
 		existingWorkspace := models.ResourceTfWorkspace{}
 
-		halRscLinks := helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + params.Name)
-		halRscLinks.Doc = helpers.HalDocLink(ch).Doc
+		//halRscLinks := helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + params.Name)
+		//halRscLinks.Doc = helpers.HalDocLink(ch).Doc
 
 		if err := db.Read(DB_TABLE_TF_WORKSPACE, params.Name, &existingWorkspace); err != nil {
 			if _, isNotFound := err.(database.RecordDoesNotExistError); isNotFound {
@@ -103,8 +104,7 @@ var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHel
 				Message:    swag.String("Could not find workspace with name '" + params.Name + "'"),
 			})
 		} else {
-			workspace.Links = helpers.HalSelfLink(ch.FQEndpoint)
-			workspace.Links.Doc = helpers.HalDocLink(ch).Doc
+			workspace.Links = helpers.HalRootRscLinks(ch)
 			r = operations.NewDescribeWorkspaceOK().WithPayload(workspace)
 		}
 		return

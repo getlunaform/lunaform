@@ -2,7 +2,6 @@ package restapi
 
 import (
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/drewsonne/lunaform/backend/identity"
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/drewsonne/lunaform/server/restapi/operations/resources"
 	"github.com/drewsonne/lunaform/server/helpers"
@@ -32,7 +31,7 @@ var (
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListResourcesController = func(idp identity.Provider, ch helpers.ContextHelper) resources.ListResourcesHandlerFunc {
+var ListResourcesController = func(ch helpers.ContextHelper) resources.ListResourcesHandlerFunc {
 	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -58,7 +57,7 @@ var ListResourcesController = func(idp identity.Provider, ch helpers.ContextHelp
 }
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
-var ListResourceGroupsController = func(idp identity.Provider, ch helpers.ContextHelper) resources.ListResourceGroupsHandlerFunc {
+var ListResourceGroupsController = func(ch helpers.ContextHelper) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -81,7 +80,7 @@ func buildResourceGroupResponse(rscs []string, ch helpers.ContextHelper) (rsclis
 	for i, rsc := range rscs {
 		rsclist.Resources[i] = &models.Resource{
 			Name:  swag.String(rsc),
-			Links: helpers.HalSelfLink(ch.FQEndpoint + "/" + rsc),
+			Links: helpers.HalSelfLink(nil, ch.Endpoint+"/"+rsc),
 		}
 	}
 	return

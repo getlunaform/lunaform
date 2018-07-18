@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"strings"
 	"github.com/drewsonne/lunaform/backend/workers"
-	"github.com/teris-io/shortid"
 	"github.com/go-openapi/swag"
 )
 
@@ -61,7 +60,7 @@ var CreateTfStackController = func(
 		ch.SetRequest(params.HTTPRequest)
 
 		tfs := params.TerraformStack
-		tfs.ID = shortid.MustGenerate()
+		tfs.ID = idGenerator.MustGenerate()
 
 		workspace := models.ResourceTfWorkspace{
 			Name: swag.String(params.TerraformStack.Workspace),
@@ -94,8 +93,10 @@ var CreateTfStackController = func(
 			return operations.NewDeployStackBadRequest()
 		}
 
-		tfs.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfs.ID)
-		tfs.Links.Doc = helpers.HalDocLink(ch).Doc
+		tfs.Links = helpers.HalSelfLink(
+			helpers.HalDocLink(nil, ch.OperationID),
+			strings.TrimSuffix(ch.Endpoint, "s")+"/"+tfs.ID,
+		)
 		tfs.Status = TF_STACK_STATUS_WAITING_FOR_DEPLOYMENT
 
 		return operations.NewDeployStackAccepted().WithPayload(tfs)
@@ -123,10 +124,13 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 				Message:    swag.String("Could not find stack with id '" + id + "'"),
 			})
 		} else {
-			stack.Links = helpers.HalSelfLink(ch.FQEndpoint)
-			stack.Links.Doc = helpers.HalDocLink(ch).Doc
+			stack.Links = helpers.HalSelfLink(
+				helpers.HalDocLink(nil, ch.OperationID),
+				ch.FQEndpoint,
+			)
 
 			stack.Embedded.Workspace.Modules = nil
+			stack.Embedded.Workspace.GenerateLinks(ch.ServerURL + "/tf/workspace")
 			for _, dep := range stack.Embedded.Deployments {
 				dep.Status = nil
 				dep.Workspace = nil
@@ -168,8 +172,10 @@ var ListTfStackDeploymentsController = func(
 			deployments.Embedded.Stack = stack
 			stack.Embedded.Deployments = nil
 
-			deployments.Links = helpers.HalSelfLink(ch.FQEndpoint)
-			deployments.Links.Doc = helpers.HalDocLink(ch).Doc
+			deployments.Links = helpers.HalSelfLink(
+				helpers.HalDocLink(nil, ch.OperationID),
+				ch.Endpoint,
+			)
 
 			return operations.NewListDeploymentsOK().WithPayload(deployments)
 		}

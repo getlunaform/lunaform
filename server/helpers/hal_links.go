@@ -5,25 +5,58 @@ import (
 	"github.com/drewsonne/lunaform/server/models"
 )
 
-func HalRootRscLinks(ch ContextHelper) *models.HalRscLinks {
-	lnks := HalSelfLink(ch.FQEndpoint)
-	lnks.Doc = HalDocLink(ch).Doc
-	return lnks
-}
-
-func HalSelfLink(href string) *models.HalRscLinks {
+func newHalRscLinks() *models.HalRscLinks {
 	return &models.HalRscLinks{
-		Self: &models.HalHref{Href: strfmt.URI(href)},
+		HalRscLinks: make(map[string]*models.HalHref),
 	}
 }
 
-func HalDocLink(ch ContextHelper) *models.HalRscLinks {
-	return &models.HalRscLinks{
-		Doc: &models.HalHref{
-			Href: strfmt.URI(
-				ch.ServerURL + "/docs#operation/" + ch.OperationID,
-			),
+func HalRootRscLinks(ch ContextHelper) (links *models.HalRscLinks) {
+	links = newHalRscLinks()
+
+	HalAddCuries(ch, links)
+	HalSelfLink(links, ch.Endpoint)
+	HalDocLink(links, ch.OperationID)
+
+	return links
+}
+
+func HalSelfLink(links *models.HalRscLinks, href string) (*models.HalRscLinks) {
+	if links == nil {
+		links = newHalRscLinks()
+	}
+
+	links.HalRscLinks["lf:self"] = &models.HalHref{Href: href}
+
+	return links
+}
+
+func HalDocLink(links *models.HalRscLinks, operationId string) *models.HalRscLinks {
+	if links == nil {
+		links = newHalRscLinks()
+	}
+
+	links.HalRscLinks["doc:"+operationId] = &models.HalHref{Href: "/" + operationId}
+
+	return links
+}
+
+func HalAddCuries(ch ContextHelper, links *models.HalRscLinks) (*models.HalRscLinks) {
+	if links == nil {
+		links = &models.HalRscLinks{}
+	}
+
+	links.Curies = []*models.HalCurie{
+		{
+			Name:      "lf",
+			Href:      strfmt.URI(ch.ServerURL + "/{rel}"),
+			Templated: true,
+		},
+		{
+			Name:      "doc",
+			Href:      strfmt.URI(ch.ServerURL + "/docs#operation/{rel}"),
+			Templated: true,
 		},
 	}
+	return links
 }
-

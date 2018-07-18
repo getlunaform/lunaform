@@ -1,9 +1,5 @@
 package models
 
-import (
-	"github.com/go-openapi/strfmt"
-)
-
 type HalLinkable interface {
 	Clean() interface{}
 }
@@ -143,18 +139,32 @@ func (se *ServerError) Clean() interface{} {
 // generate links
 func (s *ResourceTfStack) GenerateLinks(stackEndpoint string) {
 	s.Links = &HalRscLinks{
-		Self: &HalHref{Href: strfmt.URI(stackEndpoint + "/" + s.ID)},
+		HalRscLinks: map[string]*HalHref{
+			"lf:self": {Href: stackEndpoint + "/" + s.ID},
+		},
 	}
 }
 
 func (m *ResourceTfModule) GenerateLinks(moduleEndpoint string) {
 	m.Links = &HalRscLinks{
-		Self: &HalHref{Href: strfmt.URI(moduleEndpoint + "/" + m.ID)},
+		HalRscLinks: map[string]*HalHref{
+			"lf:self": {Href: moduleEndpoint + "/" + m.ID},
+		},
 	}
 }
 
 func (d *ResourceTfDeployment) GenerateLinks(deploymentEndpoint string) {
 	d.Links = &HalRscLinks{
-		Self: &HalHref{Href: strfmt.URI(deploymentEndpoint + "/" + d.ID)},
+		HalRscLinks: map[string]*HalHref{
+			"lf:self": {Href: deploymentEndpoint + "/" + d.ID},
+		},
+	}
+}
+
+func (w *ResourceTfWorkspace) GenerateLinks(workspaceEndpoint string) {
+	w.Links = &HalRscLinks{
+		HalRscLinks: map[string]*HalHref{
+			"lf:self": {Href: "/" + *w.Name},
+		},
 	}
 }

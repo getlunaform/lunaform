@@ -9,7 +9,6 @@ import (
 	"strings"
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/modules"
 	"github.com/drewsonne/lunaform/server/helpers"
-	"github.com/teris-io/shortid"
 	"github.com/go-openapi/swag"
 )
 
@@ -28,7 +27,7 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 		}
 
 		for _, module := range modules {
-			module.GenerateLinks(strings.TrimSuffix(ch.FQEndpoint, "s"))
+			module.GenerateLinks(strings.TrimSuffix(ch.Endpoint, "s"))
 			module.Embedded = nil
 		}
 
@@ -46,7 +45,7 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		ch.SetRequest(params.HTTPRequest)
 
 		tfm := params.TerraformModule
-		tfm.ID = shortid.MustGenerate()
+		tfm.ID = idGenerator.MustGenerate()
 
 		if err := db.Create(DB_TABLE_TF_MODULE, tfm.ID, tfm); err != nil {
 			return operations.NewCreateModuleBadRequest().WithPayload(&models.ServerError{
@@ -56,8 +55,10 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 			})
 		}
 
-		tfm.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + tfm.ID)
-		tfm.Links.Doc = helpers.HalDocLink(ch).Doc
+		tfm.Links = helpers.HalRootRscLinks(ch)
+		tfm.Embedded = &models.ResourceListTfStack{
+			Stacks: make([]*models.ResourceTfStack, 0),
+		}
 		return operations.NewCreateModuleCreated().WithPayload(tfm)
 	})
 }
@@ -85,8 +86,11 @@ var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper
 				Stacks: make([]*models.ResourceTfStack, 0),
 			}
 
-			module.Links = helpers.HalSelfLink(ch.FQEndpoint)
-			module.Links.Doc = helpers.HalDocLink(ch).Doc
+			module.Links = helpers.HalSelfLink(
+				helpers.HalDocLink(nil, ch.OperationID),
+				ch.Endpoint,
+			)
+
 			return operations.NewGetModuleOK().WithPayload(module)
 		}
 	})

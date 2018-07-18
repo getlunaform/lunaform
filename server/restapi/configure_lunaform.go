@@ -17,6 +17,7 @@ import (
 	"github.com/drewsonne/lunaform/server/helpers"
 	"github.com/drewsonne/lunaform/backend/workers"
 	"github.com/teris-io/shortid"
+	"time"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -24,6 +25,7 @@ import (
 //go:generate swagger generate server --target ../server --name TerraformServer --spec ../swagger.yml --principal models.Principal
 
 var version string
+var idGenerator *shortid.Shortid
 
 func configureAPI(api *operations.LunaformAPI) http.Handler {
 	// configure the api here
@@ -35,6 +37,10 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 
 	var workerPool *workers.TfAgentPool
 	var db database.Database
+
+	if idGenerator, err = shortid.New(1, shortid.DEFAULT_ABC, uint64(time.Now().UnixNano())); err != nil {
+		panic(err)
+	}
 
 	cfg, err := parseCliConfiguration()
 	if err != nil {
@@ -91,8 +97,8 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	configureDefaultWorkspace(&db)
 
 	// Controllers for /
-	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(idp, oh)
-	api.ResourcesListResourcesHandler = ListResourcesController(idp, oh)
+	api.ResourcesListResourceGroupsHandler = ListResourceGroupsController(oh)
+	api.ResourcesListResourcesHandler = ListResourcesController(oh)
 
 	// Controllers for /tf/modules
 	api.ModulesListModulesHandler = ListTfModulesController(idp, oh, db)
@@ -233,14 +239,14 @@ func configureRootUser(db *database.Database) (err error) {
 	if !foundAdmin || cliconfig.AdminApiKey != "" {
 
 		if cliconfig.AdminApiKey == "" {
-			cliconfig.AdminApiKey = shortid.MustGenerate()
+			cliconfig.AdminApiKey = idGenerator.MustGenerate()
 		}
 
 		adminUser := &models.ResourceAuthUser{
 			Name:      "Administrator",
 			Shortname: "admin",
 			Groups:    []string{"admin"},
-			ID:        shortid.MustGenerate(),
+			ID:        idGenerator.MustGenerate(),
 			APIKeys:   []string{cliconfig.AdminApiKey},
 		}
 		if err = db.Create(DB_TABLE_AUTH_USER, adminUser.ID, adminUser); err != nil {

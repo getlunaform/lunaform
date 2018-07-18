@@ -64,35 +64,30 @@ func TestResourcesController(t *testing.T) {
 	requestHost := "example.com"
 
 	for _, test := range []struct {
-		group         string
-		requestURL    string
-		requestMethod string
-		responseCode  int
-		response      string
+		group        string
+		requestURL   string
+		responseCode int
+		response     string
 	}{
 		{
-			group:         "tf",
-			requestMethod: "GET",
-			responseCode:  200,
-			response:      "{\"_embedded\":{\"resources\":[{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/modules\"}},\"name\":\"modules\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/stacks\"}},\"name\":\"stacks\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/state-backends\"}},\"name\":\"state-backends\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/workspaces\"}},\"name\":\"workspaces\"}]},\"_links\":{\"doc\":{\"href\":\"http://example.com/api/docs#operation/list-resources\"},\"self\":{\"href\":\"http://example.com/api/tf\"}}}",
+			group:        "tf",
+			responseCode: 200,
+			response:     "{\"_embedded\":{\"resources\":[{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/modules\"}},\"name\":\"modules\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/stacks\"}},\"name\":\"stacks\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/state-backends\"}},\"name\":\"state-backends\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/tf/workspaces\"}},\"name\":\"workspaces\"}]},\"_links\":{\"doc\":{\"href\":\"http://example.com/api/docs#operation/list-resources\"},\"self\":{\"href\":\"http://example.com/api/tf\"}}}",
 		},
 		{
-			group:         "identity",
-			requestMethod: "GET",
-			responseCode:  200,
-			response:      "{\"_embedded\":{\"resources\":[{\"_links\":{\"self\":{\"href\":\"http://example.com/api/identity/groups\"}},\"name\":\"groups\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/identity/providers\"}},\"name\":\"providers\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/identity/users\"}},\"name\":\"users\"}]},\"_links\":{\"doc\":{\"href\":\"http://example.com/api/docs#operation/list-resources\"},\"self\":{\"href\":\"http://example.com/api/identity\"}}}",
+			group:        "identity",
+			responseCode: 200,
+			response:     "{\"_embedded\":{\"resources\":[{\"_links\":{\"self\":{\"href\":\"http://example.com/api/identity/groups\"}},\"name\":\"groups\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/identity/providers\"}},\"name\":\"providers\"},{\"_links\":{\"self\":{\"href\":\"http://example.com/api/identity/users\"}},\"name\":\"users\"}]},\"_links\":{\"doc\":{\"href\":\"http://example.com/api/docs#operation/list-resources\"},\"self\":{\"href\":\"http://example.com/api/identity\"}}}",
 		},
 		{
-			group:         "vcs",
-			requestMethod: "GET",
-			responseCode:  200,
-			response:      "{\"_embedded\":{\"resources\":[{\"_links\":{\"self\":{\"href\":\"http://example.com/api/vcs/git\"}},\"name\":\"git\"}]},\"_links\":{\"doc\":{\"href\":\"http://example.com/api/docs#operation/list-resources\"},\"self\":{\"href\":\"http://example.com/api/vcs\"}}}",
+			group:        "vcs",
+			responseCode: 200,
+			response:     "{\"_embedded\":{\"resources\":[{\"_links\":{\"self\":{\"href\":\"http://example.com/api/vcs/git\"}},\"name\":\"git\"}]},\"_links\":{\"doc\":{\"href\":\"http://example.com/api/docs#operation/list-resources\"},\"self\":{\"href\":\"http://example.com/api/vcs\"}}}",
 		},
 		{
-			group:         "404",
-			requestMethod: "GET",
-			responseCode:  404,
-			response:      "",
+			group:        "404",
+			responseCode: 404,
+			response:     "",
 		},
 	} {
 
@@ -103,13 +98,13 @@ func TestResourcesController(t *testing.T) {
 			assert.NoError(t, err)
 
 			oh.Request = &http.Request{
-				Method:     test.requestMethod,
+				Method:     "GET",
 				Host:       requestHost,
 				RequestURI: requestURI,
 				URL:        u,
 			}
 
-			r := ListResourcesController(nil, oh).Handle(resources.ListResourcesParams{
+			r := ListResourcesController(oh).Handle(resources.ListResourcesParams{
 				HTTPRequest: oh.Request,
 				Group:       test.group,
 			})

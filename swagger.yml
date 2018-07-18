@@ -770,17 +770,28 @@ definitions:
     readOnly: true
     description: Links to this resources and documentation for this resource
     properties:
-      self:
-        $ref: "#/definitions/hal-href"
-      doc:
-        $ref: "#/definitions/hal-href"
+      curies:
+        type: array
+        x-omitempty: true
+        items:
+          $ref: "#/definitions/hal-curie"
+    additionalProperties:
+      $ref: "#/definitions/hal-href"
   hal-href:
     type: object
-    readOnly: true
     properties:
       href:
         type: string
+  hal-curie:
+    type: object
+    properties:
+      name:
+        type: string
+      href:
+        type: string
         format: uri
+      templated:
+        type: boolean
   server-error:
     type: object
     readOnly: true

@@ -24,7 +24,7 @@ type ContextHelper struct {
 	ctx         *middleware.Context
 	Request     *http.Request
 	ServerURL   string
-	endpoint    string
+	Endpoint    string
 	FQEndpoint  string
 	OperationID string
 	BasePath    string
@@ -38,7 +38,7 @@ func (oh *ContextHelper) SetRequest(req *http.Request) (err error) {
 	oh.ServerURL = oh.urlPrefix(oh.Request.Host, oh.BasePath, oh.Request.TLS != nil)
 	oh.FQEndpoint = oh.urlPrefix(oh.Request.Host, oh.Request.RequestURI, oh.Request.TLS != nil)
 
-	oh.endpoint = strings.TrimPrefix(oh.FQEndpoint, oh.ServerURL)
+	oh.Endpoint = strings.TrimPrefix(oh.FQEndpoint, oh.ServerURL)
 	if r, matched := oh.ctx.LookupRoute(oh.Request); matched {
 		oh.OperationID = r.Operation.ID
 	} else {

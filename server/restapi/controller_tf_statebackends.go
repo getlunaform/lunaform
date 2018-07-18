@@ -9,7 +9,6 @@ import (
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/state_backends"
 
 	"strings"
-	"github.com/teris-io/shortid"
 	"github.com/go-openapi/swag"
 )
 
@@ -18,7 +17,7 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 		ch.SetRequest(params.HTTPRequest)
 
 		statebackend := params.TerraformStateBackend
-		statebackend.ID = shortid.MustGenerate()
+		statebackend.ID = idGenerator.MustGenerate()
 
 		if err := db.Create(DB_TABLE_TF_STATEBACKEND, statebackend.ID, statebackend); err != nil {
 			return operations.NewCreateStateBackendBadRequest().WithPayload(&models.ServerError{
@@ -28,8 +27,10 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 			})
 		}
 
-		statebackend.Links = helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + statebackend.ID)
-		statebackend.Links.Doc = helpers.HalDocLink(ch).Doc
+		statebackend.Links = helpers.HalSelfLink(
+			helpers.HalDocLink(nil, ch.OperationID),
+			strings.TrimSuffix(ch.Endpoint, "s")+"/"+statebackend.ID,
+		)
 		return operations.NewCreateStateBackendCreated().WithPayload(statebackend)
 	})
 }
