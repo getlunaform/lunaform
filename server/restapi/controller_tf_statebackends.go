@@ -7,8 +7,10 @@ import (
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/go-openapi/runtime/middleware"
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/state_backends"
-	"github.com/pborman/uuid"
+
 	"strings"
+	"github.com/teris-io/shortid"
+	"github.com/go-openapi/swag"
 )
 
 var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.CreateStateBackendHandlerFunc {
@@ -16,13 +18,13 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 		ch.SetRequest(params.HTTPRequest)
 
 		statebackend := params.TerraformStateBackend
-		statebackend.ID = uuid.New()
+		statebackend.ID = shortid.MustGenerate()
 
 		if err := db.Create(DB_TABLE_TF_STATEBACKEND, statebackend.ID, statebackend); err != nil {
 			return operations.NewCreateStateBackendBadRequest().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		}
 
@@ -41,7 +43,7 @@ var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.Conte
 			return operations.NewListStateBackendsInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		}
 
@@ -66,13 +68,13 @@ var UpdateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 				return operations.NewUpdateStateBackendNotFound().WithPayload(&models.ServerError{
 					StatusCode: HTTP_NOT_FOUND,
 					Status:     HTTP_NOT_FOUND_STATUS,
-					Message:    helpers.String(err.Error()),
+					Message:    swag.String(err.Error()),
 				})
 			} else {
 				return operations.NewCreateStateBackendBadRequest().WithPayload(&models.ServerError{
 					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-					Message:    helpers.String(err.Error()),
+					Message:    swag.String(err.Error()),
 				})
 			}
 		}
@@ -89,7 +91,7 @@ var UpdateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 			return operations.NewCreateStateBackendBadRequest().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		}
 

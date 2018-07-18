@@ -44,7 +44,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	tfStackGetCmd.Flags().StringVar(&tfStackDeploymentsListIdFlag, "id", "",
+	tfStackDeploymentsListCmd.Flags().StringVar(&tfStackDeploymentsListIdFlag, "id", "",
 		"ID of the stack in lunaform")
-	tfStackGetCmd.MarkFlagRequired("id")
+	tfStackDeploymentsListCmd.MarkFlagRequired("id")
 }

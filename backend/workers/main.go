@@ -5,7 +5,7 @@ import (
 	"github.com/drewsonne/lunaform/backend/database"
 	"github.com/drewsonne/lunaform/server/models"
 	"fmt"
-	"github.com/drewsonne/lunaform/server/helpers"
+	"github.com/go-openapi/swag"
 )
 
 const (
@@ -22,7 +22,7 @@ type TfActionPlan struct {
 }
 
 func (tap *TfActionPlan) Type() *string {
-	return helpers.String(TF_ACTION_PLAN_TYPE)
+	return swag.String(TF_ACTION_PLAN_TYPE)
 }
 
 type TfAgentPool struct {

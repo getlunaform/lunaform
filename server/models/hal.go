@@ -33,10 +33,9 @@ func (d ResourceTfDeployment) Clean() interface{} {
 	return d
 }
 
-func (r *Resource) Clean() interface{} {
-	return &Resource{
-		Name: r.Name,
-	}
+func (r Resource) Clean() interface{} {
+	r.Links = nil
+	return r
 }
 
 func (d *ResourceListTfDeployment) Clean() interface{} {
@@ -142,16 +141,20 @@ func (se *ServerError) Clean() interface{} {
 }
 
 // generate links
-func (s *ResourceTfStack) GenerateLinks(fqEndpoint string) {
+func (s *ResourceTfStack) GenerateLinks(stackEndpoint string) {
 	s.Links = &HalRscLinks{
-		Self: &HalHref{Href: strfmt.URI(fqEndpoint)},
+		Self: &HalHref{Href: strfmt.URI(stackEndpoint + "/" + s.ID)},
 	}
-	//s.Links.Doc = helpers.HalDocLink(ch).Doc
 }
 
 func (m *ResourceTfModule) GenerateLinks(moduleEndpoint string) {
 	m.Links = &HalRscLinks{
 		Self: &HalHref{Href: strfmt.URI(moduleEndpoint + "/" + m.ID)},
 	}
-	//m.Links.Doc = helpers.HalDocLink(ch).Doc
+}
+
+func (d *ResourceTfDeployment) GenerateLinks(deploymentEndpoint string) {
+	d.Links = &HalRscLinks{
+		Self: &HalHref{Href: strfmt.URI(deploymentEndpoint + "/" + d.ID)},
+	}
 }

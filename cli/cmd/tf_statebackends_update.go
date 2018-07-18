@@ -20,7 +20,9 @@ import (
 	"github.com/drewsonne/lunaform/server/models"
 )
 
-var statebackendIdFlag string
+var tfStateBackendsUpdateIdFlag string
+var tfStateBackendsUpdateConfigFlag string
+var tfStateBackendsUpdateNameFlag string
 
 // tfStateBackendsUpdateCmd represents the tfStateBackendsUpdate command
 var tfStateBackendsUpdateCmd = &cobra.Command{
@@ -34,14 +36,14 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		payload := &models.ResourceTfStateBackend{}
-		if statebackendConfigFlag != "" {
-			payload.Configuration = statebackendConfigFlag
+		if tfStateBackendsUpdateConfigFlag != "" {
+			payload.Configuration = tfStateBackendsUpdateConfigFlag
 		}
-		if statebackendNameFlag != "" {
-			payload.Name = statebackendNameFlag
+		if tfStateBackendsUpdateNameFlag != "" {
+			payload.Name = tfStateBackendsUpdateNameFlag
 		}
 		params := state_backends.NewUpdateStateBackendParams().
-			WithID(statebackendIdFlag).
+			WithID(tfStateBackendsUpdateIdFlag).
 			WithTerraformStateBackend(payload)
 		backend, err := gocdClient.StateBackends.UpdateStateBackend(params, authHandler)
 
@@ -57,11 +59,11 @@ to quickly create a Cobra application.`,
 
 func init() {
 	tfStateBackendsUpdateCmd.Flags().
-		StringVar(&statebackendIdFlag, "id", "", "ID of the terraform state backend to update")
+		StringVar(&tfStateBackendsUpdateIdFlag, "id", "", "ID of the terraform state backend to update")
 	tfStateBackendsUpdateCmd.Flags().
-		StringVar(&statebackendNameFlag, "name", "", "Name of the terraform state backend to update")
+		StringVar(&tfStateBackendsUpdateNameFlag, "name", "", "Name of the terraform state backend to update")
 	tfStateBackendsUpdateCmd.Flags().
-		StringVar(&statebackendConfigFlag, "configuration", "",
+		StringVar(&tfStateBackendsUpdateConfigFlag, "configuration", "",
 		"A JSON string describing the configuration for the state backend")
 	tfStateBackendsUpdateCmd.MarkFlagRequired("id")
 }

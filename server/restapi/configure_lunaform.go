@@ -7,7 +7,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/drewsonne/lunaform/server/restapi/operations"
-
 	"github.com/drewsonne/lunaform/backend/database"
 	"github.com/drewsonne/lunaform/backend/identity"
 	"log"
@@ -15,9 +14,9 @@ import (
 	"net/http/httptest"
 	"github.com/go-openapi/swag"
 	"github.com/drewsonne/lunaform/server/models"
-	"github.com/pborman/uuid"
 	"github.com/drewsonne/lunaform/server/helpers"
 	"github.com/drewsonne/lunaform/backend/workers"
+	"github.com/teris-io/shortid"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -209,7 +208,7 @@ func configureDefaultWorkspace(db *database.Database) (err error) {
 			return
 		} else if err = db.Create(DB_TABLE_TF_WORKSPACE, "default", &models.ResourceTfWorkspace{
 			Modules: []*models.ResourceTfModule{},
-			Name:    helpers.String("default"),
+			Name:    swag.String("default"),
 		}); err != nil {
 			return
 		}
@@ -234,14 +233,14 @@ func configureRootUser(db *database.Database) (err error) {
 	if !foundAdmin || cliconfig.AdminApiKey != "" {
 
 		if cliconfig.AdminApiKey == "" {
-			cliconfig.AdminApiKey = uuid.New()
+			cliconfig.AdminApiKey = shortid.MustGenerate()
 		}
 
 		adminUser := &models.ResourceAuthUser{
 			Name:      "Administrator",
 			Shortname: "admin",
 			Groups:    []string{"admin"},
-			ID:        uuid.New(),
+			ID:        shortid.MustGenerate(),
 			APIKeys:   []string{cliconfig.AdminApiKey},
 		}
 		if err = db.Create(DB_TABLE_AUTH_USER, adminUser.ID, adminUser); err != nil {

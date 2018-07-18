@@ -1,5 +1,5 @@
-hash: 4a3a846af4910b9d491b9f1c8b0f20adbb8b8531e832b0f603268c0f2f6ef17a
-updated: 2018-07-17T15:29:44.699549+01:00
+hash: 4a269dbaa0def22dab3bf151af8cad4ae7217407852630312e86cc3976ca9798
+updated: 2018-07-18T13:05:46.301051+01:00
 imports:
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
@@ -71,7 +71,7 @@ imports:
 - name: github.com/magiconair/properties
   version: c2353362d570a7bfa228149c62842019201cfb71
 - name: github.com/mailru/easyjson
-  version: 3fdea8d05856a0c8df22ed4bc71b3219245e4485
+  version: efc7eb8984d6655c26b5c9d2e65c024e5767c37c
   subpackages:
   - buffer
   - jlexer
@@ -79,9 +79,9 @@ imports:
 - name: github.com/mitchellh/go-homedir
   version: 3864e76763d94a6df2f9960b16a20a33da9f9a66
 - name: github.com/mitchellh/mapstructure
-  version: bb74f1db0675b241733089d5a1faa5dd8b0ef57b
+  version: f15292f7a699fcc1a38a80977f80a046874ba8ac
 - name: github.com/pborman/uuid
-  version: e790cca94e6cc75c7064b1332e63811d4aae1a53
+  version: c65b2f87fee37d1c7854c9164a450713c28d50cd
 - name: github.com/pelletier/go-toml
   version: 603baefff989777996bf283da430d693e78eba3a
 - name: github.com/pkg/errors
@@ -108,6 +108,8 @@ imports:
   version: f35b8ab0b5a2cef36673838d662e249dd9c94686
   subpackages:
   - assert
+- name: github.com/teris-io/shortid
+  version: 6c56cef5189ca1b3d5ef01dc07f4d611dfc0bb33
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
 - name: golang.org/x/crypto
@@ -116,14 +118,14 @@ imports:
   - bcrypt
   - blowfish
 - name: golang.org/x/net
-  version: 039a4258aec0ad3c79b905677cceeab13b296a77
+  version: d0887baf81f4598189d4e12a37c6da86f0bba4d0
   subpackages:
   - context
   - context/ctxhttp
   - idna
   - netutil
 - name: golang.org/x/sys
-  version: 1b2967e3c290b7c545b3db0deeda16e9be4f98a2
+  version: ac767d655b305d4e9612f5f6e33120b9176c4ad4
   subpackages:
   - unix
 - name: golang.org/x/text

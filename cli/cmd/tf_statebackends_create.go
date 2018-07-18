@@ -21,8 +21,9 @@ import (
 	"encoding/json"
 )
 
-var statebackendNameFlag string
-var statebackendConfigFlag string
+var tfStatebackendCreateNameFlag string
+var tfStatebackendCreateConfigFlag string
+
 // tfStatebackendCreateCmd represents the tfStatebackendCreate command
 var tfStatebackendCreateCmd = &cobra.Command{
 	Use:   "create",
@@ -36,11 +37,11 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		config := map[string]interface{}{}
-		json.Unmarshal([]byte(statebackendConfigFlag), &config)
+		json.Unmarshal([]byte(tfStatebackendCreateConfigFlag), &config)
 
 		params := state_backends.NewCreateStateBackendParams().WithTerraformStateBackend(
 			&models.ResourceTfStateBackend{
-				Name:          statebackendNameFlag,
+				Name:          tfStatebackendCreateNameFlag,
 				Configuration: &config,
 			},
 		)
@@ -59,9 +60,9 @@ to quickly create a Cobra application.`,
 
 func init() {
 	tfStatebackendCreateCmd.Flags().
-		StringVar(&statebackendNameFlag, "name", "", "Name of the terraform workspace")
+		StringVar(&tfStatebackendCreateNameFlag, "name", "", "Name of the terraform workspace")
 	tfStatebackendCreateCmd.Flags().
-		StringVar(&statebackendConfigFlag, "configuration", "",
+		StringVar(&tfStatebackendCreateConfigFlag, "configuration", "",
 		"A JSON string describing the configuration for the state backend")
 	tfStatebackendCreateCmd.MarkFlagRequired("name")
 	tfStatebackendCreateCmd.MarkFlagRequired("configuration")

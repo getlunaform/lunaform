@@ -23,10 +23,10 @@ import (
 	"github.com/drewsonne/lunaform/client/stacks"
 )
 
-var flagModule string
-var flagModuleId string
-var flagName string
-var flagStackCreateWorkspace string
+var tfStackCreateCmdModuleFlag string
+var tfStackCreateCmdModuleIdFlag string
+var tfStackCreateCmdNameFlag string
+var tfStackCreateCmdWorkspaceFlag string
 
 // tfStackCreateCmd represents the tfStackCreate command
 var tfStackCreateCmd = &cobra.Command{
@@ -43,7 +43,7 @@ to quickly create a Cobra application.`,
 		var module *models.ResourceTfModule
 		var err error
 		moduleSrcIsId := true
-		if flagModuleId == "" && flagModule != "" {
+		if tfStackCreateCmdModuleIdFlag == "" && tfStackCreateCmdModuleFlag != "" {
 			moduleSrcIsId = false
 			modules, err := gocdClient.Modules.ListModules(
 				modules.NewListModulesParams(),
@@ -51,14 +51,14 @@ to quickly create a Cobra application.`,
 			)
 			if err == nil {
 				for _, module = range modules.Payload.Embedded.Modules {
-					if *module.Name == flagModule {
+					if *module.Name == tfStackCreateCmdModuleFlag {
 						break
 					}
 				}
 			}
-		} else if flagModuleId != "" {
+		} else if tfStackCreateCmdModuleIdFlag != "" {
 			moduleResponse, err := gocdClient.Modules.GetModule(
-				modules.NewGetModuleParams().WithID(flagModuleId),
+				modules.NewGetModuleParams().WithID(tfStackCreateCmdModuleIdFlag),
 				authHandler,
 			)
 			if err == nil {
@@ -70,9 +70,9 @@ to quickly create a Cobra application.`,
 
 		if module == nil {
 			if moduleSrcIsId {
-				err = fmt.Errorf("could not find a module with id `" + flagModuleId + "`")
+				err = fmt.Errorf("could not find a module with id `" + tfStackCreateCmdModuleIdFlag + "`")
 			} else {
-				err = fmt.Errorf("could not find a module with name `" + flagModule + "`")
+				err = fmt.Errorf("could not find a module with name `" + tfStackCreateCmdModuleFlag + "`")
 			}
 		}
 
@@ -83,8 +83,8 @@ to quickly create a Cobra application.`,
 		params := stacks.NewDeployStackParams().WithTerraformStack(
 			&models.ResourceTfStack{
 				ModuleID:  String(module.ID),
-				Name:      String(flagName),
-				Workspace: String(flagStackCreateWorkspace),
+				Name:      String(tfStackCreateCmdNameFlag),
+				Workspace: tfStackCreateCmdWorkspaceFlag,
 			},
 		)
 
@@ -99,10 +99,10 @@ to quickly create a Cobra application.`,
 
 func init() {
 	flags := tfStackCreateCmd.Flags()
-	flags.StringVar(&flagModule, "module", "", "Name of the terraform module to deploy")
-	flags.StringVar(&flagModuleId, "module-id", "", "ID of the terraform module to deploy")
-	flags.StringVar(&flagName, "name", "", "Name of the deployed terraform module")
-	flags.StringVar(&flagStackCreateWorkspace, "workspace", "", "Terraform workspace to deploy into.")
+	flags.StringVar(&tfStackCreateCmdModuleFlag, "module", "", "Name of the terraform module to deploy")
+	flags.StringVar(&tfStackCreateCmdModuleIdFlag, "module-id", "", "ID of the terraform module to deploy")
+	flags.StringVar(&tfStackCreateCmdNameFlag, "name", "", "Name of the deployed terraform module")
+	flags.StringVar(&tfStackCreateCmdWorkspaceFlag, "workspace", "", "Terraform workspace to deploy into.")
 
 	tfStackCreateCmd.MarkFlagRequired("name")
 	tfStackCreateCmd.MarkFlagRequired("workspace")

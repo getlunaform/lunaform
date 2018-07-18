@@ -7,10 +7,11 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/drewsonne/lunaform/server/helpers"
-	"github.com/pborman/uuid"
 	"fmt"
 	"strings"
 	"github.com/drewsonne/lunaform/backend/workers"
+	"github.com/teris-io/shortid"
+	"github.com/go-openapi/swag"
 )
 
 const (
@@ -31,10 +32,15 @@ var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelpe
 		err := db.List(DB_TABLE_TF_STACK, &stacks)
 		if err != nil {
 			return operations.NewListStacksInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: helpers.Int64(500),
-				Status:     helpers.String("Internal Server Error"),
-				Message:    helpers.String(err.Error()),
+				StatusCode: swag.Int64(500),
+				Status:     swag.String("Internal Server Error"),
+				Message:    swag.String(err.Error()),
 			})
+		}
+
+		for _, stack := range stacks {
+			stack.Embedded = nil
+			stack.GenerateLinks(strings.TrimSuffix(ch.FQEndpoint, "s"))
 		}
 
 		return operations.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
@@ -55,16 +61,16 @@ var CreateTfStackController = func(
 		ch.SetRequest(params.HTTPRequest)
 
 		tfs := params.TerraformStack
-		tfs.ID = uuid.New()
+		tfs.ID = shortid.MustGenerate()
 
 		workspace := models.ResourceTfWorkspace{
-			Name: params.TerraformStack.Workspace,
+			Name: swag.String(params.TerraformStack.Workspace),
 		}
-		if err := db.Read(DB_TABLE_TF_WORKSPACE, *tfs.Workspace, &workspace); err != nil {
+		if err := db.Read(DB_TABLE_TF_WORKSPACE, tfs.Workspace, &workspace); err != nil {
 			return operations.NewDeployStackBadRequest().WithPayload(&models.ServerError{
 				StatusCode: HTTP_BAD_REQUEST,
 				Status:     HTTP_BAD_REQUEST_STATUS,
-				Message: helpers.String(fmt.Sprintf(
+				Message: swag.String(fmt.Sprintf(
 					"Could not find workspace with name'%s'",
 					params.TerraformStack.Workspace)),
 			})
@@ -74,7 +80,10 @@ var CreateTfStackController = func(
 			*workspace.Name,
 		)
 
-		tfs.Deployments = []*models.ResourceTfDeployment{dep}
+		tfs.Embedded = &models.ResourceTfStackEmbedded{
+			Deployments: []*models.ResourceTfDeployment{dep},
+			Workspace:   &workspace,
+		}
 
 		workerPool.DoPlan(&workers.TfActionPlan{
 			Stack:      tfs,
@@ -99,23 +108,31 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 
 		id := params.ID
 
-		var stack *models.ResourceTfStack
+		stack := &models.ResourceTfStack{}
 
 		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
 			return operations.NewGetStackInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		} else if stack == nil {
 			return operations.NewGetStackNotFound().WithPayload(&models.ServerError{
 				StatusCode: HTTP_NOT_FOUND,
 				Status:     HTTP_NOT_FOUND_STATUS,
-				Message:    helpers.String("Could not find stack with id '" + id + "'"),
+				Message:    swag.String("Could not find stack with id '" + id + "'"),
 			})
 		} else {
 			stack.Links = helpers.HalSelfLink(ch.FQEndpoint)
 			stack.Links.Doc = helpers.HalDocLink(ch).Doc
+
+			stack.Embedded.Workspace.Modules = nil
+			for _, dep := range stack.Embedded.Deployments {
+				dep.Status = nil
+				dep.Workspace = nil
+				dep.GenerateLinks(ch.FQEndpoint + "/deployment")
+			}
+
 			return operations.NewGetStackOK().WithPayload(stack)
 		}
 	})
@@ -138,18 +155,18 @@ var ListTfStackDeploymentsController = func(
 			return operations.NewListStacksInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		} else if stack == nil {
 			return operations.NewGetStackNotFound().WithPayload(&models.ServerError{
 				StatusCode: HTTP_NOT_FOUND,
 				Status:     HTTP_NOT_FOUND_STATUS,
-				Message:    helpers.String("Could not find stack with id '" + id + "'"),
+				Message:    swag.String("Could not find stack with id '" + id + "'"),
 			})
 		} else {
-			deployments.Embedded.Deployments = stack.Deployments
+			deployments.Embedded.Deployments = stack.Embedded.Deployments
 			deployments.Embedded.Stack = stack
-			stack.Deployments = nil
+			stack.Embedded.Deployments = nil
 
 			deployments.Links = helpers.HalSelfLink(ch.FQEndpoint)
 			deployments.Links.Doc = helpers.HalDocLink(ch).Doc

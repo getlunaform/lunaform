@@ -7,6 +7,7 @@ import (
 	"github.com/drewsonne/lunaform/server/restapi/operations/resources"
 	"github.com/drewsonne/lunaform/server/helpers"
 	"net/http"
+	"github.com/go-openapi/swag"
 )
 
 const (
@@ -20,14 +21,14 @@ const (
 
 var (
 	// 400
-	HTTP_BAD_REQUEST        = helpers.Int64(http.StatusBadRequest)
-	HTTP_BAD_REQUEST_STATUS = helpers.String(http.StatusText(http.StatusBadRequest))
+	HTTP_BAD_REQUEST        = swag.Int64(http.StatusBadRequest)
+	HTTP_BAD_REQUEST_STATUS = swag.String(http.StatusText(http.StatusBadRequest))
 	// 404
-	HTTP_NOT_FOUND        = helpers.Int64(http.StatusNotFound)
-	HTTP_NOT_FOUND_STATUS = helpers.String(http.StatusText(http.StatusNotFound))
+	HTTP_NOT_FOUND        = swag.Int64(http.StatusNotFound)
+	HTTP_NOT_FOUND_STATUS = swag.String(http.StatusText(http.StatusNotFound))
 	// 500
-	HTTP_INTERNAL_SERVER_ERROR        = helpers.Int64(http.StatusInternalServerError)
-	HTTP_INTERNAL_SERVER_ERROR_STATUS = helpers.String(http.StatusText(http.StatusInternalServerError))
+	HTTP_INTERNAL_SERVER_ERROR        = swag.Int64(http.StatusInternalServerError)
+	HTTP_INTERNAL_SERVER_ERROR_STATUS = swag.String(http.StatusText(http.StatusInternalServerError))
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
@@ -79,7 +80,7 @@ func buildResourceGroupResponse(rscs []string, ch helpers.ContextHelper) (rsclis
 	}
 	for i, rsc := range rscs {
 		rsclist.Resources[i] = &models.Resource{
-			Name:  helpers.String(rsc),
+			Name:  swag.String(rsc),
 			Links: helpers.HalSelfLink(ch.FQEndpoint + "/" + rsc),
 		}
 	}

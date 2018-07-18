@@ -96,36 +96,6 @@ paths:
                     _links: {self: {href: "http://example.com/api/identity/users"}}
           schema:
             $ref: "#/definitions/response-list-resources"
-  /tf/stacks:
-    post:
-      tags:
-        - stacks
-      description: Deploy a stack from a module
-      operationId: deploy-stack
-      produces: ["application/vnd.lunaform.v1+json"]
-      consumes: ["application/vnd.lunaform.v1+json"]
-      security:
-        - api-key: []
-      parameters:
-        - in: body
-          name: terraform-stack
-          description: A deployed terraform module
-          schema:
-            $ref: "#/definitions/resource-tf-stack"
-      responses:
-        201:
-          description: OK
-          examples:
-            application/vnd.lunaform.v1+json:
-              _links:
-                $ref: "#/definitions/hal-rsc-links"
-              name: my-tf-stack
-          schema:
-            $ref: "#/definitions/resource-tf-stack"
-        400:
-          description: Bad Request
-          schema:
-            $ref: "#/definitions/server-error"
   /tf/modules:
     get:
       tags:
@@ -250,27 +220,30 @@ paths:
     post:
       tags:
         - stacks
-      description: Deploy a terraform stack as a module
+      description: Deploy a stack from a module
       operationId: deploy-stack
+      produces: ["application/vnd.lunaform.v1+json"]
+      consumes: ["application/vnd.lunaform.v1+json"]
       security:
         - api-key: []
       parameters:
         - in: body
           name: terraform-stack
-          description: A deployed terraform stack
+          description: A deployed terraform module
           schema:
             $ref: "#/definitions/resource-tf-stack"
       responses:
         202:
           description: Accepted
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-stack
           schema:
             $ref: "#/definitions/resource-tf-stack"
         400:
           description: Bad Request
-          schema:
-            $ref: "#/definitions/server-error"
-        500:
-          description: Internal Server Error
           schema:
             $ref: "#/definitions/server-error"
   /tf/state-backends:
@@ -565,7 +538,6 @@ definitions:
         $ref: "#/definitions/resource-list-tf-deployment"
   resource-list-tf-deployment:
     type: object
-    readOnly: true
     required:
       - stack
       - deployments
@@ -628,6 +600,8 @@ definitions:
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-stack"
       id:
         type: string
       name:
@@ -693,6 +667,7 @@ definitions:
         type: string
       modules:
         type: array
+        x-omitempty: true
         items:
           $ref: "#/definitions/resource-tf-module"
   resource-tf-stack:
@@ -700,11 +675,18 @@ definitions:
     required:
       - name
       - module-id
-      - workspace
     description: A TF stack
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        properties:
+          deployments:
+            type: array
+            items:
+              $ref: "#/definitions/resource-tf-deployment"
+          workspace:
+            $ref: "#/definitions/resource-tf-workspace"
       id:
         type: string
       name:
@@ -719,10 +701,6 @@ definitions:
           - FAIL
       workspace:
         type: string
-      deployments:
-        type: array
-        items:
-          $ref: "#/definitions/resource-tf-deployment"
   resource-tf-deployment:
     type: object
     properties:
@@ -732,12 +710,14 @@ definitions:
         type: string
       status:
         type: string
+        x-nullable: true
         enum:
           - DEPLOYING
           - SUCCESS
           - FAIL
       workspace:
         type: string
+        x-nullable: true
   resource-auth-user:
     type: object
     properties:

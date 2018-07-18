@@ -5,10 +5,12 @@ import (
 	"github.com/drewsonne/lunaform/backend/identity"
 	"github.com/drewsonne/lunaform/server/models"
 	"github.com/drewsonne/lunaform/backend/database"
-	"github.com/pborman/uuid"
+
 	"strings"
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/modules"
 	"github.com/drewsonne/lunaform/server/helpers"
+	"github.com/teris-io/shortid"
+	"github.com/go-openapi/swag"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
@@ -21,12 +23,13 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		}
 
 		for _, module := range modules {
 			module.GenerateLinks(strings.TrimSuffix(ch.FQEndpoint, "s"))
+			module.Embedded = nil
 		}
 
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
@@ -43,13 +46,13 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		ch.SetRequest(params.HTTPRequest)
 
 		tfm := params.TerraformModule
-		tfm.ID = uuid.New()
+		tfm.ID = shortid.MustGenerate()
 
 		if err := db.Create(DB_TABLE_TF_MODULE, tfm.ID, tfm); err != nil {
 			return operations.NewCreateModuleBadRequest().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		}
 
@@ -63,20 +66,25 @@ var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper
 	return operations.GetModuleHandlerFunc(func(params operations.GetModuleParams, p *models.Principal) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		var module *models.ResourceTfModule
+		module := &models.ResourceTfModule{}
 		if err := db.Read(DB_TABLE_TF_MODULE, params.ID, module); err != nil {
 			return operations.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
 				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
 				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    helpers.String(err.Error()),
+				Message:    swag.String(err.Error()),
 			})
 		} else if module == nil {
 			return operations.NewGetModuleNotFound().WithPayload(&models.ServerError{
 				StatusCode: HTTP_NOT_FOUND,
 				Status:     HTTP_NOT_FOUND_STATUS,
-				Message:    helpers.String("Could not find module with id '" + params.ID + "'"),
+				Message:    swag.String("Could not find module with id '" + params.ID + "'"),
 			})
 		} else {
+
+			module.Embedded = &models.ResourceListTfStack{
+				Stacks: make([]*models.ResourceTfStack, 0),
+			}
+
 			module.Links = helpers.HalSelfLink(ch.FQEndpoint)
 			module.Links.Doc = helpers.HalDocLink(ch).Doc
 			return operations.NewGetModuleOK().WithPayload(module)
