@@ -18,25 +18,32 @@ import (
 	"net/http/httptest"
 	"net/http/httputil"
 	"time"
+	"os"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
 
 //go:generate swagger generate server --target ../server --name TerraformServer --spec ../swagger.yml --principal models.Principal
 
-var version string
-var idGenerator *shortid.Shortid
+var (
+	version     string
+	idGenerator *shortid.Shortid
+)
+
+const (
+	DB_TABLE_AUTH_APIKEY = "lf-auth-apikey"
+)
 
 func configureAPI(api *operations.LunaformAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
 	var dbDriver database.Driver
-	var idp identity.Provider
 	var err error
 
 	var workerPool *workers.TfAgentPool
 	var db database.Database
+	var idp identity.Provider
 
 	if idGenerator, err = shortid.New(1, shortid.DEFAULT_ABC, uint64(time.Now().UnixNano())); err != nil {
 		panic(err)
@@ -50,6 +57,17 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	switch cfg.Backend.DatabaseType {
 	case "memory":
 		dbDriver, err = database.NewMemoryDBDriver()
+	case "file":
+		var filePath string
+		var isString bool
+		var file *os.File
+		if filePath, isString = cfg.Backend.Database.(string); !isString {
+			panic(fmt.Errorf("DB config is not string. Is '%s'", cfg.Backend.Database))
+		}
+		if file, err = os.Open(filePath); err != nil {
+			panic(err)
+		}
+		dbDriver, err = database.NewJSONDBDriver(file)
 	default:
 		err = fmt.Errorf("unexpected Database type: '%s'", cfg.Backend.DatabaseType)
 	}
@@ -93,7 +111,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 		return &user, nil
 	}
 
-	configureRootUser(&db)
+	configureRootUser(idp)
 	configureDefaultWorkspace(&db)
 
 	// Controllers for /
@@ -122,6 +140,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.StateBackendsUpdateStateBackendHandler = UpdateTfStateBackendsController(idp, oh, db)
 
 	api.ServerShutdown = func() {
+		fmt.Print("Shutdown handler")
 		dbDriver.Close()
 		workerPool.Shutdown()
 	}
@@ -146,7 +165,6 @@ func configureTLS(tlsConfig *tls.Config) {
 // This function can be called multiple times, depending on the number of serving schemes.
 // scheme value will be set accordingly: "http", "https" or "unix"
 func configureServer(s *http.Server, scheme, addr string) {
-
 }
 
 // The middleware configuration is for the handler executors. These do not apply to the swagger.json document.
@@ -223,16 +241,16 @@ func configureDefaultWorkspace(db *database.Database) (err error) {
 	return
 }
 
-func configureRootUser(db *database.Database) (err error) {
-	userRecords := []*models.ResourceAuthUser{}
-	if err = db.List(DB_TABLE_AUTH_USER, &userRecords); err != nil {
-		return
-	}
-
-	var foundAdmin bool
-	for _, user := range userRecords {
-		if user.Name == "admin" {
-			foundAdmin = true
+func configureRootUser(idp identity.Provider) (err error) {
+	var (
+		adminUser  *identity.User
+		foundAdmin = true
+	)
+	if adminUser, err = idp.ReadUser("admin"); err != nil {
+		if _, userNotFound := err.(identity.UserNotFound); !userNotFound {
+			return
+		} else {
+			foundAdmin = false
 		}
 	}
 
@@ -242,21 +260,23 @@ func configureRootUser(db *database.Database) (err error) {
 			cliconfig.AdminApiKey = idGenerator.MustGenerate()
 		}
 
-		adminUser := &models.ResourceAuthUser{
-			Name:      "Administrator",
-			Shortname: "admin",
-			Groups:    []string{"admin"},
-			ID:        idGenerator.MustGenerate(),
-			APIKeys:   []string{cliconfig.AdminApiKey},
+		admins := &identity.Group{
+			Name: "admin",
 		}
-		if err = db.Create(DB_TABLE_AUTH_USER, adminUser.ID, adminUser); err != nil {
+
+		adminUser = &identity.User{
+			IsEditable: false,
+			Username:   "admin",
+			APIKeys: []*identity.APIKey{
+				{
+					Value: cliconfig.AdminApiKey,
+				},
+			},
+		}
+		admins.AddUser(adminUser)
+
+		if adminUser, err = idp.CreateUser(adminUser); err != nil {
 			return
-		}
-		for _, keys := range adminUser.APIKeys {
-			if err = db.Create(DB_TABLE_AUTH_APIKEY, keys, adminUser); err != nil {
-				return
-			}
-			fmt.Printf("Generated api-key for admin user '%s'\n", keys)
 		}
 	}
 

@@ -2,9 +2,14 @@ package restapi
 
 import (
 	"encoding/json"
+	jww "github.com/spf13/jwalterweatherman"
 
 	"github.com/getlunaform/lunaform/restapi/operations"
 	"github.com/go-openapi/swag"
+	"github.com/spf13/viper"
+	"github.com/mitchellh/go-homedir"
+	"fmt"
+	"os"
 )
 
 var cliconfig = ConfigFileFlags{}
@@ -53,10 +58,34 @@ type ConfigFileFlags struct {
 }
 
 func parseCliConfiguration() (cfg *Configuration, err error) {
+	jww.SetLogThreshold(jww.LevelDebug)
+
 	cfg = newDefaultConfiguration()
-	if cliconfig.ConfigFile != "" {
-		err = cfg.loadFromFile(cliconfig.ConfigFile)
+	if cliconfig.ConfigFile == "" {
+		// Find home directory.
+		home, err := homedir.Dir()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		// Search config in home directory with name ".client" (without extension).
+		viper.AddConfigPath(home + "/.config/")
+		viper.SetConfigName("lunaform-server")
+
+	} else {
+		viper.SetConfigFile(cliconfig.ConfigFile)
 	}
+
+	viper.AutomaticEnv() // read in environment variables that match
+
+	// If a config file is found, read it in.
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	viper.Unmarshal(&cfg)
+
 	return
 }
 

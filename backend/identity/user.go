@@ -19,7 +19,7 @@ type User struct {
 
 // Login a user with a plaintext password
 func (u *User) Login(password string) bool {
-	u.loggedin = u.Idp.LoginUser(*u, password)
+	u.loggedin = u.Idp.LoginUser(u, password)
 	return u.LoggedIn()
 }
 
@@ -39,7 +39,7 @@ func (u *User) ChangePassword(password string) (err error) {
 		return fmt.Errorf("Could not change password on '%s' as user is not logged in", u.Username)
 	}
 
-	return u.Idp.ChangePassword(*u, password)
+	return u.Idp.ChangePassword(u, password)
 }
 
 // SSHKey contains both the public and private sections, and the location of the sshkey on disk

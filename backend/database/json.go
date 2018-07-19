@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"fmt"
+	"time"
 )
 
 // jsonDatabase stores data on disk in json files.
@@ -44,14 +46,23 @@ func NewJSONDBDriver(dbFile fileClient) (Driver, error) {
 	}
 	jdb.db = mdb
 
+	go jdb.doEvery(2*time.Second, jdb.Flush)
+
 	return jdb, err
 }
 
 // Close the file pointer
 func (jdb jsonDatabase) Close() (err error) {
-	jdb.file.Truncate(0)
-	b, err := jdb.db.Bytes()
-	if err != nil {
+	return jdb.Flush(nil)
+}
+
+func (jdb jsonDatabase) Flush(t *time.Time) (err error) {
+	fmt.Sprint("Closing db connection and flushing to file")
+	var b []byte
+	if err = jdb.file.Truncate(0); err != nil {
+		return
+	}
+	if b, err = jdb.db.Bytes(); err != nil {
 		return err
 	}
 	_, err = jdb.file.WriteAt(b, 0)
@@ -86,4 +97,12 @@ func (jdb jsonDatabase) List(recordType string, i interface{}) (err error) {
 // Update a record in the JSON file on disk
 func (jdb jsonDatabase) Update(recordType, key string, doc interface{}) (err error) {
 	return jdb.db.Update(recordType, key, doc)
+}
+
+func (jdb jsonDatabase) doEvery(d time.Duration, f func(*time.Time) error) {
+	for x := range time.Tick(d) {
+		if err := f(&x); err != nil {
+			panic(err)
+		}
+	}
 }

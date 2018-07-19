@@ -10,7 +10,7 @@ import (
 // This is very volatile and should only be used for development or testing.
 func NewMemoryIdentityProvider() Provider {
 	return memoryIdentityProvider{
-		users: make(map[string]User),
+		users: make(map[string]*User),
 	}
 }
 
@@ -18,7 +18,7 @@ func NewMemoryIdentityProvider() Provider {
 // struct is released, all data is lost. This is really only used for
 // development and will probably be deprecated in time.
 type memoryIdentityProvider struct {
-	users map[string]User
+	users map[string]*User
 }
 
 func (mip memoryIdentityProvider) IsEditable() (editable bool) {
@@ -33,49 +33,48 @@ func (mip memoryIdentityProvider) ConsumeEndpoint(payload []byte) (err error) {
 	return errors.New("Can not consume endpoint for managed IdP")
 }
 
-func (mip memoryIdentityProvider) CreateUser(username string, password string) (user User, err error) {
-	if _, exists := mip.users[username]; exists {
-		return user, fmt.Errorf("User '%s' already exists", username)
+func (mip memoryIdentityProvider) CreateUser(newUser *User) (user *User, err error) {
+	if _, exists := mip.users[newUser.Username]; exists {
+		return user, fmt.Errorf("User '%s' already exists", newUser.Username)
 	}
 
-	user = User{
-		IsEditable: true,
-		Username:   username,
-		Idp:        mip,
-	}
-	user.Password, err = mip.hashPassword(password)
+	newUser.IsEditable = true
+	newUser.Idp = mip
+	user.Password, err = mip.hashPassword(newUser.Password)
 
-	mip.users[username] = user
+	mip.users[newUser.Username] = newUser
 
-	return
+	return newUser, err
 }
 
-func (mip memoryIdentityProvider) ReadUser(username string) (user User, err error) {
-	user, exists := mip.users[username]
+func (mip memoryIdentityProvider) ReadUser(username string) (user *User, err error) {
+	existingUser, exists := mip.users[username]
 	if username == "admin" && !exists {
 		var pwd string
 		if pwd, err = mip.hashPassword("password"); err != nil {
 			return
 		}
-		user = User{
+		user = &User{
 			IsEditable: mip.IsEditable(),
 			Username:   "admin",
 			Password:   pwd,
 			Idp:        mip,
 		}
 		mip.users[user.Username] = user
+	} else {
+		user = existingUser
 	}
 
 	user.Logout()
 
-	return
+	return user, err
 }
 
-func (mip memoryIdentityProvider) LoginUser(user User, password string) (loggedin bool) {
+func (mip memoryIdentityProvider) LoginUser(user *User, password string) (loggedin bool) {
 	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) == nil
 }
 
-func (mip memoryIdentityProvider) ChangePassword(user User, password string) (err error) {
+func (mip memoryIdentityProvider) ChangePassword(user *User, password string) (err error) {
 	user.Password, err = mip.hashPassword(password)
 	mip.users[user.Username] = user
 	return

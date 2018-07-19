@@ -176,7 +176,6 @@ func (md memoryDatabase) serialize(i interface{}) (string, error) {
 }
 
 func (md memoryDatabase) deserialize(s string, i interface{}) error {
-	fmt.Print(s)
 	return json.Unmarshal([]byte(s), i)
 }
 
