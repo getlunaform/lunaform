@@ -10,7 +10,7 @@ ENVIRONMENT?=DEVELOPMENT
 
 BUILD_ID?=$(ENVIRONMENT)
 
-GOPATH?=${HOME}/go
+GOROOT?=${HOME}/go
 
 GO_TARGETS= ./server ./backend
 GOR_TARGETS= ./server/... ./backend/...
