@@ -20,7 +20,7 @@ import (
 	"os"
 
 	"context"
-	apiclient "github.com/getlunaform/lunaform-client-go"
+	apiclient "github.com/getlunaform/lunaform/client"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"

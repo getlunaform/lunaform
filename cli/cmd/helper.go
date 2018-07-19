@@ -3,7 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/runtime"
 	"github.com/spf13/cobra"
 	"os"

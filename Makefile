@@ -134,8 +134,8 @@ format:
 
 lint:
 	diff -u <(echo -n) <(gofmt -d -s $(shell find server -type d))
-	diff -u <(echo -n) <(gofmt -d -s $(shell find backend -type d))
-	golint -set_exit_status . $(GOR_TARGETS)
+#	diff -u <(echo -n) <(gofmt -d -s $(shell find backend -type d))
+	golint -set_exit_status . $(shell glide novendor)
 
 
 ##################

@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"github.com/getlunaform/lunaform-client-go/stacks"
+	"github.com/getlunaform/lunaform/client/stacks"
 	"github.com/spf13/cobra"
 )
 

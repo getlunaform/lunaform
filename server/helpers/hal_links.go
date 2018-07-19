@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/strfmt"
 )
 

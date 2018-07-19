@@ -2,7 +2,7 @@ package restapi
 
 import (
 	"fmt"
-	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/server/backend/database"
 	"github.com/getlunaform/lunaform/server/backend/identity"
 	"github.com/getlunaform/lunaform/server/backend/workers"

@@ -15,8 +15,8 @@
 package cmd
 
 import (
-	"github.com/getlunaform/lunaform-client-go/state_backends"
-	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/getlunaform/lunaform/client/state_backends"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/spf13/cobra"
 )
 

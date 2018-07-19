@@ -17,9 +17,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/getlunaform/lunaform-client-go/modules"
-	"github.com/getlunaform/lunaform-client-go/stacks"
-	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/getlunaform/lunaform/client/modules"
+	"github.com/getlunaform/lunaform/client/stacks"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/spf13/cobra"
 )
 
