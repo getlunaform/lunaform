@@ -15,10 +15,10 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"encoding/json"
 	"github.com/getlunaform/lunaform-client-go/state_backends"
 	models "github.com/getlunaform/lunaform-models-go"
-	"encoding/json"
+	"github.com/spf13/cobra"
 )
 
 var tfStatebackendCreateNameFlag string
@@ -63,7 +63,7 @@ func init() {
 		StringVar(&tfStatebackendCreateNameFlag, "name", "", "Name of the terraform workspace")
 	tfStatebackendCreateCmd.Flags().
 		StringVar(&tfStatebackendCreateConfigFlag, "configuration", "",
-		"A JSON string describing the configuration for the state backend")
+			"A JSON string describing the configuration for the state backend")
 	tfStatebackendCreateCmd.MarkFlagRequired("name")
 	tfStatebackendCreateCmd.MarkFlagRequired("configuration")
 }

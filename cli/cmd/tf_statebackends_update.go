@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform-client-go/state_backends"
 	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/spf13/cobra"
 )
 
 var tfStateBackendsUpdateIdFlag string
@@ -64,6 +64,6 @@ func init() {
 		StringVar(&tfStateBackendsUpdateNameFlag, "name", "", "Name of the terraform state backend to update")
 	tfStateBackendsUpdateCmd.Flags().
 		StringVar(&tfStateBackendsUpdateConfigFlag, "configuration", "",
-		"A JSON string describing the configuration for the state backend")
+			"A JSON string describing the configuration for the state backend")
 	tfStateBackendsUpdateCmd.MarkFlagRequired("id")
 }

@@ -16,11 +16,11 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	models "github.com/getlunaform/lunaform-models-go"
 	"fmt"
 	"github.com/getlunaform/lunaform-client-go/modules"
 	"github.com/getlunaform/lunaform-client-go/stacks"
+	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/spf13/cobra"
 )
 
 var tfStackCreateCmdModuleFlag string

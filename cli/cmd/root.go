@@ -19,15 +19,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mitchellh/go-homedir"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"context"
 	apiclient "github.com/getlunaform/lunaform-client-go"
+	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/runtime"
+	"github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
+	"github.com/spf13/viper"
 	"strings"
 )
 
@@ -59,7 +59,7 @@ type Configuration struct {
 	Host    string
 	Port    string
 	Schemes []string
-	Log struct {
+	Log     struct {
 		Level string
 	}
 	ApiKey string

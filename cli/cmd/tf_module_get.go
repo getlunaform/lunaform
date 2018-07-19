@@ -16,8 +16,8 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform-client-go/modules"
+	"github.com/spf13/cobra"
 )
 
 var idFlag string

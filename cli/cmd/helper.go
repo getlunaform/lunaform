@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"fmt"
 	"encoding/json"
-	"os"
-	"github.com/spf13/cobra"
-	"strings"
+	"fmt"
 	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/go-openapi/runtime"
+	"github.com/spf13/cobra"
+	"os"
+	"strings"
 )
 
 func handlerError(err error) {
@@ -18,7 +18,7 @@ func handlerError(err error) {
 			"code":           errApi.Code,
 			"operation-name": errApi.OperationName,
 		}
-		
+
 		errResponse = response
 	} else {
 		errResponse = err.Error()

@@ -16,9 +16,9 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/getlunaform/lunaform-client-go/stacks"
+	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/spf13/cobra"
 )
 
 // tfStackListCmd represents the tfStackList command

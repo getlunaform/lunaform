@@ -33,7 +33,7 @@ To configure your bash shell to load completions for each session add to your ba
 
 # ~/.bashrc or ~/.profile
 . <(lunaform completion)
-`,	Run: func(cmd *cobra.Command, args []string) {
+`, Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("completion called")
 	},
 }
