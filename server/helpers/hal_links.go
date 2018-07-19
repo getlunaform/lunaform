@@ -1,8 +1,8 @@
 package helpers
 
 import (
-	"github.com/go-openapi/strfmt"
 	models "github.com/getlunaform/lunaform-models-go"
+	"github.com/go-openapi/strfmt"
 )
 
 func newHalRscLinks() *models.HalRscLinks {
@@ -21,7 +21,7 @@ func HalRootRscLinks(ch ContextHelper) (links *models.HalRscLinks) {
 	return links
 }
 
-func HalSelfLink(links *models.HalRscLinks, href string) (*models.HalRscLinks) {
+func HalSelfLink(links *models.HalRscLinks, href string) *models.HalRscLinks {
 	if links == nil {
 		links = newHalRscLinks()
 	}
@@ -41,7 +41,7 @@ func HalDocLink(links *models.HalRscLinks, operationId string) *models.HalRscLin
 	return links
 }
 
-func HalAddCuries(ch ContextHelper, links *models.HalRscLinks) (*models.HalRscLinks) {
+func HalAddCuries(ch ContextHelper, links *models.HalRscLinks) *models.HalRscLinks {
 	if links == nil {
 		links = &models.HalRscLinks{}
 	}

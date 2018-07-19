@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-
 // NewContextHelper to easily get URL parts for generating HAL resources
 func NewContextHelper(ctx *middleware.Context) ContextHelper {
 	ch := ContextHelper{

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	"strings"
 	"reflect"
+	"strings"
 )
 
 const (

@@ -3,8 +3,8 @@ package database
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 	"reflect"
+	"strings"
 )
 
 // memoryDatabase represents an in memory store for our server.
@@ -129,7 +129,7 @@ func (md *memoryDatabase) Delete(recordType, key string) (err error) {
 		if r.Type == recordType && r.Key == key {
 			md.collections = append(
 				md.collections[:i],
-				md.collections[i+1:]...
+				md.collections[i+1:]...,
 			)
 			break
 		}

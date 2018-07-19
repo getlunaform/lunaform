@@ -2,8 +2,8 @@ package workers
 
 import (
 	"fmt"
-	"os/exec"
 	"io"
+	"os/exec"
 	"time"
 )
 
