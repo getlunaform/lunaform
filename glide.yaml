@@ -8,6 +8,8 @@ import:
   subpackages:
   - modules
   - stacks
+  - state_backends
+  - workspaces
 - package: github.com/go-openapi/errors
   version: ^0.15.0
 - package: github.com/go-openapi/runtime
