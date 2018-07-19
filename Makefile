@@ -49,13 +49,13 @@ build-server:
 		github.com/getlunaform/lunaform/cmd/lunaform-server
 
 clean-server:
-	rm -rf $(CWD)/cmd/ \
-		$(CWD)/restapi/operations \
-		$(CWD)/restapi/doc.go \
-		$(CWD)/restapi/embedded_spec.go \
-		$(CWD)/restapi/server.go \
-		$(CWD)/lunaform \
-		$(CWD)/profile.txt
+	rm -rf ${CURDIR}/cmd/ \
+		${CURDIR}/restapi/operations \
+		${CURDIR}/restapi/doc.go \
+		${CURDIR}/restapi/embedded_spec.go \
+		${CURDIR}/restapi/server.go \
+		${CURDIR}/lunaform \
+		${CURDIR}/profile.txt
 
 generate-server:
 	swagger generate server \
