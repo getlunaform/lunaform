@@ -38,7 +38,7 @@ nfpm:
     darwin: macOS
 
   vendor: Drew J. Sonne
-  homepage: https://github.com/drewsonne/lunaform
+  homepage: https://github.com/getlunaform/lunaform
   maintainer: Drew J. Sonne <drew.sonne@gmail.com>
   license: Apache 2.0
   formats:

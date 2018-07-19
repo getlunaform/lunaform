@@ -16,8 +16,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/lunaform/server/models"
-	"github.com/drewsonne/lunaform/client/state_backends"
+	"github.com/getlunaform/lunaform/server/models"
+	"github.com/getlunaform/lunaform/client/state_backends"
 )
 
 // tfStateBackendsListCmd represents the tfStateBackendsList command

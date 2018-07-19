@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/swag"
-	"github.com/drewsonne/lunaform/server/restapi/operations"
+	"github.com/getlunaform/lunaform/server/restapi/operations"
 )
 
 var cliconfig = ConfigFileFlags{}

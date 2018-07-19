@@ -15,7 +15,7 @@
 
 package main
 
-import "github.com/drewsonne/lunaform/cli/cmd"
+import "github.com/getlunaform/lunaform/cli/cmd"
 
 func main() {
 	cmd.Execute()

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/go/src/github.com/drewsonne/lunaform
+cd ~/go/src/github.com/getlunaform/lunaform
 
 make
 

@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/drewsonne/lunaform/server/restapi/operations/resources"
-	"github.com/drewsonne/lunaform/server/helpers"
+	"github.com/getlunaform/lunaform/server/restapi/operations/resources"
+	"github.com/getlunaform/lunaform/server/helpers"
 )
 
 func TestResourceGroupsController(t *testing.T) {

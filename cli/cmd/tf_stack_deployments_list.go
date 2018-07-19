@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/lunaform/client/stacks"
+	"github.com/getlunaform/lunaform/client/stacks"
 )
 
 var tfStackDeploymentsListIdFlag string

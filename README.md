@@ -2,8 +2,8 @@
 
 Restful interface to handle terraform deploys. Similiar to the CloudFormation APIs
 
-[![GoDoc](https://godoc.org/github.com/drewsonne/lunaform/gocd?status.svg)](https://godoc.org/github.com/drewsonne/lunaform/gocd)
-[![Build Status](https://travis-ci.org/drewsonne/lunaform.svg?branch=master)](https://travis-ci.org/drewsonne/lunaform)
+[![GoDoc](https://godoc.org/github.com/getlunaform/lunaform/gocd?status.svg)](https://godoc.org/github.com/getlunaform/lunaform/gocd)
+[![Build Status](https://travis-ci.org/getlunaform/lunaform.svg?branch=master)](https://travis-ci.org/getlunaform/lunaform)
 
 ## Quickstart
 

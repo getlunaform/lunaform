@@ -3,8 +3,8 @@ package restapi
 import (
 	"github.com/go-openapi/runtime/middleware"
 	models "github.com/getlunaform/lunaform-models-go"
-	"github.com/drewsonne/lunaform/server/restapi/operations/resources"
-	"github.com/drewsonne/lunaform/server/helpers"
+	"github.com/getlunaform/lunaform/server/restapi/operations/resources"
+	"github.com/getlunaform/lunaform/server/helpers"
 	"net/http"
 	"github.com/go-openapi/swag"
 )

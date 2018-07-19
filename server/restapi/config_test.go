@@ -3,7 +3,7 @@ package restapi
 import (
 	"github.com/Flaque/filet"
 	"github.com/stretchr/testify/assert"
-	"github.com/drewsonne/lunaform/server/restapi/operations"
+	"github.com/getlunaform/lunaform/server/restapi/operations"
 	"gopkg.in/yaml.v2"
 	"testing"
 	"io"

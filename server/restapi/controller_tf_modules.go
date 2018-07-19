@@ -2,13 +2,13 @@ package restapi
 
 import (
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/drewsonne/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/backend/identity"
 	models "github.com/getlunaform/lunaform-models-go"
-	"github.com/drewsonne/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/backend/database"
 
 	"strings"
-	operations "github.com/drewsonne/lunaform/server/restapi/operations/modules"
-	"github.com/drewsonne/lunaform/server/helpers"
+	operations "github.com/getlunaform/lunaform/server/restapi/operations/modules"
+	"github.com/getlunaform/lunaform/server/helpers"
 	"github.com/go-openapi/swag"
 )
 
