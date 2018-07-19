@@ -71,22 +71,16 @@ run-server:
 # Client targets #
 ##################
 clean-client-go:
-	EXISTING_MODELS=$(EXISTING_MODELS) $(MAKE) -C $(CLIENT_PACKAGE) clean
+	find ${CURDIR}/client -name "*.go" -delete && \
+	find ${CURDIR}/client -name ".DS_STORE" -delete && \
+	find ${CURDIR}/client/ -mindepth 1 -type d -empty -delete
 
 generate-client-go:
 	swagger generate client \
 		-f $(SRC_YAML) \
 		--name=lunaform \
-		--principal=models.ResourceAuthUser
-
-##################
-# Client targets #
-##################
-clean-client-js:
-	$(MAKE) -C $(JS_CLIENT_PACKAGE) clean
-
-generate-client-js:
-	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(JS_CLIENT_PACKAGE) generate
+		--principal=models.ResourceAuthUser \
+		--skip-models
 
 #################
 # Model targets #
@@ -112,6 +106,14 @@ build-cli:
 		-o $(CWD)/lunaform \
 		github.com/getlunaform/lunaform/cli
 
+##################
+# Client targets #
+##################
+clean-client-js:
+	$(MAKE) -C $(JS_CLIENT_PACKAGE) clean
+
+generate-client-js:
+	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(JS_CLIENT_PACKAGE) generate
 
 ################
 # Test targets #

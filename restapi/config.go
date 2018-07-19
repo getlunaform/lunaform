@@ -3,8 +3,8 @@ package restapi
 import (
 	"encoding/json"
 
-	"github.com/go-openapi/swag"
 	"github.com/getlunaform/lunaform/server/restapi/operations"
+	"github.com/go-openapi/swag"
 )
 
 var cliconfig = ConfigFileFlags{}
@@ -47,8 +47,8 @@ func (cfg *Configuration) loadFromFile(path string) (err error) {
 
 //ConfigFileFlags for loading settings for the server
 type ConfigFileFlags struct {
-	ConfigFile string `short:"c" long:"config" description:"Path to configuration on disk"`
-	Version bool `short:"V" long:"version" description:"Print lunarform version and quit"`
+	ConfigFile  string `short:"c" long:"config" description:"Path to configuration on disk"`
+	Version     bool   `short:"V" long:"version" description:"Print lunarform version and quit"`
 	AdminApiKey string `long:"api-key" description:"Override the admin user's api key.'"`
 }
 

@@ -1,15 +1,15 @@
 package restapi
 
 import (
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/getlunaform/lunaform/server/backend/identity"
 	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/getlunaform/lunaform/server/backend/database"
+	"github.com/getlunaform/lunaform/server/backend/identity"
+	"github.com/go-openapi/runtime/middleware"
 
-	"strings"
-	operations "github.com/getlunaform/lunaform/server/restapi/operations/modules"
 	"github.com/getlunaform/lunaform/server/helpers"
+	operations "github.com/getlunaform/lunaform/server/restapi/operations/modules"
 	"github.com/go-openapi/swag"
+	"strings"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.

@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/getlunaform/lunaform/server/restapi/operations/resources"
 	"github.com/getlunaform/lunaform/server/helpers"
+	"github.com/getlunaform/lunaform/server/restapi/operations/resources"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestResourceGroupsController(t *testing.T) {

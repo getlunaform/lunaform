@@ -1,14 +1,14 @@
 package restapi
 
 import (
-	"github.com/getlunaform/lunaform/server/backend/identity"
-	"github.com/getlunaform/lunaform/server/backend/database"
-	"github.com/go-openapi/runtime/middleware"
-	operations "github.com/getlunaform/lunaform/server/restapi/operations/workspaces"
 	models "github.com/getlunaform/lunaform-models-go"
-	"strings"
+	"github.com/getlunaform/lunaform/server/backend/database"
+	"github.com/getlunaform/lunaform/server/backend/identity"
 	"github.com/getlunaform/lunaform/server/helpers"
+	operations "github.com/getlunaform/lunaform/server/restapi/operations/workspaces"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
+	"strings"
 )
 
 var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListWorkspacesHandlerFunc {
@@ -26,7 +26,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 		}
 
 		for _, workspace := range workspaces {
-			workspace.Links = helpers.HalSelfLink(nil, strings.TrimSuffix(ch.Endpoint, "s") + "/" + *workspace.Name)
+			workspace.Links = helpers.HalSelfLink(nil, strings.TrimSuffix(ch.Endpoint, "s")+"/"+*workspace.Name)
 			workspace.Links.Curies = nil
 		}
 

@@ -1,12 +1,12 @@
 package restapi
 
 import (
-	"github.com/go-openapi/runtime/middleware"
 	models "github.com/getlunaform/lunaform-models-go"
-	"github.com/getlunaform/lunaform/server/restapi/operations/resources"
 	"github.com/getlunaform/lunaform/server/helpers"
-	"net/http"
+	"github.com/getlunaform/lunaform/server/restapi/operations/resources"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
+	"net/http"
 )
 
 const (
