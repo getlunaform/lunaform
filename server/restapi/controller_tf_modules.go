@@ -3,7 +3,7 @@ package restapi
 import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/drewsonne/lunaform/backend/identity"
-	"github.com/drewsonne/lunaform/server/models"
+	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/drewsonne/lunaform/backend/database"
 
 	"strings"

@@ -5,7 +5,7 @@ import (
 	"github.com/drewsonne/lunaform/backend/database"
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/stacks"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/drewsonne/lunaform/server/models"
+	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/drewsonne/lunaform/server/helpers"
 	"fmt"
 	"strings"

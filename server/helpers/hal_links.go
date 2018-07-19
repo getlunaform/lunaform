@@ -2,7 +2,7 @@ package helpers
 
 import (
 	"github.com/go-openapi/strfmt"
-	"github.com/drewsonne/lunaform/server/models"
+	models "github.com/getlunaform/lunaform-models-go"
 )
 
 func newHalRscLinks() *models.HalRscLinks {

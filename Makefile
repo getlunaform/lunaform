@@ -10,10 +10,14 @@ ENVIRONMENT?=DEVELOPMENT
 
 BUILD_ID?=$(ENVIRONMENT)
 
+GOPATH?=${HOME}/go
+
 GO_TARGETS= ./server ./backend
 GOR_TARGETS= ./server/... ./backend/...
 
 VERSION?=$(shell git rev-parse --short HEAD)
+
+MODEL_PATH?=${GOPATH}/src/github.com/getlunaform/lunaform-models-go
 
 ##################
 # Global Targets #
@@ -38,23 +42,23 @@ build-server:
 		github.com/drewsonne/lunaform/server/cmd/lunaform-server
 
 clean-server:
-	cp $(CWD)/server/models/hal.go $(CWD)/hal.go && \
+	cp $(MODEL_PATH)/hal.go $(CWD)/hal.go && \
 	rm -rf $(CWD)/server/cmd/ \
-		$(CWD)/server/models/ \
 		$(CWD)/server/restapi/operations \
 		$(CWD)/server/restapi/doc.go \
 		$(CWD)/server/restapi/embedded_spec.go \
 		$(CWD)/server/restapi/server.go \
 		$(CWD)/lunaform \
 		$(CWD)/profile.txt && \
-	mkdir -p $(CWD)/server/models && \
-	mv $(CWD)/hal.go $(CWD)/server/models/hal.go
+	mv $(CWD)/hal.go $(MODEL_PATH)/hal.go
 
 generate-server:
 	swagger generate server \
 		--target=server \
 		--principal=models.Principal \
 		--name=lunaform \
+		--skip-models \
+		--existing-models github.com/getlunaform/lunaform-models-go \
 		--spec=$(SRC_YAML)
 
 run-server:
@@ -81,8 +85,20 @@ generate-client:
 	swagger generate client \
 		-f swagger.yml \
 		-A lunaform \
-		--existing-models github.com/drewsonne/lunaform/server/models \
+		--client-package=lunaform-client-go \
+		--target=${GOPATH}/src/github.com/getlunaform/ \
+		--existing-models github.com/getlunaform/lunaform-models-go \
 		--skip-models
+
+#################
+# Model targets #
+#################
+
+generate-models:
+	swagger generate model \
+		-f swagger.yml \
+		--model-package=lunaform-models-go \
+		--target=${GOPATH}/src/github.com/getlunaform/
 
 
 ################

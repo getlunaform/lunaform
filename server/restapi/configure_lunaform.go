@@ -13,7 +13,7 @@ import (
 	"net/http/httputil"
 	"net/http/httptest"
 	"github.com/go-openapi/swag"
-	"github.com/drewsonne/lunaform/server/models"
+	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/drewsonne/lunaform/server/helpers"
 	"github.com/drewsonne/lunaform/backend/workers"
 	"github.com/teris-io/shortid"

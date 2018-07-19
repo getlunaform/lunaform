@@ -4,7 +4,7 @@ import (
 	"github.com/drewsonne/lunaform/backend/identity"
 	"github.com/drewsonne/lunaform/server/helpers"
 	"github.com/drewsonne/lunaform/backend/database"
-	"github.com/drewsonne/lunaform/server/models"
+	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/go-openapi/runtime/middleware"
 	operations "github.com/drewsonne/lunaform/server/restapi/operations/state_backends"
 

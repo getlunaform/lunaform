@@ -19,7 +19,6 @@ vendor
 /tfs-client
 /dist
 /lunaform-client
-/client/*
 /lunaform-server
 /.idea
 .DS_Store

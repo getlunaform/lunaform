@@ -1,7 +1,7 @@
 package restapi
 
 import (
-	"github.com/drewsonne/lunaform/server/models"
+	models "github.com/getlunaform/lunaform-models-go"
 
 	"github.com/go-openapi/swag"
 )
