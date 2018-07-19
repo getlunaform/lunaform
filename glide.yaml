@@ -1,7 +1,4 @@
 package: github.com/getlunaform/lunaform
-owners:
-  - name: Drew J. Sonne
-    email: drew.sonne@gmail.com
 import:
 - package: github.com/gammazero/workerpool
 - package: github.com/getlunaform/lunaform-client-go
@@ -37,6 +34,7 @@ import:
 - package: golang.org/x/crypto
   subpackages:
   - bcrypt
+testImport:
 - package: github.com/Flaque/filet
 - package: github.com/go-openapi/loads
   version: ^0.15.0

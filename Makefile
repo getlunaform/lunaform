@@ -46,24 +46,23 @@ build-server:
 	go build \
 		-a -installsuffix $(CGO) \
 		-o $(CWD)/lunaform-server \
-		github.com/getlunaform/lunaform/server/cmd/lunaform-server
+		github.com/getlunaform/lunaform/cmd/lunaform-server
 
 clean-server:
-	rm -rf $(CWD)/server/cmd/ \
-		$(CWD)/server/restapi/operations \
-		$(CWD)/server/restapi/doc.go \
-		$(CWD)/server/restapi/embedded_spec.go \
-		$(CWD)/server/restapi/server.go \
+	rm -rf $(CWD)/cmd/ \
+		$(CWD)/restapi/operations \
+		$(CWD)/restapi/doc.go \
+		$(CWD)/restapi/embedded_spec.go \
+		$(CWD)/restapi/server.go \
 		$(CWD)/lunaform \
 		$(CWD)/profile.txt
 
 generate-server:
 	swagger generate server \
 		-f $(SRC_YAML) \
-		--target=server \
 		--name=lunaform \
 		--principal=models.ResourceAuthUser \
-		--existing-models=$(EXISTING_MODELS)
+		--skip-models
 
 run-server:
 	$(CWD)/lunaform --port=8080 --scheme=http
@@ -75,7 +74,10 @@ clean-client-go:
 	EXISTING_MODELS=$(EXISTING_MODELS) $(MAKE) -C $(CLIENT_PACKAGE) clean
 
 generate-client-go:
-	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(CLIENT_PACKAGE) generate
+	swagger generate client \
+		-f $(SRC_YAML) \
+		--name=lunaform \
+		--principal=models.ResourceAuthUser
 
 ##################
 # Client targets #
@@ -90,11 +92,13 @@ generate-client-js:
 # Model targets #
 #################
 clean-model:
-	$(MAKE) -C $(MODEL_PACKAGE) clean
+	find ${CURDIR}/models -type f \( -name "*.go" -not -name hal.go \) -delete && \
+	find ${CURDIR}/models -name ".DS_STORE" -delete && \
+	find ${CURDIR}/models -type d -empty -delete
 
 generate-model:
-	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(MODEL_PACKAGE) generate
-
+	swagger generate model \
+		-f $(SRC_YAML)
 
 ############
 # CLI tool #
