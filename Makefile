@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := default
 
-SRC_YAML?="swagger.yml"
+SRC_YAML?=${CURDIR}"/swagger.yml"
 CGO?=cgo
 
 CWD?=$(shell pwd)
@@ -17,7 +17,11 @@ GOR_TARGETS= ./server/... ./backend/...
 
 VERSION?=$(shell git rev-parse --short HEAD)
 
-MODEL_PATH?=${GOROOT}/src/github.com/getlunaform/lunaform-models-go
+PARENT_DIR=$(dir ${CURDIR})
+CUR_DIR_NAME=$(notdir ${CURDIR})
+
+MODEL_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-models-go
+CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-go
 
 ##################
 # Global Targets #
@@ -39,18 +43,16 @@ build-server:
 	go build \
 		-a -installsuffix $(CGO) \
 		-o $(CWD)/lunaform-server \
-		github.com/drewsonne/lunaform/server/cmd/lunaform-server
+		github.com/getlunaform/lunaform/server/cmd/lunaform-server
 
 clean-server:
-	cp $(MODEL_PATH)/hal.go $(CWD)/hal.go && \
 	rm -rf $(CWD)/server/cmd/ \
 		$(CWD)/server/restapi/operations \
 		$(CWD)/server/restapi/doc.go \
 		$(CWD)/server/restapi/embedded_spec.go \
 		$(CWD)/server/restapi/server.go \
 		$(CWD)/lunaform \
-		$(CWD)/profile.txt && \
-	mv $(CWD)/hal.go $(MODEL_PATH)/hal.go
+		$(CWD)/profile.txt
 
 generate-server:
 	swagger generate server \
@@ -64,41 +66,36 @@ generate-server:
 run-server:
 	$(CWD)/lunaform --port=8080 --scheme=http
 
-##################
-# Client targets #
-##################
-
-build-client:
-	go build \
-		-ldflags "-X github.com/drewsonne/lunaform/cli/cmd.version=$(VERSION)" \
-		-a -installsuffix $(CGO) \
-		-o $(CWD)/lunaform \
-		github.com/drewsonne/lunaform/cli
-
+###################
+## Client targets #
+###################
 clean-client:
-	rm -f $(CWD)/lunaform && \
-	rm -rf $(CWD)/client && \
-	mkdir -p $(CWD)/client && \
-	touch $(CWD)/client/.gitkeep
+	$(MAKE) -C $(CLIENT_PACKAGE) clean
 
 generate-client:
-	swagger generate client \
-		-f swagger.yml \
-		-A lunaform \
-		--client-package=lunaform-client-go \
-		--target=${GOROOT}/src/github.com/getlunaform/ \
-		--existing-models github.com/getlunaform/lunaform-models-go \
-		--skip-models
+	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(CLIENT_PACKAGE) generate
 
 #################
 # Model targets #
 #################
+clean-model:
+	$(MAKE) -C $(MODEL_PACKAGE) clean
 
-generate-models:
-	swagger generate model \
-		-f swagger.yml \
-		--model-package=lunaform-models-go \
-		--target=${GOROOT}/src/github.com/getlunaform/
+generate-model:
+	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(MODEL_PACKAGE) generate
+
+
+############
+# CLI tool #
+############
+
+build-cli:
+	go build \
+		-a \
+		-ldflags "-X github.com/getlunaform/lunaform/cli/cmd.version=$(VERSION)" \
+		-installsuffix $(CGO) \
+		-o $(CWD)/lunaform \
+		github.com/getlunaform/lunaform/cli
 
 
 ################
