@@ -17,8 +17,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/getlunaform/lunaform/client/workspaces"
-	"github.com/getlunaform/lunaform/server/models"
+	"github.com/getlunaform/lunaform-client-go/workspaces"
+	models "github.com/getlunaform/lunaform-models-go"
 )
 
 var workspaceNameFlag string

@@ -6,7 +6,7 @@ import (
 	"os"
 	"github.com/spf13/cobra"
 	"strings"
-	"github.com/getlunaform/lunaform/server/models"
+	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/go-openapi/runtime"
 )
 
