@@ -18,7 +18,6 @@ import (
 	"net/http/httptest"
 	"net/http/httputil"
 	"time"
-	"os"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -60,14 +59,10 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	case "file":
 		var filePath string
 		var isString bool
-		var file *os.File
 		if filePath, isString = cfg.Backend.Database.(string); !isString {
 			panic(fmt.Errorf("DB config is not string. Is '%s'", cfg.Backend.Database))
 		}
-		if file, err = os.Open(filePath); err != nil {
-			panic(err)
-		}
-		dbDriver, err = database.NewJSONDBDriver(file)
+		dbDriver, err = database.NewJSONDBDriver(filePath)
 	default:
 		err = fmt.Errorf("unexpected Database type: '%s'", cfg.Backend.DatabaseType)
 	}

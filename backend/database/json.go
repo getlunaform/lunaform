@@ -1,12 +1,12 @@
 package database
 
 import (
-	"bytes"
 	"encoding/json"
 	"io"
 	"os"
 	"fmt"
 	"time"
+	"io/ioutil"
 )
 
 // jsonDatabase stores data on disk in json files.
@@ -14,7 +14,7 @@ import (
 // pretty much everything is), but still not a good solution for
 // live/production.
 type jsonDatabase struct {
-	file fileClient
+	file string
 	db   BufferedDriver
 }
 
@@ -30,18 +30,27 @@ type fileClient interface {
 }
 
 // NewJSONDBDriver returns a json database object
-func NewJSONDBDriver(dbFile fileClient) (Driver, error) {
+func NewJSONDBDriver(dbFile string) (d Driver, err error) {
 	jdb := jsonDatabase{
 		file: dbFile,
 	}
 
-	b := new(bytes.Buffer)
-	b.ReadFrom(jdb.file)
+	var (
+		dat []byte
+		mdb BufferedDriver
+	)
+	if dat, err = ioutil.ReadFile(dbFile); err != nil {
+		return nil, err
+	}
 
-	c := make(map[string]string)
-	err := json.Unmarshal(b.Bytes(), &c)
-	mdb, err := NewMemoryDBDriverWithCollection(c)
-	if err != nil {
+	c := make([]map[string]string, 0)
+	if len(dat) > 0 {
+		if err = json.Unmarshal(dat, &c); err != nil {
+			return
+		}
+	}
+
+	if mdb, err = NewMemoryDBDriverWithCollection(c); err != nil {
 		return nil, err
 	}
 	jdb.db = mdb
@@ -58,14 +67,15 @@ func (jdb jsonDatabase) Close() (err error) {
 
 func (jdb jsonDatabase) Flush(t *time.Time) (err error) {
 	fmt.Sprint("Closing db connection and flushing to file")
+
 	var b []byte
-	if err = jdb.file.Truncate(0); err != nil {
+	if b, err = jdb.db.Bytes(); err != nil {
 		return
 	}
-	if b, err = jdb.db.Bytes(); err != nil {
-		return err
+	if err = ioutil.WriteFile(jdb.file, b, 0644); err != nil {
+		return
 	}
-	_, err = jdb.file.WriteAt(b, 0)
+
 	return
 }
 

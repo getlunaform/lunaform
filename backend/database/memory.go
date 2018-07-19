@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strings"
 )
 
 // memoryDatabase represents an in memory store for our server.
@@ -23,16 +22,15 @@ func NewMemoryDBDriver() (Driver, error) {
 }
 
 // NewMemoryDBDriverWithCollection seeds the memory database with some initialisaiton data
-func NewMemoryDBDriverWithCollection(collection map[string]string) (BufferedDriver, error) {
-	rs := []*Record{}
+func NewMemoryDBDriverWithCollection(collection []map[string]string) (BufferedDriver, error) {
+	rs := make([]*Record, len(collection))
 
-	for key, value := range collection {
-		keyParts := strings.Split(key, " ")
-		rs = append(rs, &Record{
-			Type:  keyParts[0],
-			Key:   keyParts[1],
-			Value: value,
-		})
+	for i, value := range collection {
+		rs[i] = &Record{
+			Type:  value["Type"],
+			Key:   value["Key"],
+			Value: value["Value"],
+		}
 	}
 
 	return &memoryDatabase{
