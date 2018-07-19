@@ -2,7 +2,7 @@ package backend
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/server/backend/identity"
 	"testing"
 )
 

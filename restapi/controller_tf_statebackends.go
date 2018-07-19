@@ -1,9 +1,9 @@
 package restapi
 
 import (
-	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/server/backend/identity"
 	"github.com/getlunaform/lunaform/server/helpers"
-	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/server/backend/database"
 	models "github.com/getlunaform/lunaform-models-go"
 	"github.com/go-openapi/runtime/middleware"
 	operations "github.com/getlunaform/lunaform/server/restapi/operations/state_backends"

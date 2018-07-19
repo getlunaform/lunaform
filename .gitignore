@@ -16,9 +16,7 @@
 vendor
 /profile.txt
 /coverage.html
-/tfs-client
 /dist
-/lunaform-client
 /lunaform-server
 /.idea
 .DS_Store

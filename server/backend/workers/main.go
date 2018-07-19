@@ -2,7 +2,7 @@ package workers
 
 import (
 	"github.com/gammazero/workerpool"
-	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/server/backend/database"
 	models "github.com/getlunaform/lunaform-models-go"
 	"fmt"
 	"github.com/go-openapi/swag"

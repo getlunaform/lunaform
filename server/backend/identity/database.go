@@ -2,7 +2,7 @@ package identity
 
 import (
 	"errors"
-	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/server/backend/database"
 )
 
 // NewDatabaseIdentityProvider is not yet implemented and will return an error
