@@ -60,7 +60,8 @@ generate-server:
 		--target=server \
 		--principal=models.ResourceAuthUser \
 		--name=lunaform \
-		--existing-models github.com/getlunaform/lunaform-models-go \
+		--existing-models=github.com/getlunaform/lunaform-models-go \
+		--skip-models \
 		--spec=$(SRC_YAML)
 
 run-server:
