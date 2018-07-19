@@ -2,17 +2,17 @@ package restapi
 
 import (
 	"github.com/getlunaform/lunaform/models"
-	"github.com/getlunaform/lunaform/server/backend/database"
-	"github.com/getlunaform/lunaform/server/backend/identity"
-	"github.com/getlunaform/lunaform/server/helpers"
-	operations "github.com/getlunaform/lunaform/server/restapi/operations/workspaces"
+	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/helpers"
+	operations "github.com/getlunaform/lunaform/restapi/operations/workspaces"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
 	"strings"
 )
 
 var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListWorkspacesHandlerFunc {
-	return operations.ListWorkspacesHandlerFunc(func(params operations.ListWorkspacesParams, p *models.Principal) (r middleware.Responder) {
+	return operations.ListWorkspacesHandlerFunc(func(params operations.ListWorkspacesParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		workspaces := []*models.ResourceTfWorkspace{}
@@ -40,7 +40,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 }
 
 var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.CreateWorkspaceHandlerFunc {
-	return operations.CreateWorkspaceHandlerFunc(func(params operations.CreateWorkspaceParams, p *models.Principal) (r middleware.Responder) {
+	return operations.CreateWorkspaceHandlerFunc(func(params operations.CreateWorkspaceParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		tfw := params.TerraformWorkspace
@@ -87,7 +87,7 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 }
 
 var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.DescribeWorkspaceHandlerFunc {
-	return operations.DescribeWorkspaceHandlerFunc(func(params operations.DescribeWorkspaceParams, p *models.Principal) (r middleware.Responder) {
+	return operations.DescribeWorkspaceHandlerFunc(func(params operations.DescribeWorkspaceParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		workspace := &models.ResourceTfWorkspace{}

@@ -2,10 +2,10 @@ package restapi
 
 import (
 	"github.com/getlunaform/lunaform/models"
-	"github.com/getlunaform/lunaform/server/backend/database"
-	"github.com/getlunaform/lunaform/server/backend/identity"
-	"github.com/getlunaform/lunaform/server/helpers"
-	operations "github.com/getlunaform/lunaform/server/restapi/operations/state_backends"
+	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/helpers"
+	operations "github.com/getlunaform/lunaform/restapi/operations/state_backends"
 	"github.com/go-openapi/runtime/middleware"
 
 	"github.com/go-openapi/swag"
@@ -13,7 +13,7 @@ import (
 )
 
 var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.CreateStateBackendHandlerFunc {
-	return operations.CreateStateBackendHandlerFunc(func(params operations.CreateStateBackendParams, p *models.Principal) (r middleware.Responder) {
+	return operations.CreateStateBackendHandlerFunc(func(params operations.CreateStateBackendParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		statebackend := params.TerraformStateBackend
@@ -36,7 +36,7 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 }
 
 var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListStateBackendsHandlerFunc {
-	return operations.ListStateBackendsHandlerFunc(func(params operations.ListStateBackendsParams, p *models.Principal) (r middleware.Responder) {
+	return operations.ListStateBackendsHandlerFunc(func(params operations.ListStateBackendsParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		statebackends := []*models.ResourceTfStateBackend{}
@@ -60,7 +60,7 @@ var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.Conte
 }
 
 var UpdateTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.UpdateStateBackendHandlerFunc {
-	return operations.UpdateStateBackendHandlerFunc(func(params operations.UpdateStateBackendParams, p *models.Principal) (r middleware.Responder) {
+	return operations.UpdateStateBackendHandlerFunc(func(params operations.UpdateStateBackendParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		statebackend := &models.ResourceTfStateBackend{}

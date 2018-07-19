@@ -29,7 +29,7 @@ EXISTING_MODELS?=github.com/getlunaform/lunaform-models-go
 ##################
 # Global Targets #
 ##################
-build: build-server build-client-go
+build: build-server build-cli
 clean: clean-server clean-client-go
 generate: generate-server generate-client-go
 

@@ -2,19 +2,19 @@ package restapi
 
 import (
 	"github.com/getlunaform/lunaform/models"
-	"github.com/getlunaform/lunaform/server/backend/database"
-	"github.com/getlunaform/lunaform/server/backend/identity"
+	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/backend/identity"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/getlunaform/lunaform/server/helpers"
-	operations "github.com/getlunaform/lunaform/server/restapi/operations/modules"
+	"github.com/getlunaform/lunaform/helpers"
+	operations "github.com/getlunaform/lunaform/restapi/operations/modules"
 	"github.com/go-openapi/swag"
 	"strings"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
 var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
-	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.Principal) (r middleware.Responder) {
+	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		modules := make([]*models.ResourceTfModule, 0)
@@ -41,7 +41,7 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 }
 
 var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.CreateModuleHandlerFunc {
-	return operations.CreateModuleHandlerFunc(func(params operations.CreateModuleParams, p *models.Principal) (r middleware.Responder) {
+	return operations.CreateModuleHandlerFunc(func(params operations.CreateModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		tfm := params.TerraformModule
@@ -64,7 +64,7 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 }
 
 var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
-	return operations.GetModuleHandlerFunc(func(params operations.GetModuleParams, p *models.Principal) (r middleware.Responder) {
+	return operations.GetModuleHandlerFunc(func(params operations.GetModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		module := &models.ResourceTfModule{}

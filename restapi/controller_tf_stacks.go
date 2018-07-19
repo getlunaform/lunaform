@@ -3,11 +3,11 @@ package restapi
 import (
 	"fmt"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/getlunaform/lunaform/server/backend/database"
-	"github.com/getlunaform/lunaform/server/backend/identity"
-	"github.com/getlunaform/lunaform/server/backend/workers"
-	"github.com/getlunaform/lunaform/server/helpers"
-	operations "github.com/getlunaform/lunaform/server/restapi/operations/stacks"
+	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/backend/workers"
+	"github.com/getlunaform/lunaform/helpers"
+	operations "github.com/getlunaform/lunaform/restapi/operations/stacks"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
 	"strings"
@@ -24,7 +24,7 @@ const (
 )
 
 var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
-	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams, p *models.Principal) (r middleware.Responder) {
+	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		stacks := make([]*models.ResourceTfStack, 0)
@@ -56,7 +56,7 @@ var CreateTfStackController = func(
 	db database.Database,
 	workerPool *workers.TfAgentPool,
 ) operations.DeployStackHandlerFunc {
-	return operations.DeployStackHandlerFunc(func(params operations.DeployStackParams, p *models.Principal) (r middleware.Responder) {
+	return operations.DeployStackHandlerFunc(func(params operations.DeployStackParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		tfs := params.TerraformStack
@@ -104,7 +104,7 @@ var CreateTfStackController = func(
 }
 
 var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.GetStackHandlerFunc {
-	return operations.GetStackHandlerFunc(func(params operations.GetStackParams, p *models.Principal) (r middleware.Responder) {
+	return operations.GetStackHandlerFunc(func(params operations.GetStackParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		id := params.ID
@@ -147,7 +147,7 @@ var ListTfStackDeploymentsController = func(
 	db database.Database,
 	workerPool *workers.TfAgentPool,
 ) operations.ListDeploymentsHandlerFunc {
-	return operations.ListDeploymentsHandlerFunc(func(params operations.ListDeploymentsParams, p *models.Principal) (r middleware.Responder) {
+	return operations.ListDeploymentsHandlerFunc(func(params operations.ListDeploymentsParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		id := params.ID

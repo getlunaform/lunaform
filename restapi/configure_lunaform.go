@@ -4,11 +4,11 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/getlunaform/lunaform/server/backend/database"
-	"github.com/getlunaform/lunaform/server/backend/identity"
-	"github.com/getlunaform/lunaform/server/backend/workers"
-	"github.com/getlunaform/lunaform/server/helpers"
-	"github.com/getlunaform/lunaform/server/restapi/operations"
+	"github.com/getlunaform/lunaform/backend/database"
+	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/backend/workers"
+	"github.com/getlunaform/lunaform/helpers"
+	"github.com/getlunaform/lunaform/restapi/operations"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/swag"
@@ -81,7 +81,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 
 	oh := helpers.NewContextHelper(api.Context())
 
-	api.APIKeyAuth = func(s string) (p *models.Principal, err error) {
+	api.APIKeyAuth = func(s string) (p *models.ResourceAuthUser, err error) {
 		user := models.ResourceAuthUser{}
 		if err = db.Read(DB_TABLE_AUTH_APIKEY, s, &user); err != nil {
 			if _, isErrNotFound := err.(database.RecordDoesNotExistError); isErrNotFound {
@@ -90,7 +90,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 			return
 		}
 
-		return &models.Principal{user}, nil
+		return &user, nil
 	}
 
 	configureRootUser(&db)

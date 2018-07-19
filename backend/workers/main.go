@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gammazero/workerpool"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/getlunaform/lunaform/server/backend/database"
+	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/go-openapi/swag"
 )
 
