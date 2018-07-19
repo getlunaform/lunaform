@@ -24,6 +24,8 @@ MODEL_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-models-go
 CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-go
 JS_CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-js
 
+EXISTING_MODELS?=github.com/getlunaform/lunaform-models-go
+
 ##################
 # Global Targets #
 ##################
@@ -57,12 +59,11 @@ clean-server:
 
 generate-server:
 	swagger generate server \
+		-f $(SRC_YAML) \
 		--target=server \
-		--principal=models.ResourceAuthUser \
 		--name=lunaform \
-		--existing-models=github.com/getlunaform/lunaform-models-go \
-		--skip-models \
-		--spec=$(SRC_YAML)
+		--principal=models.ResourceAuthUser \
+		--existing-models=$(EXISTING_MODELS)
 
 run-server:
 	$(CWD)/lunaform --port=8080 --scheme=http
@@ -71,7 +72,7 @@ run-server:
 # Client targets #
 ##################
 clean-client-go:
-	$(MAKE) -C $(CLIENT_PACKAGE) clean
+	EXISTING_MODELS=$(EXISTING_MODELS) $(MAKE) -C $(CLIENT_PACKAGE) clean
 
 generate-client-go:
 	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(CLIENT_PACKAGE) generate
