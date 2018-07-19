@@ -1,4 +1,8 @@
 package: github.com/drewsonne/lunaform
+owners:
+  - name: Drew J. Sonne
+    email: drew.sonne@gmail.com
+    homepage: https://github.com/getlunaform/lunaform-client-go
 import:
 - package: github.com/gammazero/workerpool
 - package: github.com/getlunaform/lunaform-client-go

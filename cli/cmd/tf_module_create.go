@@ -18,7 +18,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	models "github.com/getlunaform/lunaform-models-go"
-	"github.com/drewsonne/lunaform/client/modules"
+	"github.com/getlunaform/lunaform-client-go/modules"
 )
 
 var nameFlag string

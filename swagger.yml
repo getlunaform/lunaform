@@ -806,8 +806,8 @@ definitions:
         type: string
       message:
         type: string
-  principal:
-    $ref: "#/definitions/resource-auth-user"
+#  principal:
+#    $ref: "#/definitions/resource-auth-user"
   resource-tf-state-backend:
     type: object
     properties:

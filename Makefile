@@ -22,13 +22,14 @@ CUR_DIR_NAME=$(notdir ${CURDIR})
 
 MODEL_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-models-go
 CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-go
+JS_CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-js
 
 ##################
 # Global Targets #
 ##################
-build: build-server build-client
-clean: clean-server clean-client
-generate: generate-server generate-client
+build: build-server build-client-go
+clean: clean-server clean-client-go
+generate: generate-server generate-client-go
 
 default: clean generate build
 
@@ -57,7 +58,7 @@ clean-server:
 generate-server:
 	swagger generate server \
 		--target=server \
-		--principal=models.Principal \
+		--principal=models.ResourceAuthUser \
 		--name=lunaform \
 		--skip-models \
 		--existing-models github.com/getlunaform/lunaform-models-go \
@@ -66,14 +67,23 @@ generate-server:
 run-server:
 	$(CWD)/lunaform --port=8080 --scheme=http
 
-###################
-## Client targets #
-###################
-clean-client:
+##################
+# Client targets #
+##################
+clean-client-go:
 	$(MAKE) -C $(CLIENT_PACKAGE) clean
 
-generate-client:
+generate-client-go:
 	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(CLIENT_PACKAGE) generate
+
+##################
+# Client targets #
+##################
+clean-client-js:
+	$(MAKE) -C $(JS_CLIENT_PACKAGE) clean
+
+generate-client-js:
+	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(JS_CLIENT_PACKAGE) generate
 
 #################
 # Model targets #
