@@ -1,18 +1,35 @@
 package: github.com/drewsonne/lunaform
 import:
+- package: github.com/gammazero/workerpool
+- package: github.com/getlunaform/lunaform-client-go
+  subpackages:
+  - modules
+  - stacks
+- package: github.com/getlunaform/lunaform-models-go
 - package: github.com/go-openapi/errors
+  version: ^0.15.0
+- package: github.com/go-openapi/loads
   version: ^0.15.0
 - package: github.com/go-openapi/runtime
   version: ^0.15.0
   subpackages:
   - client
+  - flagext
+  - logger
   - middleware
+  - security
+- package: github.com/go-openapi/spec
+  version: ^0.15.0
 - package: github.com/go-openapi/strfmt
   version: ^0.15.0
 - package: github.com/go-openapi/swag
   version: ^0.15.0
+- package: github.com/go-openapi/validate
+  version: ^0.15.0
 - package: github.com/go-redis/redis
   version: ^6.12.0
+- package: github.com/jessevdk/go-flags
+  version: ^1.4.0
 - package: github.com/mitchellh/go-homedir
 - package: github.com/pkg/errors
   version: ^0.8.0
@@ -21,23 +38,18 @@ import:
 - package: github.com/spf13/jwalterweatherman
 - package: github.com/spf13/viper
   version: ^1.0.2
-- package: github.com/tylerb/graceful
-  version: ^1.2.15
+- package: github.com/teris-io/shortid
+  version: ^1.0.0
 - package: golang.org/x/crypto
   subpackages:
   - bcrypt
 - package: golang.org/x/net
   subpackages:
-  - context
+  - netutil
 - package: github.com/Flaque/filet
-- package: github.com/go-openapi/loads
-  version: ^0.15.0
 - package: github.com/stretchr/testify
   version: ^1.2.2
   subpackages:
   - assert
 - package: gopkg.in/yaml.v2
   version: ^2.2.1
-- package: github.com/gammazero/workerpool
-- package: github.com/teris-io/shortid
-  version: ^1.0.0

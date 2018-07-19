@@ -17,8 +17,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/drewsonne/lunaform/client/modules"
-	"github.com/drewsonne/lunaform/server/models"
+	"github.com/getlunaform/lunaform-client-go/modules"
+	models "github.com/getlunaform/lunaform-models-go"
 )
 
 // tfModulesListCmd represents the tfModulesList command

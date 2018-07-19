@@ -17,7 +17,7 @@ GOR_TARGETS= ./server/... ./backend/...
 
 VERSION?=$(shell git rev-parse --short HEAD)
 
-MODEL_PATH?=${GOPATH}/src/github.com/getlunaform/lunaform-models-go
+MODEL_PATH?=${GOROOT}/src/github.com/getlunaform/lunaform-models-go
 
 ##################
 # Global Targets #
@@ -86,7 +86,7 @@ generate-client:
 		-f swagger.yml \
 		-A lunaform \
 		--client-package=lunaform-client-go \
-		--target=${GOPATH}/src/github.com/getlunaform/ \
+		--target=${GOROOT}/src/github.com/getlunaform/ \
 		--existing-models github.com/getlunaform/lunaform-models-go \
 		--skip-models
 
@@ -98,7 +98,7 @@ generate-models:
 	swagger generate model \
 		-f swagger.yml \
 		--model-package=lunaform-models-go \
-		--target=${GOPATH}/src/github.com/getlunaform/
+		--target=${GOROOT}/src/github.com/getlunaform/
 
 
 ################

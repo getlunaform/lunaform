@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"context"
-	apiclient "github.com/drewsonne/lunaform/client"
+	apiclient "github.com/getlunaform/lunaform-client-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/runtime"
