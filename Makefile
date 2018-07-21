@@ -79,8 +79,7 @@ generate-client-go:
 	swagger generate client \
 		-f $(SRC_YAML) \
 		--name=lunaform \
-		--principal=models.ResourceAuthUser \
-		--skip-models
+		--principal=models.ResourceAuthUser
 
 #################
 # Model targets #
