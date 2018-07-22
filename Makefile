@@ -45,7 +45,7 @@ update-vendor:
 build-server:
 	go build \
 		-a -installsuffix $(CGO) \
-		-o $(CWD)/lunaform-server \
+		-o ${CURDIR}/lunaform-server \
 		github.com/getlunaform/lunaform/cmd/lunaform-server
 
 clean-server:
@@ -54,7 +54,7 @@ clean-server:
 		${CURDIR}/restapi/doc.go \
 		${CURDIR}/restapi/embedded_spec.go \
 		${CURDIR}/restapi/server.go \
-		${CURDIR}/lunaform \
+		${CURDIR}/lunaform-server \
 		${CURDIR}/profile.txt
 
 generate-server:
@@ -64,8 +64,8 @@ generate-server:
 		--principal=models.ResourceAuthUser \
 		--skip-models
 
-run-server:
-	$(CWD)/lunaform --port=8080 --scheme=http
+run:
+	$(CWD)/lunaform-server --port=8080 --scheme=http
 
 ##################
 # Client targets #
@@ -73,7 +73,8 @@ run-server:
 clean-client-go:
 	find ${CURDIR}/client -name "*.go" -delete && \
 	find ${CURDIR}/client -name ".DS_STORE" -delete && \
-	find ${CURDIR}/client/ -mindepth 1 -type d -empty -delete
+	find ${CURDIR}/client/ -mindepth 1 -type d -empty -delete && \
+	rm -f ${CURDIR}/lunaform
 
 generate-client-go:
 	swagger generate client \
@@ -102,7 +103,7 @@ build-cli:
 		-a \
 		-ldflags "-X github.com/getlunaform/lunaform/cli/cmd.version=$(VERSION)" \
 		-installsuffix $(CGO) \
-		-o $(CWD)/lunaform \
+		-o ${CURDIR}/lunaform \
 		github.com/getlunaform/lunaform/cli
 
 ##################
