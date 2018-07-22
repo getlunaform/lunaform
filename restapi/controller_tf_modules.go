@@ -56,9 +56,10 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		}
 
 		tfm.Links = helpers.HalRootRscLinks(ch)
-		tfm.Embedded = &models.ResourceListTfStack{
-			Stacks: make([]*models.ResourceTfStack, 0),
-		}
+		tfm.Embedded = nil
+		//tfm.Embedded = &models.ResourceListTfStack{
+		//	Stacks: make([]*models.ResourceTfStack, 0),
+		//}
 		return operations.NewCreateModuleCreated().WithPayload(tfm)
 	})
 }

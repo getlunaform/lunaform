@@ -79,7 +79,8 @@ generate-client-go:
 	swagger generate client \
 		-f $(SRC_YAML) \
 		--name=lunaform \
-		--principal=models.ResourceAuthUser
+		--principal=models.ResourceAuthUser \
+		--default-produces=application/vnd.lunaform.v1+json
 
 #################
 # Model targets #

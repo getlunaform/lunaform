@@ -59,7 +59,7 @@ type Configuration struct {
 	Host    string
 	Port    string
 	Schemes []string
-	Log     struct {
+	Log struct {
 		Level string
 	}
 	ApiKey string
@@ -147,6 +147,7 @@ func initGocdClient() {
 		WithSchemes(config.Schemes)
 	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
 	transport.Context = context.Background()
+	transport.Debug = true
 
 	transport.Producers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONProducer()
 	transport.Consumers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONConsumer()
