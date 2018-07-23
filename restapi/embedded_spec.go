@@ -977,9 +977,7 @@ func init() {
           "x-omitempty": true
         }
       },
-      "additionalProperties": {
-        "$ref": "#/definitions/hal-href"
-      }
+      "additionalProperties": true
     },
     "resource": {
       "description": "A resources",
@@ -2358,9 +2356,7 @@ func init() {
           "x-omitempty": true
         }
       },
-      "additionalProperties": {
-        "$ref": "#/definitions/hal-href"
-      }
+      "additionalProperties": true
     },
     "resource": {
       "description": "A resources",

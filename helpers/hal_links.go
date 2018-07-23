@@ -7,7 +7,7 @@ import (
 
 func newHalRscLinks() *models.HalRscLinks {
 	return &models.HalRscLinks{
-		HalRscLinks: make(map[string]*models.HalHref),
+		HalRscLinksAdditionalProperties: map[string]interface{}{},
 	}
 }
 
@@ -26,7 +26,7 @@ func HalSelfLink(links *models.HalRscLinks, href string) *models.HalRscLinks {
 		links = newHalRscLinks()
 	}
 
-	links.HalRscLinks["lf:self"] = &models.HalHref{Href: href}
+	links.HalRscLinksAdditionalProperties["lf:self"] = &models.HalHref{Href: href}
 
 	return links
 }
@@ -36,7 +36,7 @@ func HalDocLink(links *models.HalRscLinks, operationId string) *models.HalRscLin
 		links = newHalRscLinks()
 	}
 
-	links.HalRscLinks["doc:"+operationId] = &models.HalHref{Href: "/" + operationId}
+	links.HalRscLinksAdditionalProperties["doc:"+operationId] = &models.HalHref{Href: "/" + operationId}
 
 	return links
 }

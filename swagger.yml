@@ -796,8 +796,8 @@ definitions:
         x-omitempty: true
         items:
           $ref: "#/definitions/hal-curie"
-    additionalProperties:
-      $ref: "#/definitions/hal-href"
+    additionalProperties: true
+#      $ref: "#/definitions/hal-href"
   hal-href:
     type: object
     x-isnullable: true

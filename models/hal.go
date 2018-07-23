@@ -137,34 +137,34 @@ func (se *ServerError) Clean() interface{} {
 }
 
 // generate links
-func (s *ResourceTfStack) GenerateLinks(stackEndpoint string) {
+func (s *ResourceTfStack) GenerateLinks(endpoint string) {
 	s.Links = &HalRscLinks{
-		HalRscLinks: map[string]*HalHref{
-			"lf:self": {Href: stackEndpoint + "/" + s.ID},
+		HalRscLinksAdditionalProperties: map[string]interface{}{
+			"lf:self": &HalHref{Href: endpoint + "/" + s.ID},
 		},
 	}
 }
 
-func (m *ResourceTfModule) GenerateLinks(moduleEndpoint string) {
+func (m *ResourceTfModule) GenerateLinks(endpoint string) {
 	m.Links = &HalRscLinks{
-		HalRscLinks: map[string]*HalHref{
-			"lf:self": {Href: moduleEndpoint + "/" + m.ID},
+		HalRscLinksAdditionalProperties: map[string]interface{}{
+			"lf:self": &HalHref{Href: endpoint + "/" + m.ID},
 		},
 	}
 }
 
-func (d *ResourceTfDeployment) GenerateLinks(deploymentEndpoint string) {
+func (d *ResourceTfDeployment) GenerateLinks(endpoint string) {
 	d.Links = &HalRscLinks{
-		HalRscLinks: map[string]*HalHref{
-			"lf:self": {Href: deploymentEndpoint + "/" + d.ID},
+		HalRscLinksAdditionalProperties: map[string]interface{}{
+			"lf:self": &HalHref{Href: endpoint + "/" + d.ID},
 		},
 	}
 }
 
-func (w *ResourceTfWorkspace) GenerateLinks(workspaceEndpoint string) {
+func (w *ResourceTfWorkspace) GenerateLinks(endpoint string) {
 	w.Links = &HalRscLinks{
-		HalRscLinks: map[string]*HalHref{
-			"lf:self": {Href: "/" + *w.Name},
+		HalRscLinksAdditionalProperties: map[string]interface{}{
+			"lf:self": &HalHref{Href: endpoint + "/" + *w.Name},
 		},
 	}
 }
@@ -174,4 +174,3 @@ type StringHalResponse string
 func (s StringHalResponse) Clean() interface{} {
 	return string(s)
 }
-
