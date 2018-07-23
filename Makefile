@@ -3,6 +3,8 @@
 SRC_YAML?=${CURDIR}"/swagger.yml"
 CGO?=cgo
 
+SWAGGER_BIN?="swagger"
+
 CWD?=$(shell pwd)
 
 SHELL:=/bin/bash
@@ -58,7 +60,7 @@ clean-server:
 		${CURDIR}/profile.txt
 
 generate-server:
-	swagger generate server \
+	${SWAGGER_BIN} generate server \
 		-f $(SRC_YAML) \
 		--name=lunaform \
 		--principal=models.ResourceAuthUser \
@@ -77,7 +79,7 @@ clean-client-go:
 	rm -f ${CURDIR}/lunaform
 
 generate-client-go:
-	swagger generate client \
+	${SWAGGER_BIN} generate client \
 		-f $(SRC_YAML) \
 		--name=lunaform \
 		--principal=models.ResourceAuthUser \
@@ -92,7 +94,7 @@ clean-model:
 	find ${CURDIR}/models -type d -empty -delete
 
 generate-model:
-	swagger generate model \
+	${SWAGGER_BIN} generate model \
 		-f $(SRC_YAML)
 
 ############
@@ -128,7 +130,7 @@ test-coverage:
 	go tool cover -html=$(CWD)/profile.out -o $(CWD)/coverage.html
 
 validate-swagger:
-	swagger validate $(SRC_YAML)
+	${SWAGGER_BIN} validate $(SRC_YAML)
 
 format:
 	go fmt $(shell go list ./...)
