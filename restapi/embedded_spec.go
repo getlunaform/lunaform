@@ -178,6 +178,12 @@ func init() {
               "type": "object"
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "schema": {
@@ -1555,6 +1561,12 @@ func init() {
             "description": "No Content",
             "schema": {
               "type": "object"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/server-error"
             }
           },
           "500": {

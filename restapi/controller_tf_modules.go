@@ -10,6 +10,7 @@ import (
 	operations "github.com/getlunaform/lunaform/restapi/operations/modules"
 	"github.com/go-openapi/swag"
 	"strings"
+	"fmt"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
@@ -101,8 +102,6 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 	return operations.DeleteModuleHandlerFunc(func(params operations.DeleteModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		db.Delete(DB_TABLE_TF_MODULE, params.ID)
-
 		module := &models.ResourceTfModule{}
 		if err := db.Read(DB_TABLE_TF_MODULE, params.ID, module); err != nil {
 			if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {
@@ -115,6 +114,20 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 				})
 			}
 		}
+
+		if len(module.Embedded.Stacks) > 0 {
+			stack_ids := []string{}
+			for _, stk := range module.Embedded.Stacks {
+				stack_ids = append(stack_ids, stk.ID)
+			}
+			return operations.NewDeleteModuleUnprocessableEntity().WithPayload(&models.ServerError{
+				Message:    swag.String(fmt.Sprintf("Could not delete module as it is relied up by stacks ['%s']", strings.Join(stack_ids, "','"))),
+				Status:     HTTP_UNPROCESSABLE_ENTITY_STATUS,
+				StatusCode: HTTP_UNPROCESSABLE_ENTITY,
+			})
+		}
+
+		db.Delete(DB_TABLE_TF_MODULE, params.ID)
 
 		return operations.NewDeleteModuleInternalServerError().WithPayload(&models.ServerError{
 			Message:    swag.String("Could not delete module"),

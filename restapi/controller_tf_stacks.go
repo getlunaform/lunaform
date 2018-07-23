@@ -75,9 +75,20 @@ var CreateTfStackController = func(
 			})
 		}
 
-		dep := NewTfDeployment(
-			*workspace.Name,
-		)
+		module := models.ResourceTfModule{
+			ID: *params.TerraformStack.ModuleID,
+		}
+		if err := db.Read(DB_TABLE_TF_MODULE, module.ID, &module); err != nil {
+			return operations.NewDeployStackBadRequest().WithPayload(&models.ServerError{
+				StatusCode: HTTP_BAD_REQUEST,
+				Status:     HTTP_BAD_REQUEST_STATUS,
+				Message: swag.String(fmt.Sprintf(
+					"Could not find module with name'%s'",
+					params.TerraformStack.Workspace)),
+			})
+		}
+
+		dep := NewTfDeployment(*workspace.Name)
 
 		tfs.Embedded = &models.ResourceTfStackEmbedded{
 			Deployments: []*models.ResourceTfDeployment{dep},
@@ -90,6 +101,17 @@ var CreateTfStackController = func(
 		})
 
 		if err := db.Create(DB_TABLE_TF_STACK, tfs.ID, tfs); err != nil {
+			return operations.NewDeployStackBadRequest()
+		}
+
+		if module.Embedded == nil {
+			module.Embedded = &models.ResourceListTfStack{}
+		}
+		if module.Embedded.Stacks == nil {
+			module.Embedded.Stacks = make([]*models.ResourceTfStack, 0)
+		}
+		module.Embedded.Stacks = append(module.Embedded.Stacks, tfs)
+		if err := db.Update(DB_TABLE_TF_MODULE, module.ID, module); err != nil {
 			return operations.NewDeployStackBadRequest()
 		}
 

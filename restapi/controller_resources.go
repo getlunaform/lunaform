@@ -24,6 +24,9 @@ var (
 	// 404
 	HTTP_NOT_FOUND        = swag.Int64(http.StatusNotFound)
 	HTTP_NOT_FOUND_STATUS = swag.String(http.StatusText(http.StatusNotFound))
+	// 422
+	HTTP_UNPROCESSABLE_ENTITY        = swag.Int64(http.StatusUnprocessableEntity)
+	HTTP_UNPROCESSABLE_ENTITY_STATUS = swag.String(http.StatusText(http.StatusUnprocessableEntity))
 	// 500
 	HTTP_INTERNAL_SERVER_ERROR        = swag.Int64(http.StatusInternalServerError)
 	HTTP_INTERNAL_SERVER_ERROR_STATUS = swag.String(http.StatusText(http.StatusInternalServerError))

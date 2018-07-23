@@ -56,6 +56,50 @@ func (o *DeleteModuleNoContent) WriteResponse(rw http.ResponseWriter, producer r
 
 }
 
+// DeleteModuleUnprocessableEntityCode is the HTTP code returned for type DeleteModuleUnprocessableEntity
+const DeleteModuleUnprocessableEntityCode int = 422
+
+/*DeleteModuleUnprocessableEntity Unprocessable Entity
+
+swagger:response deleteModuleUnprocessableEntity
+*/
+type DeleteModuleUnprocessableEntity struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
+}
+
+// NewDeleteModuleUnprocessableEntity creates DeleteModuleUnprocessableEntity with default headers values
+func NewDeleteModuleUnprocessableEntity() *DeleteModuleUnprocessableEntity {
+
+	return &DeleteModuleUnprocessableEntity{}
+}
+
+// WithPayload adds the payload to the delete module unprocessable entity response
+func (o *DeleteModuleUnprocessableEntity) WithPayload(payload *models.ServerError) *DeleteModuleUnprocessableEntity {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete module unprocessable entity response
+func (o *DeleteModuleUnprocessableEntity) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteModuleUnprocessableEntity) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(422)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // DeleteModuleInternalServerErrorCode is the HTTP code returned for type DeleteModuleInternalServerError
 const DeleteModuleInternalServerErrorCode int = 500
 

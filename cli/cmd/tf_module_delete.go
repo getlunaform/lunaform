@@ -38,13 +38,13 @@ to quickly create a Cobra application.`,
 			authHandler,
 		)
 
-		var response models.HalLinkable
-		if err != nil {
-			response = nil
+		if err1, ok := err.(*modules.DeleteModuleUnprocessableEntity); ok {
+			handleOutput(cmd, err1.Payload, useHal, nil)
+		} else if err != nil {
+			handleOutput(cmd, nil, useHal, err)
 		} else {
-			response = models.StringHalResponse("Successfully deleted")
+			handleOutput(cmd, models.StringHalResponse("Successfully deleted"), useHal, err)
 		}
-		handleOutput(cmd, response, useHal, err)
 	},
 }
 

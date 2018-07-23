@@ -23,6 +23,14 @@ func handlerError(err error) {
 	} else {
 		errResponse = err.Error()
 	}
+	printError(errResponse)
+}
+
+func handleServerError(err *models.ServerError) {
+	printError(err)
+}
+
+func printError(errResponse interface{}) {
 	fmt.Print(
 		jsonResponse(
 			map[string]interface{}{
@@ -34,7 +42,9 @@ func handlerError(err error) {
 }
 
 func handleOutput(action *cobra.Command, v models.HalLinkable, hal bool, err error) {
-	if err != nil {
+	if serverError, isServerError := v.(*models.ServerError); isServerError {
+		handleServerError(serverError)
+	} else if err != nil {
 		handlerError(err)
 	} else {
 
