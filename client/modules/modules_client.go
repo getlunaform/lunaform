@@ -54,6 +54,35 @@ func (a *Client) CreateModule(params *CreateModuleParams, authInfo runtime.Clien
 }
 
 /*
+DeleteModule Delete a terraform module
+*/
+func (a *Client) DeleteModule(params *DeleteModuleParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteModuleNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeleteModuleParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "delete-module",
+		Method:             "DELETE",
+		PathPattern:        "/tf/module/{id}",
+		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &DeleteModuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*DeleteModuleNoContent), nil
+
+}
+
+/*
 GetModule Get a Terraform module
 */
 func (a *Client) GetModule(params *GetModuleParams, authInfo runtime.ClientAuthInfoWriter) (*GetModuleOK, error) {

@@ -39,4 +39,5 @@ func init() {
 	tfModulesCmd.AddCommand(tfModuleCreateCmd)
 	tfModulesCmd.AddCommand(tfModulesListCmd)
 	tfModulesCmd.AddCommand(tfModuleGetCmd)
+	tfModulesCmd.AddCommand(tfModuleDeleteCmd)
 }

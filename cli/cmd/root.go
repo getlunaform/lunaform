@@ -128,17 +128,18 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		if doLogging() {
+			fmt.Println("Using config file:", viper.ConfigFileUsed())
+		}
 	}
 
 	viper.Unmarshal(&config)
 }
 
 func initLogging() {
-	logLevel := strings.ToUpper(config.Log.Level)
-	jww.SetLogThreshold(
-		logLevelMapping[logLevel],
-	)
+	if doLogging() {
+		jww.SetLogThreshold(logLevel())
+	}
 }
 
 func initGocdClient() {
@@ -147,7 +148,11 @@ func initGocdClient() {
 		WithSchemes(config.Schemes)
 	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
 	transport.Context = context.Background()
-	transport.Debug = true
+	if doLogging() {
+		if logLevel() < jww.LevelDebug {
+			transport.Debug = true
+		}
+	}
 
 	transport.Producers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONProducer()
 	transport.Consumers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONConsumer()
@@ -160,3 +165,17 @@ func initAuthHandler() {
 		return request.SetHeaderParam(TERRAFORM_SERVER_AUTH_HEADER, config.ApiKey)
 	}
 }
+
+func logLevel() jww.Threshold {
+	return getJwwLogLevel(config.Log.Level)
+}
+
+func doLogging() bool {
+	return config.Log.Level != ""
+}
+
+func getJwwLogLevel(string) jww.Threshold {
+	logLevel := strings.ToUpper(config.Log.Level)
+	return logLevelMapping[logLevel]
+}
+

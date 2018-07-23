@@ -54,6 +54,9 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		WorkspacesCreateWorkspaceHandler: workspaces.CreateWorkspaceHandlerFunc(func(params workspaces.CreateWorkspaceParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation WorkspacesCreateWorkspace has not yet been implemented")
 		}),
+		ModulesDeleteModuleHandler: modules.DeleteModuleHandlerFunc(func(params modules.DeleteModuleParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ModulesDeleteModule has not yet been implemented")
+		}),
 		StacksDeployStackHandler: stacks.DeployStackHandlerFunc(func(params stacks.DeployStackParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StacksDeployStack has not yet been implemented")
 		}),
@@ -146,6 +149,8 @@ type LunaformAPI struct {
 	StateBackendsCreateStateBackendHandler state_backends.CreateStateBackendHandler
 	// WorkspacesCreateWorkspaceHandler sets the operation handler for the create workspace operation
 	WorkspacesCreateWorkspaceHandler workspaces.CreateWorkspaceHandler
+	// ModulesDeleteModuleHandler sets the operation handler for the delete module operation
+	ModulesDeleteModuleHandler modules.DeleteModuleHandler
 	// StacksDeployStackHandler sets the operation handler for the deploy stack operation
 	StacksDeployStackHandler stacks.DeployStackHandler
 	// WorkspacesDescribeWorkspaceHandler sets the operation handler for the describe workspace operation
@@ -247,6 +252,10 @@ func (o *LunaformAPI) Validate() error {
 
 	if o.WorkspacesCreateWorkspaceHandler == nil {
 		unregistered = append(unregistered, "workspaces.CreateWorkspaceHandler")
+	}
+
+	if o.ModulesDeleteModuleHandler == nil {
+		unregistered = append(unregistered, "modules.DeleteModuleHandler")
 	}
 
 	if o.StacksDeployStackHandler == nil {
@@ -421,6 +430,11 @@ func (o *LunaformAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/tf/workspace/{name}"] = workspaces.NewCreateWorkspace(o.context, o.WorkspacesCreateWorkspaceHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tf/module/{id}"] = modules.NewDeleteModule(o.context, o.ModulesDeleteModuleHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

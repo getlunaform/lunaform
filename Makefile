@@ -31,7 +31,7 @@ EXISTING_MODELS?=github.com/getlunaform/lunaform-models-go
 ##################
 build: build-server build-cli
 clean: clean-server clean-client-go
-generate: generate-server generate-client-go
+generate: generate-server generate-client-go generate-model
 
 default: clean generate build
 

@@ -96,3 +96,30 @@ var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper
 		}
 	})
 }
+
+var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.DeleteModuleHandlerFunc {
+	return operations.DeleteModuleHandlerFunc(func(params operations.DeleteModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
+		ch.SetRequest(params.HTTPRequest)
+
+		db.Delete(DB_TABLE_TF_MODULE, params.ID)
+
+		module := &models.ResourceTfModule{}
+		if err := db.Read(DB_TABLE_TF_MODULE, params.ID, module); err != nil {
+			if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {
+				return operations.NewDeleteModuleNoContent()
+			} else {
+				return operations.NewDeleteModuleInternalServerError().WithPayload(&models.ServerError{
+					Message:    swag.String(err.Error()),
+					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+				})
+			}
+		}
+
+		return operations.NewDeleteModuleInternalServerError().WithPayload(&models.ServerError{
+			Message:    swag.String("Could not delete module"),
+			Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
+			StatusCode: HTTP_INTERNAL_SERVER_ERROR,
+		})
+	})
+}

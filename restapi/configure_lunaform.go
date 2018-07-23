@@ -117,6 +117,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.ModulesListModulesHandler = ListTfModulesController(idp, oh, db)
 	api.ModulesCreateModuleHandler = CreateTfModuleController(idp, oh, db)
 	api.ModulesGetModuleHandler = GetTfModuleController(idp, oh, db)
+	api.ModulesDeleteModuleHandler = DeleteTfModuleController(idp, oh, db)
 
 	// Controllers for /tf/stacks
 	api.StacksDeployStackHandler = CreateTfStackController(idp, oh, db, workerPool)

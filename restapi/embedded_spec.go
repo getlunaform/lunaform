@@ -150,6 +150,41 @@ func init() {
             }
           }
         }
+      },
+      "delete": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "Delete a terraform module",
+        "tags": [
+          "modules"
+        ],
+        "operationId": "delete-module",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique identifier for this module",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          }
+        }
       }
     },
     "/tf/modules": {
@@ -927,7 +962,8 @@ func init() {
         "href": {
           "type": "string"
         }
-      }
+      },
+      "x-isnullable": true
     },
     "hal-rsc-links": {
       "description": "Links to this resources and documentation for this resource",
@@ -943,8 +979,7 @@ func init() {
       },
       "additionalProperties": {
         "$ref": "#/definitions/hal-href"
-      },
-      "readOnly": true
+      }
     },
     "resource": {
       "description": "A resources",
@@ -1496,6 +1531,41 @@ func init() {
             }
           }
         }
+      },
+      "delete": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "Delete a terraform module",
+        "tags": [
+          "modules"
+        ],
+        "operationId": "delete-module",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique identifier for this module",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          }
+        }
       }
     },
     "/tf/modules": {
@@ -2273,7 +2343,8 @@ func init() {
         "href": {
           "type": "string"
         }
-      }
+      },
+      "x-isnullable": true
     },
     "hal-rsc-links": {
       "description": "Links to this resources and documentation for this resource",
@@ -2289,8 +2360,7 @@ func init() {
       },
       "additionalProperties": {
         "$ref": "#/definitions/hal-href"
-      },
-      "readOnly": true
+      }
     },
     "resource": {
       "description": "A resources",

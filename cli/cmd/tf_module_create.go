@@ -41,6 +41,9 @@ to quickly create a Cobra application.`,
 				Name:   &nameFlag,
 				Type:   &typeFlag,
 				Source: &sourceFlag,
+				Links: &models.HalRscLinks{
+					HalRscLinks: make(map[string]*models.HalHref),
+				},
 			},
 		)
 		module, err := gocdClient.Modules.CreateModule(params, authHandler)

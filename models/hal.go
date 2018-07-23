@@ -168,3 +168,10 @@ func (w *ResourceTfWorkspace) GenerateLinks(workspaceEndpoint string) {
 		},
 	}
 }
+
+type StringHalResponse string
+
+func (s StringHalResponse) Clean() interface{} {
+	return string(s)
+}
+
