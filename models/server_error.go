@@ -27,7 +27,7 @@ type ServerError struct {
 
 	// status code
 	// Required: true
-	StatusCode *int64 `json:"status-code"`
+	StatusCode *int32 `json:"status-code"`
 }
 
 // Validate validates this server error

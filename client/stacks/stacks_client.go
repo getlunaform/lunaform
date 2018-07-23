@@ -140,6 +140,35 @@ func (a *Client) ListStacks(params *ListStacksParams, authInfo runtime.ClientAut
 
 }
 
+/*
+UndeployStack Undeploy a teraform module
+*/
+func (a *Client) UndeployStack(params *UndeployStackParams, authInfo runtime.ClientAuthInfoWriter) (*UndeployStackNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUndeployStackParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "undeploy-stack",
+		Method:             "DELETE",
+		PathPattern:        "/tf/stack/{id}",
+		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &UndeployStackReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*UndeployStackNoContent), nil
+
+}
+
 // SetTransport changes the transport on the client
 func (a *Client) SetTransport(transport runtime.ClientTransport) {
 	a.transport = transport

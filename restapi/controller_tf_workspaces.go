@@ -9,6 +9,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
 	"strings"
+	"net/http"
 )
 
 var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListWorkspacesHandlerFunc {
@@ -18,15 +19,13 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 		workspaces := []*models.ResourceTfWorkspace{}
 		err := db.List(DB_TABLE_TF_WORKSPACE, &workspaces)
 		if err != nil {
-			return operations.NewListWorkspacesInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    swag.String(err.Error()),
-			})
+			return operations.NewListWorkspacesInternalServerError().WithPayload(
+				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+			)
 		}
 
 		for _, workspace := range workspaces {
-			workspace.Links = helpers.HalSelfLink(nil, strings.TrimSuffix(ch.Endpoint, "s")+"/"+*workspace.Name)
+			workspace.Links = helpers.HalSelfLink(nil, strings.TrimSuffix(ch.Endpoint, "s") + "/" + *workspace.Name)
 			workspace.Links.Curies = nil
 		}
 
@@ -57,26 +56,20 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 				if err := db.Create(DB_TABLE_TF_WORKSPACE, params.Name, tfw); err == nil {
 					r = operations.NewCreateWorkspaceCreated().WithPayload(tfw)
 				} else {
-					r = operations.NewCreateWorkspaceBadRequest().WithPayload(&models.ServerError{
-						StatusCode: HTTP_BAD_REQUEST,
-						Status:     HTTP_BAD_REQUEST_STATUS,
-						Message:    swag.String(err.Error()),
-					})
+					r = operations.NewCreateWorkspaceBadRequest().WithPayload(
+						helpers.NewServerError(http.StatusBadRequest, err.Error()),
+					)
 				}
 			} else {
-				r = operations.NewCreateWorkspaceInternalServerError().WithPayload(&models.ServerError{
-					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-					Message:    swag.String(err.Error()),
-				})
+				r = operations.NewCreateWorkspaceInternalServerError().WithPayload(
+					helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+				)
 			}
 		} else {
 			if err := db.Update(DB_TABLE_TF_WORKSPACE, params.Name, existingWorkspace); err != nil {
-				r = operations.NewCreateWorkspaceInternalServerError().WithPayload(&models.ServerError{
-					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-					Message:    swag.String(err.Error()),
-				})
+				r = operations.NewCreateWorkspaceInternalServerError().WithPayload(
+					helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+				)
 			} else {
 				r = operations.NewCreateWorkspaceOK().WithPayload(tfw)
 			}
@@ -92,17 +85,13 @@ var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHel
 
 		workspace := &models.ResourceTfWorkspace{}
 		if err := db.Read(DB_TABLE_TF_WORKSPACE, params.Name, workspace); err != nil {
-			r = operations.NewDescribeWorkspaceInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    swag.String(err.Error()),
-			})
+			r = operations.NewDescribeWorkspaceInternalServerError().WithPayload(
+				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+			)
 		} else if workspace == nil {
-			r = operations.NewDescribeWorkspaceNotFound().WithPayload(&models.ServerError{
-				StatusCode: HTTP_NOT_FOUND,
-				Status:     HTTP_NOT_FOUND_STATUS,
-				Message:    swag.String("Could not find workspace with name '" + params.Name + "'"),
-			})
+			r = operations.NewDescribeWorkspaceNotFound().WithPayload(
+				helpers.NewServerError(http.StatusNotFound, "Could not find workspace with name '"+params.Name+"'"),
+			)
 		} else {
 			workspace.Links = helpers.HalRootRscLinks(ch)
 			r = operations.NewDescribeWorkspaceOK().WithPayload(workspace)

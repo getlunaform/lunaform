@@ -90,6 +90,9 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		WorkspacesListWorkspacesHandler: workspaces.ListWorkspacesHandlerFunc(func(params workspaces.ListWorkspacesParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation WorkspacesListWorkspaces has not yet been implemented")
 		}),
+		StacksUndeployStackHandler: stacks.UndeployStackHandlerFunc(func(params stacks.UndeployStackParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation StacksUndeployStack has not yet been implemented")
+		}),
 		StateBackendsUpdateStateBackendHandler: state_backends.UpdateStateBackendHandlerFunc(func(params state_backends.UpdateStateBackendParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StateBackendsUpdateStateBackend has not yet been implemented")
 		}),
@@ -173,6 +176,8 @@ type LunaformAPI struct {
 	StateBackendsListStateBackendsHandler state_backends.ListStateBackendsHandler
 	// WorkspacesListWorkspacesHandler sets the operation handler for the list workspaces operation
 	WorkspacesListWorkspacesHandler workspaces.ListWorkspacesHandler
+	// StacksUndeployStackHandler sets the operation handler for the undeploy stack operation
+	StacksUndeployStackHandler stacks.UndeployStackHandler
 	// StateBackendsUpdateStateBackendHandler sets the operation handler for the update state backend operation
 	StateBackendsUpdateStateBackendHandler state_backends.UpdateStateBackendHandler
 
@@ -300,6 +305,10 @@ func (o *LunaformAPI) Validate() error {
 
 	if o.WorkspacesListWorkspacesHandler == nil {
 		unregistered = append(unregistered, "workspaces.ListWorkspacesHandler")
+	}
+
+	if o.StacksUndeployStackHandler == nil {
+		unregistered = append(unregistered, "stacks.UndeployStackHandler")
 	}
 
 	if o.StateBackendsUpdateStateBackendHandler == nil {
@@ -490,6 +499,11 @@ func (o *LunaformAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/tf/workspaces"] = workspaces.NewListWorkspaces(o.context, o.WorkspacesListWorkspacesHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tf/stack/{id}"] = stacks.NewUndeployStack(o.context, o.StacksUndeployStackHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)

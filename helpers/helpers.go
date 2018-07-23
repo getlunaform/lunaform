@@ -5,7 +5,19 @@ import (
 	"github.com/pkg/errors"
 	"net/http"
 	"strings"
+	"github.com/getlunaform/lunaform/models"
+	"github.com/go-openapi/swag"
 )
+
+func NewServerError(code int32, errorString string) *models.ServerError {
+	return &models.ServerError{
+		Message: swag.String(errorString),
+		Status: swag.String(http.StatusText(
+			int(code),
+		)),
+		StatusCode: &code,
+	}
+}
 
 // NewContextHelper to easily get URL parts for generating HAL resources
 func NewContextHelper(ctx *middleware.Context) ContextHelper {

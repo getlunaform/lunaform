@@ -8,9 +8,9 @@ import (
 
 	"github.com/getlunaform/lunaform/helpers"
 	operations "github.com/getlunaform/lunaform/restapi/operations/modules"
-	"github.com/go-openapi/swag"
 	"strings"
 	"fmt"
+	"net/http"
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
@@ -20,11 +20,9 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 
 		modules := make([]*models.ResourceTfModule, 0)
 		if err := db.List(DB_TABLE_TF_MODULE, &modules); err != nil {
-			return operations.NewListModulesInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    swag.String(err.Error()),
-			})
+			return operations.NewListModulesInternalServerError().WithPayload(
+				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+			)
 		}
 
 		for _, module := range modules {
@@ -49,11 +47,9 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		tfm.ID = idGenerator.MustGenerate()
 
 		if err := db.Create(DB_TABLE_TF_MODULE, tfm.ID, tfm); err != nil {
-			return operations.NewCreateModuleBadRequest().WithPayload(&models.ServerError{
-				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    swag.String(err.Error()),
-			})
+			return operations.NewCreateModuleBadRequest().WithPayload(
+				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+			)
 		}
 
 		tfm.Links = helpers.HalRootRscLinks(ch)
@@ -71,17 +67,13 @@ var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper
 
 		module := &models.ResourceTfModule{}
 		if err := db.Read(DB_TABLE_TF_MODULE, params.ID, module); err != nil {
-			return operations.NewGetModuleInternalServerError().WithPayload(&models.ServerError{
-				StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-				Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-				Message:    swag.String(err.Error()),
-			})
+			return operations.NewGetModuleInternalServerError().WithPayload(
+				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+			)
 		} else if module == nil {
-			return operations.NewGetModuleNotFound().WithPayload(&models.ServerError{
-				StatusCode: HTTP_NOT_FOUND,
-				Status:     HTTP_NOT_FOUND_STATUS,
-				Message:    swag.String("Could not find module with id '" + params.ID + "'"),
-			})
+			return operations.NewGetModuleNotFound().WithPayload(
+				helpers.NewServerError(http.StatusNotFound, "Could not find module with id '"+params.ID+"'"),
+			)
 		} else {
 
 			module.Embedded = &models.ResourceListTfStack{
@@ -107,11 +99,9 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 			if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {
 				return operations.NewDeleteModuleNoContent()
 			} else {
-				return operations.NewDeleteModuleInternalServerError().WithPayload(&models.ServerError{
-					Message:    swag.String(err.Error()),
-					Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-					StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-				})
+				return operations.NewDeleteModuleInternalServerError().WithPayload(
+					helpers.NewServerError(http.StatusInternalServerError, err.Error()),
+				)
 			}
 		}
 
@@ -120,19 +110,18 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 			for _, stk := range module.Embedded.Stacks {
 				stack_ids = append(stack_ids, stk.ID)
 			}
-			return operations.NewDeleteModuleUnprocessableEntity().WithPayload(&models.ServerError{
-				Message:    swag.String(fmt.Sprintf("Could not delete module as it is relied up by stacks ['%s']", strings.Join(stack_ids, "','"))),
-				Status:     HTTP_UNPROCESSABLE_ENTITY_STATUS,
-				StatusCode: HTTP_UNPROCESSABLE_ENTITY,
-			})
+			return operations.NewDeleteModuleUnprocessableEntity().WithPayload(
+				helpers.NewServerError(
+					http.StatusUnprocessableEntity,
+					fmt.Sprintf("Could not delete module as it is relied up by stacks ['%s']", strings.Join(stack_ids, "','")),
+				),
+			)
 		}
 
 		db.Delete(DB_TABLE_TF_MODULE, params.ID)
 
-		return operations.NewDeleteModuleInternalServerError().WithPayload(&models.ServerError{
-			Message:    swag.String("Could not delete module"),
-			Status:     HTTP_INTERNAL_SERVER_ERROR_STATUS,
-			StatusCode: HTTP_INTERNAL_SERVER_ERROR,
-		})
+		return operations.NewDeleteModuleInternalServerError().WithPayload(
+			helpers.NewServerError(http.StatusInternalServerError, "Could not delete module"),
+		)
 	})
 }

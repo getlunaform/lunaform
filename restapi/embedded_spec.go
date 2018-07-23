@@ -353,6 +353,47 @@ func init() {
             }
           }
         }
+      },
+      "delete": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "Undeploy a teraform module",
+        "tags": [
+          "stacks"
+        ],
+        "operationId": "undeploy-stack",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique identifier for this stack",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          }
+        }
       }
     },
     "/tf/stack/{id}/deployments": {
@@ -1371,7 +1412,8 @@ func init() {
           "type": "string"
         },
         "status-code": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32"
         }
       },
       "readOnly": true
@@ -1738,6 +1780,47 @@ func init() {
             }
           }
         }
+      },
+      "delete": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "Undeploy a teraform module",
+        "tags": [
+          "stacks"
+        ],
+        "operationId": "undeploy-stack",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique identifier for this stack",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          }
+        }
       }
     },
     "/tf/stack/{id}/deployments": {
@@ -2756,7 +2839,8 @@ func init() {
           "type": "string"
         },
         "status-code": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32"
         }
       },
       "readOnly": true

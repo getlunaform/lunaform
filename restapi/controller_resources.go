@@ -6,7 +6,6 @@ import (
 	"github.com/getlunaform/lunaform/restapi/operations/resources"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
-	"net/http"
 )
 
 const (
@@ -15,21 +14,6 @@ const (
 	DB_TABLE_TF_STACK        = "lf-stack"
 	DB_TABLE_TF_STATEBACKEND = "lf-statebackend"
 	DB_TABLE_AUTH_USER       = "lf-auth-user"
-)
-
-var (
-	// 400
-	HTTP_BAD_REQUEST        = swag.Int64(http.StatusBadRequest)
-	HTTP_BAD_REQUEST_STATUS = swag.String(http.StatusText(http.StatusBadRequest))
-	// 404
-	HTTP_NOT_FOUND        = swag.Int64(http.StatusNotFound)
-	HTTP_NOT_FOUND_STATUS = swag.String(http.StatusText(http.StatusNotFound))
-	// 422
-	HTTP_UNPROCESSABLE_ENTITY        = swag.Int64(http.StatusUnprocessableEntity)
-	HTTP_UNPROCESSABLE_ENTITY_STATUS = swag.String(http.StatusText(http.StatusUnprocessableEntity))
-	// 500
-	HTTP_INTERNAL_SERVER_ERROR        = swag.Int64(http.StatusInternalServerError)
-	HTTP_INTERNAL_SERVER_ERROR_STATUS = swag.String(http.StatusText(http.StatusInternalServerError))
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.

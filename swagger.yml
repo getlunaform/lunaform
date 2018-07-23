@@ -482,6 +482,33 @@ paths:
           schema:
             $ref: "#/definitions/server-error"
   /tf/stack/{id}:
+    delete:
+      tags:
+        - stacks
+      description: Undeploy a teraform module
+      operationId: undeploy-stack
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Unique identifier for this stack
+      responses:
+      responses:
+        204:
+          description: No Content
+          schema:
+            type: object
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: "#/definitions/server-error"
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/server-error"
     get:
       tags:
         - stacks
@@ -827,6 +854,7 @@ definitions:
     properties:
       status-code:
         type: integer
+        format: int32
       status:
         type: string
       message:
