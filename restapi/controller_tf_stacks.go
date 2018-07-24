@@ -37,8 +37,8 @@ var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelpe
 		}
 
 		for _, stack := range stacks {
+			stack.GenerateLinks(strings.TrimSuffix(ch.Endpoint, "s"))
 			stack.Embedded = nil
-			stack.GenerateLinks(strings.TrimSuffix(ch.FQEndpoint, "s"))
 		}
 
 		return operations.NewListStacksOK().WithPayload(&models.ResponseListTfStacks{
@@ -140,7 +140,7 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 		} else {
 			stack.Links = helpers.HalSelfLink(
 				helpers.HalDocLink(nil, ch.OperationID),
-				ch.FQEndpoint,
+				ch.Endpoint,
 			)
 
 			stack.Embedded.Workspace.Modules = nil
@@ -148,7 +148,7 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 			for _, dep := range stack.Embedded.Deployments {
 				dep.Status = nil
 				dep.Workspace = nil
-				dep.GenerateLinks(ch.FQEndpoint + "/deployment")
+				dep.GenerateLinks(ch.Endpoint + "/deployment")
 			}
 
 			return operations.NewGetStackOK().WithPayload(stack)
@@ -192,8 +192,8 @@ var ListTfStackDeploymentsController = func(
 
 		id := params.ID
 
-		var stack *models.ResourceTfStack
-		var deployments *models.ResponseListTfDeployments
+		stack := &models.ResourceTfStack{}
+		deployments := &models.ResponseListTfDeployments{}
 
 		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
 			return operations.NewListStacksInternalServerError().WithPayload(
@@ -203,18 +203,16 @@ var ListTfStackDeploymentsController = func(
 			return operations.NewGetStackNotFound().WithPayload(
 				helpers.NewServerError(http.StatusNotFound, "Could not find stack with id '"+id+"'"),
 			)
-		} else {
-			deployments.Embedded.Deployments = stack.Embedded.Deployments
-			deployments.Embedded.Stack = stack
-			stack.Embedded.Deployments = nil
-
-			deployments.Links = helpers.HalSelfLink(
-				helpers.HalDocLink(nil, ch.OperationID),
-				ch.Endpoint,
-			)
-
-			return operations.NewListDeploymentsOK().WithPayload(deployments)
 		}
-		return
+		deployments.Embedded.Deployments = stack.Embedded.Deployments
+		deployments.Embedded.Stack = stack
+		stack.Embedded.Deployments = nil
+
+		deployments.Links = helpers.HalSelfLink(
+			helpers.HalDocLink(nil, ch.OperationID),
+			ch.Endpoint,
+		)
+
+		return operations.NewListDeploymentsOK().WithPayload(deployments)
 	})
 }

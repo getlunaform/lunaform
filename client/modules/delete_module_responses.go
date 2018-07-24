@@ -61,19 +61,13 @@ func NewDeleteModuleNoContent() *DeleteModuleNoContent {
 No Content
 */
 type DeleteModuleNoContent struct {
-	Payload interface{}
 }
 
 func (o *DeleteModuleNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /tf/module/{id}][%d] deleteModuleNoContent  %+v", 204, o.Payload)
+	return fmt.Sprintf("[DELETE /tf/module/{id}][%d] deleteModuleNoContent ", 204)
 }
 
 func (o *DeleteModuleNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
-		return err
-	}
 
 	return nil
 }

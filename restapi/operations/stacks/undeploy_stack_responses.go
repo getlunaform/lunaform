@@ -21,11 +21,6 @@ const UndeployStackNoContentCode int = 204
 swagger:response undeployStackNoContent
 */
 type UndeployStackNoContent struct {
-
-	/*
-	  In: Body
-	*/
-	Payload interface{} `json:"body,omitempty"`
 }
 
 // NewUndeployStackNoContent creates UndeployStackNoContent with default headers values
@@ -34,26 +29,12 @@ func NewUndeployStackNoContent() *UndeployStackNoContent {
 	return &UndeployStackNoContent{}
 }
 
-// WithPayload adds the payload to the undeploy stack no content response
-func (o *UndeployStackNoContent) WithPayload(payload interface{}) *UndeployStackNoContent {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the undeploy stack no content response
-func (o *UndeployStackNoContent) SetPayload(payload interface{}) {
-	o.Payload = payload
-}
-
 // WriteResponse to the client
 func (o *UndeployStackNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(204)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
-	}
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
+	rw.WriteHeader(204)
 }
 
 // UndeployStackUnprocessableEntityCode is the HTTP code returned for type UndeployStackUnprocessableEntity

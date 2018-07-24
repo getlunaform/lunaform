@@ -173,10 +173,7 @@ func init() {
         ],
         "responses": {
           "204": {
-            "description": "No Content",
-            "schema": {
-              "type": "object"
-            }
+            "description": "No Content"
           },
           "422": {
             "description": "Unprocessable Entity",
@@ -376,10 +373,7 @@ func init() {
         ],
         "responses": {
           "204": {
-            "description": "No Content",
-            "schema": {
-              "type": "object"
-            }
+            "description": "No Content"
           },
           "422": {
             "description": "Unprocessable Entity",
@@ -1600,10 +1594,7 @@ func init() {
         ],
         "responses": {
           "204": {
-            "description": "No Content",
-            "schema": {
-              "type": "object"
-            }
+            "description": "No Content"
           },
           "422": {
             "description": "Unprocessable Entity",
@@ -1803,10 +1794,7 @@ func init() {
         ],
         "responses": {
           "204": {
-            "description": "No Content",
-            "schema": {
-              "type": "object"
-            }
+            "description": "No Content"
           },
           "422": {
             "description": "Unprocessable Entity",

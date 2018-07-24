@@ -440,8 +440,6 @@ paths:
       responses:
         204:
           description: No Content
-          schema:
-            type: object
         422:
           description: Unprocessable Entity
           schema:
@@ -499,8 +497,6 @@ paths:
       responses:
         204:
           description: No Content
-          schema:
-            type: object
         422:
           description: Unprocessable Entity
           schema:

@@ -1,11 +1,12 @@
 package workers
 
 import (
-	"fmt"
 	"github.com/gammazero/workerpool"
 	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/go-openapi/swag"
+	"github.com/getlunaform/go-terraform"
+	"fmt"
 )
 
 const (
@@ -53,9 +54,26 @@ func (p *TfAgentPool) WithDB(db database.Database) *TfAgentPool {
 
 func (p *TfAgentPool) DoPlan(a *TfActionPlan) {
 	p.pool.Submit(func() {
-		action, output := NewTerraformClient().Plan(a)
-		action.Run()
-		fmt.Print(action)
-		fmt.Print(output)
+
+		logs := goterraform.NewOutputLogs()
+
+		action := goterraform.NewTerraformClient().Plan().Init()
+		if err := action.InitLogger(logs); err != nil {
+
+			fmt.Printf("An error occured initialising task logger: " + err.Error())
+			return
+		}
+
+		if err := action.Cmd.Start(); err != nil {
+			logs.Stderr(err.Error())
+			return
+		}
+
+		if err := action.Cmd.Wait(); err != nil {
+			logs.Stderr(err.Error())
+			return
+		}
+
 	})
+
 }

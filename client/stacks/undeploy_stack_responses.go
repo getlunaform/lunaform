@@ -61,19 +61,13 @@ func NewUndeployStackNoContent() *UndeployStackNoContent {
 No Content
 */
 type UndeployStackNoContent struct {
-	Payload interface{}
 }
 
 func (o *UndeployStackNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /tf/stack/{id}][%d] undeployStackNoContent  %+v", 204, o.Payload)
+	return fmt.Sprintf("[DELETE /tf/stack/{id}][%d] undeployStackNoContent ", 204)
 }
 
 func (o *UndeployStackNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
-		return err
-	}
 
 	return nil
 }

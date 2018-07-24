@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := default
 
-SRC_YAML?=${CURDIR}"/swagger.yml"
+SRC_YAML?=${CURDIR}/swagger.yml
 CGO?=cgo
 
 SWAGGER_BIN?="swagger"
@@ -61,10 +61,10 @@ clean-server:
 
 generate-server:
 	${SWAGGER_BIN} generate server \
-		-f $(SRC_YAML) \
 		--name=lunaform \
 		--principal=models.ResourceAuthUser \
-		--skip-models
+		--skip-models \
+		--spec=$(SRC_YAML)
 
 run:
 	$(CWD)/lunaform-server --port=8080 --scheme=http
@@ -80,10 +80,10 @@ clean-client-go:
 
 generate-client-go:
 	${SWAGGER_BIN} generate client \
-		-f $(SRC_YAML) \
 		--name=lunaform \
 		--principal=models.ResourceAuthUser \
-		--default-produces=application/vnd.lunaform.v1+json
+		--default-produces=application/vnd.lunaform.v1+json \
+		--spec=$(SRC_YAML)
 
 #################
 # Model targets #
@@ -95,7 +95,7 @@ clean-model:
 
 generate-model:
 	${SWAGGER_BIN} generate model \
-		-f $(SRC_YAML)
+		--spec=$(SRC_YAML)
 
 ############
 # CLI tool #

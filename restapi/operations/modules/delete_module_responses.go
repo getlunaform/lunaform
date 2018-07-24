@@ -21,11 +21,6 @@ const DeleteModuleNoContentCode int = 204
 swagger:response deleteModuleNoContent
 */
 type DeleteModuleNoContent struct {
-
-	/*
-	  In: Body
-	*/
-	Payload interface{} `json:"body,omitempty"`
 }
 
 // NewDeleteModuleNoContent creates DeleteModuleNoContent with default headers values
@@ -34,26 +29,12 @@ func NewDeleteModuleNoContent() *DeleteModuleNoContent {
 	return &DeleteModuleNoContent{}
 }
 
-// WithPayload adds the payload to the delete module no content response
-func (o *DeleteModuleNoContent) WithPayload(payload interface{}) *DeleteModuleNoContent {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the delete module no content response
-func (o *DeleteModuleNoContent) SetPayload(payload interface{}) {
-	o.Payload = payload
-}
-
 // WriteResponse to the client
 func (o *DeleteModuleNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(204)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
-	}
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
+	rw.WriteHeader(204)
 }
 
 // DeleteModuleUnprocessableEntityCode is the HTTP code returned for type DeleteModuleUnprocessableEntity
