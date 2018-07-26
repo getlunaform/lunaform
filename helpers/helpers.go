@@ -32,26 +32,31 @@ func NewContextHelper(ctx *middleware.Context) ContextHelper {
 // of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
 // ctx.LookupRoute. Doing it this way, means we can mock it in tests.
 type ContextHelper struct {
-	ctx         *middleware.Context
-	Request     *http.Request
-	ServerURL   string
-	Endpoint    string
-	FQEndpoint  string
-	OperationID string
-	BasePath    string
+	ctx              *middleware.Context
+	Request          *http.Request
+	ServerURL        string
+	Endpoint         string
+	EndpointSingular string
+	FQEndpoint       string
+	OperationID      string
+	BasePath         string
 }
 
 // SetRequest and calculate the api parts from the combination of the request and the API. This is used to generate HAL resources
-func (oh *ContextHelper) SetRequest(req *http.Request) (err error) {
+func (ch *ContextHelper) SetRequest(req *http.Request) (err error) {
 
-	oh.Request = req
+	ch.Request = req
 
-	oh.ServerURL = oh.urlPrefix(oh.Request.Host, oh.BasePath, oh.Request.TLS != nil)
-	oh.FQEndpoint = oh.urlPrefix(oh.Request.Host, oh.Request.RequestURI, oh.Request.TLS != nil)
+	ch.ServerURL = ch.urlPrefix(ch.Request.Host, ch.BasePath, ch.Request.TLS != nil)
+	ch.FQEndpoint = ch.urlPrefix(ch.Request.Host, ch.Request.RequestURI, ch.Request.TLS != nil)
 
-	oh.Endpoint = strings.TrimPrefix(oh.FQEndpoint, oh.ServerURL)
-	if r, matched := oh.ctx.LookupRoute(oh.Request); matched {
-		oh.OperationID = r.Operation.ID
+	ch.Endpoint = strings.TrimPrefix(ch.FQEndpoint, ch.ServerURL)
+	ch.EndpointSingular = ch.Endpoint
+	if strings.HasSuffix(ch.Endpoint, "s") {
+		ch.EndpointSingular = strings.TrimSuffix(ch.Endpoint, "s")
+	}
+	if r, matched := ch.ctx.LookupRoute(ch.Request); matched {
+		ch.OperationID = r.Operation.ID
 	} else {
 		return errors.New("Could not find route for request")
 	}
@@ -59,7 +64,7 @@ func (oh *ContextHelper) SetRequest(req *http.Request) (err error) {
 	return
 }
 
-func (oh ContextHelper) urlPrefix(host string, uri string, https bool) string {
+func (ch ContextHelper) urlPrefix(host string, uri string, https bool) string {
 	prefix := "http"
 	if https {
 		prefix += "s"

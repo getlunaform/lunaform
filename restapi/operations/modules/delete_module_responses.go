@@ -37,6 +37,50 @@ func (o *DeleteModuleNoContent) WriteResponse(rw http.ResponseWriter, producer r
 	rw.WriteHeader(204)
 }
 
+// DeleteModuleNotFoundCode is the HTTP code returned for type DeleteModuleNotFound
+const DeleteModuleNotFoundCode int = 404
+
+/*DeleteModuleNotFound Not Found
+
+swagger:response deleteModuleNotFound
+*/
+type DeleteModuleNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
+}
+
+// NewDeleteModuleNotFound creates DeleteModuleNotFound with default headers values
+func NewDeleteModuleNotFound() *DeleteModuleNotFound {
+
+	return &DeleteModuleNotFound{}
+}
+
+// WithPayload adds the payload to the delete module not found response
+func (o *DeleteModuleNotFound) WithPayload(payload *models.ServerError) *DeleteModuleNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete module not found response
+func (o *DeleteModuleNotFound) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteModuleNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // DeleteModuleUnprocessableEntityCode is the HTTP code returned for type DeleteModuleUnprocessableEntity
 const DeleteModuleUnprocessableEntityCode int = 422
 

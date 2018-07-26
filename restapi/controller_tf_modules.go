@@ -50,9 +50,6 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 
 		tfm.Links = helpers.HalRootRscLinks(ch)
 		tfm.Embedded = nil
-		//tfm.Embedded = &models.ResourceListTfStack{
-		//	Stacks: make([]*models.ResourceTfStack, 0),
-		//}
 		return operations.NewCreateModuleCreated().WithPayload(tfm)
 	})
 }
@@ -96,13 +93,16 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		}
 
 		if len(module.Embedded.Stacks) > 0 {
-			stack_ids := []string{}
+			stackIds := make([]string, 0)
 			for _, stk := range module.Embedded.Stacks {
-				stack_ids = append(stack_ids, stk.ID)
+				stackIds = append(stackIds, stk.ID)
 			}
 			return NewServerError(
 				http.StatusUnprocessableEntity,
-				fmt.Sprintf("Could not delete module as it is relied up by stacks ['%s']", strings.Join(stack_ids, "','")),
+				fmt.Sprintf(
+					"Could not delete module as it is relied up by stacks ['%s']",
+					strings.Join(stackIds, "','"),
+				),
 			)
 		}
 

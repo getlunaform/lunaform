@@ -32,6 +32,13 @@ func (o *DeleteModuleReader) ReadResponse(response runtime.ClientResponse, consu
 		}
 		return result, nil
 
+	case 404:
+		result := NewDeleteModuleNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 422:
 		result := NewDeleteModuleUnprocessableEntity()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -68,6 +75,35 @@ func (o *DeleteModuleNoContent) Error() string {
 }
 
 func (o *DeleteModuleNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteModuleNotFound creates a DeleteModuleNotFound with default headers values
+func NewDeleteModuleNotFound() *DeleteModuleNotFound {
+	return &DeleteModuleNotFound{}
+}
+
+/*DeleteModuleNotFound handles this case with default header values.
+
+Not Found
+*/
+type DeleteModuleNotFound struct {
+	Payload *models.ServerError
+}
+
+func (o *DeleteModuleNotFound) Error() string {
+	return fmt.Sprintf("[DELETE /tf/module/{id}][%d] deleteModuleNotFound  %+v", 404, o.Payload)
+}
+
+func (o *DeleteModuleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

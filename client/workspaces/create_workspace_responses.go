@@ -46,6 +46,13 @@ func (o *CreateWorkspaceReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return nil, result
 
+	case 404:
+		result := NewCreateWorkspaceNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewCreateWorkspaceInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -134,6 +141,35 @@ func (o *CreateWorkspaceBadRequest) Error() string {
 }
 
 func (o *CreateWorkspaceBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateWorkspaceNotFound creates a CreateWorkspaceNotFound with default headers values
+func NewCreateWorkspaceNotFound() *CreateWorkspaceNotFound {
+	return &CreateWorkspaceNotFound{}
+}
+
+/*CreateWorkspaceNotFound handles this case with default header values.
+
+Not Found
+*/
+type CreateWorkspaceNotFound struct {
+	Payload *models.ServerError
+}
+
+func (o *CreateWorkspaceNotFound) Error() string {
+	return fmt.Sprintf("[PUT /tf/workspace/{name}][%d] createWorkspaceNotFound  %+v", 404, o.Payload)
+}
+
+func (o *CreateWorkspaceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ServerError)
 

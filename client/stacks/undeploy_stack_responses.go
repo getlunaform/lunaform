@@ -32,6 +32,13 @@ func (o *UndeployStackReader) ReadResponse(response runtime.ClientResponse, cons
 		}
 		return result, nil
 
+	case 404:
+		result := NewUndeployStackNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 422:
 		result := NewUndeployStackUnprocessableEntity()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -68,6 +75,35 @@ func (o *UndeployStackNoContent) Error() string {
 }
 
 func (o *UndeployStackNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewUndeployStackNotFound creates a UndeployStackNotFound with default headers values
+func NewUndeployStackNotFound() *UndeployStackNotFound {
+	return &UndeployStackNotFound{}
+}
+
+/*UndeployStackNotFound handles this case with default header values.
+
+Not Found
+*/
+type UndeployStackNotFound struct {
+	Payload *models.ServerError
+}
+
+func (o *UndeployStackNotFound) Error() string {
+	return fmt.Sprintf("[DELETE /tf/stack/{id}][%d] undeployStackNotFound  %+v", 404, o.Payload)
+}
+
+func (o *UndeployStackNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

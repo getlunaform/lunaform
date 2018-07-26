@@ -56,27 +56,3 @@ func (o *ListResourceGroupsOK) WriteResponse(rw http.ResponseWriter, producer ru
 		}
 	}
 }
-
-// ListResourceGroupsNotFoundCode is the HTTP code returned for type ListResourceGroupsNotFound
-const ListResourceGroupsNotFoundCode int = 404
-
-/*ListResourceGroupsNotFound Not Found
-
-swagger:response listResourceGroupsNotFound
-*/
-type ListResourceGroupsNotFound struct {
-}
-
-// NewListResourceGroupsNotFound creates ListResourceGroupsNotFound with default headers values
-func NewListResourceGroupsNotFound() *ListResourceGroupsNotFound {
-
-	return &ListResourceGroupsNotFound{}
-}
-
-// WriteResponse to the client
-func (o *ListResourceGroupsNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(404)
-}

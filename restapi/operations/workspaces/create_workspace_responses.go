@@ -145,6 +145,50 @@ func (o *CreateWorkspaceBadRequest) WriteResponse(rw http.ResponseWriter, produc
 	}
 }
 
+// CreateWorkspaceNotFoundCode is the HTTP code returned for type CreateWorkspaceNotFound
+const CreateWorkspaceNotFoundCode int = 404
+
+/*CreateWorkspaceNotFound Not Found
+
+swagger:response createWorkspaceNotFound
+*/
+type CreateWorkspaceNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
+}
+
+// NewCreateWorkspaceNotFound creates CreateWorkspaceNotFound with default headers values
+func NewCreateWorkspaceNotFound() *CreateWorkspaceNotFound {
+
+	return &CreateWorkspaceNotFound{}
+}
+
+// WithPayload adds the payload to the create workspace not found response
+func (o *CreateWorkspaceNotFound) WithPayload(payload *models.ServerError) *CreateWorkspaceNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the create workspace not found response
+func (o *CreateWorkspaceNotFound) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *CreateWorkspaceNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // CreateWorkspaceInternalServerErrorCode is the HTTP code returned for type CreateWorkspaceInternalServerError
 const CreateWorkspaceInternalServerErrorCode int = 500
 

@@ -12,14 +12,9 @@ var ListResourceGroupsController = func(ch helpers.ContextHelper) resources.List
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
-		rg := buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch)
-
-		r := resources.NewListResourceGroupsOK()
-		r.SetPayload(&models.ResponseListResources{
+		return resources.NewListResourceGroupsOK().WithPayload(&models.ResponseListResources{
 			Links:    helpers.HalRootRscLinks(ch),
-			Embedded: rg,
+			Embedded: buildResourceGroupResponse([]string{"tf", "identity", "vcs"}, ch),
 		})
-
-		return r
 	})
 }

@@ -94,9 +94,6 @@ func init() {
                 }
               }
             }
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
@@ -138,16 +135,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       },
@@ -175,6 +166,9 @@ func init() {
           "204": {
             "description": "No Content"
           },
+          "404": {
+            "$ref": "#/responses/404"
+          },
           "422": {
             "description": "Unprocessable Entity",
             "schema": {
@@ -182,10 +176,7 @@ func init() {
             }
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       }
@@ -240,13 +231,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found"
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       },
@@ -293,10 +281,7 @@ func init() {
             }
           },
           "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/400"
           }
         }
       }
@@ -338,16 +323,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       },
@@ -375,6 +354,9 @@ func init() {
           "204": {
             "description": "No Content"
           },
+          "404": {
+            "$ref": "#/responses/404"
+          },
           "422": {
             "description": "Unprocessable Entity",
             "schema": {
@@ -382,10 +364,7 @@ func init() {
             }
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       }
@@ -481,13 +460,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found"
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       },
@@ -593,16 +569,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       }
@@ -657,13 +627,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found"
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       },
@@ -755,16 +722,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       },
@@ -832,16 +793,13 @@ func init() {
             }
           },
           "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/400"
+          },
+          "404": {
+            "$ref": "#/responses/404"
           },
           "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
+            "$ref": "#/responses/500"
           }
         }
       }
@@ -1411,6 +1369,26 @@ func init() {
         }
       },
       "readOnly": true
+    }
+  },
+  "responses": {
+    "400": {
+      "description": "Bad Request",
+      "schema": {
+        "$ref": "#/definitions/server-error"
+      }
+    },
+    "404": {
+      "description": "Not Found",
+      "schema": {
+        "$ref": "#/definitions/server-error"
+      }
+    },
+    "500": {
+      "description": "Internal Server Error",
+      "schema": {
+        "$ref": "#/definitions/server-error"
+      }
     }
   },
   "securityDefinitions": {
@@ -1515,9 +1493,6 @@ func init() {
                 }
               }
             }
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
@@ -1596,6 +1571,12 @@ func init() {
           "204": {
             "description": "No Content"
           },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "schema": {
@@ -1661,7 +1642,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
           },
           "500": {
             "description": "Internal Server Error",
@@ -1796,6 +1780,12 @@ func init() {
           "204": {
             "description": "No Content"
           },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "schema": {
@@ -1902,7 +1892,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
           },
           "500": {
             "description": "Internal Server Error",
@@ -2014,7 +2007,7 @@ func init() {
             }
           },
           "404": {
-            "description": "Bad Request",
+            "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/server-error"
             }
@@ -2078,7 +2071,10 @@ func init() {
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
           },
           "500": {
             "description": "Internal Server Error",
@@ -2254,6 +2250,12 @@ func init() {
           },
           "400": {
             "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/server-error"
             }
@@ -2832,6 +2834,26 @@ func init() {
         }
       },
       "readOnly": true
+    }
+  },
+  "responses": {
+    "400": {
+      "description": "Bad Request",
+      "schema": {
+        "$ref": "#/definitions/server-error"
+      }
+    },
+    "404": {
+      "description": "Not Found",
+      "schema": {
+        "$ref": "#/definitions/server-error"
+      }
+    },
+    "500": {
+      "description": "Internal Server Error",
+      "schema": {
+        "$ref": "#/definitions/server-error"
+      }
     }
   },
   "securityDefinitions": {

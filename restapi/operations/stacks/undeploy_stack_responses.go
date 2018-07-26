@@ -37,6 +37,50 @@ func (o *UndeployStackNoContent) WriteResponse(rw http.ResponseWriter, producer 
 	rw.WriteHeader(204)
 }
 
+// UndeployStackNotFoundCode is the HTTP code returned for type UndeployStackNotFound
+const UndeployStackNotFoundCode int = 404
+
+/*UndeployStackNotFound Not Found
+
+swagger:response undeployStackNotFound
+*/
+type UndeployStackNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
+}
+
+// NewUndeployStackNotFound creates UndeployStackNotFound with default headers values
+func NewUndeployStackNotFound() *UndeployStackNotFound {
+
+	return &UndeployStackNotFound{}
+}
+
+// WithPayload adds the payload to the undeploy stack not found response
+func (o *UndeployStackNotFound) WithPayload(payload *models.ServerError) *UndeployStackNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the undeploy stack not found response
+func (o *UndeployStackNotFound) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *UndeployStackNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // UndeployStackUnprocessableEntityCode is the HTTP code returned for type UndeployStackUnprocessableEntity
 const UndeployStackUnprocessableEntityCode int = 422
 

@@ -65,6 +65,11 @@ const ListStateBackendsNotFoundCode int = 404
 swagger:response listStateBackendsNotFound
 */
 type ListStateBackendsNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
 }
 
 // NewListStateBackendsNotFound creates ListStateBackendsNotFound with default headers values
@@ -73,12 +78,27 @@ func NewListStateBackendsNotFound() *ListStateBackendsNotFound {
 	return &ListStateBackendsNotFound{}
 }
 
+// WithPayload adds the payload to the list state backends not found response
+func (o *ListStateBackendsNotFound) WithPayload(payload *models.ServerError) *ListStateBackendsNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the list state backends not found response
+func (o *ListStateBackendsNotFound) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *ListStateBackendsNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 // ListStateBackendsInternalServerErrorCode is the HTTP code returned for type ListStateBackendsInternalServerError

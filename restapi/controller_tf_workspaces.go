@@ -17,8 +17,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 		ch.SetRequest(params.HTTPRequest)
 
 		workspaces := []*models.ResourceTfWorkspace{}
-		err := db.List(DB_TABLE_TF_WORKSPACE, &workspaces)
-		if err != nil {
+		if err := db.List(DB_TABLE_TF_WORKSPACE, &workspaces); err != nil {
 			return NewServerError(http.StatusInternalServerError, err.Error())
 		}
 
@@ -45,9 +44,6 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 		tfw.Modules = []*models.ResourceTfModule{}
 
 		existingWorkspace := models.ResourceTfWorkspace{}
-
-		//halRscLinks := helpers.HalSelfLink(strings.TrimSuffix(ch.FQEndpoint, "s") + "/" + params.Name)
-		//halRscLinks.Doc = helpers.HalDocLink(ch).Doc
 
 		if err := db.Read(DB_TABLE_TF_WORKSPACE, params.Name, &existingWorkspace); err != nil {
 			if _, isNotFound := err.(database.RecordDoesNotExistError); isNotFound {

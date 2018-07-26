@@ -47,8 +47,6 @@ paths:
       operationId: list-resource-groups
       produces: ["application/vnd.lunaform.v1+json"]
       responses:
-        404:
-          description: Not Found
         200:
           description: OK
           examples:
@@ -121,11 +119,9 @@ paths:
           schema:
             $ref: "#/definitions/response-list-tf-modules"
         404:
-          description: Not Found
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
     post:
       tags:
         - modules
@@ -152,9 +148,7 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-module"
         400:
-          description: Bad Request
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/400"
   /tf/workspaces:
     get:
       tags:
@@ -212,11 +206,9 @@ paths:
           schema:
             $ref: "#/definitions/response-list-tf-stacks"
         404:
-          description: Not Found
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
     post:
       tags:
         - stacks
@@ -271,11 +263,9 @@ paths:
           schema:
             $ref: "#/definitions/response-list-tf-state-backends"
         404:
-          description: Not Found
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
     post:
       tags:
         - state-backends
@@ -337,13 +327,9 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-state-backend"
         404:
-          description: Bad Request
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
   /tf/workspace/{name}:
     put:
       tags:
@@ -385,13 +371,11 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-workspace"
         400:
-          description: Bad Request
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/400"
+        404:
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
     get:
       tags:
         - workspaces
@@ -416,13 +400,9 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-workspace"
         404:
-          description: Not Found
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
   /tf/module/{id}:
     delete:
       tags:
@@ -444,10 +424,10 @@ paths:
           description: Unprocessable Entity
           schema:
             $ref: "#/definitions/server-error"
+        404:
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
     get:
       tags:
         - modules
@@ -472,13 +452,9 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-module"
         404:
-          description: Not Found
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
   /tf/stack/{id}:
     delete:
       tags:
@@ -501,10 +477,10 @@ paths:
           description: Unprocessable Entity
           schema:
             $ref: "#/definitions/server-error"
+        404:
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
     get:
       tags:
         - stacks
@@ -529,13 +505,9 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-stack"
         404:
-          description: Not Found
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/404"
         500:
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/server-error"
+          $ref: "#/responses/500"
   /tf/stack/{id}/deployments:
     get:
       tags:
@@ -562,7 +534,18 @@ paths:
           schema:
             $ref: "#/definitions/response-list-tf-deployments"
 responses:
+  400:
+    description: Bad Request
+    schema:
+      $ref: "#/definitions/server-error"
+  404:
+    description: Not Found
+    schema:
+      $ref: "#/definitions/server-error"
   500:
+    description: Internal Server Error
+    schema:
+      $ref: "#/definitions/server-error"
 
 definitions:
 #  module:

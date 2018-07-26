@@ -90,13 +90,21 @@ func NewListStacksNotFound() *ListStacksNotFound {
 Not Found
 */
 type ListStacksNotFound struct {
+	Payload *models.ServerError
 }
 
 func (o *ListStacksNotFound) Error() string {
-	return fmt.Sprintf("[GET /tf/stacks][%d] listStacksNotFound ", 404)
+	return fmt.Sprintf("[GET /tf/stacks][%d] listStacksNotFound  %+v", 404, o.Payload)
 }
 
 func (o *ListStacksNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

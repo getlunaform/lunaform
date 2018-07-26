@@ -65,6 +65,11 @@ const ListModulesNotFoundCode int = 404
 swagger:response listModulesNotFound
 */
 type ListModulesNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
 }
 
 // NewListModulesNotFound creates ListModulesNotFound with default headers values
@@ -73,12 +78,27 @@ func NewListModulesNotFound() *ListModulesNotFound {
 	return &ListModulesNotFound{}
 }
 
+// WithPayload adds the payload to the list modules not found response
+func (o *ListModulesNotFound) WithPayload(payload *models.ServerError) *ListModulesNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the list modules not found response
+func (o *ListModulesNotFound) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *ListModulesNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 // ListModulesInternalServerErrorCode is the HTTP code returned for type ListModulesInternalServerError

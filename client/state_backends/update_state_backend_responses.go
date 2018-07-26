@@ -87,7 +87,7 @@ func NewUpdateStateBackendNotFound() *UpdateStateBackendNotFound {
 
 /*UpdateStateBackendNotFound handles this case with default header values.
 
-Bad Request
+Not Found
 */
 type UpdateStateBackendNotFound struct {
 	Payload *models.ServerError

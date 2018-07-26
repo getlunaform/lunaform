@@ -65,6 +65,11 @@ const ListStacksNotFoundCode int = 404
 swagger:response listStacksNotFound
 */
 type ListStacksNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
 }
 
 // NewListStacksNotFound creates ListStacksNotFound with default headers values
@@ -73,12 +78,27 @@ func NewListStacksNotFound() *ListStacksNotFound {
 	return &ListStacksNotFound{}
 }
 
+// WithPayload adds the payload to the list stacks not found response
+func (o *ListStacksNotFound) WithPayload(payload *models.ServerError) *ListStacksNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the list stacks not found response
+func (o *ListStacksNotFound) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *ListStacksNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 // ListStacksInternalServerErrorCode is the HTTP code returned for type ListStacksInternalServerError

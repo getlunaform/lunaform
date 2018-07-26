@@ -90,13 +90,21 @@ func NewListStateBackendsNotFound() *ListStateBackendsNotFound {
 Not Found
 */
 type ListStateBackendsNotFound struct {
+	Payload *models.ServerError
 }
 
 func (o *ListStateBackendsNotFound) Error() string {
-	return fmt.Sprintf("[GET /tf/state-backends][%d] listStateBackendsNotFound ", 404)
+	return fmt.Sprintf("[GET /tf/state-backends][%d] listStateBackendsNotFound  %+v", 404, o.Payload)
 }
 
 func (o *ListStateBackendsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

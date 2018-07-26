@@ -60,7 +60,7 @@ func (o *UpdateStateBackendOK) WriteResponse(rw http.ResponseWriter, producer ru
 // UpdateStateBackendNotFoundCode is the HTTP code returned for type UpdateStateBackendNotFound
 const UpdateStateBackendNotFoundCode int = 404
 
-/*UpdateStateBackendNotFound Bad Request
+/*UpdateStateBackendNotFound Not Found
 
 swagger:response updateStateBackendNotFound
 */

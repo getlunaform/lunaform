@@ -90,13 +90,21 @@ func NewListModulesNotFound() *ListModulesNotFound {
 Not Found
 */
 type ListModulesNotFound struct {
+	Payload *models.ServerError
 }
 
 func (o *ListModulesNotFound) Error() string {
-	return fmt.Sprintf("[GET /tf/modules][%d] listModulesNotFound ", 404)
+	return fmt.Sprintf("[GET /tf/modules][%d] listModulesNotFound  %+v", 404, o.Payload)
 }
 
 func (o *ListModulesNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }
