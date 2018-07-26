@@ -1,79 +1,92 @@
 package restapi
 
 import (
-	"bytes"
-	"net/http"
-	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/getlunaform/lunaform/helpers"
-	"github.com/getlunaform/lunaform/restapi/operations/resources"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/stretchr/testify/assert"
+	"github.com/go-openapi/swag"
 )
 
-func TestResourcesController(t *testing.T) {
+func Test_buildResourceGroupRootResponse(t *testing.T) {
 
-	oh := helpers.NewContextHelper(api.Context())
-	requestHost := "example.com"
-
-	for _, test := range []struct {
-		group        string
-		requestURL   string
-		responseCode int
-		response     string
+	for _, tt := range []struct {
+		name        string
+		ch          helpers.ContextHelper
+		wantRsclist *models.ResourceList
 	}{
 		{
-			group:        "tf",
-			responseCode: 200,
-			response:     `{"_embedded":{"resources":[{"_links":{"lf:self":{"href":"/tf/modules"}},"name":"modules"},{"_links":{"lf:self":{"href":"/tf/stacks"}},"name":"stacks"},{"_links":{"lf:self":{"href":"/tf/state-backends"}},"name":"state-backends"},{"_links":{"lf:self":{"href":"/tf/workspaces"}},"name":"workspaces"}]},"_links":{"curies":[{"href":"http://example.com/api/{rel}","name":"lf","templated":true},{"href":"http://example.com/api/docs#operation/{rel}","name":"doc","templated":true}],"doc:list-resources":{"href":"/list-resources"},"lf:self":{"href":"/tf"}}}`,
+			name:        "404",
+			wantRsclist: &models.ResourceList{Resources: []*models.Resource{}},
 		},
 		{
-			group:        "identity",
-			responseCode: 200,
-			response:     `{"_embedded":{"resources":[{"_links":{"lf:self":{"href":"/identity/groups"}},"name":"groups"},{"_links":{"lf:self":{"href":"/identity/providers"}},"name":"providers"},{"_links":{"lf:self":{"href":"/identity/users"}},"name":"users"}]},"_links":{"curies":[{"href":"http://example.com/api/{rel}","name":"lf","templated":true},{"href":"http://example.com/api/docs#operation/{rel}","name":"doc","templated":true}],"doc:list-resources":{"href":"/list-resources"},"lf:self":{"href":"/identity"}}}`,
+			name: "tf",
+			wantRsclist: &models.ResourceList{Resources: []*models.Resource{
+				{Name: swag.String("modules"),
+					Links: &models.HalRscLinks{
+						HalRscLinksAdditionalProperties: map[string]interface{}{
+							"lf:self": &models.HalHref{Href: "/tf/modules"}},
+					}},
+				{Name: swag.String("stacks"),
+					Links: &models.HalRscLinks{
+						HalRscLinksAdditionalProperties: map[string]interface{}{
+							"lf:self": &models.HalHref{Href: "/tf/stacks"}},
+					}},
+				{Name: swag.String("state-backends"),
+					Links: &models.HalRscLinks{
+						HalRscLinksAdditionalProperties: map[string]interface{}{
+							"lf:self": &models.HalHref{Href: "/tf/state-backends"}},
+					}},
+				{Name: swag.String("workspaces"),
+					Links: &models.HalRscLinks{
+						HalRscLinksAdditionalProperties: map[string]interface{}{
+							"lf:self": &models.HalHref{Href: "/tf/workspaces"}},
+					}},
+			}},
+			ch: helpers.ContextHelper{
+				Endpoint: "/tf",
+			},
 		},
 		{
-			group:        "vcs",
-			responseCode: 200,
-			response:     `{"_embedded":{"resources":[{"_links":{"lf:self":{"href":"/vcs/git"}},"name":"git"}]},"_links":{"curies":[{"href":"http://example.com/api/{rel}","name":"lf","templated":true},{"href":"http://example.com/api/docs#operation/{rel}","name":"doc","templated":true}],"doc:list-resources":{"href":"/list-resources"},"lf:self":{"href":"/vcs"}}}`,
+			name: "identity",
+			wantRsclist: &models.ResourceList{Resources: []*models.Resource{
+				{Name: swag.String("groups"),
+					Links: &models.HalRscLinks{
+						HalRscLinksAdditionalProperties: map[string]interface{}{
+							"lf:self": &models.HalHref{Href: "/identity/groups"}},
+					}},
+				{Name: swag.String("providers"),
+					Links: &models.HalRscLinks{
+						HalRscLinksAdditionalProperties: map[string]interface{}{
+							"lf:self": &models.HalHref{Href: "/identity/providers"}},
+					}},
+				{Name: swag.String("users"),
+					Links: &models.HalRscLinks{HalRscLinksAdditionalProperties: map[string]interface{}{
+						"lf:self": &models.HalHref{Href: "/identity/users"}},
+					}},
+			}},
+			ch: helpers.ContextHelper{
+				Endpoint: "/identity",
+			},
 		},
 		{
-			group:        "404",
-			responseCode: 404,
-			response:     "",
+			name: "vcs",
+			wantRsclist: &models.ResourceList{Resources: []*models.Resource{
+				{Name: swag.String("git"),
+					Links: &models.HalRscLinks{
+						HalRscLinksAdditionalProperties: map[string]interface{}{
+							"lf:self": &models.HalHref{Href: "/vcs/git"}},
+					}},
+			}},
+			ch: helpers.ContextHelper{
+				Endpoint: "/vcs",
+			},
 		},
 	} {
-
-		t.Run(test.group, func(t *testing.T) {
-
-			requestURI := "/api/" + test.group
-			u, err := url.Parse("http://" + requestHost + requestURI)
-			assert.NoError(t, err)
-
-			oh.Request = &http.Request{
-				Method:     "GET",
-				Host:       requestHost,
-				RequestURI: requestURI,
-				URL:        u,
-			}
-
-			r := ListResourcesController(oh).Handle(resources.ListResourcesParams{
-				HTTPRequest: oh.Request,
-				Group:       test.group,
-			})
-
-			w := httptest.NewRecorder()
-			p := mockProducer{}
-			r.WriteResponse(w, p)
-
-			buf := new(bytes.Buffer)
-			buf.ReadFrom(w.Result().Body)
-			body := buf.String()
-
-			assert.Equal(t, test.responseCode, w.Result().StatusCode)
-			assert.Equal(t, test.response, body)
-
+		t.Run(tt.name, func(t *testing.T) {
+			gotRsclist := buildResourceGroupRootResponse(tt.name, tt.ch);
+			assert.Equal(t, tt.wantRsclist, gotRsclist)
 		})
 	}
 }

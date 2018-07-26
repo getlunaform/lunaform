@@ -934,6 +934,9 @@ func init() {
                 }
               }
             }
+          },
+          "404": {
+            "$ref": "#/responses/404"
           }
         }
       }
@@ -2398,6 +2401,12 @@ func init() {
                   ]
                 }
               }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
             }
           }
         }

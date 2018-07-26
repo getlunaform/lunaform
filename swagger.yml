@@ -94,6 +94,8 @@ paths:
                     _links: {self: {href: "http://example.com/api/identity/users"}}
           schema:
             $ref: "#/definitions/response-list-resources"
+        404:
+          $ref: "#/responses/404"
   /tf/modules:
     get:
       tags:

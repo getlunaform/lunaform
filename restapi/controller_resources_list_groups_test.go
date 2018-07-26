@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestResourceGroupsController(t *testing.T) {
+func Test_resourceGroupsController(t *testing.T) {
 	oh := helpers.NewContextHelper(api.Context())
 	requestHost := "example.com"
 

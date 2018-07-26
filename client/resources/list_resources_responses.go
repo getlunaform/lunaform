@@ -32,6 +32,13 @@ func (o *ListResourcesReader) ReadResponse(response runtime.ClientResponse, cons
 		}
 		return result, nil
 
+	case 404:
+		result := NewListResourcesNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
@@ -57,6 +64,35 @@ func (o *ListResourcesOK) Error() string {
 func (o *ListResourcesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ResponseListResources)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewListResourcesNotFound creates a ListResourcesNotFound with default headers values
+func NewListResourcesNotFound() *ListResourcesNotFound {
+	return &ListResourcesNotFound{}
+}
+
+/*ListResourcesNotFound handles this case with default header values.
+
+Not Found
+*/
+type ListResourcesNotFound struct {
+	Payload *models.ServerError
+}
+
+func (o *ListResourcesNotFound) Error() string {
+	return fmt.Sprintf("[GET /{group}][%d] listResourcesNotFound  %+v", 404, o.Payload)
+}
+
+func (o *ListResourcesNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ServerError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

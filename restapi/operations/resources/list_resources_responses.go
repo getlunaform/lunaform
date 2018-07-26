@@ -56,3 +56,47 @@ func (o *ListResourcesOK) WriteResponse(rw http.ResponseWriter, producer runtime
 		}
 	}
 }
+
+// ListResourcesNotFoundCode is the HTTP code returned for type ListResourcesNotFound
+const ListResourcesNotFoundCode int = 404
+
+/*ListResourcesNotFound Not Found
+
+swagger:response listResourcesNotFound
+*/
+type ListResourcesNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ServerError `json:"body,omitempty"`
+}
+
+// NewListResourcesNotFound creates ListResourcesNotFound with default headers values
+func NewListResourcesNotFound() *ListResourcesNotFound {
+
+	return &ListResourcesNotFound{}
+}
+
+// WithPayload adds the payload to the list resources not found response
+func (o *ListResourcesNotFound) WithPayload(payload *models.ServerError) *ListResourcesNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the list resources not found response
+func (o *ListResourcesNotFound) SetPayload(payload *models.ServerError) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *ListResourcesNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}

@@ -37,3 +37,7 @@ func (cser *CommonServerErrorResponder) WriteResponse(rw http.ResponseWriter, pr
 		}
 	}
 }
+
+func (cser *CommonServerErrorResponder) Error() {
+
+}
