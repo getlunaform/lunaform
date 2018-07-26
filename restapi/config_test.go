@@ -3,7 +3,7 @@ package restapi
 import (
 	"encoding/json"
 	"github.com/Flaque/filet"
-	"github.com/getlunaform/lunaform/server/restapi/operations"
+	"github.com/getlunaform/lunaform/restapi/operations"
 	"github.com/go-openapi/loads"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
