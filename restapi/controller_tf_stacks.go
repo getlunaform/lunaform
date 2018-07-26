@@ -79,7 +79,7 @@ var CreateTfStackController = func(
 		if err := db.Read(DB_TABLE_TF_MODULE, module.ID, &module); err != nil {
 			return operations.NewDeployStackBadRequest().WithPayload(helpers.NewServerError(
 				http.StatusBadRequest,
-				fmt.Sprintf("Could not find module with id '%s'", params.TerraformStack.ModuleID),
+				fmt.Sprintf("Could not find module with id '%s'", *params.TerraformStack.ModuleID),
 			),
 			)
 		}
