@@ -26,6 +26,10 @@ func HalSelfLink(links *models.HalRscLinks, href string) *models.HalRscLinks {
 		links = newHalRscLinks()
 	}
 
+	if href == "" {
+		href = "/"
+	}
+
 	links.HalRscLinksAdditionalProperties["lf:self"] = &models.HalHref{Href: href}
 
 	return links
