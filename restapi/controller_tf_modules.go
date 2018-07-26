@@ -20,9 +20,7 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 
 		modules := make([]*models.ResourceTfModule, 0)
 		if err := db.List(DB_TABLE_TF_MODULE, &modules); err != nil {
-			return operations.NewListModulesInternalServerError().WithPayload(
-				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-			)
+			return NewServerError(http.StatusInternalServerError, err.Error())
 		}
 
 		for _, module := range modules {
@@ -47,9 +45,7 @@ var CreateTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 		tfm.ID = idGenerator.MustGenerate()
 
 		if err := db.Create(DB_TABLE_TF_MODULE, tfm.ID, tfm); err != nil {
-			return operations.NewCreateModuleBadRequest().WithPayload(
-				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-			)
+			return NewServerError(http.StatusInternalServerError, err.Error())
 		}
 
 		tfm.Links = helpers.HalRootRscLinks(ch)
@@ -67,13 +63,9 @@ var GetTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper
 
 		module := &models.ResourceTfModule{}
 		if err := db.Read(DB_TABLE_TF_MODULE, params.ID, module); err != nil {
-			return operations.NewGetModuleInternalServerError().WithPayload(
-				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-			)
+			return NewServerError(http.StatusInternalServerError, err.Error())
 		} else if module == nil {
-			return operations.NewGetModuleNotFound().WithPayload(
-				helpers.NewServerError(http.StatusNotFound, "Could not find module with id '"+params.ID+"'"),
-			)
+			return NewServerError(http.StatusNotFound, "Could not find module with id '"+params.ID+"'")
 		} else {
 
 			module.Embedded = &models.ResourceListTfStack{
@@ -99,9 +91,7 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 			if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {
 				return operations.NewDeleteModuleNoContent()
 			} else {
-				return operations.NewDeleteModuleInternalServerError().WithPayload(
-					helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-				)
+				return NewServerError(http.StatusInternalServerError, err.Error())
 			}
 		}
 
@@ -110,18 +100,14 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 			for _, stk := range module.Embedded.Stacks {
 				stack_ids = append(stack_ids, stk.ID)
 			}
-			return operations.NewDeleteModuleUnprocessableEntity().WithPayload(
-				helpers.NewServerError(
-					http.StatusUnprocessableEntity,
-					fmt.Sprintf("Could not delete module as it is relied up by stacks ['%s']", strings.Join(stack_ids, "','")),
-				),
+			return NewServerError(
+				http.StatusUnprocessableEntity,
+				fmt.Sprintf("Could not delete module as it is relied up by stacks ['%s']", strings.Join(stack_ids, "','")),
 			)
 		}
 
 		db.Delete(DB_TABLE_TF_MODULE, params.ID)
 
-		return operations.NewDeleteModuleInternalServerError().WithPayload(
-			helpers.NewServerError(http.StatusInternalServerError, "Could not delete module"),
-		)
+		return NewServerError(http.StatusInternalServerError, "Could not delete module")
 	})
 }

@@ -561,6 +561,9 @@ paths:
                 deployments:
           schema:
             $ref: "#/definitions/response-list-tf-deployments"
+responses:
+  500:
+
 definitions:
 #  module:
 #    type: string

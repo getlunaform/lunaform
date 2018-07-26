@@ -31,9 +31,7 @@ var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelpe
 		stacks := make([]*models.ResourceTfStack, 0)
 		err := db.List(DB_TABLE_TF_STACK, &stacks)
 		if err != nil {
-			return operations.NewListStacksInternalServerError().WithPayload(
-				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-			)
+			return NewServerError(http.StatusInternalServerError, err.Error())
 		}
 
 		for _, stack := range stacks {
@@ -65,11 +63,9 @@ var CreateTfStackController = func(
 			Name: swag.String(params.TerraformStack.Workspace),
 		}
 		if err := db.Read(DB_TABLE_TF_WORKSPACE, tfs.Workspace, &workspace); err != nil {
-			return operations.NewDeployStackBadRequest().WithPayload(
-				helpers.NewServerError(
-					http.StatusBadRequest,
-					fmt.Sprintf("Could not find workspace with name'%s'", params.TerraformStack.Workspace),
-				),
+			return NewServerError(
+				http.StatusBadRequest,
+				fmt.Sprintf("Could not find workspace with name'%s'", params.TerraformStack.Workspace),
 			)
 		}
 
@@ -77,10 +73,9 @@ var CreateTfStackController = func(
 			ID: *params.TerraformStack.ModuleID,
 		}
 		if err := db.Read(DB_TABLE_TF_MODULE, module.ID, &module); err != nil {
-			return operations.NewDeployStackBadRequest().WithPayload(helpers.NewServerError(
+			return NewServerError(
 				http.StatusBadRequest,
 				fmt.Sprintf("Could not find module with id '%s'", *params.TerraformStack.ModuleID),
-			),
 			)
 		}
 
@@ -130,13 +125,9 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 		stack := &models.ResourceTfStack{}
 
 		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
-			return operations.NewGetStackInternalServerError().WithPayload(
-				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-			)
+			return NewServerError(http.StatusInternalServerError, err.Error())
 		} else if stack == nil {
-			return operations.NewGetStackNotFound().WithPayload(
-				helpers.NewServerError(http.StatusNotFound, "Could not find stack with id '"+id+"'"),
-			)
+			return NewServerError(http.StatusNotFound, "Could not find stack with id '"+id+"'")
 		} else {
 			stack.Links = helpers.HalSelfLink(
 				helpers.HalDocLink(nil, ch.OperationID),
@@ -171,14 +162,10 @@ var DeleteTfStackController = func(
 			if _, stackNotFound := err.(database.RecordDoesNotExistError); stackNotFound {
 				return operations.NewUndeployStackNoContent()
 			} else {
-				return operations.NewUndeployStackInternalServerError().WithPayload(
-					helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-				)
+				return NewServerError(http.StatusInternalServerError, err.Error())
 			}
 		}
-		return operations.NewUndeployStackInternalServerError().WithPayload(
-			helpers.NewServerError(http.StatusInternalServerError, "Could not delete stack."),
-		)
+		return NewServerError(http.StatusInternalServerError, "Could not delete stack.")
 	})
 }
 
@@ -196,13 +183,9 @@ var ListTfStackDeploymentsController = func(
 		deployments := &models.ResponseListTfDeployments{}
 
 		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
-			return operations.NewListStacksInternalServerError().WithPayload(
-				helpers.NewServerError(http.StatusInternalServerError, err.Error()),
-			)
+			return NewServerError(http.StatusInternalServerError, err.Error())
 		} else if stack == nil {
-			return operations.NewGetStackNotFound().WithPayload(
-				helpers.NewServerError(http.StatusNotFound, "Could not find stack with id '"+id+"'"),
-			)
+			return NewServerError(http.StatusNotFound, "Could not find stack with id '"+id+"'")
 		}
 		deployments.Embedded.Deployments = stack.Embedded.Deployments
 		deployments.Embedded.Stack = stack
