@@ -136,11 +136,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.StateBackendsCreateStateBackendHandler = CreateTfStateBackendsController(idp, oh, db)
 	api.StateBackendsUpdateStateBackendHandler = UpdateTfStateBackendsController(idp, oh, db)
 
-	api.ServerShutdown = func() {
-		fmt.Print("Shutdown handler")
-		dbDriver.Close()
-		workerPool.Shutdown()
-	}
+	api.ServerShutdown = shutdownHandler(dbDriver, workerPool)
 
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{{
 		ShortDescription: "Version",
@@ -150,6 +146,14 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	}}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
+}
+
+func shutdownHandler(dbDriver database.Driver, workerPool *workers.TfAgentPool) func() {
+	return func() {
+		fmt.Print("Shutdown handler")
+		dbDriver.Close()
+		workerPool.Shutdown()
+	}
 }
 
 // The TLS configuration before HTTPS server starts.
