@@ -8,11 +8,11 @@ import (
 	"github.com/getlunaform/go-terraform"
 	"fmt"
 	"os"
-	"path/filepath"
 )
 
 const (
 	TF_ACTION_PLAN_TYPE = "plan"
+	TF_ACTION_INIT_TYPE = "init"
 )
 
 type TfAction interface {
@@ -20,8 +20,15 @@ type TfAction interface {
 }
 
 type TfActionPlan struct {
+	Module     *models.ResourceTfModule
 	Stack      *models.ResourceTfStack
 	Deployment *models.ResourceTfDeployment
+	DoInit      bool
+}
+
+type TfActionInit struct {
+	Module *models.ResourceTfModule
+	Stack  *models.ResourceTfStack
 }
 
 func (tap *TfActionPlan) Type() *string {
@@ -57,41 +64,28 @@ func (p *TfAgentPool) WithDB(db database.Database) *TfAgentPool {
 	return p
 }
 
+func (p *TfAgentPool) DoInit(a *TfActionInit) {
+	p.pool.Submit(
+		a.BuildJob(p.scratchFolder))
+}
+
 func (p *TfAgentPool) DoPlan(a *TfActionPlan) {
-	p.pool.Submit(func() {
+	p.pool.Submit(
+		a.BuildJob(p.scratchFolder))
+}
 
-		workingDir := filepath.Join(p.scratchFolder, "stack-"+a.Stack.ID)
+type gitProgressBuffer struct {
+	logs *goterraform.OutputLog
+}
 
-		params := &goterraform.TerraformPlanParams{
-			Out: swag.String(filepath.Join(workingDir, "deployment-"+a.Deployment.ID+".plan")),
-		}
-
-		action := goterraform.NewTerraformClient().
-			WithWorkingDirectory(workingDir).
-			Plan(params).
-			Init()
-
-		logs := goterraform.NewOutputLogs()
-		if err := action.InitLogger(logs); err != nil {
-			fmt.Printf("An error occured initialising task logger: " + err.Error())
-			return
-		}
-
-		if err := os.Mkdir(workingDir, os.ModeDir); err != nil {
-			logs.Error(err)
-			return
-		}
-
-		if err := action.Cmd.Start(); err != nil {
-			logs.Error(err)
-			return
-		}
-
-		if err := action.Cmd.Wait(); err != nil {
-			logs.Error(err)
-			return
-		}
-
-	})
+func (gpb gitProgressBuffer) Write(b []byte) (delta int, err error) {
+	l := len(b)
+	fmt.Print(
+		gpb.logs.StdoutWithTags(
+			string(b),
+			[]string{"git"},
+		).String(),
+	)
+	return l, nil
 
 }
