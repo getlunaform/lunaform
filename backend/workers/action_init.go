@@ -1,22 +1,28 @@
 package workers
 
 import (
-	"path/filepath"
 	"github.com/getlunaform/go-terraform"
 	"fmt"
 	"os"
+	"github.com/go-openapi/swag"
 )
 
 func (a *TfActionInit) BuildJob(scratchFolder string) func() {
 	return func() {
-		stackDirectory := "stack-" + a.Stack.ID
-		fullStackDirectory := filepath.Join(scratchFolder, stackDirectory)
 
-		params := goterraform.NewTerraformInitParams()
-		params.FromModule = *a.Module.Source
+		bs := NewBuildSpace(scratchFolder).
+			WithModule(a.Module).
+			WithStack(a.Stack).
+			WithDeployment(a.Deployment)
+
+		params := &goterraform.TerraformInitParams{
+			FromModule: *a.Module.Source,
+			Input:      swag.Bool(false),
+			Upgrade:    swag.Bool(true),
+		}
 
 		action := goterraform.NewTerraformClient().
-			WithWorkingDirectory(fullStackDirectory).
+			WithWorkingDirectory(bs.MustStackDir(true)).
 			Init(params).
 			Initialise()
 
@@ -26,7 +32,7 @@ func (a *TfActionInit) BuildJob(scratchFolder string) func() {
 			return
 		}
 
-		if err := os.Mkdir(fullStackDirectory, 0700); err != nil {
+		if err := os.MkdirAll(bs.MustDeploymentDirectory(true), 0700); err != nil {
 			logs.Error(err)
 			return
 		}

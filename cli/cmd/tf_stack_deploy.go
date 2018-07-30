@@ -21,12 +21,14 @@ import (
 	"github.com/getlunaform/lunaform/client/stacks"
 	"github.com/getlunaform/lunaform/models"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 var tfStackCreateCmdModuleFlag string
 var tfStackCreateCmdModuleIdFlag string
 var tfStackCreateCmdNameFlag string
 var tfStackCreateCmdWorkspaceFlag string
+var tfStackCreateCmdStringSlice []string
 
 // tfStackCreateCmd represents the tfStackCreate command
 var tfStackCreateCmd = &cobra.Command{
@@ -97,12 +99,23 @@ to quickly create a Cobra application.`,
 	},
 }
 
+func parseVariableOptions(rawOptions []string) (options map[string]string) {
+	options = make(map[string]string, 0)
+	for _, opt := range rawOptions {
+		var_parts := strings.Split(opt, "=")
+		options[var_parts[0]] = var_parts[1]
+	}
+	return
+}
+
 func init() {
 	flags := tfStackCreateCmd.Flags()
 	flags.StringVar(&tfStackCreateCmdModuleFlag, "module", "", "Name of the terraform module to deploy")
 	flags.StringVar(&tfStackCreateCmdModuleIdFlag, "module-id", "", "ID of the terraform module to deploy")
 	flags.StringVar(&tfStackCreateCmdNameFlag, "name", "", "Name of the deployed terraform module")
 	flags.StringVar(&tfStackCreateCmdWorkspaceFlag, "workspace", "", "Terraform workspace to deploy into.")
+
+	flags.StringSliceVar(&tfStackCreateCmdStringSlice, "var", []string{""}, "Module variables")
 
 	tfStackCreateCmd.MarkFlagRequired("name")
 	tfStackCreateCmd.MarkFlagRequired("workspace")

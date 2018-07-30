@@ -1213,6 +1213,12 @@ func init() {
             "FAIL"
           ]
         },
+        "variables": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
         "workspace": {
           "type": "string"
         }
@@ -2683,6 +2689,12 @@ func init() {
             "SUCCESS",
             "FAIL"
           ]
+        },
+        "variables": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         },
         "workspace": {
           "type": "string"

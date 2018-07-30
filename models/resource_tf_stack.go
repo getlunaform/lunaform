@@ -41,6 +41,9 @@ type ResourceTfStack struct {
 	// Enum: [DEPLOYING SUCCESS FAIL]
 	Status string `json:"status,omitempty"`
 
+	// variables
+	Variables map[string]string `json:"variables,omitempty"`
+
 	// workspace
 	Workspace string `json:"workspace,omitempty"`
 }

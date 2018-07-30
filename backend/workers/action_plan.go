@@ -1,7 +1,6 @@
 package workers
 
 import (
-	"path/filepath"
 	"github.com/getlunaform/go-terraform"
 	"github.com/go-openapi/swag"
 	"fmt"
@@ -14,23 +13,25 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 
 		if a.DoInit {
 			init := &TfActionInit{
-				Module: a.Module,
-				Stack:  a.Stack,
+				Module:     a.Module,
+				Stack:      a.Stack,
+				Deployment: a.Deployment,
 			}
 			init.BuildJob(scratchFolder)()
 		}
 
-		stackDirectory := "stack-" + a.Stack.ID
-		fullStackDirectory := filepath.Join(scratchFolder, stackDirectory)
-		planFileName := "deployment-" + a.Deployment.ID + ".plan"
+		bs := NewBuildSpace(scratchFolder).
+			WithModule(a.Module).
+			WithStack(a.Stack).
+			WithDeployment(a.Deployment)
 
 		params := &goterraform.TerraformPlanParams{
-			Out:   swag.String(planFileName),
+			Out:   swag.String(bs.MustPlanPath(false)),
 			Input: swag.Bool(false),
 		}
 
 		action := goterraform.NewTerraformClient().
-			WithWorkingDirectory(fullStackDirectory).
+			WithWorkingDirectory(bs.MustStackDir(true)).
 			Plan(params).
 			Initialise()
 
@@ -40,7 +41,7 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 			return
 		}
 
-		if err := os.Mkdir(fullStackDirectory, 0700); err != nil {
+		if err := os.MkdirAll(bs.MustDeploymentDirectory(true), 0700); err != nil {
 			if pathErr, isPathErr := err.(*os.PathError); isPathErr {
 				if pathErr.Err != unix.EEXIST {
 					logs.Error(err)

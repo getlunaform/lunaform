@@ -23,12 +23,13 @@ type TfActionPlan struct {
 	Module     *models.ResourceTfModule
 	Stack      *models.ResourceTfStack
 	Deployment *models.ResourceTfDeployment
-	DoInit      bool
+	DoInit     bool
 }
 
 type TfActionInit struct {
-	Module *models.ResourceTfModule
-	Stack  *models.ResourceTfStack
+	Module     *models.ResourceTfModule
+	Stack      *models.ResourceTfStack
+	Deployment *models.ResourceTfDeployment
 }
 
 func (tap *TfActionPlan) Type() *string {

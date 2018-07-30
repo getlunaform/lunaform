@@ -738,6 +738,10 @@ definitions:
           - FAIL
       workspace:
         type: string
+      variables:
+        type: object
+        additionalProperties:
+          type: string
   resource-tf-deployment:
     type: object
     properties:
