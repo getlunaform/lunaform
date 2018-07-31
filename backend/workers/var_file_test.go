@@ -10,36 +10,91 @@ func TestVariableFile_Build(t *testing.T) {
 
 	for _, tt := range []struct {
 		name      string
-		variables map[string]string
+		variables map[string]*VariableFileEntry
 		want      string
 	}{
 		{
-			name: "String",
-			variables: map[string]string{
-				"hello": "world",
+			name: "string",
+			variables: map[string]*VariableFileEntry{
+				"hello": {Type: VARIABLE_TYPE_STRING, String: "world"},
 			},
 			want: `variable "hello" {
-    default = "world"
+  type = "string"
+
+  default = "world"
 }
+
 `,
 		},
 		{
-			name: "Slice",
-			variables: map[string]string{
-				"hello": "[foo,bar]",
+			name: "slice",
+			variables: map[string]*VariableFileEntry{
+				"hello": {Type: VARIABLE_TYPE_SLICE, Slice: []string{"foo", "bar"}},
 			},
 			want: `variable "hello" {
-    default = ["foo", "bar"]
-    type = "list"
+  type = "list"
+
+  default = [
+    "foo",
+    "bar"
+  ]
 }
+
+`,
+		},
+		{
+			name: "map",
+			variables: map[string]*VariableFileEntry{
+				"hello": {Type: VARIABLE_TYPE_MAP, Map: map[string]string{"foo": "bar"}},
+			},
+			want: `variable "hello" {
+  type = "map"
+
+  default = {
+    foo = "bar"
+  }
+}
+
+`,
+		},
+		{
+			name: "mixed",
+			variables: map[string]*VariableFileEntry{
+				"map":    {Type: VARIABLE_TYPE_MAP, Map: map[string]string{"foo": "bar"}},
+				"slice":  {Type: VARIABLE_TYPE_SLICE, Slice: []string{"foo", "bar"}},
+				"string": {Type: VARIABLE_TYPE_STRING, String: "world"},
+			},
+			want: `variable "map" {
+  type = "map"
+
+  default = {
+    foo = "bar"
+  }
+}
+
+variable "slice" {
+  type = "list"
+
+  default = [
+    "foo",
+    "bar"
+  ]
+}
+
+variable "string" {
+  type = "string"
+
+  default = "world"
+}
+
 `,
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			vf := &VariableFile{
-				variables: tt.variables,
+				Variables: tt.variables,
 			}
-			assert.Equal(t, tt.want, vf.Build())
+			assert.Equal(t, tt.want, string(vf.Byte()))
 		})
 	}
 }

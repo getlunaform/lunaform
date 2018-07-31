@@ -3,6 +3,10 @@ package workers
 import (
 	"text/template"
 	"bytes"
+	"strings"
+	"fmt"
+	"io/ioutil"
+	"reflect"
 )
 
 const (
@@ -19,28 +23,98 @@ const (
 
 	PARSER_STATE_ESCAPE_START  = 20
 	PARSER_STATE_ESCAPE_STRING = 21
+
+	VARIABLE_TYPE_STRING = "string"
+	VARIABLE_TYPE_MAP    = "map"
+	VARIABLE_TYPE_SLICE  = "list"
 )
 
 type VariableFile struct {
-	//filePath  string
-	variables map[string]string
+	filePath  string
+	Variables map[string]*VariableFileEntry
 }
 
-func (vf *VariableFile) Build() string {
-	templateStr := `{{range $k,$v := .}}variable "{{$k}}" {
-    default = "{{$v}}"
+type VariableFileEntry struct {
+	Type   string
+	Slice  []string
+	Map    map[string]string
+	String string
 }
+
+func (vfe *VariableFileEntry) Value() string {
+	switch vfe.Type {
+	case VARIABLE_TYPE_STRING:
+		return fmt.Sprintf("\"%s\"", vfe.String)
+	case VARIABLE_TYPE_MAP:
+		return vfe.mapToString()
+	case VARIABLE_TYPE_SLICE:
+		return fmt.Sprintf("[\n    \"%s\"\n  ]", strings.Join(vfe.Slice, "\",\n    \""))
+	}
+	return ""
+}
+
+func (vfe *VariableFileEntry) mapToString() string {
+	mapEntries := make([]string, 0)
+	for key, value := range vfe.Map {
+		mapEntries = append(mapEntries, fmt.Sprintf("%s = \"%s\"", key, value))
+	}
+	return fmt.Sprintf("{\n    %s\n  }", strings.Join(mapEntries, ","))
+}
+
+func (vf *VariableFile) Parse(variables map[string]string) {
+	for key, variable := range variables {
+		if vf.IsMap(variable) {
+			vf.Variables[key] = &VariableFileEntry{Type: VARIABLE_TYPE_MAP, Map: vf.ParseMap(variable)}
+		} else if vf.IsSlice(variable) {
+			vf.Variables[key] = &VariableFileEntry{Type: VARIABLE_TYPE_SLICE, Slice: vf.ParseSlice(variable)}
+		} else if vf.IsString(variable) {
+			vf.Variables[key] = &VariableFileEntry{Type: VARIABLE_TYPE_STRING, String: variable}
+		}
+	}
+}
+
+func (vf *VariableFile) Byte() []byte {
+	templateStr := `{{range $k,$v := .Variables}}variable "{{$k}}" {
+  type = "{{$v.Type}}"
+
+  default = {{$v.Value}}
+}
+
 {{end}}`
-	templ, err := template.New("variables").Parse(templateStr)
+	templ, err := template.New("variables").Funcs(template.FuncMap{
+		"last": func(x int, a interface{}) bool {
+			return x == reflect.ValueOf(a).Len()-1
+		},
+	}).Parse(templateStr)
 	if err != nil {
 		panic(err)
 	}
 	var tpl bytes.Buffer
-	err = templ.Execute(&tpl, vf.variables)
+	err = templ.Execute(&tpl, vf)
 	if err != nil {
 		panic(err)
 	}
-	return tpl.String()
+	return tpl.Bytes()
+}
+
+func (vf *VariableFile) String() string {
+	return string(vf.Byte())
+}
+
+func (vf *VariableFile) WriteToFile() (err error) {
+	return ioutil.WriteFile("/tmp/dat1", vf.Byte(), 0644)
+}
+
+func (vf *VariableFile) IsSlice(raw string) bool {
+	return strings.HasPrefix(raw, "[")
+}
+
+func (vf *VariableFile) IsMap(raw string) bool {
+	return strings.HasPrefix(raw, "{")
+}
+
+func (vf *VariableFile) IsString(raw string) bool {
+	return !vf.IsSlice(raw) && !vf.IsMap(raw)
 }
 
 func (vf *VariableFile) ParseSlice(raw string) (slice []string) {
