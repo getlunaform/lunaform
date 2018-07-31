@@ -28,6 +28,7 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 		params := &goterraform.TerraformPlanParams{
 			Out:   swag.String(bs.MustPlanPath(false)),
 			Input: swag.Bool(false),
+			Var:   &a.Stack.Variables,
 		}
 
 		action := goterraform.NewTerraformClient().

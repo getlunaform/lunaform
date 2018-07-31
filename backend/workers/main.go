@@ -5,8 +5,6 @@ import (
 	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/go-openapi/swag"
-	"github.com/getlunaform/go-terraform"
-	"fmt"
 	"os"
 )
 
@@ -73,20 +71,4 @@ func (p *TfAgentPool) DoInit(a *TfActionInit) {
 func (p *TfAgentPool) DoPlan(a *TfActionPlan) {
 	p.pool.Submit(
 		a.BuildJob(p.scratchFolder))
-}
-
-type gitProgressBuffer struct {
-	logs *goterraform.OutputLog
-}
-
-func (gpb gitProgressBuffer) Write(b []byte) (delta int, err error) {
-	l := len(b)
-	fmt.Print(
-		gpb.logs.StdoutWithTags(
-			string(b),
-			[]string{"git"},
-		).String(),
-	)
-	return l, nil
-
 }

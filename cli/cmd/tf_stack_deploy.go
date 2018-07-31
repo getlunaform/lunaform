@@ -87,6 +87,7 @@ to quickly create a Cobra application.`,
 				ModuleID:  String(module.ID),
 				Name:      String(tfStackCreateCmdNameFlag),
 				Workspace: tfStackCreateCmdWorkspaceFlag,
+				Variables: parseVariableOptions(tfStackCreateCmdStringSlice),
 			},
 		)
 

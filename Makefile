@@ -14,8 +14,8 @@ BUILD_ID?=$(ENVIRONMENT)
 
 GOROOT?=${HOME}/go
 
-GO_TARGETS= ./server ./backend
-GOR_TARGETS= ./server/... ./backend/...
+GO_TARGETS= ./restapi ./models ./helpers
+GOR_TARGETS= ./restapi/... ./models/... ./helpers/...
 
 VERSION?=$(shell git rev-parse --short HEAD)
 

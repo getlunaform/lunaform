@@ -46,8 +46,6 @@ var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.Conte
 				StateBackends: statebackends,
 			},
 		})
-
-		return nil
 	})
 }
 
