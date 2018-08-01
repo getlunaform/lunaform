@@ -69,7 +69,10 @@ generate-server:
 		--spec=$(SRC_YAML)
 
 run:
-	$(CWD)/lunaform-server --port=8080 --scheme=http
+	$(CWD)/lunaform-server \
+		--port=8080 \
+		--scheme=http \
+		--api-key=dev-key
 
 ##################
 # Client targets #
@@ -142,8 +145,8 @@ format:
 
 lint:
 	diff -u <(echo -n) <(gofmt -d -s $(shell find server -type d))
-#	diff -u <(echo -n) <(gofmt -d -s $(shell find backend -type d))
-#	golint -set_exit_status . $(shell glide novendor)
+	diff -u <(echo -n) <(gofmt -d -s $(shell find backend -type d))
+	golint -set_exit_status . $(shell glide novendor)
 
 
 ##################
