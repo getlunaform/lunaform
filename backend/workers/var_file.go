@@ -27,10 +27,25 @@ const (
 	VARIABLE_TYPE_STRING = "string"
 	VARIABLE_TYPE_MAP    = "map"
 	VARIABLE_TYPE_SLICE  = "list"
+
+	VARIABLE_FILE_TYPE_TF     = "tf"
+	VARIABLE_FILE_TYPE_TFVARS = "tfvars"
 )
+
+func newVariableFile(filePath string) *VariableFile {
+	return newVariableFileWithType(filePath, VARIABLE_FILE_TYPE_TF)
+}
+
+func newVariableFileWithType(filePath string, fileType string) *VariableFile {
+	return &VariableFile{
+		filePath: filePath,
+		fileType: fileType,
+	}
+}
 
 type VariableFile struct {
 	filePath  string
+	fileType  string
 	Variables map[string]*VariableFileEntry
 }
 
@@ -62,6 +77,7 @@ func (vfe *VariableFileEntry) mapToString() string {
 }
 
 func (vf *VariableFile) Parse(variables map[string]string) {
+	vf.Variables = make(map[string]*VariableFileEntry)
 	for key, variable := range variables {
 		if vf.IsMap(variable) {
 			vf.Variables[key] = &VariableFileEntry{Type: VARIABLE_TYPE_MAP, Map: vf.ParseMap(variable)}
@@ -74,18 +90,24 @@ func (vf *VariableFile) Parse(variables map[string]string) {
 }
 
 func (vf *VariableFile) Byte() []byte {
-	templateStr := `{{range $k,$v := .Variables}}variable "{{$k}}" {
+	templates := map[string]string{
+		VARIABLE_FILE_TYPE_TF: `{{range $k,$v := .Variables}}variable "{{$k}}" {
   type = "{{$v.Type}}"
 
   default = {{$v.Value}}
 }
 
-{{end}}`
+{{end}}`,
+		VARIABLE_FILE_TYPE_TFVARS: `{{range $k,$v := .Variables}}{{$k}} = {{$v.Value}}
+
+{{end}}`,
+	}
+
 	templ, err := template.New("variables").Funcs(template.FuncMap{
 		"last": func(x int, a interface{}) bool {
 			return x == reflect.ValueOf(a).Len()-1
 		},
-	}).Parse(templateStr)
+	}).Parse(templates[vf.fileType])
 	if err != nil {
 		panic(err)
 	}
@@ -102,7 +124,7 @@ func (vf *VariableFile) String() string {
 }
 
 func (vf *VariableFile) WriteToFile() (err error) {
-	return ioutil.WriteFile("/tmp/dat1", vf.Byte(), 0644)
+	return ioutil.WriteFile(vf.filePath, vf.Byte(), 0644)
 }
 
 func (vf *VariableFile) IsSlice(raw string) bool {

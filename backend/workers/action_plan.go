@@ -11,6 +11,8 @@ import (
 func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 	return func() {
 
+		logs := goterraform.NewOutputLogs()
+
 		if a.DoInit {
 			init := &TfActionInit{
 				Module:     a.Module,
@@ -25,10 +27,26 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 			WithStack(a.Stack).
 			WithDeployment(a.Deployment)
 
+		varFilePath, err := bs.VarFilePath(true)
+		if err != nil {
+			fmt.Print(logs.Error(err))
+			return
+		}
+
+		vars := newVariableFileWithType(varFilePath, VARIABLE_FILE_TYPE_TFVARS)
+
+		vars.Parse(a.Stack.Variables)
+		if err := vars.WriteToFile(); err != nil {
+			fmt.Print(logs.Error(err))
+			return
+		}
+
+		varFile := []string{varFilePath}
+
 		params := &goterraform.TerraformPlanParams{
-			Out:   swag.String(bs.MustPlanPath(false)),
-			Input: swag.Bool(false),
-			Var:   &a.Stack.Variables,
+			Out:     swag.String(bs.MustPlanPath(false)),
+			Input:   swag.Bool(false),
+			VarFile: &varFile,
 		}
 
 		action := goterraform.NewTerraformClient().
@@ -36,7 +54,6 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 			Plan(params).
 			Initialise()
 
-		logs := goterraform.NewOutputLogs()
 		if err := action.InitLogger(logs); err != nil {
 			fmt.Printf("An error occured initialising task logger: " + err.Error())
 			return
@@ -45,19 +62,19 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 		if err := os.MkdirAll(bs.MustDeploymentDirectory(true), 0700); err != nil {
 			if pathErr, isPathErr := err.(*os.PathError); isPathErr {
 				if pathErr.Err != unix.EEXIST {
-					logs.Error(err)
+					fmt.Print(logs.Error(err))
 					return
 				}
 			}
 		}
 
 		if err := action.Cmd.Start(); err != nil {
-			logs.Error(err)
+			fmt.Print(logs.Error(err))
 			return
 		}
 
 		if err := action.Cmd.Wait(); err != nil {
-			logs.Error(err)
+			fmt.Print(logs.Error(err))
 			return
 		}
 

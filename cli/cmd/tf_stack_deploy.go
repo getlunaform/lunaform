@@ -103,6 +103,9 @@ to quickly create a Cobra application.`,
 func parseVariableOptions(rawOptions []string) (options map[string]string) {
 	options = make(map[string]string, 0)
 	for _, opt := range rawOptions {
+		if opt == "" {
+			continue
+		}
 		var_parts := strings.Split(opt, "=")
 		options[var_parts[0]] = var_parts[1]
 	}

@@ -103,7 +103,7 @@ func (bs *BuildSpace) PlanPath(full bool) (path string, err error) {
 }
 
 func (bs *BuildSpace) VarFilePath(full bool) (path string, err error) {
-	return bs.deploymentFile("variables_override.tf", full)
+	return bs.deploymentFile("terraform.tfvars", full)
 }
 
 func (bs *BuildSpace) deploymentFile(fileName string, full bool) (path string, err error) {
