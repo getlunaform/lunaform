@@ -80,12 +80,12 @@ func (jdb jsonDatabase) Flush(t *time.Time) (err error) {
 }
 
 // Create a record in the JSON file on disk
-func (jdb jsonDatabase) Create(recordType, key string, doc interface{}) error {
+func (jdb jsonDatabase) Create(recordType DBTableRecordType, key string, doc interface{}) error {
 	return jdb.db.Create(recordType, key, doc)
 }
 
 // Delete a record in the JSON file on disk
-func (jdb jsonDatabase) Delete(recordType, key string) error {
+func (jdb jsonDatabase) Delete(recordType DBTableRecordType, key string) error {
 	return jdb.db.Delete(recordType, key)
 }
 
@@ -95,17 +95,17 @@ func (jdb jsonDatabase) Ping() error {
 }
 
 // Read a record from the JSON file on disk
-func (jdb jsonDatabase) Read(recordType, key string, i interface{}) (err error) {
+func (jdb jsonDatabase) Read(recordType DBTableRecordType, key string, i interface{}) (err error) {
 	return jdb.db.Read(recordType, key, i)
 }
 
 // List all records of a given type from the JSON file on disk
-func (jdb jsonDatabase) List(recordType string, i interface{}) (err error) {
+func (jdb jsonDatabase) List(recordType DBTableRecordType, i interface{}) (err error) {
 	return jdb.db.List(recordType, i)
 }
 
 // Update a record in the JSON file on disk
-func (jdb jsonDatabase) Update(recordType, key string, doc interface{}) (err error) {
+func (jdb jsonDatabase) Update(recordType DBTableRecordType, key string, doc interface{}) (err error) {
 	return jdb.db.Update(recordType, key, doc)
 }
 

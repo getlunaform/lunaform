@@ -1,21 +1,27 @@
 package database
 
+type DBTableRecordType string
+
+func (dbtype DBTableRecordType) String() string {
+	return string(dbtype)
+}
+
 // Record is an untyped, schemaless record type which all
 // record types embed and implement
 type Record struct {
 	Key   string
-	Type  string
+	Type  DBTableRecordType
 	Value string
 }
 
 // Driver represents a low level storage serialiser/ deserialiser
 // This is wrapped in the Database
 type Driver interface {
-	Create(recordType, key string, doc interface{}) error
-	Read(recordType, key string, i interface{}) error
-	List(recordType string, i interface{}) error
-	Update(recordType, key string, doc interface{}) error
-	Delete(recordType, key string) error
+	Create(recordType DBTableRecordType, key string, doc interface{}) error
+	Read(recordType DBTableRecordType, key string, i interface{}) error
+	List(recordType DBTableRecordType, i interface{}) error
+	Update(recordType DBTableRecordType, key string, doc interface{}) error
+	Delete(recordType DBTableRecordType, key string) error
 
 	Ping() error
 	Close() error
@@ -40,23 +46,23 @@ func NewDatabaseWithDriver(driver Driver) Database {
 	}
 }
 
-func (db *Database) Create(recordType, key string, doc interface{}) error {
+func (db *Database) Create(recordType DBTableRecordType, key string, doc interface{}) error {
 	return db.driver.Create(recordType, key, doc)
 }
 
-func (db *Database) Read(recordType, key string, i interface{}) error {
+func (db *Database) Read(recordType DBTableRecordType, key string, i interface{}) error {
 	return db.driver.Read(recordType, key, i)
 }
 
-func (db *Database) List(recordType string, i interface{}) (err error) {
+func (db *Database) List(recordType DBTableRecordType, i interface{}) (err error) {
 	return db.driver.List(recordType, i)
 }
 
-func (db *Database) Update(recordType, key string, doc interface{}) error {
+func (db *Database) Update(recordType DBTableRecordType, key string, doc interface{}) error {
 	return db.driver.Update(recordType, key, doc)
 }
 
-func (db *Database) Delete(recordType, key string) error {
+func (db *Database) Delete(recordType DBTableRecordType, key string) error {
 	return db.driver.Delete(recordType, key)
 }
 

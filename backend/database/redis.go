@@ -64,7 +64,7 @@ func (r redisDatabase) Close() error {
 }
 
 // Create a record within redis
-func (r redisDatabase) Create(recordType, key string, doc interface{}) error {
+func (r redisDatabase) Create(recordType DBTableRecordType, key string, doc interface{}) error {
 	k := r.key(recordType, key)
 
 	if r.exists(k) {
@@ -75,7 +75,7 @@ func (r redisDatabase) Create(recordType, key string, doc interface{}) error {
 }
 
 // Read a record from redis
-func (r redisDatabase) Read(recordType, key string, i interface{}) (err error) {
+func (r redisDatabase) Read(recordType DBTableRecordType, key string, i interface{}) (err error) {
 	k := r.key(recordType, key)
 
 	if !r.exists(k) {
@@ -97,7 +97,7 @@ func (r redisDatabase) Read(recordType, key string, i interface{}) (err error) {
 }
 
 // Update a redis record
-func (r redisDatabase) Update(recordType, key string, doc interface{}) (err error) {
+func (r redisDatabase) Update(recordType DBTableRecordType, key string, doc interface{}) (err error) {
 	k := r.key(recordType, key)
 
 	if !r.exists(k) {
@@ -108,13 +108,13 @@ func (r redisDatabase) Update(recordType, key string, doc interface{}) (err erro
 }
 
 // Delete a record from redis
-func (r redisDatabase) Delete(recordType, key string) error {
+func (r redisDatabase) Delete(recordType DBTableRecordType, key string) error {
 	k := r.key(recordType, key)
 
 	return r.client.Del(k).Err()
 }
 
-func (r redisDatabase) List(recordType string, i interface{}) (err error) {
+func (r redisDatabase) List(recordType DBTableRecordType, i interface{}) (err error) {
 	k := r.key(recordType, "*")
 	keys, err := r.client.Keys(k).Result()
 	if err != nil {
@@ -170,7 +170,7 @@ func (r redisDatabase) set(key string, doc interface{}) error {
 	return r.client.Set(key, v, 0).Err()
 }
 
-func (r redisDatabase) key(recordType, key string) string {
+func (r redisDatabase) key(recordType DBTableRecordType, key string) string {
 	return fmt.Sprintf("%s%s%s%s%s", r.namespace, redisDelimeter, recordType, redisDelimeter, key)
 }
 

@@ -27,7 +27,7 @@ func NewMemoryDBDriverWithCollection(collection []map[string]string) (BufferedDr
 
 	for i, value := range collection {
 		rs[i] = &Record{
-			Type:  value["Type"],
+			Type:  DBTableRecordType(value["Type"]),
 			Key:   value["Key"],
 			Value: value["Value"],
 		}
@@ -49,7 +49,7 @@ func (md memoryDatabase) Ping() error {
 }
 
 // Create a record in memory
-func (md *memoryDatabase) Create(recordType, key string, doc interface{}) (err error) {
+func (md *memoryDatabase) Create(recordType DBTableRecordType, key string, doc interface{}) (err error) {
 	if md.exists(recordType, key) {
 		return RecordExistsError(fmt.Errorf("%q %q already exists", recordType, key).(RecordExistsError))
 	}
@@ -69,7 +69,7 @@ func (md *memoryDatabase) Create(recordType, key string, doc interface{}) (err e
 }
 
 // Read a record from memory
-func (md memoryDatabase) Read(recordType, key string, i interface{}) (err error) {
+func (md memoryDatabase) Read(recordType DBTableRecordType, key string, i interface{}) (err error) {
 	if !md.exists(recordType, key) {
 		return RecordDoesNotExistError(fmt.Errorf("%q %q does not exist", recordType, key))
 	}
@@ -85,7 +85,7 @@ func (md memoryDatabase) Read(recordType, key string, i interface{}) (err error)
 }
 
 // List records of a given type from memory
-func (md memoryDatabase) List(recordType string, i interface{}) (err error) {
+func (md memoryDatabase) List(recordType DBTableRecordType, i interface{}) (err error) {
 	elemType := getElemType(i)
 
 	slice := reflect.ValueOf(i).Elem()
@@ -102,7 +102,7 @@ func (md memoryDatabase) List(recordType string, i interface{}) (err error) {
 }
 
 // Update a record in memory
-func (md *memoryDatabase) Update(recordType, key string, doc interface{}) (err error) {
+func (md *memoryDatabase) Update(recordType DBTableRecordType, key string, doc interface{}) (err error) {
 	if !md.exists(recordType, key) {
 		return RecordDoesNotExistError(fmt.Errorf("%q %q does not exist", recordType, key))
 	}
@@ -121,7 +121,7 @@ func (md *memoryDatabase) Update(recordType, key string, doc interface{}) (err e
 }
 
 // Delete a record from memory
-func (md *memoryDatabase) Delete(recordType, key string) (err error) {
+func (md *memoryDatabase) Delete(recordType DBTableRecordType, key string) (err error) {
 
 	for i, r := range md.collections {
 		if r.Type == recordType && r.Key == key {
@@ -136,11 +136,11 @@ func (md *memoryDatabase) Delete(recordType, key string) (err error) {
 	return
 }
 
-func (md memoryDatabase) key(recordType, key string) string {
+func (md memoryDatabase) key(recordType DBTableRecordType, key string) string {
 	return fmt.Sprintf("%s %s", recordType, key)
 }
 
-func (md memoryDatabase) exists(recordType, key string) (ok bool) {
+func (md memoryDatabase) exists(recordType DBTableRecordType, key string) (ok bool) {
 	for _, r := range md.collections {
 		if r.Type == recordType && r.Key == key {
 			return true

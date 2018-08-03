@@ -36,21 +36,25 @@ var buildDeleteTfModuleResponse = func(db database.Database, moduleId string) (*
 		}
 	}
 
-	if len(module.Embedded.Stacks) > 0 {
-		stackIds := make([]string, 0)
-		for _, stk := range module.Embedded.Stacks {
-			stackIds = append(stackIds, stk.ID)
+	if module.Embedded != nil {
+		if len(module.Embedded.Stacks) > 0 {
+			stackIds := make([]string, 0)
+			for _, stk := range module.Embedded.Stacks {
+				stackIds = append(stackIds, stk.ID)
+			}
+			return NewServerError(
+				http.StatusUnprocessableEntity,
+				fmt.Sprintf(
+					"Could not delete module as it is relied up by stacks ['%s']",
+					strings.Join(stackIds, "','"),
+				),
+			)
 		}
-		return NewServerError(
-			http.StatusUnprocessableEntity,
-			fmt.Sprintf(
-				"Could not delete module as it is relied up by stacks ['%s']",
-				strings.Join(stackIds, "','"),
-			),
-		)
 	}
 
-	db.Delete(DB_TABLE_TF_MODULE, moduleId)
+	if err := db.Delete(DB_TABLE_TF_MODULE, moduleId); err != nil {
+		return NewServerError(http.StatusUnprocessableEntity, err.Error())
+	}
 
-	return NewServerError(http.StatusInternalServerError, "Could not delete module")
+	return nil
 }
