@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // HalRscLinks Links to this resources and documentation for this resource
@@ -22,8 +23,9 @@ type HalRscLinks struct {
 	// curies
 	Curies []*HalCurie `json:"curies,omitempty"`
 
-	// hal rsc links additional properties
-	HalRscLinksAdditionalProperties map[string]interface{} `json:"-"`
+	// hal rsc links
+	// Required: true
+	HalRscLinks map[string]*HalHref `json:"-"`
 }
 
 // UnmarshalJSON unmarshals this object with additional properties from JSON
@@ -53,15 +55,15 @@ func (m *HalRscLinks) UnmarshalJSON(data []byte) error {
 
 	// stage 3, add additional properties values
 	if len(stage2) > 0 {
-		result := make(map[string]interface{})
+		result := make(map[string]*HalHref)
 		for k, v := range stage2 {
-			var toadd interface{}
-			if err := json.Unmarshal(v, &toadd); err != nil {
+			var toadd *HalHref
+			if err := json.Unmarshal(v, toadd); err != nil {
 				return err
 			}
 			result[k] = toadd
 		}
-		m.HalRscLinksAdditionalProperties = result
+		m.HalRscLinks = result
 	}
 
 	return nil
@@ -83,12 +85,12 @@ func (m HalRscLinks) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 
-	if len(m.HalRscLinksAdditionalProperties) == 0 {
+	if len(m.HalRscLinks) == 0 {
 		return props, nil
 	}
 
 	// make JSON object for the additional properties
-	additional, err := json.Marshal(m.HalRscLinksAdditionalProperties)
+	additional, err := json.Marshal(m.HalRscLinks)
 	if err != nil {
 		return nil, err
 	}
@@ -108,6 +110,21 @@ func (m *HalRscLinks) Validate(formats strfmt.Registry) error {
 
 	if err := m.validateCuries(formats); err != nil {
 		res = append(res, err)
+	}
+
+	for k := range m.HalRscLinks {
+
+		if err := validate.Required(k, "body", m.HalRscLinks[k]); err != nil {
+			return err
+		}
+		if val, ok := m.HalRscLinks[k]; ok {
+			if val != nil {
+				if err := val.Validate(formats); err != nil {
+					return err
+				}
+			}
+		}
+
 	}
 
 	if len(res) > 0 {

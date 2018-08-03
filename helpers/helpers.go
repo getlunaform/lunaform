@@ -2,11 +2,11 @@ package helpers
 
 import (
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/pkg/errors"
 	"net/http"
 	"strings"
 	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/swag"
+	"errors"
 )
 
 func NewServerError(code int32, errorString string) *models.ServerError {
@@ -44,24 +44,33 @@ type ContextHelper struct {
 
 // SetRequest and calculate the api parts from the combination of the request and the API. This is used to generate HAL resources
 func (ch *ContextHelper) SetRequest(req *http.Request) (err error) {
-
 	ch.Request = req
+	ch.ParseRequest(
+		ch.Request.Host,
+		ch.BasePath,
+		ch.Request.RequestURI,
+		ch.Request.TLS != nil,
+	)
 
-	ch.ServerURL = ch.urlPrefix(ch.Request.Host, ch.BasePath, ch.Request.TLS != nil)
-	ch.FQEndpoint = ch.urlPrefix(ch.Request.Host, ch.Request.RequestURI, ch.Request.TLS != nil)
+	r, matched := ch.ctx.LookupRoute(ch.Request)
+	if ! matched {
+		return errors.New("could not find route for request")
+	}
+	ch.OperationID = r.Operation.ID
+	return
+}
+
+func (ch *ContextHelper) ParseRequest(host string, basePath string,
+	requestUri string, hasTls bool) {
+
+	ch.ServerURL = ch.urlPrefix(host, basePath, hasTls)
+	ch.FQEndpoint = ch.urlPrefix(host, requestUri, hasTls)
 
 	ch.Endpoint = strings.TrimPrefix(ch.FQEndpoint, ch.ServerURL)
 	ch.EndpointSingular = ch.Endpoint
 	if strings.HasSuffix(ch.Endpoint, "s") {
 		ch.EndpointSingular = strings.TrimSuffix(ch.Endpoint, "s")
 	}
-	if r, matched := ch.ctx.LookupRoute(ch.Request); matched {
-		ch.OperationID = r.Operation.ID
-	} else {
-		return errors.New("Could not find route for request")
-	}
-
-	return
 }
 
 func (ch ContextHelper) urlPrefix(host string, uri string, https bool) string {

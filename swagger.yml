@@ -815,7 +815,12 @@ definitions:
         x-omitempty: true
         items:
           $ref: "#/definitions/hal-curie"
-    additionalProperties: true
+    additionalProperties:
+      $ref: "#/definitions/hal-href"
+    x-go-type:
+      import:
+        package: "github.com/getlunaform/lunaform/models"
+      type: HalRscLinks
   hal-href:
     type: object
     x-isnullable: true
