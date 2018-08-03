@@ -10,6 +10,8 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+
+	hal "github.com/getlunaform/lunaform/models/hal"
 )
 
 // ResourceTfStateBackend resource tf state backend
@@ -17,7 +19,7 @@ import (
 type ResourceTfStateBackend struct {
 
 	// links
-	Links *HalRscLinks `json:"_links,omitempty"`
+	Links *hal.HalRscLinks `json:"_links,omitempty"`
 
 	// configuration
 	Configuration interface{} `json:"configuration,omitempty"`

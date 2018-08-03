@@ -7,6 +7,7 @@ import (
 	"github.com/getlunaform/lunaform/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/go-openapi/swag"
+	"github.com/getlunaform/lunaform/models/hal"
 )
 
 func Test_buildResourceGroupRootResponse(t *testing.T) {
@@ -24,24 +25,24 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 			name: "tf",
 			wantRsclist: &models.ResourceList{Resources: []*models.Resource{
 				{Name: swag.String("modules"),
-					Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/tf/modules"}},
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": {Href: "/tf/modules"}},
 					}},
 				{Name: swag.String("stacks"),
-					Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/tf/stacks"}},
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": {Href: "/tf/stacks"}},
 					}},
 				{Name: swag.String("state-backends"),
-					Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/tf/state-backends"}},
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": {Href: "/tf/state-backends"}},
 					}},
 				{Name: swag.String("workspaces"),
-					Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/tf/workspaces"}},
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": {Href: "/tf/workspaces"}},
 					}},
 			}},
 			ch: helpers.ContextHelper{
@@ -52,18 +53,18 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 			name: "identity",
 			wantRsclist: &models.ResourceList{Resources: []*models.Resource{
 				{Name: swag.String("groups"),
-					Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/identity/groups"}},
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": {Href: "/identity/groups"}},
 					}},
 				{Name: swag.String("providers"),
-					Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/identity/providers"}},
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": &hal.HalHref{Href: "/identity/providers"}},
 					}},
 				{Name: swag.String("users"),
-					Links: &models.HalRscLinks{HalRscLinksAdditionalProperties: map[string]interface{}{
-						"lf:self": &models.HalHref{Href: "/identity/users"}},
+					Links: &hal.HalRscLinks{HalRscLinks: map[string]*hal.HalHref{
+						"lf:self": &hal.HalHref{Href: "/identity/users"}},
 					}},
 			}},
 			ch: helpers.ContextHelper{
@@ -74,9 +75,9 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 			name: "vcs",
 			wantRsclist: &models.ResourceList{Resources: []*models.Resource{
 				{Name: swag.String("git"),
-					Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/vcs/git"}},
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": {Href: "/vcs/git"}},
 					}},
 			}},
 			ch: helpers.ContextHelper{

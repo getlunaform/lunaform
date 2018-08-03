@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/strfmt"
+	"github.com/getlunaform/lunaform/models/hal"
 )
 
 func Test_buildTfModuleControllerCreateResponse(t *testing.T) {
@@ -34,7 +35,7 @@ func Test_buildTfModuleControllerCreateResponse(t *testing.T) {
 			err = db.Read(DB_TABLE_TF_MODULE, mod.ID, &createdModule)
 			assert.NoError(t, err)
 
-			assert.Equal(t, []*models.HalCurie{{
+			assert.Equal(t, []*hal.HalCurie{{
 				Href:      strfmt.URI(tt.ch.ServerURL + "/{rel}"),
 				Name:      "lf",
 				Templated: true,
@@ -44,11 +45,14 @@ func Test_buildTfModuleControllerCreateResponse(t *testing.T) {
 				Templated: true,
 			}}, mod.Links.Curies)
 
-			assert.Equal(t, map[string]interface{}{
-				"lf:self": &models.HalHref{
+			assert.Equal(t, map[string]*hal.HalHref{
+				"doc:": {
 					Href: "/",
 				},
-			}, mod.Links.HalRscLinksAdditionalProperties)
+				"lf:self": {
+					Href: "/",
+				},
+			}, mod.Links.HalRscLinks)
 
 			createdModule.Links = nil
 			mod.Links = nil

@@ -7,6 +7,7 @@ import (
 	"github.com/getlunaform/lunaform/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/go-openapi/swag"
+	"github.com/getlunaform/lunaform/models/hal"
 )
 
 func Test_buildResourceGroupResponse(t *testing.T) {
@@ -22,17 +23,17 @@ func Test_buildResourceGroupResponse(t *testing.T) {
 			resources: []string{"one", "two", "three"},
 			wantRsclist: &models.ResourceList{
 				Resources: []*models.Resource{
-					{Name: swag.String("one"), Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/one"},
+					{Name: swag.String("one"), Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": &hal.HalHref{Href: "/one"},
 						}}},
-					{Name: swag.String("two"), Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/two"},
+					{Name: swag.String("two"), Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": &hal.HalHref{Href: "/two"},
 						}}},
-					{Name: swag.String("three"), Links: &models.HalRscLinks{
-						HalRscLinksAdditionalProperties: map[string]interface{}{
-							"lf:self": &models.HalHref{Href: "/three"},
+					{Name: swag.String("three"), Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": &hal.HalHref{Href: "/three"},
 						}}},
 				},
 			},

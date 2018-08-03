@@ -4,13 +4,13 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/getlunaform/lunaform/models"
+	"github.com/getlunaform/lunaform/models/hal"
 )
 
 func Test_newHalRscLinks(t *testing.T) {
 	tests := []struct {
 		name string
-		want *models.HalRscLinks
+		want *hal.HalRscLinks
 	}{
 		// TODO: Add test cases.
 	}
@@ -30,7 +30,7 @@ func TestHalRootRscLinks(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
-		wantLinks *models.HalRscLinks
+		wantLinks *hal.HalRscLinks
 	}{
 		// TODO: Add test cases.
 	}
@@ -45,13 +45,13 @@ func TestHalRootRscLinks(t *testing.T) {
 
 func TestHalSelfLink(t *testing.T) {
 	type args struct {
-		links *models.HalRscLinks
+		links *hal.HalRscLinks
 		href  string
 	}
 	tests := []struct {
 		name string
 		args args
-		want *models.HalRscLinks
+		want *hal.HalRscLinks
 	}{
 		// TODO: Add test cases.
 	}
@@ -66,13 +66,13 @@ func TestHalSelfLink(t *testing.T) {
 
 func TestHalDocLink(t *testing.T) {
 	type args struct {
-		links       *models.HalRscLinks
+		links       *hal.HalRscLinks
 		operationId string
 	}
 	tests := []struct {
 		name string
 		args args
-		want *models.HalRscLinks
+		want *hal.HalRscLinks
 	}{
 		// TODO: Add test cases.
 	}
@@ -88,12 +88,12 @@ func TestHalDocLink(t *testing.T) {
 func TestHalAddCuries(t *testing.T) {
 	type args struct {
 		ch    ContextHelper
-		links *models.HalRscLinks
+		links *hal.HalRscLinks
 	}
 	tests := []struct {
 		name string
 		args args
-		want *models.HalRscLinks
+		want *hal.HalRscLinks
 	}{
 		// TODO: Add test cases.
 	}

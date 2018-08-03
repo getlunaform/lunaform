@@ -4,7 +4,6 @@ import (
 	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/swag"
 	"net/http"
-	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/runtime"
 )
 
@@ -13,7 +12,7 @@ type CommonServerErrorResponder struct {
 	code    int
 }
 
-func NewServerError(code int32, errorString string) (r middleware.Responder) {
+func NewServerError(code int32, errorString string) (r *CommonServerErrorResponder) {
 	return &CommonServerErrorResponder{
 		Payload: &models.ServerError{
 			Message: swag.String(errorString),
