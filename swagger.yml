@@ -819,7 +819,7 @@ definitions:
       $ref: "#/definitions/hal-href"
     x-go-type:
       import:
-        package: "github.com/getlunaform/lunaform/models"
+        package: "github.com/getlunaform/lunaform/models/hal"
       type: HalRscLinks
   hal-href:
     type: object
@@ -827,6 +827,10 @@ definitions:
     properties:
       href:
         type: string
+    x-go-type:
+      import:
+        package: "github.com/getlunaform/lunaform/models/hal"
+      type: HalHref
   hal-curie:
     type: object
     properties:
@@ -837,6 +841,10 @@ definitions:
         format: uri
       templated:
         type: boolean
+    x-go-type:
+      import:
+        package: "github.com/getlunaform/lunaform/models/hal"
+      type: HalCurie
   server-error:
     type: object
     readOnly: true

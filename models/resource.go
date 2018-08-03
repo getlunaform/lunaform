@@ -11,6 +11,8 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
+
+	hal "github.com/getlunaform/lunaform/models/hal"
 )
 
 // Resource A resources
@@ -18,7 +20,7 @@ import (
 type Resource struct {
 
 	// links
-	Links *HalRscLinks `json:"_links,omitempty"`
+	Links *hal.HalRscLinks `json:"_links,omitempty"`
 
 	// name
 	// Required: true

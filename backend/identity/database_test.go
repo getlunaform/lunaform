@@ -1,7 +1,7 @@
 package identity
 
 import (
-	"github.com/getlunaform/lunaform/server/backend/database"
+	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"github.com/getlunaform/lunaform/server/backend/identity"
+	"github.com/getlunaform/lunaform/backend/identity"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -39,7 +39,7 @@ func TestManagedIdentityProvider(t *testing.T) {
 			})
 
 			t.Run("I can create a user in my IdP", func(*testing.T) {
-				user, err := idp.CreateUser("test-user", "test-password")
+				user, err := idp.CreateUser(&identity.User{Username:"test-user",Password: "test-password"})
 				assert.NotNil(t, user)
 				assert.Nil(t, err)
 
@@ -51,10 +51,10 @@ func TestManagedIdentityProvider(t *testing.T) {
 			})
 
 			t.Run("I get an error trying to create a user in my IdP if they already exist", func(*testing.T) {
-				user1, _ := idp.CreateUser("test-user", "test-password")
+				user1, _ := idp.CreateUser(&identity.User{Username:"test-user",Password: "test-password"})
 				assert.NotNil(t, user1)
 
-				_, err := idp.CreateUser("test-user", "test-password")
+				_, err := idp.CreateUser(&identity.User{Username:"test-user",Password: "test-password"})
 				assert.EqualError(t, err, "User 'test-user' already exists")
 
 			})

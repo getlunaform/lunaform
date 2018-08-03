@@ -11,6 +11,8 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
+
+	hal "github.com/getlunaform/lunaform/models/hal"
 )
 
 // ResponseListTfWorkspaces List of terraform workspaces
@@ -23,7 +25,7 @@ type ResponseListTfWorkspaces struct {
 
 	// links
 	// Required: true
-	Links *HalRscLinks `json:"_links"`
+	Links *hal.HalRscLinks `json:"_links"`
 }
 
 // Validate validates this response list tf workspaces

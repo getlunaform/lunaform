@@ -2,13 +2,15 @@ package restapi
 
 import (
 	"encoding/json"
+	"io"
+	"reflect"
+	"testing"
+
 	"github.com/Flaque/filet"
 	"github.com/getlunaform/lunaform/restapi/operations"
 	"github.com/go-openapi/loads"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
-	"io"
-	"testing"
 )
 
 var api *operations.LunaformAPI
@@ -27,7 +29,7 @@ backend:
     - type: json
       path: config/auth-db.yaml`
 
-func TestConfigFile(t *testing.T) {
+func Test_configFile(t *testing.T) {
 
 	c := Configuration{}
 
@@ -43,7 +45,7 @@ func TestConfigFile(t *testing.T) {
 	assert.Equal(t, "mock_password", u.Password) // @TODO THis should be a bcrypt
 }
 
-func TestCliOptions(t *testing.T) {
+func Test_cliOptions(t *testing.T) {
 	api := operations.LunaformAPI{}
 
 	assert.Empty(t, api.CommandLineOptionsGroups)
@@ -61,7 +63,7 @@ func TestCliOptions(t *testing.T) {
 
 }
 
-func TestLoadCliConfiguration(t *testing.T) {
+func Test_loadCliConfiguration(t *testing.T) {
 	defer filet.CleanUp(t)
 	file := filet.TmpFile(t, "", defaultConfigPayload)
 
@@ -98,4 +100,80 @@ func init() {
 	configureAPI(api)
 
 	return
+}
+
+func TestConfiguration_loadFromFile(t *testing.T) {
+	type args struct {
+		path string
+	}
+	tests := []struct {
+		name    string
+		cfg     *Configuration
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.cfg.loadFromFile(tt.args.path); (err != nil) != tt.wantErr {
+				t.Errorf("Configuration.loadFromFile() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func Test_parseCliConfiguration(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantCfg *Configuration
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotCfg, err := parseCliConfiguration()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("parseCliConfiguration() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotCfg, tt.wantCfg) {
+				t.Errorf("parseCliConfiguration() = %v, want %v", gotCfg, tt.wantCfg)
+			}
+		})
+	}
+}
+
+func Test_newDefaultConfiguration(t *testing.T) {
+	tests := []struct {
+		name string
+		want *Configuration
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := newDefaultConfiguration(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("newDefaultConfiguration() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_configureFlags(t *testing.T) {
+	type args struct {
+		api *operations.LunaformAPI
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			configureFlags(tt.args.api)
+		})
+	}
 }

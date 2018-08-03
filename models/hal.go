@@ -1,5 +1,7 @@
 package models
 
+import "github.com/getlunaform/lunaform/models/hal"
+
 type HalLinkable interface {
 	Clean() interface{}
 }
@@ -138,33 +140,35 @@ func (se *ServerError) Clean() interface{} {
 
 // generate links
 func (s *ResourceTfStack) GenerateLinks(endpoint string) {
-	s.Links = &HalRscLinks{
-		HalRscLinksAdditionalProperties: map[string]interface{}{
-			"lf:self": &HalHref{Href: endpoint + "/" + s.ID},
+	s.Links = &hal.HalRscLinks{
+		HalRscLinks: map[string]*hal.HalHref{
+			"lf:self": {Href: endpoint + "/" + s.ID},
 		},
 	}
 }
 
 func (m *ResourceTfModule) GenerateLinks(endpoint string) {
-	m.Links = &HalRscLinks{
-		HalRscLinksAdditionalProperties: map[string]interface{}{
-			"lf:self": &HalHref{Href: endpoint + "/" + m.ID},
+	m.Links = &hal.HalRscLinks{
+		HalRscLinks: map[string]*hal.HalHref{
+			"lf:self": {Href: endpoint + "/" + m.ID},
 		},
 	}
 }
 
 func (d *ResourceTfDeployment) GenerateLinks(endpoint string) {
-	d.Links = &HalRscLinks{
-		HalRscLinksAdditionalProperties: map[string]interface{}{
-			"lf:self": &HalHref{Href: endpoint + "/" + d.ID},
+	d.Links = &hal.HalRscLinks{
+		HalRscLinks: map[string]*hal.HalHref{
+			"lf:self": {Href: endpoint + "/" + d.ID},
 		},
 	}
 }
 
 func (w *ResourceTfWorkspace) GenerateLinks(endpoint string) {
-	w.Links = &HalRscLinks{
-		HalRscLinksAdditionalProperties: map[string]interface{}{
-			"lf:self": &HalHref{Href: endpoint + "/" + *w.Name},
+	w.Links = &hal.HalRscLinks{
+		HalRscLinks: map[string]*hal.HalHref{
+			"lf:self": {
+				Href: endpoint + "/" + *w.Name,
+			},
 		},
 	}
 }

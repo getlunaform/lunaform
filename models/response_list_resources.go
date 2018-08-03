@@ -11,6 +11,8 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
+
+	hal "github.com/getlunaform/lunaform/models/hal"
 )
 
 // ResponseListResources List of resources
@@ -22,7 +24,7 @@ type ResponseListResources struct {
 	Embedded *ResourceList `json:"_embedded"`
 
 	// links
-	Links *HalRscLinks `json:"_links,omitempty"`
+	Links *hal.HalRscLinks `json:"_links,omitempty"`
 }
 
 // Validate validates this response list resources

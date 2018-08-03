@@ -13,6 +13,8 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
+
+	hal "github.com/getlunaform/lunaform/models/hal"
 )
 
 // ResourceTfWorkspace A terraform workspace
@@ -20,7 +22,7 @@ import (
 type ResourceTfWorkspace struct {
 
 	// links
-	Links *HalRscLinks `json:"_links,omitempty"`
+	Links *hal.HalRscLinks `json:"_links,omitempty"`
 
 	// modules
 	Modules []*ResourceTfModule `json:"modules,omitempty"`

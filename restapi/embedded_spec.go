@@ -956,6 +956,12 @@ func init() {
         "templated": {
           "type": "boolean"
         }
+      },
+      "x-go-type": {
+        "import": {
+          "package": "github.com/getlunaform/lunaform/models/hal"
+        },
+        "type": "HalCurie"
       }
     },
     "hal-href": {
@@ -964,6 +970,12 @@ func init() {
         "href": {
           "type": "string"
         }
+      },
+      "x-go-type": {
+        "import": {
+          "package": "github.com/getlunaform/lunaform/models/hal"
+        },
+        "type": "HalHref"
       },
       "x-isnullable": true
     },
@@ -981,6 +993,12 @@ func init() {
       },
       "additionalProperties": {
         "$ref": "#/definitions/hal-href"
+      },
+      "x-go-type": {
+        "import": {
+          "package": "github.com/getlunaform/lunaform/models/hal"
+        },
+        "type": "HalRscLinks"
       }
     },
     "resource": {
@@ -2435,6 +2453,12 @@ func init() {
         "templated": {
           "type": "boolean"
         }
+      },
+      "x-go-type": {
+        "import": {
+          "package": "github.com/getlunaform/lunaform/models/hal"
+        },
+        "type": "HalCurie"
       }
     },
     "hal-href": {
@@ -2443,6 +2467,12 @@ func init() {
         "href": {
           "type": "string"
         }
+      },
+      "x-go-type": {
+        "import": {
+          "package": "github.com/getlunaform/lunaform/models/hal"
+        },
+        "type": "HalHref"
       },
       "x-isnullable": true
     },
@@ -2460,6 +2490,12 @@ func init() {
       },
       "additionalProperties": {
         "$ref": "#/definitions/hal-href"
+      },
+      "x-go-type": {
+        "import": {
+          "package": "github.com/getlunaform/lunaform/models/hal"
+        },
+        "type": "HalRscLinks"
       }
     },
     "resource": {

@@ -2,7 +2,7 @@ package restapi
 
 import "testing"
 
-func TestConfigureTerraformServer(t *testing.T) {
+func Test_configureTerraformServer(t *testing.T) {
 	// Our TLS configuration does nothing
 	configureTLS(nil)
 

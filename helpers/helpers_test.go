@@ -8,6 +8,7 @@ import (
 	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/stretchr/testify/assert"
+	"github.com/getlunaform/lunaform/models/hal"
 )
 
 func TestHALSelfLink(t *testing.T) {
@@ -17,10 +18,10 @@ func TestHALSelfLink(t *testing.T) {
 	}{
 		{url: "http://example.com/hello-world"},
 	} {
-		rootLink := models.HalRscLinks{}
+		rootLink := hal.HalRscLinks{}
 		l := HalSelfLink(&rootLink, test.url)
 
-		assert.Equal(t, test.url, l.HalRscLinksAdditionalProperties["lf:self"])
+		assert.Equal(t, test.url, l.HalRscLinks["lf:self"])
 
 	}
 }
@@ -46,11 +47,11 @@ func TestHALRootRscLinks(t *testing.T) {
 			OperationID: test.opid,
 		})
 		assert.NotNil(t, l)
-		assert.NotNil(t, l.HalRscLinksAdditionalProperties[""])
-		assert.NotNil(t, l.HalRscLinksAdditionalProperties[""])
+		assert.NotNil(t, l.HalRscLinks[""])
+		assert.NotNil(t, l.HalRscLinks[""])
 
-		assert.Equal(t, test.fqe, l.HalRscLinksAdditionalProperties[""])
-		assert.Equal(t, test.docURL, l.HalRscLinksAdditionalProperties[""])
+		assert.Equal(t, test.fqe, l.HalRscLinks[""])
+		assert.Equal(t, test.docURL, l.HalRscLinks[""])
 	}
 }
 

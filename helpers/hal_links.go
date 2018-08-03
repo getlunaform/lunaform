@@ -1,17 +1,17 @@
 package helpers
 
 import (
-	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/strfmt"
+	"github.com/getlunaform/lunaform/models/hal"
 )
 
-func newHalRscLinks() *models.HalRscLinks {
-	return &models.HalRscLinks{
-		HalRscLinksAdditionalProperties: map[string]interface{}{},
+func newHalRscLinks() *hal.HalRscLinks {
+	return &hal.HalRscLinks{
+		HalRscLinks: map[string]*hal.HalHref{},
 	}
 }
 
-func HalRootRscLinks(ch ContextHelper) (links *models.HalRscLinks) {
+func HalRootRscLinks(ch ContextHelper) (links *hal.HalRscLinks) {
 	links = newHalRscLinks()
 
 	HalAddCuries(ch, links)
@@ -21,7 +21,7 @@ func HalRootRscLinks(ch ContextHelper) (links *models.HalRscLinks) {
 	return links
 }
 
-func HalSelfLink(links *models.HalRscLinks, href string) *models.HalRscLinks {
+func HalSelfLink(links *hal.HalRscLinks, href string) *hal.HalRscLinks {
 	if links == nil {
 		links = newHalRscLinks()
 	}
@@ -30,27 +30,27 @@ func HalSelfLink(links *models.HalRscLinks, href string) *models.HalRscLinks {
 		href = "/"
 	}
 
-	links.HalRscLinksAdditionalProperties["lf:self"] = &models.HalHref{Href: href}
+	links.HalRscLinks["lf:self"] = &hal.HalHref{Href: href}
 
 	return links
 }
 
-func HalDocLink(links *models.HalRscLinks, operationId string) *models.HalRscLinks {
+func HalDocLink(links *hal.HalRscLinks, operationId string) *hal.HalRscLinks {
 	if links == nil {
 		links = newHalRscLinks()
 	}
 
-	links.HalRscLinksAdditionalProperties["doc:"+operationId] = &models.HalHref{Href: "/" + operationId}
+	links.HalRscLinks["doc:"+operationId] = &hal.HalHref{Href: "/" + operationId}
 
 	return links
 }
 
-func HalAddCuries(ch ContextHelper, links *models.HalRscLinks) *models.HalRscLinks {
+func HalAddCuries(ch ContextHelper, links *hal.HalRscLinks) *hal.HalRscLinks {
 	if links == nil {
-		links = &models.HalRscLinks{}
+		links = &hal.HalRscLinks{}
 	}
 
-	links.Curies = []*models.HalCurie{
+	links.Curies = []*hal.HalCurie{
 		{
 			Name:      "lf",
 			Href:      strfmt.URI(ch.ServerURL + "/{rel}"),
