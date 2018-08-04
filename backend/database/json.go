@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"io"
 	"os"
-	"fmt"
 	"time"
 	"io/ioutil"
+	"sync"
 )
 
 // jsonDatabase stores data on disk in json files.
@@ -14,8 +14,9 @@ import (
 // pretty much everything is), but still not a good solution for
 // live/production.
 type jsonDatabase struct {
-	file string
-	db   BufferedDriver
+	file  string
+	db    BufferedDriver
+	mutex *sync.Mutex
 }
 
 type fileClient interface {
@@ -32,7 +33,8 @@ type fileClient interface {
 // NewJSONDBDriver returns a json database object
 func NewJSONDBDriver(dbFile string) (d Driver, err error) {
 	jdb := jsonDatabase{
-		file: dbFile,
+		file:  dbFile,
+		mutex: &sync.Mutex{},
 	}
 
 	var (
@@ -62,11 +64,15 @@ func NewJSONDBDriver(dbFile string) (d Driver, err error) {
 
 // Close the file pointer
 func (jdb jsonDatabase) Close() (err error) {
+	jdb.lock()
+	defer jdb.unlock()
+
 	return jdb.Flush(nil)
 }
 
 func (jdb jsonDatabase) Flush(t *time.Time) (err error) {
-	fmt.Sprint("Closing db connection and flushing to file")
+	jdb.lock()
+	defer jdb.unlock()
 
 	var b []byte
 	if b, err = jdb.db.Bytes(); err != nil {
@@ -81,31 +87,49 @@ func (jdb jsonDatabase) Flush(t *time.Time) (err error) {
 
 // Create a record in the JSON file on disk
 func (jdb jsonDatabase) Create(recordType DBTableRecordType, key string, doc interface{}) error {
+	jdb.lock()
+	defer jdb.unlock()
+
 	return jdb.db.Create(recordType, key, doc)
 }
 
 // Delete a record in the JSON file on disk
 func (jdb jsonDatabase) Delete(recordType DBTableRecordType, key string) error {
+	jdb.lock()
+	defer jdb.unlock()
+
 	return jdb.db.Delete(recordType, key)
 }
 
 // Ping mock. Implementing a no-op for the json file db
 func (jdb jsonDatabase) Ping() error {
+	jdb.lock()
+	defer jdb.unlock()
+
 	return jdb.db.Ping()
 }
 
 // Read a record from the JSON file on disk
 func (jdb jsonDatabase) Read(recordType DBTableRecordType, key string, i interface{}) (err error) {
+	jdb.lock()
+	defer jdb.unlock()
+
 	return jdb.db.Read(recordType, key, i)
 }
 
 // List all records of a given type from the JSON file on disk
 func (jdb jsonDatabase) List(recordType DBTableRecordType, i interface{}) (err error) {
+	jdb.lock()
+	defer jdb.unlock()
+
 	return jdb.db.List(recordType, i)
 }
 
 // Update a record in the JSON file on disk
 func (jdb jsonDatabase) Update(recordType DBTableRecordType, key string, doc interface{}) (err error) {
+	jdb.lock()
+	defer jdb.unlock()
+
 	return jdb.db.Update(recordType, key, doc)
 }
 
@@ -115,4 +139,12 @@ func (jdb jsonDatabase) doEvery(d time.Duration, f func(*time.Time) error) {
 			panic(err)
 		}
 	}
+}
+
+func (jdb jsonDatabase) lock() {
+	jdb.mutex.Lock()
+}
+
+func (jdb jsonDatabase) unlock() {
+	jdb.mutex.Unlock()
 }

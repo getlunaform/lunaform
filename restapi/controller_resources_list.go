@@ -23,7 +23,7 @@ func buildResourceGroupRootResponse(group string, ch helpers.ContextHelper) (rsc
 	var rsc []string
 	switch group {
 	case "tf":
-		rsc = []string{"modules", "stacks", "state-backends", "workspaces"}
+		rsc = []string{"modules", "stacks", "state-backends", "workspaces", "providers"}
 	case "identity":
 		rsc = []string{"groups", "providers", "users"}
 	case "vcs":

@@ -33,6 +33,7 @@ x-tagGroups:
       - resources
   - name: Terraform
     tags:
+      - providers
       - modules
       - stacks
       - workspaces
@@ -96,6 +97,189 @@ paths:
             $ref: "#/definitions/response-list-resources"
         404:
           $ref: "#/responses/404"
+  /tf/providers/:
+    get:
+      tags:
+        - providers
+      description: List Terraform Providers
+      operationId: list-providers
+      produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/response-list-tf-providers"
+        500:
+          $ref: "#/responses/500"
+    post:
+      tags:
+        - providers
+      description: Upload a Terraform provider
+      operationId: create-provider
+      produces: ["application/vnd.lunaform.v1+json"]
+      consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: body
+          name: terraform-provider
+          description: A terraform module
+          schema:
+            $ref: "#/definitions/resource-tf-provider"
+      responses:
+        201:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-provider
+          schema:
+            $ref: "#/definitions/resource-tf-provider"
+        400:
+          $ref: "#/responses/400"
+  /tf/provider/{id}:
+    get:
+      tags:
+        - providers
+      description: Get Terraform Provider
+      operationId: get-provider
+      produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Terraform Provider ID
+      responses:
+        202:
+          description: OK
+          schema:
+            $ref: "#/definitions/resource-tf-provider"
+        404:
+          $ref: "#/responses/404"
+        500:
+          $ref: "#/responses/500"
+    delete:
+      tags:
+        - providers
+      description: Delete a terraform provider
+      operationId: delete-provider
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Unique identifier for this provider
+      responses:
+        204:
+          description: No Content
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: "#/definitions/server-error"
+        404:
+          $ref: "#/responses/404"
+        405:
+          $ref: "#/responses/405"
+        500:
+          $ref: "#/responses/500"
+    put:
+      tags:
+        - providers
+      description: Update a Terraform provider
+      operationId: update-provider
+      produces: ["application/vnd.lunaform.v1+json"]
+      consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Terraform Provider ID
+        - in: body
+          name: terraform-provider
+          description: A terraform provider
+          schema:
+            $ref: "#/definitions/resource-tf-provider"
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-provider
+          schema:
+            $ref: "#/definitions/resource-tf-provider"
+        202:
+          description: Updated
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-provider
+          schema:
+            $ref: "#/definitions/resource-tf-provider"
+        400:
+          $ref: "#/responses/400"
+        404:
+          $ref: "#/responses/404"
+        500:
+          $ref: "#/responses/500"
+  /tf/provider/{id}/configurations:
+    get:
+      tags:
+        - providers
+      description: List Configurations for s Terraform Provider
+      operationId: list-provider-configurations
+      produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Terraform Provider ID
+      responses:
+        404:
+          $ref: "#/responses/404"
+        500:
+          $ref: "#/responses/500"
+  /tf/provider/{id}/configuration/{configId}:
+    get:
+      tags:
+        - providers
+      description: Get Configuration for Provider
+      operationId: get-provider-configuration
+      produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Terraform Provider ID
+        - in: path
+          name: configId
+          required: true
+          type: string
+          description: Configuration for a Terraform Provider
+      responses:
+        404:
+          $ref: "#/responses/404"
+        500:
+          $ref: "#/responses/500"
   /tf/modules:
     get:
       tags:
@@ -337,7 +521,7 @@ paths:
       tags:
         - workspaces
       description: Create a Terraform workspace
-      operationId: create-workspace,
+      operationId: create-workspace
       produces: ["application/vnd.lunaform.v1+json"]
       consumes: ["application/vnd.lunaform.v1+json"]
       security:
@@ -544,6 +728,10 @@ responses:
     description: Not Found
     schema:
       $ref: "#/definitions/server-error"
+  405:
+    description: Method Not Allowed
+    schema:
+      $ref: "#/definitions/server-error"
   500:
     description: Internal Server Error
     schema:
@@ -606,6 +794,17 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/resource-tf-state-backend"
+  response-list-tf-providers:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of tf providers
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-provider"
   response-list-tf-modules:
     type: object
     required:
@@ -617,6 +816,16 @@ definitions:
         $ref: "#/definitions/hal-rsc-links"
       _embedded:
         $ref: "#/definitions/resource-list-tf-module"
+  resource-list-tf-provider:
+    type: object
+    readOnly: true
+    required:
+      - providers
+    properties:
+      providers:
+        type: array
+        items:
+          $ref: "#/definitions/resource-tf-provider"
   resource-list-tf-module:
     type: object
     readOnly: true
@@ -627,6 +836,22 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/resource-tf-module"
+  resource-tf-provider:
+    type: object
+    description: A Terraform Provider
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-provider"
+      id:
+        type: string
+      name:
+        type: string
+      version:
+        type: string
+      type:
+        type: string
   resource-tf-module:
     type: object
     required:

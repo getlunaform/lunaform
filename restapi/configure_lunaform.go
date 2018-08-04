@@ -136,6 +136,16 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.StateBackendsCreateStateBackendHandler = CreateTfStateBackendsController(idp, oh, db)
 	api.StateBackendsUpdateStateBackendHandler = UpdateTfStateBackendsController(idp, oh, db)
 
+	// Controllers for /tf/providers
+	api.ProvidersListProvidersHandler = ListTfProvidersController(idp, oh, db)
+	api.ProvidersGetProviderHandler = GetTfProviderController(idp, oh, db)
+	api.ProvidersCreateProviderHandler = CreateTfProviderController(idp, oh, db)
+	api.ProvidersDeleteProviderHandler = DeleteTfProviderController(idp, oh, db)
+
+	// Controllers for /tf/provider configurations
+	api.ProvidersListProviderConfigurationsHandler = ListTfProviderConfigurationController(idp, oh, db)
+	api.ProvidersGetProviderConfigurationHandler = GetTfProviderConfigurationController(idp, oh, db)
+
 	api.ServerShutdown = shutdownHandler(dbDriver, workerPool)
 
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{{
@@ -261,22 +271,23 @@ func configureRootUser(idp identity.Provider) (err error) {
 			cliconfig.AdminApiKey = idGenerator.MustGenerate()
 		}
 
-		admins := &identity.Group{
-			Name: "admin",
+		if !foundAdmin {
+			adminUser = &identity.User{
+				IsEditable: false,
+				Username:   "admin",
+			}
 		}
 
-		adminUser = &identity.User{
-			IsEditable: false,
-			Username:   "admin",
-			APIKeys: []*identity.APIKey{
-				{
-					Value: cliconfig.AdminApiKey,
-				},
-			},
-		}
-		admins.AddUser(adminUser)
+		adminUser.APIKeys = []*identity.APIKey{{Value: cliconfig.AdminApiKey}}
 
-		if adminUser, err = idp.CreateUser(adminUser); err != nil {
+		identity.AdminGroup().AddUser(adminUser)
+
+		if foundAdmin {
+			adminUser, err = idp.UpdateUser(adminUser.Username, adminUser)
+		} else {
+			adminUser, err = idp.CreateUser(adminUser)
+		}
+		if err != nil {
 			return
 		}
 	}

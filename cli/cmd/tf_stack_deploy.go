@@ -22,6 +22,7 @@ import (
 	"github.com/getlunaform/lunaform/models"
 	"github.com/spf13/cobra"
 	"strings"
+	"github.com/go-openapi/swag"
 )
 
 var tfStackCreateCmdModuleFlag string
@@ -84,8 +85,8 @@ to quickly create a Cobra application.`,
 
 		params := stacks.NewDeployStackParams().WithTerraformStack(
 			&models.ResourceTfStack{
-				ModuleID:  String(module.ID),
-				Name:      String(tfStackCreateCmdNameFlag),
+				ModuleID:  swag.String(module.ID),
+				Name:      swag.String(tfStackCreateCmdNameFlag),
 				Workspace: tfStackCreateCmdWorkspaceFlag,
 				Variables: parseVariableOptions(tfStackCreateCmdStringSlice),
 			},

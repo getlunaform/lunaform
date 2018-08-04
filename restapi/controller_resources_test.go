@@ -25,23 +25,27 @@ func Test_buildResourceGroupResponse(t *testing.T) {
 				Resources: []*models.Resource{
 					{Name: swag.String("one"), Links: &hal.HalRscLinks{
 						HalRscLinks: map[string]*hal.HalHref{
-							"lf:self": &hal.HalHref{Href: "/one"},
+							"lf:self": {Href: "/one"},
 						}}},
 					{Name: swag.String("two"), Links: &hal.HalRscLinks{
 						HalRscLinks: map[string]*hal.HalHref{
-							"lf:self": &hal.HalHref{Href: "/two"},
+							"lf:self": {Href: "/two"},
 						}}},
 					{Name: swag.String("three"), Links: &hal.HalRscLinks{
 						HalRscLinks: map[string]*hal.HalHref{
-							"lf:self": &hal.HalHref{Href: "/three"},
+							"lf:self": {Href: "/three"},
 						}}},
 				},
 			},
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			response := buildResourceGroupResponse(tt.resources, tt.ch)
-			assert.Equal(t, response, tt.wantRsclist)
+			assert.Equal(t,
+				buildResourceGroupResponse(
+					tt.resources, tt.ch,
+				),
+				tt.wantRsclist,
+			)
 		})
 	}
 }

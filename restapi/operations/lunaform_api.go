@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"github.com/getlunaform/lunaform/restapi/operations/modules"
+	"github.com/getlunaform/lunaform/restapi/operations/providers"
 	"github.com/getlunaform/lunaform/restapi/operations/resources"
 	"github.com/getlunaform/lunaform/restapi/operations/stacks"
 	"github.com/getlunaform/lunaform/restapi/operations/state_backends"
@@ -48,6 +49,9 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		ModulesCreateModuleHandler: modules.CreateModuleHandlerFunc(func(params modules.CreateModuleParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation ModulesCreateModule has not yet been implemented")
 		}),
+		ProvidersCreateProviderHandler: providers.CreateProviderHandlerFunc(func(params providers.CreateProviderParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersCreateProvider has not yet been implemented")
+		}),
 		StateBackendsCreateStateBackendHandler: state_backends.CreateStateBackendHandlerFunc(func(params state_backends.CreateStateBackendParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StateBackendsCreateStateBackend has not yet been implemented")
 		}),
@@ -56,6 +60,9 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		}),
 		ModulesDeleteModuleHandler: modules.DeleteModuleHandlerFunc(func(params modules.DeleteModuleParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation ModulesDeleteModule has not yet been implemented")
+		}),
+		ProvidersDeleteProviderHandler: providers.DeleteProviderHandlerFunc(func(params providers.DeleteProviderParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersDeleteProvider has not yet been implemented")
 		}),
 		StacksDeployStackHandler: stacks.DeployStackHandlerFunc(func(params stacks.DeployStackParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StacksDeployStack has not yet been implemented")
@@ -66,6 +73,12 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		ModulesGetModuleHandler: modules.GetModuleHandlerFunc(func(params modules.GetModuleParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation ModulesGetModule has not yet been implemented")
 		}),
+		ProvidersGetProviderHandler: providers.GetProviderHandlerFunc(func(params providers.GetProviderParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersGetProvider has not yet been implemented")
+		}),
+		ProvidersGetProviderConfigurationHandler: providers.GetProviderConfigurationHandlerFunc(func(params providers.GetProviderConfigurationParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersGetProviderConfiguration has not yet been implemented")
+		}),
 		StacksGetStackHandler: stacks.GetStackHandlerFunc(func(params stacks.GetStackParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StacksGetStack has not yet been implemented")
 		}),
@@ -74,6 +87,12 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		}),
 		ModulesListModulesHandler: modules.ListModulesHandlerFunc(func(params modules.ListModulesParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation ModulesListModules has not yet been implemented")
+		}),
+		ProvidersListProviderConfigurationsHandler: providers.ListProviderConfigurationsHandlerFunc(func(params providers.ListProviderConfigurationsParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersListProviderConfigurations has not yet been implemented")
+		}),
+		ProvidersListProvidersHandler: providers.ListProvidersHandlerFunc(func(params providers.ListProvidersParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersListProviders has not yet been implemented")
 		}),
 		ResourcesListResourceGroupsHandler: resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
 			return middleware.NotImplemented("operation ResourcesListResourceGroups has not yet been implemented")
@@ -92,6 +111,9 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		}),
 		StacksUndeployStackHandler: stacks.UndeployStackHandlerFunc(func(params stacks.UndeployStackParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StacksUndeployStack has not yet been implemented")
+		}),
+		ProvidersUpdateProviderHandler: providers.UpdateProviderHandlerFunc(func(params providers.UpdateProviderParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersUpdateProvider has not yet been implemented")
 		}),
 		StateBackendsUpdateStateBackendHandler: state_backends.UpdateStateBackendHandlerFunc(func(params state_backends.UpdateStateBackendParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StateBackendsUpdateStateBackend has not yet been implemented")
@@ -148,24 +170,36 @@ type LunaformAPI struct {
 
 	// ModulesCreateModuleHandler sets the operation handler for the create module operation
 	ModulesCreateModuleHandler modules.CreateModuleHandler
+	// ProvidersCreateProviderHandler sets the operation handler for the create provider operation
+	ProvidersCreateProviderHandler providers.CreateProviderHandler
 	// StateBackendsCreateStateBackendHandler sets the operation handler for the create state backend operation
 	StateBackendsCreateStateBackendHandler state_backends.CreateStateBackendHandler
 	// WorkspacesCreateWorkspaceHandler sets the operation handler for the create workspace operation
 	WorkspacesCreateWorkspaceHandler workspaces.CreateWorkspaceHandler
 	// ModulesDeleteModuleHandler sets the operation handler for the delete module operation
 	ModulesDeleteModuleHandler modules.DeleteModuleHandler
+	// ProvidersDeleteProviderHandler sets the operation handler for the delete provider operation
+	ProvidersDeleteProviderHandler providers.DeleteProviderHandler
 	// StacksDeployStackHandler sets the operation handler for the deploy stack operation
 	StacksDeployStackHandler stacks.DeployStackHandler
 	// WorkspacesDescribeWorkspaceHandler sets the operation handler for the describe workspace operation
 	WorkspacesDescribeWorkspaceHandler workspaces.DescribeWorkspaceHandler
 	// ModulesGetModuleHandler sets the operation handler for the get module operation
 	ModulesGetModuleHandler modules.GetModuleHandler
+	// ProvidersGetProviderHandler sets the operation handler for the get provider operation
+	ProvidersGetProviderHandler providers.GetProviderHandler
+	// ProvidersGetProviderConfigurationHandler sets the operation handler for the get provider configuration operation
+	ProvidersGetProviderConfigurationHandler providers.GetProviderConfigurationHandler
 	// StacksGetStackHandler sets the operation handler for the get stack operation
 	StacksGetStackHandler stacks.GetStackHandler
 	// StacksListDeploymentsHandler sets the operation handler for the list deployments operation
 	StacksListDeploymentsHandler stacks.ListDeploymentsHandler
 	// ModulesListModulesHandler sets the operation handler for the list modules operation
 	ModulesListModulesHandler modules.ListModulesHandler
+	// ProvidersListProviderConfigurationsHandler sets the operation handler for the list provider configurations operation
+	ProvidersListProviderConfigurationsHandler providers.ListProviderConfigurationsHandler
+	// ProvidersListProvidersHandler sets the operation handler for the list providers operation
+	ProvidersListProvidersHandler providers.ListProvidersHandler
 	// ResourcesListResourceGroupsHandler sets the operation handler for the list resource groups operation
 	ResourcesListResourceGroupsHandler resources.ListResourceGroupsHandler
 	// ResourcesListResourcesHandler sets the operation handler for the list resources operation
@@ -178,6 +212,8 @@ type LunaformAPI struct {
 	WorkspacesListWorkspacesHandler workspaces.ListWorkspacesHandler
 	// StacksUndeployStackHandler sets the operation handler for the undeploy stack operation
 	StacksUndeployStackHandler stacks.UndeployStackHandler
+	// ProvidersUpdateProviderHandler sets the operation handler for the update provider operation
+	ProvidersUpdateProviderHandler providers.UpdateProviderHandler
 	// StateBackendsUpdateStateBackendHandler sets the operation handler for the update state backend operation
 	StateBackendsUpdateStateBackendHandler state_backends.UpdateStateBackendHandler
 
@@ -251,6 +287,10 @@ func (o *LunaformAPI) Validate() error {
 		unregistered = append(unregistered, "modules.CreateModuleHandler")
 	}
 
+	if o.ProvidersCreateProviderHandler == nil {
+		unregistered = append(unregistered, "providers.CreateProviderHandler")
+	}
+
 	if o.StateBackendsCreateStateBackendHandler == nil {
 		unregistered = append(unregistered, "state_backends.CreateStateBackendHandler")
 	}
@@ -261,6 +301,10 @@ func (o *LunaformAPI) Validate() error {
 
 	if o.ModulesDeleteModuleHandler == nil {
 		unregistered = append(unregistered, "modules.DeleteModuleHandler")
+	}
+
+	if o.ProvidersDeleteProviderHandler == nil {
+		unregistered = append(unregistered, "providers.DeleteProviderHandler")
 	}
 
 	if o.StacksDeployStackHandler == nil {
@@ -275,6 +319,14 @@ func (o *LunaformAPI) Validate() error {
 		unregistered = append(unregistered, "modules.GetModuleHandler")
 	}
 
+	if o.ProvidersGetProviderHandler == nil {
+		unregistered = append(unregistered, "providers.GetProviderHandler")
+	}
+
+	if o.ProvidersGetProviderConfigurationHandler == nil {
+		unregistered = append(unregistered, "providers.GetProviderConfigurationHandler")
+	}
+
 	if o.StacksGetStackHandler == nil {
 		unregistered = append(unregistered, "stacks.GetStackHandler")
 	}
@@ -285,6 +337,14 @@ func (o *LunaformAPI) Validate() error {
 
 	if o.ModulesListModulesHandler == nil {
 		unregistered = append(unregistered, "modules.ListModulesHandler")
+	}
+
+	if o.ProvidersListProviderConfigurationsHandler == nil {
+		unregistered = append(unregistered, "providers.ListProviderConfigurationsHandler")
+	}
+
+	if o.ProvidersListProvidersHandler == nil {
+		unregistered = append(unregistered, "providers.ListProvidersHandler")
 	}
 
 	if o.ResourcesListResourceGroupsHandler == nil {
@@ -309,6 +369,10 @@ func (o *LunaformAPI) Validate() error {
 
 	if o.StacksUndeployStackHandler == nil {
 		unregistered = append(unregistered, "stacks.UndeployStackHandler")
+	}
+
+	if o.ProvidersUpdateProviderHandler == nil {
+		unregistered = append(unregistered, "providers.UpdateProviderHandler")
 	}
 
 	if o.StateBackendsUpdateStateBackendHandler == nil {
@@ -433,6 +497,11 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/tf/providers"] = providers.NewCreateProvider(o.context, o.ProvidersCreateProviderHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/tf/state-backends"] = state_backends.NewCreateStateBackend(o.context, o.StateBackendsCreateStateBackendHandler)
 
 	if o.handlers["PUT"] == nil {
@@ -444,6 +513,11 @@ func (o *LunaformAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/tf/module/{id}"] = modules.NewDeleteModule(o.context, o.ModulesDeleteModuleHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tf/provider/{id}"] = providers.NewDeleteProvider(o.context, o.ProvidersDeleteProviderHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -463,6 +537,16 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/tf/provider/{id}"] = providers.NewGetProvider(o.context, o.ProvidersGetProviderHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/tf/provider/{id}/configuration/{configId}"] = providers.NewGetProviderConfiguration(o.context, o.ProvidersGetProviderConfigurationHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/tf/stack/{id}"] = stacks.NewGetStack(o.context, o.StacksGetStackHandler)
 
 	if o.handlers["GET"] == nil {
@@ -474,6 +558,16 @@ func (o *LunaformAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/tf/modules"] = modules.NewListModules(o.context, o.ModulesListModulesHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/tf/provider/{id}/configurations"] = providers.NewListProviderConfigurations(o.context, o.ProvidersListProviderConfigurationsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/tf/providers"] = providers.NewListProviders(o.context, o.ProvidersListProvidersHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -504,6 +598,11 @@ func (o *LunaformAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/tf/stack/{id}"] = stacks.NewUndeployStack(o.context, o.StacksUndeployStackHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/tf/provider/{id}"] = providers.NewUpdateProvider(o.context, o.ProvidersUpdateProviderHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)

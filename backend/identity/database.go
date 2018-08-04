@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	DB_TABLE_AUTH_USER   = "lf-auth-user"
-	DB_TABLE_AUTH_APIKEY = "lf-auth-apikey"
+	DB_TABLE_AUTH_USER   = database.DBTableRecordType("lf-auth-user")
+	DB_TABLE_AUTH_APIKEY = database.DBTableRecordType("lf-auth-apikey")
 )
 
 // NewDatabaseIdentityProvider is not yet implemented and will return an error
@@ -60,6 +60,14 @@ func (dbidp dbIdentityProvider) ReadUser(username string) (user *User, err error
 		}
 	}
 	return user, err
+}
+func (dbidp dbIdentityProvider) UpdateUser(username string, user *User) (updatedUser *User, err error) {
+	if err = dbidp.db.Update(DB_TABLE_AUTH_USER, username, user); err != nil {
+		if _, userRecordNotFound := err.(database.RecordDoesNotExistError); userRecordNotFound {
+			err = UserNotFound(err)
+		}
+	}
+	return user, nil
 }
 
 func (dbidp dbIdentityProvider) LoginUser(user *User, password string) (loggedin bool) {

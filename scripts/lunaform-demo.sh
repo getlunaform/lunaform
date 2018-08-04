@@ -27,15 +27,16 @@ EOF
 ./lunaform terraform module list
 
 ./lunaform terraform module create \
-    --name tf-vpc \
-    --source github.com/drewsonne/tf-vpc \
+    --name terraform-aws-s3 \
+    --source github.com/Aplyca/terraform-aws-s3 \
     --type git
 
 ./lunaform terraform module list
 ./lunaform terraform stack list
 ./lunaform terraform stack deploy \
     --name my-vpc \
-    --module tf-vpc \
-    --workspace live
+    --module terraform-aws-s3 \
+    --workspace live \
+    --var region=eu-west-1
 
 kill $tfs_pidsla

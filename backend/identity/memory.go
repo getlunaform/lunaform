@@ -47,6 +47,14 @@ func (mip memoryIdentityProvider) CreateUser(newUser *User) (user *User, err err
 	return newUser, err
 }
 
+func (mip memoryIdentityProvider) UpdateUser(username string, user *User) (updatedUser *User, err error) {
+	var exists bool
+	if updatedUser, exists = mip.users[user.Username]; exists {
+		return nil, fmt.Errorf("User '%s' does not exist", user.Username)
+	}
+	return
+}
+
 func (mip memoryIdentityProvider) ReadUser(username string) (user *User, err error) {
 	existingUser, exists := mip.users[username]
 	if username == "admin" && !exists {

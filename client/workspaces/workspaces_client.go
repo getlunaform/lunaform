@@ -34,7 +34,7 @@ func (a *Client) CreateWorkspace(params *CreateWorkspaceParams, authInfo runtime
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "create-workspace,",
+		ID:                 "create-workspace",
 		Method:             "PUT",
 		PathPattern:        "/tf/workspace/{name}",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},

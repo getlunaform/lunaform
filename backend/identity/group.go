@@ -1,5 +1,13 @@
 package identity
 
+func AdminGroup() *Group {
+	return NewGroup("admin")
+}
+
+func NewGroup(name string) *Group {
+	return &Group{Name: name}
+}
+
 // Group of users which can have a role attached to it
 type Group struct {
 	Name  string

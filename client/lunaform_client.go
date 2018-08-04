@@ -12,6 +12,7 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/getlunaform/lunaform/client/modules"
+	"github.com/getlunaform/lunaform/client/providers"
 	"github.com/getlunaform/lunaform/client/resources"
 	"github.com/getlunaform/lunaform/client/stacks"
 	"github.com/getlunaform/lunaform/client/state_backends"
@@ -62,6 +63,8 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Lunaform {
 	cli.Transport = transport
 
 	cli.Modules = modules.New(transport, formats)
+
+	cli.Providers = providers.New(transport, formats)
 
 	cli.Resources = resources.New(transport, formats)
 
@@ -117,6 +120,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type Lunaform struct {
 	Modules *modules.Client
 
+	Providers *providers.Client
+
 	Resources *resources.Client
 
 	Stacks *stacks.Client
@@ -133,6 +138,8 @@ func (c *Lunaform) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
 	c.Modules.SetTransport(transport)
+
+	c.Providers.SetTransport(transport)
 
 	c.Resources.SetTransport(transport)
 

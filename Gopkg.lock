@@ -65,7 +65,7 @@
   branch = "master"
   name = "github.com/getlunaform/go-terraform"
   packages = ["."]
-  revision = "4c55ef9b7add4226af3a8e6370c8d99c618acc49"
+  revision = "c5c78848cff1dbbb586a81a95ab6977042e701e4"
 
 [[projects]]
   name = "github.com/go-openapi/analysis"
@@ -195,7 +195,7 @@
     "jlexer",
     "jwriter"
   ]
-  revision = "d5012789d6659eeed305f54c1b1542e7b65829e6"
+  revision = "03f2033d19d5860aef995fe360ac7d395cd8ce65"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -213,7 +213,7 @@
   branch = "master"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
-  revision = "3864e76763d94a6df2f9960b16a20a33da9f9a66"
+  revision = "58046073cbffe2f25d425fe1331102f55cf719de"
 
 [[projects]]
   branch = "master"
@@ -226,12 +226,6 @@
   packages = ["."]
   revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
   version = "v1.2.0"
-
-[[projects]]
-  name = "github.com/pkg/errors"
-  packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -297,7 +291,7 @@
     "bcrypt",
     "blowfish"
   ]
-  revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
+  revision = "56440b844dfe139a8ac053f4ecac0b20b79058f4"
 
 [[projects]]
   branch = "master"
@@ -308,13 +302,13 @@
     "idna",
     "netutil"
   ]
-  revision = "3673e40ba22529d22c3fd7c93e97b0ce50fa7bdd"
+  revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
+  revision = "0ffbfd41fbef8ffcf9b62b0b0aa3a5873ed7a4fe"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -356,6 +350,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1d4e5b4700df84c3bc03e919c8a955e4ed96d7416fd61ed50348052306ee93d5"
+  inputs-digest = "ff3964d8e0293ef5edacfa8a8bfcdfeebb45abbeff41954b3619e893d653893d"
   solver-name = "gps-cdcl"
   solver-version = 1

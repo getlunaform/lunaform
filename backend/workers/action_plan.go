@@ -41,21 +41,19 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) func() {
 			return
 		}
 
-		varFile := []string{varFilePath}
+		tf := goterraform.NewTerraformClient().WithWorkingDirectory(
+			bs.MustStackDir(true),
+		)
 
-		params := &goterraform.TerraformPlanParams{
+		action := tf.Plan(&goterraform.TerraformPlanParams{
 			Out:     swag.String(bs.MustPlanPath(false)),
 			Input:   swag.Bool(false),
-			VarFile: &varFile,
-		}
-
-		action := goterraform.NewTerraformClient().
-			WithWorkingDirectory(bs.MustStackDir(true)).
-			Plan(params).
-			Initialise()
+			VarFile: swag.StringSlice([]string{varFilePath}),
+		}).Initialise()
 
 		if err := action.InitLogger(logs); err != nil {
-			fmt.Printf("An error occured initialising task logger: " + err.Error())
+			fmt.Printf(
+				"An error occured initialising task logger: %s", err.Error())
 			return
 		}
 
