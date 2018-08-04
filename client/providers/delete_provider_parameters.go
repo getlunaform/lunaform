@@ -62,11 +62,11 @@ for the delete provider operation typically these are written to a http.Request
 */
 type DeleteProviderParams struct {
 
-	/*ID
+	/*Name
 	  Unique identifier for this provider
 
 	*/
-	ID string
+	Name string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -106,15 +106,15 @@ func (o *DeleteProviderParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the delete provider params
-func (o *DeleteProviderParams) WithID(id string) *DeleteProviderParams {
-	o.SetID(id)
+// WithName adds the name to the delete provider params
+func (o *DeleteProviderParams) WithName(name string) *DeleteProviderParams {
+	o.SetName(name)
 	return o
 }
 
-// SetID adds the id to the delete provider params
-func (o *DeleteProviderParams) SetID(id string) {
-	o.ID = id
+// SetName adds the name to the delete provider params
+func (o *DeleteProviderParams) SetName(name string) {
+	o.Name = name
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -125,8 +125,8 @@ func (o *DeleteProviderParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 	}
 	var res []error
 
-	// path param id
-	if err := r.SetPathParam("id", o.ID); err != nil {
+	// path param name
+	if err := r.SetPathParam("name", o.Name); err != nil {
 		return err
 	}
 

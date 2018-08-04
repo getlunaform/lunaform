@@ -72,7 +72,7 @@ type UpdateProviderAccepted struct {
 }
 
 func (o *UpdateProviderAccepted) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{id}][%d] updateProviderAccepted  %+v", 202, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{name}][%d] updateProviderAccepted  %+v", 202, o.Payload)
 }
 
 func (o *UpdateProviderAccepted) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -101,7 +101,7 @@ type UpdateProviderBadRequest struct {
 }
 
 func (o *UpdateProviderBadRequest) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{id}][%d] updateProviderBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{name}][%d] updateProviderBadRequest  %+v", 400, o.Payload)
 }
 
 func (o *UpdateProviderBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -130,7 +130,7 @@ type UpdateProviderNotFound struct {
 }
 
 func (o *UpdateProviderNotFound) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{id}][%d] updateProviderNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{name}][%d] updateProviderNotFound  %+v", 404, o.Payload)
 }
 
 func (o *UpdateProviderNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -159,7 +159,7 @@ type UpdateProviderInternalServerError struct {
 }
 
 func (o *UpdateProviderInternalServerError) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{id}][%d] updateProviderInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{name}][%d] updateProviderInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *UpdateProviderInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

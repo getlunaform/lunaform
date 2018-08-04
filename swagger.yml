@@ -140,7 +140,7 @@ paths:
             $ref: "#/definitions/resource-tf-provider"
         400:
           $ref: "#/responses/400"
-  /tf/provider/{id}:
+  /tf/provider/{name}:
     get:
       tags:
         - providers
@@ -151,10 +151,10 @@ paths:
         - api-key: []
       parameters:
         - in: path
-          name: id
+          name: name
           required: true
           type: string
-          description: Terraform Provider ID
+          description: Terraform Provider Name
       responses:
         202:
           description: OK
@@ -173,7 +173,7 @@ paths:
         - api-key: []
       parameters:
         - in: path
-          name: id
+          name: name
           required: true
           type: string
           description: Unique identifier for this provider
@@ -201,7 +201,7 @@ paths:
         - api-key: []
       parameters:
         - in: path
-          name: id
+          name: name
           required: true
           type: string
           description: Terraform Provider ID
@@ -226,7 +226,7 @@ paths:
           $ref: "#/responses/404"
         500:
           $ref: "#/responses/500"
-  /tf/provider/{id}/configurations:
+  /tf/provider/{name}/configurations:
     get:
       tags:
         - providers
@@ -237,16 +237,16 @@ paths:
         - api-key: []
       parameters:
         - in: path
-          name: id
+          name: name
           required: true
           type: string
-          description: Terraform Provider ID
+          description: Terraform Provider Name
       responses:
         404:
           $ref: "#/responses/404"
         500:
           $ref: "#/responses/500"
-  /tf/provider/{id}/configuration/{configId}:
+  /tf/provider/{name}/configuration/{id}:
     get:
       tags:
         - providers
@@ -257,12 +257,12 @@ paths:
         - api-key: []
       parameters:
         - in: path
-          name: id
+          name: name
           required: true
           type: string
           description: Terraform Provider ID
         - in: path
-          name: configId
+          name: id
           required: true
           type: string
           description: Configuration for a Terraform Provider
@@ -835,11 +835,7 @@ definitions:
         $ref: "#/definitions/hal-rsc-links"
       _embedded:
         $ref: "#/definitions/resource-list-tf-provider"
-      id:
-        type: string
       name:
-        type: string
-      version:
         type: string
       type:
         type: string

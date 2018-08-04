@@ -65,7 +65,7 @@ func (a *Client) DeleteProvider(params *DeleteProviderParams, authInfo runtime.C
 	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "delete-provider",
 		Method:             "DELETE",
-		PathPattern:        "/tf/provider/{id}",
+		PathPattern:        "/tf/provider/{name}",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},
@@ -94,7 +94,7 @@ func (a *Client) GetProvider(params *GetProviderParams, authInfo runtime.ClientA
 	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "get-provider",
 		Method:             "GET",
-		PathPattern:        "/tf/provider/{id}",
+		PathPattern:        "/tf/provider/{name}",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},
@@ -123,7 +123,7 @@ func (a *Client) GetProviderConfiguration(params *GetProviderConfigurationParams
 	_, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "get-provider-configuration",
 		Method:             "GET",
-		PathPattern:        "/tf/provider/{id}/configuration/{configId}",
+		PathPattern:        "/tf/provider/{name}/configuration/{id}",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},
@@ -152,7 +152,7 @@ func (a *Client) ListProviderConfigurations(params *ListProviderConfigurationsPa
 	_, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "list-provider-configurations",
 		Method:             "GET",
-		PathPattern:        "/tf/provider/{id}/configurations",
+		PathPattern:        "/tf/provider/{name}/configurations",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},
@@ -210,7 +210,7 @@ func (a *Client) UpdateProvider(params *UpdateProviderParams, authInfo runtime.C
 	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "update-provider",
 		Method:             "PUT",
-		PathPattern:        "/tf/provider/{id}",
+		PathPattern:        "/tf/provider/{name}",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},

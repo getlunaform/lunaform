@@ -31,7 +31,7 @@ func NewListProviderConfigurations(ctx *middleware.Context, handler ListProvider
 	return &ListProviderConfigurations{Context: ctx, Handler: handler}
 }
 
-/*ListProviderConfigurations swagger:route GET /tf/provider/{id}/configurations providers listProviderConfigurations
+/*ListProviderConfigurations swagger:route GET /tf/provider/{name}/configurations providers listProviderConfigurations
 
 List Configurations for s Terraform Provider
 

@@ -62,11 +62,11 @@ for the list provider configurations operation typically these are written to a 
 */
 type ListProviderConfigurationsParams struct {
 
-	/*ID
-	  Terraform Provider ID
+	/*Name
+	  Terraform Provider Name
 
 	*/
-	ID string
+	Name string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -106,15 +106,15 @@ func (o *ListProviderConfigurationsParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the list provider configurations params
-func (o *ListProviderConfigurationsParams) WithID(id string) *ListProviderConfigurationsParams {
-	o.SetID(id)
+// WithName adds the name to the list provider configurations params
+func (o *ListProviderConfigurationsParams) WithName(name string) *ListProviderConfigurationsParams {
+	o.SetName(name)
 	return o
 }
 
-// SetID adds the id to the list provider configurations params
-func (o *ListProviderConfigurationsParams) SetID(id string) {
-	o.ID = id
+// SetName adds the name to the list provider configurations params
+func (o *ListProviderConfigurationsParams) SetName(name string) {
+	o.Name = name
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -125,8 +125,8 @@ func (o *ListProviderConfigurationsParams) WriteToRequest(r runtime.ClientReques
 	}
 	var res []error
 
-	// path param id
-	if err := r.SetPathParam("id", o.ID); err != nil {
+	// path param name
+	if err := r.SetPathParam("name", o.Name); err != nil {
 		return err
 	}
 

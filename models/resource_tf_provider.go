@@ -24,17 +24,11 @@ type ResourceTfProvider struct {
 	// links
 	Links *hal.HalRscLinks `json:"_links,omitempty"`
 
-	// id
-	ID string `json:"id,omitempty"`
-
 	// name
 	Name string `json:"name,omitempty"`
 
 	// type
 	Type string `json:"type,omitempty"`
-
-	// version
-	Version string `json:"version,omitempty"`
 }
 
 // Validate validates this resource tf provider

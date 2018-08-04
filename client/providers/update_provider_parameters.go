@@ -64,11 +64,11 @@ for the update provider operation typically these are written to a http.Request
 */
 type UpdateProviderParams struct {
 
-	/*ID
+	/*Name
 	  Terraform Provider ID
 
 	*/
-	ID string
+	Name string
 	/*TerraformProvider
 	  A terraform provider
 
@@ -113,15 +113,15 @@ func (o *UpdateProviderParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the update provider params
-func (o *UpdateProviderParams) WithID(id string) *UpdateProviderParams {
-	o.SetID(id)
+// WithName adds the name to the update provider params
+func (o *UpdateProviderParams) WithName(name string) *UpdateProviderParams {
+	o.SetName(name)
 	return o
 }
 
-// SetID adds the id to the update provider params
-func (o *UpdateProviderParams) SetID(id string) {
-	o.ID = id
+// SetName adds the name to the update provider params
+func (o *UpdateProviderParams) SetName(name string) {
+	o.Name = name
 }
 
 // WithTerraformProvider adds the terraformProvider to the update provider params
@@ -143,8 +143,8 @@ func (o *UpdateProviderParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 	}
 	var res []error
 
-	// path param id
-	if err := r.SetPathParam("id", o.ID); err != nil {
+	// path param name
+	if err := r.SetPathParam("name", o.Name); err != nil {
 		return err
 	}
 

@@ -14,7 +14,7 @@ import (
 
 // UpdateProviderURL generates an URL for the update provider operation
 type UpdateProviderURL struct {
-	ID string
+	Name string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -40,13 +40,13 @@ func (o *UpdateProviderURL) SetBasePath(bp string) {
 func (o *UpdateProviderURL) Build() (*url.URL, error) {
 	var result url.URL
 
-	var _path = "/tf/provider/{id}"
+	var _path = "/tf/provider/{name}"
 
-	id := o.ID
-	if id != "" {
-		_path = strings.Replace(_path, "{id}", id, -1)
+	name := o.Name
+	if name != "" {
+		_path = strings.Replace(_path, "{name}", name, -1)
 	} else {
-		return nil, errors.New("ID is required on UpdateProviderURL")
+		return nil, errors.New("Name is required on UpdateProviderURL")
 	}
 
 	_basePath := o._basePath

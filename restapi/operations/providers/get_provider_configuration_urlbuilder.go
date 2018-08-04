@@ -14,8 +14,8 @@ import (
 
 // GetProviderConfigurationURL generates an URL for the get provider configuration operation
 type GetProviderConfigurationURL struct {
-	ConfigID string
-	ID       string
+	ID   string
+	Name string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -41,20 +41,20 @@ func (o *GetProviderConfigurationURL) SetBasePath(bp string) {
 func (o *GetProviderConfigurationURL) Build() (*url.URL, error) {
 	var result url.URL
 
-	var _path = "/tf/provider/{id}/configuration/{configId}"
-
-	configID := o.ConfigID
-	if configID != "" {
-		_path = strings.Replace(_path, "{configId}", configID, -1)
-	} else {
-		return nil, errors.New("ConfigID is required on GetProviderConfigurationURL")
-	}
+	var _path = "/tf/provider/{name}/configuration/{id}"
 
 	id := o.ID
 	if id != "" {
 		_path = strings.Replace(_path, "{id}", id, -1)
 	} else {
 		return nil, errors.New("ID is required on GetProviderConfigurationURL")
+	}
+
+	name := o.Name
+	if name != "" {
+		_path = strings.Replace(_path, "{name}", name, -1)
+	} else {
+		return nil, errors.New("Name is required on GetProviderConfigurationURL")
 	}
 
 	_basePath := o._basePath

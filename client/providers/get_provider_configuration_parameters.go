@@ -62,16 +62,16 @@ for the get provider configuration operation typically these are written to a ht
 */
 type GetProviderConfigurationParams struct {
 
-	/*ConfigID
+	/*ID
 	  Configuration for a Terraform Provider
 
 	*/
-	ConfigID string
-	/*ID
+	ID string
+	/*Name
 	  Terraform Provider ID
 
 	*/
-	ID string
+	Name string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -111,17 +111,6 @@ func (o *GetProviderConfigurationParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithConfigID adds the configID to the get provider configuration params
-func (o *GetProviderConfigurationParams) WithConfigID(configID string) *GetProviderConfigurationParams {
-	o.SetConfigID(configID)
-	return o
-}
-
-// SetConfigID adds the configId to the get provider configuration params
-func (o *GetProviderConfigurationParams) SetConfigID(configID string) {
-	o.ConfigID = configID
-}
-
 // WithID adds the id to the get provider configuration params
 func (o *GetProviderConfigurationParams) WithID(id string) *GetProviderConfigurationParams {
 	o.SetID(id)
@@ -133,6 +122,17 @@ func (o *GetProviderConfigurationParams) SetID(id string) {
 	o.ID = id
 }
 
+// WithName adds the name to the get provider configuration params
+func (o *GetProviderConfigurationParams) WithName(name string) *GetProviderConfigurationParams {
+	o.SetName(name)
+	return o
+}
+
+// SetName adds the name to the get provider configuration params
+func (o *GetProviderConfigurationParams) SetName(name string) {
+	o.Name = name
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *GetProviderConfigurationParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -141,13 +141,13 @@ func (o *GetProviderConfigurationParams) WriteToRequest(r runtime.ClientRequest,
 	}
 	var res []error
 
-	// path param configId
-	if err := r.SetPathParam("configId", o.ConfigID); err != nil {
+	// path param id
+	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
 
-	// path param id
-	if err := r.SetPathParam("id", o.ID); err != nil {
+	// path param name
+	if err := r.SetPathParam("name", o.Name); err != nil {
 		return err
 	}
 

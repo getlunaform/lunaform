@@ -13,7 +13,7 @@ func CreateTfProviderController(idp identity.Provider, ch helpers.ContextHelper,
 	return func(params operation.CreateProviderParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
-		provider := buildCreateTfProviderResponse()
+		provider := buildCreateTfProviderResponse(params.TerraformProvider)
 		provider.Links = helpers.HalAddCuries(ch, helpers.HalSelfLink(
 			helpers.HalDocLink(nil, ch.OperationID),
 			ch.Endpoint,
@@ -22,12 +22,11 @@ func CreateTfProviderController(idp identity.Provider, ch helpers.ContextHelper,
 	}
 }
 
-func buildCreateTfProviderResponse() *models.ResourceTfProvider {
-	provider := &models.ResourceTfProvider{
-		Embedded: &models.ResourceListTfProvider{
-			Providers: make([]*models.ResourceTfProvider, 0),
-		},
+func buildCreateTfProviderResponse(provider *models.ResourceTfProvider) *models.ResourceTfProvider {
+	provider.Embedded = &models.ResourceListTfProvider{
+		Providers: make([]*models.ResourceTfProvider, 0),
 	}
 	provider.ID = idGenerator.MustGenerate()
+
 	return provider
 }

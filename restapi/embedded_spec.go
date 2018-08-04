@@ -286,7 +286,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{id}": {
+    "/tf/provider/{name}": {
       "get": {
         "security": [
           {
@@ -304,8 +304,8 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "Terraform Provider ID",
-            "name": "id",
+            "description": "Terraform Provider Name",
+            "name": "name",
             "in": "path",
             "required": true
           }
@@ -346,7 +346,7 @@ func init() {
           {
             "type": "string",
             "description": "Terraform Provider ID",
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true
           },
@@ -400,7 +400,7 @@ func init() {
           {
             "type": "string",
             "description": "Unique identifier for this provider",
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true
           }
@@ -427,7 +427,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{id}/configuration/{configId}": {
+    "/tf/provider/{name}/configuration/{id}": {
       "get": {
         "security": [
           {
@@ -446,14 +446,14 @@ func init() {
           {
             "type": "string",
             "description": "Terraform Provider ID",
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true
           },
           {
             "type": "string",
             "description": "Configuration for a Terraform Provider",
-            "name": "configId",
+            "name": "id",
             "in": "path",
             "required": true
           }
@@ -468,7 +468,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{id}/configurations": {
+    "/tf/provider/{name}/configurations": {
       "get": {
         "security": [
           {
@@ -486,8 +486,8 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "Terraform Provider ID",
-            "name": "id",
+            "description": "Terraform Provider Name",
+            "name": "name",
             "in": "path",
             "required": true
           }
@@ -1508,16 +1508,10 @@ func init() {
         "_links": {
           "$ref": "#/definitions/hal-rsc-links"
         },
-        "id": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
         "type": {
-          "type": "string"
-        },
-        "version": {
           "type": "string"
         }
       }
@@ -2088,7 +2082,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{id}": {
+    "/tf/provider/{name}": {
       "get": {
         "security": [
           {
@@ -2106,8 +2100,8 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "Terraform Provider ID",
-            "name": "id",
+            "description": "Terraform Provider Name",
+            "name": "name",
             "in": "path",
             "required": true
           }
@@ -2154,7 +2148,7 @@ func init() {
           {
             "type": "string",
             "description": "Terraform Provider ID",
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true
           },
@@ -2217,7 +2211,7 @@ func init() {
           {
             "type": "string",
             "description": "Unique identifier for this provider",
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true
           }
@@ -2253,7 +2247,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{id}/configuration/{configId}": {
+    "/tf/provider/{name}/configuration/{id}": {
       "get": {
         "security": [
           {
@@ -2272,14 +2266,14 @@ func init() {
           {
             "type": "string",
             "description": "Terraform Provider ID",
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true
           },
           {
             "type": "string",
             "description": "Configuration for a Terraform Provider",
-            "name": "configId",
+            "name": "id",
             "in": "path",
             "required": true
           }
@@ -2300,7 +2294,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{id}/configurations": {
+    "/tf/provider/{name}/configurations": {
       "get": {
         "security": [
           {
@@ -2318,8 +2312,8 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "Terraform Provider ID",
-            "name": "id",
+            "description": "Terraform Provider Name",
+            "name": "name",
             "in": "path",
             "required": true
           }
@@ -3400,16 +3394,10 @@ func init() {
         "_links": {
           "$ref": "#/definitions/hal-rsc-links"
         },
-        "id": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
         "type": {
-          "type": "string"
-        },
-        "version": {
           "type": "string"
         }
       }

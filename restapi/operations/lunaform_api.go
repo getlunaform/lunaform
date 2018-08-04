@@ -517,7 +517,7 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/tf/provider/{id}"] = providers.NewDeleteProvider(o.context, o.ProvidersDeleteProviderHandler)
+	o.handlers["DELETE"]["/tf/provider/{name}"] = providers.NewDeleteProvider(o.context, o.ProvidersDeleteProviderHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -537,12 +537,12 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/tf/provider/{id}"] = providers.NewGetProvider(o.context, o.ProvidersGetProviderHandler)
+	o.handlers["GET"]["/tf/provider/{name}"] = providers.NewGetProvider(o.context, o.ProvidersGetProviderHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/tf/provider/{id}/configuration/{configId}"] = providers.NewGetProviderConfiguration(o.context, o.ProvidersGetProviderConfigurationHandler)
+	o.handlers["GET"]["/tf/provider/{name}/configuration/{id}"] = providers.NewGetProviderConfiguration(o.context, o.ProvidersGetProviderConfigurationHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -562,7 +562,7 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/tf/provider/{id}/configurations"] = providers.NewListProviderConfigurations(o.context, o.ProvidersListProviderConfigurationsHandler)
+	o.handlers["GET"]["/tf/provider/{name}/configurations"] = providers.NewListProviderConfigurations(o.context, o.ProvidersListProviderConfigurationsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -602,7 +602,7 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/tf/provider/{id}"] = providers.NewUpdateProvider(o.context, o.ProvidersUpdateProviderHandler)
+	o.handlers["PUT"]["/tf/provider/{name}"] = providers.NewUpdateProvider(o.context, o.ProvidersUpdateProviderHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)

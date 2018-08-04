@@ -78,7 +78,7 @@ type DeleteProviderNoContent struct {
 }
 
 func (o *DeleteProviderNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /tf/provider/{id}][%d] deleteProviderNoContent ", 204)
+	return fmt.Sprintf("[DELETE /tf/provider/{name}][%d] deleteProviderNoContent ", 204)
 }
 
 func (o *DeleteProviderNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -100,7 +100,7 @@ type DeleteProviderNotFound struct {
 }
 
 func (o *DeleteProviderNotFound) Error() string {
-	return fmt.Sprintf("[DELETE /tf/provider/{id}][%d] deleteProviderNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[DELETE /tf/provider/{name}][%d] deleteProviderNotFound  %+v", 404, o.Payload)
 }
 
 func (o *DeleteProviderNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -129,7 +129,7 @@ type DeleteProviderMethodNotAllowed struct {
 }
 
 func (o *DeleteProviderMethodNotAllowed) Error() string {
-	return fmt.Sprintf("[DELETE /tf/provider/{id}][%d] deleteProviderMethodNotAllowed  %+v", 405, o.Payload)
+	return fmt.Sprintf("[DELETE /tf/provider/{name}][%d] deleteProviderMethodNotAllowed  %+v", 405, o.Payload)
 }
 
 func (o *DeleteProviderMethodNotAllowed) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -158,7 +158,7 @@ type DeleteProviderUnprocessableEntity struct {
 }
 
 func (o *DeleteProviderUnprocessableEntity) Error() string {
-	return fmt.Sprintf("[DELETE /tf/provider/{id}][%d] deleteProviderUnprocessableEntity  %+v", 422, o.Payload)
+	return fmt.Sprintf("[DELETE /tf/provider/{name}][%d] deleteProviderUnprocessableEntity  %+v", 422, o.Payload)
 }
 
 func (o *DeleteProviderUnprocessableEntity) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -187,7 +187,7 @@ type DeleteProviderInternalServerError struct {
 }
 
 func (o *DeleteProviderInternalServerError) Error() string {
-	return fmt.Sprintf("[DELETE /tf/provider/{id}][%d] deleteProviderInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[DELETE /tf/provider/{name}][%d] deleteProviderInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *DeleteProviderInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

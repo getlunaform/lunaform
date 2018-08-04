@@ -37,7 +37,7 @@ type UpdateProviderParams struct {
 	  Required: true
 	  In: path
 	*/
-	ID string
+	Name string
 	/*A terraform provider
 	  In: body
 	*/
@@ -53,8 +53,8 @@ func (o *UpdateProviderParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	o.HTTPRequest = r
 
-	rID, rhkID, _ := route.Params.GetOK("id")
-	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
+	rName, rhkName, _ := route.Params.GetOK("name")
+	if err := o.bindName(rName, rhkName, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -80,8 +80,8 @@ func (o *UpdateProviderParams) BindRequest(r *http.Request, route *middleware.Ma
 	return nil
 }
 
-// bindID binds and validates parameter ID from path.
-func (o *UpdateProviderParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindName binds and validates parameter Name from path.
+func (o *UpdateProviderParams) bindName(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -90,7 +90,7 @@ func (o *UpdateProviderParams) bindID(rawData []string, hasKey bool, formats str
 	// Required: true
 	// Parameter is provided by construction from the route
 
-	o.ID = raw
+	o.Name = raw
 
 	return nil
 }

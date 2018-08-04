@@ -58,7 +58,7 @@ type ListProviderConfigurationsNotFound struct {
 }
 
 func (o *ListProviderConfigurationsNotFound) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{id}/configurations][%d] listProviderConfigurationsNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{name}/configurations][%d] listProviderConfigurationsNotFound  %+v", 404, o.Payload)
 }
 
 func (o *ListProviderConfigurationsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -87,7 +87,7 @@ type ListProviderConfigurationsInternalServerError struct {
 }
 
 func (o *ListProviderConfigurationsInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{id}/configurations][%d] listProviderConfigurationsInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{name}/configurations][%d] listProviderConfigurationsInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *ListProviderConfigurationsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

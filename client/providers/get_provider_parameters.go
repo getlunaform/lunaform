@@ -62,11 +62,11 @@ for the get provider operation typically these are written to a http.Request
 */
 type GetProviderParams struct {
 
-	/*ID
-	  Terraform Provider ID
+	/*Name
+	  Terraform Provider Name
 
 	*/
-	ID string
+	Name string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -106,15 +106,15 @@ func (o *GetProviderParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the get provider params
-func (o *GetProviderParams) WithID(id string) *GetProviderParams {
-	o.SetID(id)
+// WithName adds the name to the get provider params
+func (o *GetProviderParams) WithName(name string) *GetProviderParams {
+	o.SetName(name)
 	return o
 }
 
-// SetID adds the id to the get provider params
-func (o *GetProviderParams) SetID(id string) {
-	o.ID = id
+// SetName adds the name to the get provider params
+func (o *GetProviderParams) SetName(name string) {
+	o.Name = name
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -125,8 +125,8 @@ func (o *GetProviderParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.R
 	}
 	var res []error
 
-	// path param id
-	if err := r.SetPathParam("id", o.ID); err != nil {
+	// path param name
+	if err := r.SetPathParam("name", o.Name); err != nil {
 		return err
 	}
 

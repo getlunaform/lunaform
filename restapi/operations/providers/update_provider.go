@@ -31,7 +31,7 @@ func NewUpdateProvider(ctx *middleware.Context, handler UpdateProviderHandler) *
 	return &UpdateProvider{Context: ctx, Handler: handler}
 }
 
-/*UpdateProvider swagger:route PUT /tf/provider/{id} providers updateProvider
+/*UpdateProvider swagger:route PUT /tf/provider/{name} providers updateProvider
 
 Update a Terraform provider
 

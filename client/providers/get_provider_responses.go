@@ -65,7 +65,7 @@ type GetProviderAccepted struct {
 }
 
 func (o *GetProviderAccepted) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{id}][%d] getProviderAccepted  %+v", 202, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{name}][%d] getProviderAccepted  %+v", 202, o.Payload)
 }
 
 func (o *GetProviderAccepted) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -94,7 +94,7 @@ type GetProviderNotFound struct {
 }
 
 func (o *GetProviderNotFound) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{id}][%d] getProviderNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{name}][%d] getProviderNotFound  %+v", 404, o.Payload)
 }
 
 func (o *GetProviderNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -123,7 +123,7 @@ type GetProviderInternalServerError struct {
 }
 
 func (o *GetProviderInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{id}][%d] getProviderInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{name}][%d] getProviderInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *GetProviderInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

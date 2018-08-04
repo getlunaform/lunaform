@@ -31,7 +31,7 @@ func NewDeleteProvider(ctx *middleware.Context, handler DeleteProviderHandler) *
 	return &DeleteProvider{Context: ctx, Handler: handler}
 }
 
-/*DeleteProvider swagger:route DELETE /tf/provider/{id} providers deleteProvider
+/*DeleteProvider swagger:route DELETE /tf/provider/{name} providers deleteProvider
 
 Delete a terraform provider
 

@@ -31,7 +31,7 @@ func NewGetProvider(ctx *middleware.Context, handler GetProviderHandler) *GetPro
 	return &GetProvider{Context: ctx, Handler: handler}
 }
 
-/*GetProvider swagger:route GET /tf/provider/{id} providers getProvider
+/*GetProvider swagger:route GET /tf/provider/{name} providers getProvider
 
 Get Terraform Provider
 
