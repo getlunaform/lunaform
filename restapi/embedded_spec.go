@@ -360,20 +360,6 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/resource-tf-provider"
-            },
-            "examples": {
-              "application/vnd.lunaform.v1+json": {
-                "_links": {
-                  "$ref": "#/definitions/hal-rsc-links"
-                },
-                "name": "my-tf-provider"
-              }
-            }
-          },
           "202": {
             "description": "Updated",
             "schema": {
@@ -2182,20 +2168,6 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/resource-tf-provider"
-            },
-            "examples": {
-              "application/vnd.lunaform.v1+json": {
-                "_links": {
-                  "$ref": "#/definitions/hal-rsc-links"
-                },
-                "name": "my-tf-provider"
-              }
-            }
-          },
           "202": {
             "description": "Updated",
             "schema": {

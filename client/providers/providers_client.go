@@ -201,7 +201,7 @@ func (a *Client) ListProviders(params *ListProvidersParams, authInfo runtime.Cli
 /*
 UpdateProvider Update a Terraform provider
 */
-func (a *Client) UpdateProvider(params *UpdateProviderParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateProviderOK, *UpdateProviderAccepted, error) {
+func (a *Client) UpdateProvider(params *UpdateProviderParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateProviderAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateProviderParams()
@@ -221,15 +221,9 @@ func (a *Client) UpdateProvider(params *UpdateProviderParams, authInfo runtime.C
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	switch value := result.(type) {
-	case *UpdateProviderOK:
-		return value, nil, nil
-	case *UpdateProviderAccepted:
-		return nil, value, nil
-	}
-	return nil, nil, nil
+	return result.(*UpdateProviderAccepted), nil
 
 }
 

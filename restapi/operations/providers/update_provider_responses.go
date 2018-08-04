@@ -13,50 +13,6 @@ import (
 	models "github.com/getlunaform/lunaform/models"
 )
 
-// UpdateProviderOKCode is the HTTP code returned for type UpdateProviderOK
-const UpdateProviderOKCode int = 200
-
-/*UpdateProviderOK OK
-
-swagger:response updateProviderOK
-*/
-type UpdateProviderOK struct {
-
-	/*
-	  In: Body
-	*/
-	Payload *models.ResourceTfProvider `json:"body,omitempty"`
-}
-
-// NewUpdateProviderOK creates UpdateProviderOK with default headers values
-func NewUpdateProviderOK() *UpdateProviderOK {
-
-	return &UpdateProviderOK{}
-}
-
-// WithPayload adds the payload to the update provider o k response
-func (o *UpdateProviderOK) WithPayload(payload *models.ResourceTfProvider) *UpdateProviderOK {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the update provider o k response
-func (o *UpdateProviderOK) SetPayload(payload *models.ResourceTfProvider) {
-	o.Payload = payload
-}
-
-// WriteResponse to the client
-func (o *UpdateProviderOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
-	}
-}
-
 // UpdateProviderAcceptedCode is the HTTP code returned for type UpdateProviderAccepted
 const UpdateProviderAcceptedCode int = 202
 

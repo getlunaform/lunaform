@@ -25,13 +25,6 @@ type UpdateProviderReader struct {
 func (o *UpdateProviderReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
-	case 200:
-		result := NewUpdateProviderOK()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return result, nil
-
 	case 202:
 		result := NewUpdateProviderAccepted()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -63,35 +56,6 @@ func (o *UpdateProviderReader) ReadResponse(response runtime.ClientResponse, con
 	default:
 		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
-}
-
-// NewUpdateProviderOK creates a UpdateProviderOK with default headers values
-func NewUpdateProviderOK() *UpdateProviderOK {
-	return &UpdateProviderOK{}
-}
-
-/*UpdateProviderOK handles this case with default header values.
-
-OK
-*/
-type UpdateProviderOK struct {
-	Payload *models.ResourceTfProvider
-}
-
-func (o *UpdateProviderOK) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{id}][%d] updateProviderOK  %+v", 200, o.Payload)
-}
-
-func (o *UpdateProviderOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.ResourceTfProvider)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
 }
 
 // NewUpdateProviderAccepted creates a UpdateProviderAccepted with default headers values

@@ -211,15 +211,6 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-provider"
       responses:
-        200:
-          description: OK
-          examples:
-            application/vnd.lunaform.v1+json:
-              _links:
-                $ref: "#/definitions/hal-rsc-links"
-              name: my-tf-provider
-          schema:
-            $ref: "#/definitions/resource-tf-provider"
         202:
           description: Updated
           examples:
