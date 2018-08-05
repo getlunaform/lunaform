@@ -6,6 +6,7 @@ package providers
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -33,15 +34,16 @@ type CreateProviderConfigurationParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
+	/*A terraform provider configuration
+	  Required: true
+	  In: body
+	*/
+	ProviderConfiguration *models.ResourceTfProviderConfiguration
 	/*Terraform Provider Name
 	  Required: true
 	  In: path
 	*/
 	ProviderName string
-	/*A terraform module
-	  In: body
-	*/
-	TerraformProviderConfiguration *models.ResourceTfProviderConfiguration
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -53,16 +55,15 @@ func (o *CreateProviderConfigurationParams) BindRequest(r *http.Request, route *
 
 	o.HTTPRequest = r
 
-	rProviderName, rhkProviderName, _ := route.Params.GetOK("provider-name")
-	if err := o.bindProviderName(rProviderName, rhkProviderName, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
 		var body models.ResourceTfProviderConfiguration
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
-			res = append(res, errors.NewParseError("terraformProviderConfiguration", "body", "", err))
+			if err == io.EOF {
+				res = append(res, errors.Required("providerConfiguration", "body"))
+			} else {
+				res = append(res, errors.NewParseError("providerConfiguration", "body", "", err))
+			}
 		} else {
 			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
@@ -70,10 +71,17 @@ func (o *CreateProviderConfigurationParams) BindRequest(r *http.Request, route *
 			}
 
 			if len(res) == 0 {
-				o.TerraformProviderConfiguration = &body
+				o.ProviderConfiguration = &body
 			}
 		}
+	} else {
+		res = append(res, errors.Required("providerConfiguration", "body"))
 	}
+	rProviderName, rhkProviderName, _ := route.Params.GetOK("provider-name")
+	if err := o.bindProviderName(rProviderName, rhkProviderName, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

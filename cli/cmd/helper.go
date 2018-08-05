@@ -30,6 +30,24 @@ func handleServerError(err *models.ServerError) {
 	printError(err)
 }
 
+func handleApiError(err *runtime.APIError) {
+
+	response := map[string]interface{}{
+		"operation-name": err.OperationName,
+		"code":           err.Code,
+		"response":       err.Response,
+	}
+
+	//switch e := err.Response.(type) {
+	//case *http.Response:
+	//	response["response"] = e
+	//default:
+	//	response["response"] = e
+	//}
+
+	printError(response)
+}
+
 func printError(errResponse interface{}) {
 	fmt.Print(
 		jsonResponse(
@@ -44,6 +62,8 @@ func printError(errResponse interface{}) {
 func handleOutput(action *cobra.Command, v models.HalLinkable, hal bool, err error) {
 	if serverError, isServerError := v.(*models.ServerError); isServerError {
 		handleServerError(serverError)
+	} else if apiError, isApiError := err.(*runtime.APIError); isApiError {
+		handleApiError(apiError)
 	} else {
 
 		payload := map[string]interface{}{

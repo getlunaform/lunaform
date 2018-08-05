@@ -42,15 +42,14 @@ to quickly create a Cobra application.`,
 			&models.ResourceTfProviderConfiguration{
 				Name: tfProviderConfigurationCreateNameFlag,
 			})
-		provOk, provCreated, err := lunaformClient.Providers.CreateProviderConfiguration(
+
+		provider, err := lunaformClient.Providers.CreateProviderConfiguration(
 			params,
 			authHandler,
 		)
 
-		if provOk != nil {
-			handleOutput(cmd, provOk.Payload, useHal, err)
-		} else if provCreated != nil {
-			handleOutput(cmd, provCreated.Payload, useHal, err)
+		if err == nil {
+			handleOutput(cmd, provider.Payload, useHal, err)
 		} else {
 			if err1, hasPayload := err.(*providers.CreateProviderConfigurationInternalServerError); hasPayload {
 				handleOutput(cmd, err1.Payload, useHal, err)

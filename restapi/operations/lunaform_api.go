@@ -67,6 +67,9 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		ProvidersDeleteProviderHandler: providers.DeleteProviderHandlerFunc(func(params providers.DeleteProviderParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation ProvidersDeleteProvider has not yet been implemented")
 		}),
+		ProvidersDeleteProviderConfigurationHandler: providers.DeleteProviderConfigurationHandlerFunc(func(params providers.DeleteProviderConfigurationParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersDeleteProviderConfiguration has not yet been implemented")
+		}),
 		StacksDeployStackHandler: stacks.DeployStackHandlerFunc(func(params stacks.DeployStackParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StacksDeployStack has not yet been implemented")
 		}),
@@ -185,6 +188,8 @@ type LunaformAPI struct {
 	ModulesDeleteModuleHandler modules.DeleteModuleHandler
 	// ProvidersDeleteProviderHandler sets the operation handler for the delete provider operation
 	ProvidersDeleteProviderHandler providers.DeleteProviderHandler
+	// ProvidersDeleteProviderConfigurationHandler sets the operation handler for the delete provider configuration operation
+	ProvidersDeleteProviderConfigurationHandler providers.DeleteProviderConfigurationHandler
 	// StacksDeployStackHandler sets the operation handler for the deploy stack operation
 	StacksDeployStackHandler stacks.DeployStackHandler
 	// WorkspacesDescribeWorkspaceHandler sets the operation handler for the describe workspace operation
@@ -314,6 +319,10 @@ func (o *LunaformAPI) Validate() error {
 
 	if o.ProvidersDeleteProviderHandler == nil {
 		unregistered = append(unregistered, "providers.DeleteProviderHandler")
+	}
+
+	if o.ProvidersDeleteProviderConfigurationHandler == nil {
+		unregistered = append(unregistered, "providers.DeleteProviderConfigurationHandler")
 	}
 
 	if o.StacksDeployStackHandler == nil {
@@ -508,10 +517,10 @@ func (o *LunaformAPI) initHandlerCache() {
 	}
 	o.handlers["POST"]["/tf/providers"] = providers.NewCreateProvider(o.context, o.ProvidersCreateProviderHandler)
 
-	if o.handlers["PUT"] == nil {
-		o.handlers["PUT"] = make(map[string]http.Handler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/tf/provider/{provider-name}/configurations"] = providers.NewCreateProviderConfiguration(o.context, o.ProvidersCreateProviderConfigurationHandler)
+	o.handlers["POST"]["/tf/provider/{provider-name}/configurations"] = providers.NewCreateProviderConfiguration(o.context, o.ProvidersCreateProviderConfigurationHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -532,6 +541,11 @@ func (o *LunaformAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/tf/provider/{name}"] = providers.NewDeleteProvider(o.context, o.ProvidersDeleteProviderHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tf/provider/{provider-name}/configuration/{id}"] = providers.NewDeleteProviderConfiguration(o.context, o.ProvidersDeleteProviderConfigurationHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

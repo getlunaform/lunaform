@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	hal "github.com/getlunaform/lunaform/models/hal"
 )
@@ -25,7 +26,8 @@ type ResourceTfProvider struct {
 	Links *hal.HalRscLinks `json:"_links,omitempty"`
 
 	// name
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 
 	// type
 	Type string `json:"type,omitempty"`
@@ -40,6 +42,10 @@ func (m *ResourceTfProvider) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLinks(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -80,6 +86,15 @@ func (m *ResourceTfProvider) validateLinks(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *ResourceTfProvider) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
 	}
 
 	return nil

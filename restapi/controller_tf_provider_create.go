@@ -26,7 +26,7 @@ func buildCreateTfProviderResponse(provider *models.ResourceTfProvider, db datab
 		Stacks: make([]*models.ResourceTfStack, 0),
 	}
 
-	if err := db.Create(DB_TABLE_TF_PROVIDER, provider.Name, provider); err != nil {
+	if err := db.Create(DB_TABLE_TF_PROVIDER, *provider.Name, provider); err != nil {
 		return http.StatusInternalServerError, err
 	}
 	provider.Links = helpers.HalAddCuries(ch, helpers.HalSelfLink(

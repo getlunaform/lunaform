@@ -8,11 +8,19 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	operation "github.com/getlunaform/lunaform/restapi/operations/providers"
 	"net/http"
+	"github.com/go-openapi/swag"
 )
 
 func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.CreateProviderConfigurationHandlerFunc {
 	return func(params operation.CreateProviderConfigurationParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
+
+		if params.TerraformProviderConfiguration == nil {
+			return NewServerError(
+				http.StatusBadRequest,
+				"Missing configuration body",
+			)
+		}
 
 		if errCode, err := buildCreateTfProviderConfigurationResponse(
 			params.TerraformProviderConfiguration,
@@ -30,11 +38,17 @@ func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.C
 func buildCreateTfProviderConfigurationResponse(config *models.ResourceTfProviderConfiguration, providerName string, db database.Database, ch helpers.ContextHelper) (errCode int, err error) {
 	config.Embedded = &models.ResourceTfProviderConfigurationEmbedded{
 		Provider: &models.ResourceTfProvider{
-			Name: providerName,
+			Name: swag.String(providerName),
 		},
 	}
 
-	if err := db.Create(DB_TABLE_TF_PROVIDER_CONFIGURATION, config.Name, config); err != nil {
+	if config.Configuration == nil {
+		config.Configuration = make(map[string]interface{}, 0)
+	}
+
+	config.ID = idGenerator.MustGenerate()
+
+	if err := db.Create(DB_TABLE_TF_PROVIDER_CONFIGURATION, config.ID, config); err != nil {
 		return http.StatusInternalServerError, err
 	}
 	config.Links = helpers.HalAddCuries(ch, helpers.HalSelfLink(

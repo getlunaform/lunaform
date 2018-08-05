@@ -255,7 +255,7 @@ paths:
               name: my-tf-provider-configuration
           schema:
             $ref: "#/definitions/response-list-tf-provider-configuration"
-    put:
+    post:
       tags:
         - providers
       description: Create a Terraform Provider Configuration
@@ -271,20 +271,12 @@ paths:
           type: string
           description: Terraform Provider Name
         - in: body
-          name: terraform-provider-configuration
-          description: A terraform module
+          required: true
+          name: provider-configuration
+          description: A terraform provider configuration
           schema:
             $ref: "#/definitions/resource-tf-provider-configuration"
       responses:
-        200:
-          description: OK
-          examples:
-            application/vnd.lunaform.v1+json:
-              _links:
-                $ref: "#/definitions/hal-rsc-links"
-              name: my-tf-provider-configuration
-          schema:
-            $ref: "#/definitions/resource-tf-provider-configuration"
         201:
           description: Created
           examples:
@@ -320,14 +312,49 @@ paths:
           required: true
           type: string
           description: Configuration for a Terraform Provider
-        - in: body
-          name: terraform-provider
-          description: A terraform module
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-provider-configuration
           schema:
             $ref: "#/definitions/resource-tf-provider-configuration"
-      responses:
         404:
           $ref: "#/responses/404"
+        500:
+          $ref: "#/responses/500"
+    delete:
+      tags:
+        - providers
+      description: Delete a terraform provider configuration
+      operationId: delete-provider-configuration
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: provider-name
+          required: true
+          type: string
+          description: Terraform Provider ID
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Configuration for a Terraform Provider
+      responses:
+        204:
+          description: No Content
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: "#/definitions/server-error"
+        404:
+          $ref: "#/responses/404"
+        405:
+          $ref: "#/responses/405"
         500:
           $ref: "#/responses/500"
   /tf/modules:
@@ -889,6 +916,8 @@ definitions:
   resource-tf-provider:
     type: object
     description: A Terraform Provider
+    required:
+      - name
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
@@ -901,6 +930,8 @@ definitions:
   resource-tf-provider-configuration:
     type: object
     description: A Terraform provider configuration
+    required:
+      - configuration
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"
@@ -909,6 +940,8 @@ definitions:
           provider:
             $ref: "#/definitions/resource-tf-provider"
       name:
+        type: string
+      id:
         type: string
       configuration:
         type: object
@@ -1177,3 +1210,5 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/resource-tf-provider-configuration"
+      provider:
+        $ref: "#/definitions/resource-tf-provider"

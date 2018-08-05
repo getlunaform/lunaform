@@ -25,6 +25,13 @@ type GetProviderConfigurationReader struct {
 func (o *GetProviderConfigurationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
+	case 200:
+		result := NewGetProviderConfigurationOK()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return result, nil
+
 	case 404:
 		result := NewGetProviderConfigurationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -42,6 +49,35 @@ func (o *GetProviderConfigurationReader) ReadResponse(response runtime.ClientRes
 	default:
 		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
+}
+
+// NewGetProviderConfigurationOK creates a GetProviderConfigurationOK with default headers values
+func NewGetProviderConfigurationOK() *GetProviderConfigurationOK {
+	return &GetProviderConfigurationOK{}
+}
+
+/*GetProviderConfigurationOK handles this case with default header values.
+
+OK
+*/
+type GetProviderConfigurationOK struct {
+	Payload *models.ResourceTfProviderConfiguration
+}
+
+func (o *GetProviderConfigurationOK) Error() string {
+	return fmt.Sprintf("[GET /tf/provider/{provider-name}/configuration/{id}][%d] getProviderConfigurationOK  %+v", 200, o.Payload)
+}
+
+func (o *GetProviderConfigurationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ResourceTfProviderConfiguration)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
 }
 
 // NewGetProviderConfigurationNotFound creates a GetProviderConfigurationNotFound with default headers values

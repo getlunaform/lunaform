@@ -16,8 +16,6 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/getlunaform/lunaform/models"
 )
 
 // NewGetProviderConfigurationParams creates a new GetProviderConfigurationParams object
@@ -74,11 +72,6 @@ type GetProviderConfigurationParams struct {
 
 	*/
 	ProviderName string
-	/*TerraformProvider
-	  A terraform module
-
-	*/
-	TerraformProvider *models.ResourceTfProviderConfiguration
 
 	timeout    time.Duration
 	Context    context.Context
@@ -140,17 +133,6 @@ func (o *GetProviderConfigurationParams) SetProviderName(providerName string) {
 	o.ProviderName = providerName
 }
 
-// WithTerraformProvider adds the terraformProvider to the get provider configuration params
-func (o *GetProviderConfigurationParams) WithTerraformProvider(terraformProvider *models.ResourceTfProviderConfiguration) *GetProviderConfigurationParams {
-	o.SetTerraformProvider(terraformProvider)
-	return o
-}
-
-// SetTerraformProvider adds the terraformProvider to the get provider configuration params
-func (o *GetProviderConfigurationParams) SetTerraformProvider(terraformProvider *models.ResourceTfProviderConfiguration) {
-	o.TerraformProvider = terraformProvider
-}
-
 // WriteToRequest writes these params to a swagger request
 func (o *GetProviderConfigurationParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -167,12 +149,6 @@ func (o *GetProviderConfigurationParams) WriteToRequest(r runtime.ClientRequest,
 	// path param provider-name
 	if err := r.SetPathParam("provider-name", o.ProviderName); err != nil {
 		return err
-	}
-
-	if o.TerraformProvider != nil {
-		if err := r.SetBodyParam(o.TerraformProvider); err != nil {
-			return err
-		}
 	}
 
 	if len(res) > 0 {

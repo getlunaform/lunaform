@@ -131,6 +131,17 @@ func (p *ResourceListTfProvider) Clean() interface{} {
 	return provs
 }
 
+func (c *ResourceListTfProviderConfiguration) Clean() interface{} {
+	confs := make([]interface{}, len(c.ProviderConfigurations))
+	for i, conf := range c.ProviderConfigurations {
+		confs[i] = conf.Clean()
+	}
+	return confs
+}
+
+func (c *ResponseListTfProviderConfiguration) Clean() interface{} {
+	return c.Embedded.Clean()
+}
 func (m *ResponseListTfModules) Clean() interface{} {
 	return m.Embedded.Clean()
 }

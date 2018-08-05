@@ -15,10 +15,13 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/getlunaform/lunaform/client/providers"
+	"github.com/getlunaform/lunaform/models"
 )
+
+var tfProviderConfigurationDeleteProviderNameFlag string
+var tfProviderConfigurationDeleteProvideConfigurationIdFlag string
 
 // tfProviderConfigurationDeleteCmd represents the tfProviderConfigurationDelete command
 var tfProviderConfigurationDeleteCmd = &cobra.Command{
@@ -31,20 +34,29 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tfProviderConfigurationDelete called")
+		params := providers.NewDeleteProviderConfigurationParams().
+			WithProviderName(tfProviderConfigurationDeleteProviderNameFlag).
+			WithID(tfProviderConfigurationDeleteProvideConfigurationIdFlag)
+
+		_, err := lunaformClient.Providers.DeleteProviderConfiguration(
+			params, authHandler)
+
+		if err1, ok := err.(*providers.DeleteProviderConfigurationNotFound); ok {
+			handleOutput(cmd, err1.Payload, useHal, nil)
+		} else if err == nil {
+			handleOutput(cmd, models.StringHalResponse("Successfully deleted"), useHal, err)
+		} else {
+			handleOutput(cmd, nil, useHal, err)
+		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(tfProviderConfigurationDeleteCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tfProviderConfigurationDeleteCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tfProviderConfigurationDeleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	flags := tfProviderConfigurationDeleteCmd.Flags()
+	flags.StringVar(&tfProviderConfigurationDeleteProviderNameFlag,
+		"provider-name", "", "Provider name")
+	flags.StringVar(&tfProviderConfigurationDeleteProvideConfigurationIdFlag,
+		"id", "", "Provider configuration is")
+	tfProviderConfigurationDeleteCmd.MarkFlagRequired("provider-name")
+	tfProviderConfigurationDeleteCmd.MarkFlagRequired("id")
 }

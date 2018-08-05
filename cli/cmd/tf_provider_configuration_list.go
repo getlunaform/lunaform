@@ -25,7 +25,7 @@ var (
 
 // tfProviderConfigurationListCmd represents the tfProviderConfigurationList command
 var tfProviderConfigurationListCmd = &cobra.Command{
-	Use:   "list-configuration",
+	Use:   "list-configurations",
 	Short: "List provider configurations",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -34,20 +34,21 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		params := providers.NewListProviderConfigurationsParams()
-		err := lunaformClient.Providers.ListProviderConfigurations(
+		params := providers.NewListProviderConfigurationsParams().
+			WithProviderName(tfProviderConfigurationListProviderNameFlag)
+		providers, err := lunaformClient.Providers.ListProviderConfigurations(
 			params, authHandler)
 		if err == nil {
 			handleOutput(cmd, providers.Payload, useHal, err)
 		} else {
-			handleOutput(cmd, nil, useHal, err)
+			handlerError(err)
 		}
 	},
 }
 
 func init() {
 	flags := tfProviderConfigurationListCmd.Flags()
-	flags.StringVar(&tfProviderConfigurationCreateNameFlag,
+	flags.StringVar(&tfProviderConfigurationListProviderNameFlag,
 		"provider-name", "", "Provider Name")
 	tfProviderConfigurationListCmd.MarkFlagRequired("provider-name")
 }

@@ -13,50 +13,6 @@ import (
 	models "github.com/getlunaform/lunaform/models"
 )
 
-// CreateProviderConfigurationOKCode is the HTTP code returned for type CreateProviderConfigurationOK
-const CreateProviderConfigurationOKCode int = 200
-
-/*CreateProviderConfigurationOK OK
-
-swagger:response createProviderConfigurationOK
-*/
-type CreateProviderConfigurationOK struct {
-
-	/*
-	  In: Body
-	*/
-	Payload *models.ResourceTfProviderConfiguration `json:"body,omitempty"`
-}
-
-// NewCreateProviderConfigurationOK creates CreateProviderConfigurationOK with default headers values
-func NewCreateProviderConfigurationOK() *CreateProviderConfigurationOK {
-
-	return &CreateProviderConfigurationOK{}
-}
-
-// WithPayload adds the payload to the create provider configuration o k response
-func (o *CreateProviderConfigurationOK) WithPayload(payload *models.ResourceTfProviderConfiguration) *CreateProviderConfigurationOK {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the create provider configuration o k response
-func (o *CreateProviderConfigurationOK) SetPayload(payload *models.ResourceTfProviderConfiguration) {
-	o.Payload = payload
-}
-
-// WriteResponse to the client
-func (o *CreateProviderConfigurationOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
-	}
-}
-
 // CreateProviderConfigurationCreatedCode is the HTTP code returned for type CreateProviderConfigurationCreated
 const CreateProviderConfigurationCreatedCode int = 201
 

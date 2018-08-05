@@ -14,18 +14,18 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 )
 
-// NewGetProviderConfigurationParams creates a new GetProviderConfigurationParams object
+// NewDeleteProviderConfigurationParams creates a new DeleteProviderConfigurationParams object
 // no default values defined in spec.
-func NewGetProviderConfigurationParams() GetProviderConfigurationParams {
+func NewDeleteProviderConfigurationParams() DeleteProviderConfigurationParams {
 
-	return GetProviderConfigurationParams{}
+	return DeleteProviderConfigurationParams{}
 }
 
-// GetProviderConfigurationParams contains all the bound params for the get provider configuration operation
+// DeleteProviderConfigurationParams contains all the bound params for the delete provider configuration operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters get-provider-configuration
-type GetProviderConfigurationParams struct {
+// swagger:parameters delete-provider-configuration
+type DeleteProviderConfigurationParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
@@ -45,8 +45,8 @@ type GetProviderConfigurationParams struct {
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewGetProviderConfigurationParams() beforehand.
-func (o *GetProviderConfigurationParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewDeleteProviderConfigurationParams() beforehand.
+func (o *DeleteProviderConfigurationParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r
@@ -68,7 +68,7 @@ func (o *GetProviderConfigurationParams) BindRequest(r *http.Request, route *mid
 }
 
 // bindID binds and validates parameter ID from path.
-func (o *GetProviderConfigurationParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+func (o *DeleteProviderConfigurationParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -83,7 +83,7 @@ func (o *GetProviderConfigurationParams) bindID(rawData []string, hasKey bool, f
 }
 
 // bindProviderName binds and validates parameter ProviderName from path.
-func (o *GetProviderConfigurationParams) bindProviderName(rawData []string, hasKey bool, formats strfmt.Registry) error {
+func (o *DeleteProviderConfigurationParams) bindProviderName(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]

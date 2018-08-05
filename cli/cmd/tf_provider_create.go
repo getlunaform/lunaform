@@ -35,9 +35,13 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		params := providers.NewCreateProviderParams().
 			WithTerraformProvider(&models.ResourceTfProvider{
-			Name: tfProviderCreateNameFlag,
+			Name: String(tfProviderCreateNameFlag),
 		})
-		prov, err := lunaformClient.Providers.CreateProvider(params, authHandler)
+		prov, err := lunaformClient.Providers.CreateProvider(
+			params,
+			authHandler,
+		)
+
 		if err == nil {
 			handleOutput(cmd, prov.Payload, useHal, err)
 		} else {

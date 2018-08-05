@@ -13,6 +13,50 @@ import (
 	models "github.com/getlunaform/lunaform/models"
 )
 
+// GetProviderConfigurationOKCode is the HTTP code returned for type GetProviderConfigurationOK
+const GetProviderConfigurationOKCode int = 200
+
+/*GetProviderConfigurationOK OK
+
+swagger:response getProviderConfigurationOK
+*/
+type GetProviderConfigurationOK struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ResourceTfProviderConfiguration `json:"body,omitempty"`
+}
+
+// NewGetProviderConfigurationOK creates GetProviderConfigurationOK with default headers values
+func NewGetProviderConfigurationOK() *GetProviderConfigurationOK {
+
+	return &GetProviderConfigurationOK{}
+}
+
+// WithPayload adds the payload to the get provider configuration o k response
+func (o *GetProviderConfigurationOK) WithPayload(payload *models.ResourceTfProviderConfiguration) *GetProviderConfigurationOK {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get provider configuration o k response
+func (o *GetProviderConfigurationOK) SetPayload(payload *models.ResourceTfProviderConfiguration) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetProviderConfigurationOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // GetProviderConfigurationNotFoundCode is the HTTP code returned for type GetProviderConfigurationNotFound
 const GetProviderConfigurationNotFoundCode int = 404
 

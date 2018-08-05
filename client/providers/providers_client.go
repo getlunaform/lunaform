@@ -56,7 +56,7 @@ func (a *Client) CreateProvider(params *CreateProviderParams, authInfo runtime.C
 /*
 CreateProviderConfiguration Create a Terraform Provider Configuration
 */
-func (a *Client) CreateProviderConfiguration(params *CreateProviderConfigurationParams, authInfo runtime.ClientAuthInfoWriter) (*CreateProviderConfigurationOK, *CreateProviderConfigurationCreated, error) {
+func (a *Client) CreateProviderConfiguration(params *CreateProviderConfigurationParams, authInfo runtime.ClientAuthInfoWriter) (*CreateProviderConfigurationCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateProviderConfigurationParams()
@@ -64,7 +64,7 @@ func (a *Client) CreateProviderConfiguration(params *CreateProviderConfiguration
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "create-provider-configuration",
-		Method:             "PUT",
+		Method:             "POST",
 		PathPattern:        "/tf/provider/{provider-name}/configurations",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
@@ -76,15 +76,9 @@ func (a *Client) CreateProviderConfiguration(params *CreateProviderConfiguration
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	switch value := result.(type) {
-	case *CreateProviderConfigurationOK:
-		return value, nil, nil
-	case *CreateProviderConfigurationCreated:
-		return nil, value, nil
-	}
-	return nil, nil, nil
+	return result.(*CreateProviderConfigurationCreated), nil
 
 }
 
@@ -114,6 +108,35 @@ func (a *Client) DeleteProvider(params *DeleteProviderParams, authInfo runtime.C
 		return nil, err
 	}
 	return result.(*DeleteProviderNoContent), nil
+
+}
+
+/*
+DeleteProviderConfiguration Delete a terraform provider configuration
+*/
+func (a *Client) DeleteProviderConfiguration(params *DeleteProviderConfigurationParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteProviderConfigurationNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeleteProviderConfigurationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "delete-provider-configuration",
+		Method:             "DELETE",
+		PathPattern:        "/tf/provider/{provider-name}/configuration/{id}",
+		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &DeleteProviderConfigurationReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*DeleteProviderConfigurationNoContent), nil
 
 }
 
@@ -149,13 +172,13 @@ func (a *Client) GetProvider(params *GetProviderParams, authInfo runtime.ClientA
 /*
 GetProviderConfiguration Get Configuration for Provider
 */
-func (a *Client) GetProviderConfiguration(params *GetProviderConfigurationParams, authInfo runtime.ClientAuthInfoWriter) error {
+func (a *Client) GetProviderConfiguration(params *GetProviderConfigurationParams, authInfo runtime.ClientAuthInfoWriter) (*GetProviderConfigurationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetProviderConfigurationParams()
 	}
 
-	_, err := a.transport.Submit(&runtime.ClientOperation{
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "get-provider-configuration",
 		Method:             "GET",
 		PathPattern:        "/tf/provider/{provider-name}/configuration/{id}",
@@ -169,9 +192,9 @@ func (a *Client) GetProviderConfiguration(params *GetProviderConfigurationParams
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return result.(*GetProviderConfigurationOK), nil
 
 }
 

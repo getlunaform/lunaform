@@ -57,9 +57,8 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	case "memory":
 		dbDriver, err = database.NewMemoryDBDriver()
 	case "file":
-		var filePath string
-		var isString bool
-		if filePath, isString = cfg.Backend.Database.(string); !isString {
+		filePath, isString := cfg.Backend.Database.(string)
+		if !isString {
 			panic(fmt.Errorf("DB config is not string. Is '%s'", cfg.Backend.Database))
 		}
 		dbDriver, err = database.NewJSONDBDriver(filePath)
@@ -146,6 +145,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.ProvidersCreateProviderConfigurationHandler = CreateTfProviderConfigurationController(idp, oh, db)
 	api.ProvidersListProviderConfigurationsHandler = ListTfProviderConfigurationController(idp, oh, db)
 	api.ProvidersGetProviderConfigurationHandler = GetTfProviderConfigurationController(idp, oh, db)
+	api.ProvidersDeleteProviderConfigurationHandler = DeleteTfProviderConfigurationController(idp, oh, db)
 
 	api.ServerShutdown = shutdownHandler(dbDriver, workerPool)
 
