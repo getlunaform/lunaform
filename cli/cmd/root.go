@@ -38,7 +38,7 @@ const (
 
 var cfgFile string
 var useHal bool
-var gocdClient *apiclient.Lunaform
+var lunaformClient *apiclient.Lunaform
 
 var config Configuration
 var version string
@@ -157,7 +157,7 @@ func initGocdClient() {
 	transport.Producers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONProducer()
 	transport.Consumers[TERRAFORM_SERVER_TYPE_V1] = runtime.JSONConsumer()
 
-	gocdClient = apiclient.New(transport, strfmt.Default)
+	lunaformClient = apiclient.New(transport, strfmt.Default)
 }
 
 func initAuthHandler() {

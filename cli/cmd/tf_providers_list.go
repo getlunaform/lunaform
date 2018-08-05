@@ -31,7 +31,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		params := providers.NewListProvidersParams()
-		providers, err := gocdClient.Providers.ListProviders(params, authHandler)
+		providers, err := lunaformClient.Providers.ListProviders(params, authHandler)
 		if err == nil {
 			handleOutput(cmd, providers.Payload, useHal, err)
 		} else {

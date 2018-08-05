@@ -43,7 +43,7 @@ to quickly create a Cobra application.`,
 				Source: &sourceFlag,
 			},
 		)
-		module, err := gocdClient.Modules.CreateModule(params, authHandler)
+		module, err := lunaformClient.Modules.CreateModule(params, authHandler)
 
 		if err == nil {
 			handleOutput(cmd, module.Payload, useHal, err)

@@ -40,7 +40,7 @@ to quickly create a Cobra application.`,
 			},
 		).WithName(workspaceNameFlag)
 
-		workspaceUpdated, workspaceCreated, err := gocdClient.Workspaces.CreateWorkspace(
+		workspaceUpdated, workspaceCreated, err := lunaformClient.Workspaces.CreateWorkspace(
 			params,
 			authHandler,
 		)

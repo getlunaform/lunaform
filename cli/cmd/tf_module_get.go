@@ -33,7 +33,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		module, err := gocdClient.Modules.GetModule(
+		module, err := lunaformClient.Modules.GetModule(
 			modules.NewGetModuleParams().WithID(idFlag),
 			authHandler,
 		)

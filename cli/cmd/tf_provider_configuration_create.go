@@ -15,9 +15,13 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/getlunaform/lunaform/client/providers"
+)
+
+var (
+	tfProviderConfigurationCreateNameFlag         string
+	tfProviderConfigurationCreateProviderNameFlag string
 )
 
 // tfProviderConfigurationCreateCmd represents the tfProviderConfigurationCreate command
@@ -31,20 +35,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tfProviderConfigurationCreate called")
+		params := providers.NewCreateProviderParamsWithContext()
+		lunaformClient.Providers.CreateProvider()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(tfProviderConfigurationCreateCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tfProviderConfigurationCreateCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tfProviderConfigurationCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	flags := tfProviderConfigurationCreateCmd.Flags()
+	flags.StringVar(&tfProviderCreateNameFlag,
+		"name", "", "Configuration Name")
+	flags.StringVar(&tfProviderConfigurationCreateProviderNameFlag,
+		"provider-name", "", "Terraform provider name")
+	tfProviderConfigurationCreateCmd.MarkFlagRequired("name")
+	tfProviderConfigurationCreateCmd.MarkFlagRequired("provider-name")
 }

@@ -48,7 +48,7 @@ to quickly create a Cobra application.`,
 		moduleSrcIsId := true
 		if tfStackCreateCmdModuleIdFlag == "" && tfStackCreateCmdModuleFlag != "" {
 			moduleSrcIsId = false
-			modules, err := gocdClient.Modules.ListModules(
+			modules, err := lunaformClient.Modules.ListModules(
 				modules.NewListModulesParams(),
 				authHandler,
 			)
@@ -60,7 +60,7 @@ to quickly create a Cobra application.`,
 				}
 			}
 		} else if tfStackCreateCmdModuleIdFlag != "" {
-			moduleResponse, err := gocdClient.Modules.GetModule(
+			moduleResponse, err := lunaformClient.Modules.GetModule(
 				modules.NewGetModuleParams().WithID(tfStackCreateCmdModuleIdFlag),
 				authHandler,
 			)
@@ -92,7 +92,7 @@ to quickly create a Cobra application.`,
 			},
 		)
 
-		if stack, err := gocdClient.Stacks.DeployStack(params, authHandler); err == nil {
+		if stack, err := lunaformClient.Stacks.DeployStack(params, authHandler); err == nil {
 			handleOutput(cmd, stack.Payload, useHal, err)
 		} else {
 			handleOutput(cmd, nil, useHal, err)

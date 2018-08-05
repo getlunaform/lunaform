@@ -34,7 +34,7 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		params := providers.NewGetProviderParams().
 			WithName(tfProviderGetNameFlag)
-		prov, err := gocdClient.Providers.GetProvider(params, authHandler)
+		prov, err := lunaformClient.Providers.GetProvider(params, authHandler)
 		if err == nil {
 			handleOutput(cmd, prov.Payload, useHal, err)
 		} else {

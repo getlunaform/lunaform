@@ -46,7 +46,7 @@ to quickly create a Cobra application.`,
 			},
 		)
 
-		backend, err := gocdClient.StateBackends.CreateStateBackend(params, authHandler)
+		backend, err := lunaformClient.StateBackends.CreateStateBackend(params, authHandler)
 		if err == nil {
 			handleOutput(cmd, backend.Payload, useHal, err)
 		} else if err1, ok := err.(*state_backends.CreateStateBackendBadRequest); ok {

@@ -45,7 +45,7 @@ to quickly create a Cobra application.`,
 		params := state_backends.NewUpdateStateBackendParams().
 			WithID(tfStateBackendsUpdateIdFlag).
 			WithTerraformStateBackend(payload)
-		backend, err := gocdClient.StateBackends.UpdateStateBackend(params, authHandler)
+		backend, err := lunaformClient.StateBackends.UpdateStateBackend(params, authHandler)
 
 		var response models.HalLinkable
 		if err != nil {

@@ -37,7 +37,7 @@ to quickly create a Cobra application.`,
 			WithTerraformProvider(&models.ResourceTfProvider{
 			Name: tfProviderCreateNameFlag,
 		})
-		prov, err := gocdClient.Providers.CreateProvider(params, authHandler)
+		prov, err := lunaformClient.Providers.CreateProvider(params, authHandler)
 		if err == nil {
 			handleOutput(cmd, prov.Payload, useHal, err)
 		} else {
