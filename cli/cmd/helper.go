@@ -64,6 +64,8 @@ func handleOutput(action *cobra.Command, v models.HalLinkable, hal bool, err err
 		handleServerError(serverError)
 	} else if apiError, isApiError := err.(*runtime.APIError); isApiError {
 		handleApiError(apiError)
+	} else if err != nil {
+		handlerError(err)
 	} else {
 
 		payload := map[string]interface{}{

@@ -18,11 +18,13 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform/client/providers"
 	"github.com/getlunaform/lunaform/models"
+	"encoding/json"
 )
 
 var (
-	tfProviderConfigurationCreateNameFlag         string
-	tfProviderConfigurationCreateProviderNameFlag string
+	tfProviderConfigurationCreateNameFlag              string
+	tfProviderConfigurationCreateProviderNameFlag      string
+	tfProviderConfigurationCreateJSONConfigurationFlag string
 )
 
 // tfProviderConfigurationCreateCmd represents the tfProviderConfigurationCreate command
@@ -36,11 +38,22 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		configuration := map[string]interface{}{}
+		err := json.Unmarshal(
+			[]byte(tfProviderConfigurationCreateJSONConfigurationFlag),
+			&configuration,
+		)
+		if err != nil {
+			handleOutput(cmd, nil, useHal, err)
+		}
+
 		params := providers.NewCreateProviderConfigurationParams().
 			WithProviderName(tfProviderConfigurationCreateProviderNameFlag).
-			WithTerraformProviderConfiguration(
+			WithProviderConfiguration(
 			&models.ResourceTfProviderConfiguration{
-				Name: tfProviderConfigurationCreateNameFlag,
+				Name:          String(tfProviderConfigurationCreateNameFlag),
+				Configuration: configuration,
 			})
 
 		provider, err := lunaformClient.Providers.CreateProviderConfiguration(
@@ -63,10 +76,15 @@ to quickly create a Cobra application.`,
 
 func init() {
 	flags := tfProviderConfigurationCreateCmd.Flags()
+
 	flags.StringVar(&tfProviderConfigurationCreateNameFlag,
 		"name", "", "Configuration Name")
 	flags.StringVar(&tfProviderConfigurationCreateProviderNameFlag,
 		"provider-name", "", "Terraform provider name")
+	flags.StringVar(&tfProviderConfigurationCreateJSONConfigurationFlag,
+		"configuration", "", "JSON Encoded Provider configuration")
+
 	tfProviderConfigurationCreateCmd.MarkFlagRequired("name")
 	tfProviderConfigurationCreateCmd.MarkFlagRequired("provider-name")
+	tfProviderConfigurationCreateCmd.MarkFlagRequired("configuration")
 }

@@ -15,7 +15,7 @@ func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.C
 	return func(params operation.CreateProviderConfigurationParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
-		if params.TerraformProviderConfiguration == nil {
+		if params.ProviderConfiguration == nil {
 			return NewServerError(
 				http.StatusBadRequest,
 				"Missing configuration body",
@@ -23,7 +23,7 @@ func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.C
 		}
 
 		if errCode, err := buildCreateTfProviderConfigurationResponse(
-			params.TerraformProviderConfiguration,
+			params.ProviderConfiguration,
 			params.ProviderName,
 			db, ch,
 		); err != nil {
@@ -31,7 +31,7 @@ func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.C
 		}
 
 		return operation.NewCreateProviderConfigurationCreated().
-			WithPayload(params.TerraformProviderConfiguration)
+			WithPayload(params.ProviderConfiguration)
 	}
 }
 

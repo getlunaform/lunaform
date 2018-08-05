@@ -932,6 +932,7 @@ definitions:
     description: A Terraform provider configuration
     required:
       - configuration
+      - name
     properties:
       _links:
         $ref: "#/definitions/hal-rsc-links"

@@ -33,7 +33,8 @@ type ResourceTfProviderConfiguration struct {
 	ID string `json:"id,omitempty"`
 
 	// name
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 }
 
 // Validate validates this resource tf provider configuration
@@ -49,6 +50,10 @@ func (m *ResourceTfProviderConfiguration) Validate(formats strfmt.Registry) erro
 	}
 
 	if err := m.validateConfiguration(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -97,6 +102,15 @@ func (m *ResourceTfProviderConfiguration) validateLinks(formats strfmt.Registry)
 func (m *ResourceTfProviderConfiguration) validateConfiguration(formats strfmt.Registry) error {
 
 	if err := validate.Required("configuration", "body", m.Configuration); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ResourceTfProviderConfiguration) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
 	}
 

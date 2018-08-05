@@ -1678,7 +1678,8 @@ func init() {
       "description": "A Terraform provider configuration",
       "type": "object",
       "required": [
-        "configuration"
+        "configuration",
+        "name"
       ],
       "properties": {
         "_embedded": {
@@ -3784,7 +3785,8 @@ func init() {
       "description": "A Terraform provider configuration",
       "type": "object",
       "required": [
-        "configuration"
+        "configuration",
+        "name"
       ],
       "properties": {
         "_embedded": {
