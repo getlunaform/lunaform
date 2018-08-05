@@ -13,6 +13,50 @@ import (
 	models "github.com/getlunaform/lunaform/models"
 )
 
+// ListProviderConfigurationsOKCode is the HTTP code returned for type ListProviderConfigurationsOK
+const ListProviderConfigurationsOKCode int = 200
+
+/*ListProviderConfigurationsOK OK
+
+swagger:response listProviderConfigurationsOK
+*/
+type ListProviderConfigurationsOK struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ResponseListTfProviderConfiguration `json:"body,omitempty"`
+}
+
+// NewListProviderConfigurationsOK creates ListProviderConfigurationsOK with default headers values
+func NewListProviderConfigurationsOK() *ListProviderConfigurationsOK {
+
+	return &ListProviderConfigurationsOK{}
+}
+
+// WithPayload adds the payload to the list provider configurations o k response
+func (o *ListProviderConfigurationsOK) WithPayload(payload *models.ResponseListTfProviderConfiguration) *ListProviderConfigurationsOK {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the list provider configurations o k response
+func (o *ListProviderConfigurationsOK) SetPayload(payload *models.ResponseListTfProviderConfiguration) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *ListProviderConfigurationsOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // ListProviderConfigurationsNotFoundCode is the HTTP code returned for type ListProviderConfigurationsNotFound
 const ListProviderConfigurationsNotFoundCode int = 404
 

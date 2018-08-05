@@ -14,8 +14,7 @@ import (
 
 // CreateProviderConfigurationURL generates an URL for the create provider configuration operation
 type CreateProviderConfigurationURL struct {
-	ID   string
-	Name string
+	ProviderName string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -41,20 +40,13 @@ func (o *CreateProviderConfigurationURL) SetBasePath(bp string) {
 func (o *CreateProviderConfigurationURL) Build() (*url.URL, error) {
 	var result url.URL
 
-	var _path = "/tf/provider/{name}/configuration/{id}"
+	var _path = "/tf/provider/{provider-name}/configurations"
 
-	id := o.ID
-	if id != "" {
-		_path = strings.Replace(_path, "{id}", id, -1)
+	providerName := o.ProviderName
+	if providerName != "" {
+		_path = strings.Replace(_path, "{provider-name}", providerName, -1)
 	} else {
-		return nil, errors.New("ID is required on CreateProviderConfigurationURL")
-	}
-
-	name := o.Name
-	if name != "" {
-		_path = strings.Replace(_path, "{name}", name, -1)
-	} else {
-		return nil, errors.New("Name is required on CreateProviderConfigurationURL")
+		return nil, errors.New("ProviderName is required on CreateProviderConfigurationURL")
 	}
 
 	_basePath := o._basePath

@@ -427,7 +427,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{name}/configuration/{id}": {
+    "/tf/provider/{provider-name}/configuration/{id}": {
       "get": {
         "security": [
           {
@@ -446,7 +446,7 @@ func init() {
           {
             "type": "string",
             "description": "Terraform Provider ID",
-            "name": "name",
+            "name": "provider-name",
             "in": "path",
             "required": true
           },
@@ -467,6 +467,54 @@ func init() {
           }
         ],
         "responses": {
+          "404": {
+            "$ref": "#/responses/404"
+          },
+          "500": {
+            "$ref": "#/responses/500"
+          }
+        }
+      }
+    },
+    "/tf/provider/{provider-name}/configurations": {
+      "get": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "List Configurations for s Terraform Provider",
+        "produces": [
+          "application/vnd.lunaform.v1+json"
+        ],
+        "tags": [
+          "providers"
+        ],
+        "operationId": "list-provider-configurations",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Terraform Provider Name",
+            "name": "provider-name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/response-list-tf-provider-configuration"
+            },
+            "examples": {
+              "application/vnd.lunaform.v1+json": {
+                "_links": {
+                  "$ref": "#/definitions/hal-rsc-links"
+                },
+                "name": "my-tf-provider-configuration"
+              }
+            }
+          },
           "404": {
             "$ref": "#/responses/404"
           },
@@ -495,21 +543,14 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "Terraform Provider ID",
-            "name": "name",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Configuration for a Terraform Provider",
-            "name": "id",
+            "description": "Terraform Provider Name",
+            "name": "provider-name",
             "in": "path",
             "required": true
           },
           {
             "description": "A terraform module",
-            "name": "terraform-provider",
+            "name": "terraform-provider-configuration",
             "in": "body",
             "schema": {
               "$ref": "#/definitions/resource-tf-provider-configuration"
@@ -520,68 +561,34 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/resource-tf-workspace"
+              "$ref": "#/definitions/resource-tf-provider-configuration"
             },
             "examples": {
               "application/vnd.lunaform.v1+json": {
                 "_links": {
                   "$ref": "#/definitions/hal-rsc-links"
                 },
-                "name": "my-tf-module"
+                "name": "my-tf-provider-configuration"
               }
             }
           },
           "201": {
             "description": "Created",
             "schema": {
-              "$ref": "#/definitions/resource-tf-workspace"
+              "$ref": "#/definitions/resource-tf-provider-configuration"
             },
             "examples": {
               "application/vnd.lunaform.v1+json": {
                 "_links": {
                   "$ref": "#/definitions/hal-rsc-links"
                 },
-                "name": "my-tf-module"
+                "name": "my-tf-provider-configuration"
               }
             }
           },
           "400": {
             "$ref": "#/responses/400"
           },
-          "404": {
-            "$ref": "#/responses/404"
-          },
-          "500": {
-            "$ref": "#/responses/500"
-          }
-        }
-      }
-    },
-    "/tf/provider/{name}/configurations": {
-      "get": {
-        "security": [
-          {
-            "api-key": []
-          }
-        ],
-        "description": "List Configurations for s Terraform Provider",
-        "produces": [
-          "application/vnd.lunaform.v1+json"
-        ],
-        "tags": [
-          "providers"
-        ],
-        "operationId": "list-provider-configurations",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Terraform Provider Name",
-            "name": "name",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
           "404": {
             "$ref": "#/responses/404"
           },
@@ -1485,6 +1492,21 @@ func init() {
       },
       "readOnly": true
     },
+    "resource-list-tf-provider-configuration": {
+      "type": "object",
+      "required": [
+        "provider-configurations"
+      ],
+      "properties": {
+        "provider-configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/resource-tf-provider-configuration"
+          }
+        }
+      },
+      "readOnly": true
+    },
     "resource-list-tf-stack": {
       "type": "object",
       "required": [
@@ -1621,6 +1643,9 @@ func init() {
         },
         "configuration": {
           "type": "object"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -1756,6 +1781,22 @@ func init() {
       "properties": {
         "_embedded": {
           "$ref": "#/definitions/resource-list-tf-module"
+        },
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        }
+      }
+    },
+    "response-list-tf-provider-configuration": {
+      "description": "List of tf provider configurations",
+      "type": "object",
+      "required": [
+        "_links",
+        "_embedded"
+      ],
+      "properties": {
+        "_embedded": {
+          "$ref": "#/definitions/resource-list-tf-provider-configuration"
         },
         "_links": {
           "$ref": "#/definitions/hal-rsc-links"
@@ -2355,7 +2396,7 @@ func init() {
         }
       }
     },
-    "/tf/provider/{name}/configuration/{id}": {
+    "/tf/provider/{provider-name}/configuration/{id}": {
       "get": {
         "security": [
           {
@@ -2374,7 +2415,7 @@ func init() {
           {
             "type": "string",
             "description": "Terraform Provider ID",
-            "name": "name",
+            "name": "provider-name",
             "in": "path",
             "required": true
           },
@@ -2395,6 +2436,60 @@ func init() {
           }
         ],
         "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          }
+        }
+      }
+    },
+    "/tf/provider/{provider-name}/configurations": {
+      "get": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "List Configurations for s Terraform Provider",
+        "produces": [
+          "application/vnd.lunaform.v1+json"
+        ],
+        "tags": [
+          "providers"
+        ],
+        "operationId": "list-provider-configurations",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Terraform Provider Name",
+            "name": "provider-name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/response-list-tf-provider-configuration"
+            },
+            "examples": {
+              "application/vnd.lunaform.v1+json": {
+                "_links": {
+                  "$ref": "#/definitions/hal-rsc-links"
+                },
+                "name": "my-tf-provider-configuration"
+              }
+            }
+          },
           "404": {
             "description": "Not Found",
             "schema": {
@@ -2429,21 +2524,14 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "Terraform Provider ID",
-            "name": "name",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Configuration for a Terraform Provider",
-            "name": "id",
+            "description": "Terraform Provider Name",
+            "name": "provider-name",
             "in": "path",
             "required": true
           },
           {
             "description": "A terraform module",
-            "name": "terraform-provider",
+            "name": "terraform-provider-configuration",
             "in": "body",
             "schema": {
               "$ref": "#/definitions/resource-tf-provider-configuration"
@@ -2454,28 +2542,28 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/resource-tf-workspace"
+              "$ref": "#/definitions/resource-tf-provider-configuration"
             },
             "examples": {
               "application/vnd.lunaform.v1+json": {
                 "_links": {
                   "$ref": "#/definitions/hal-rsc-links"
                 },
-                "name": "my-tf-module"
+                "name": "my-tf-provider-configuration"
               }
             }
           },
           "201": {
             "description": "Created",
             "schema": {
-              "$ref": "#/definitions/resource-tf-workspace"
+              "$ref": "#/definitions/resource-tf-provider-configuration"
             },
             "examples": {
               "application/vnd.lunaform.v1+json": {
                 "_links": {
                   "$ref": "#/definitions/hal-rsc-links"
                 },
-                "name": "my-tf-module"
+                "name": "my-tf-provider-configuration"
               }
             }
           },
@@ -2485,46 +2573,6 @@ func init() {
               "$ref": "#/definitions/server-error"
             }
           },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/server-error"
-            }
-          }
-        }
-      }
-    },
-    "/tf/provider/{name}/configurations": {
-      "get": {
-        "security": [
-          {
-            "api-key": []
-          }
-        ],
-        "description": "List Configurations for s Terraform Provider",
-        "produces": [
-          "application/vnd.lunaform.v1+json"
-        ],
-        "tags": [
-          "providers"
-        ],
-        "operationId": "list-provider-configurations",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Terraform Provider Name",
-            "name": "name",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
           "404": {
             "description": "Not Found",
             "schema": {
@@ -3488,6 +3536,21 @@ func init() {
       },
       "readOnly": true
     },
+    "resource-list-tf-provider-configuration": {
+      "type": "object",
+      "required": [
+        "provider-configurations"
+      ],
+      "properties": {
+        "provider-configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/resource-tf-provider-configuration"
+          }
+        }
+      },
+      "readOnly": true
+    },
     "resource-list-tf-stack": {
       "type": "object",
       "required": [
@@ -3624,6 +3687,9 @@ func init() {
         },
         "configuration": {
           "type": "object"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -3759,6 +3825,22 @@ func init() {
       "properties": {
         "_embedded": {
           "$ref": "#/definitions/resource-list-tf-module"
+        },
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        }
+      }
+    },
+    "response-list-tf-provider-configuration": {
+      "description": "List of tf provider configurations",
+      "type": "object",
+      "required": [
+        "_links",
+        "_embedded"
+      ],
+      "properties": {
+        "_embedded": {
+          "$ref": "#/definitions/resource-list-tf-provider-configuration"
         },
         "_links": {
           "$ref": "#/definitions/hal-rsc-links"

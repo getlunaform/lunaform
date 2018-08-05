@@ -26,6 +26,9 @@ type ResourceTfProviderConfiguration struct {
 
 	// configuration
 	Configuration interface{} `json:"configuration,omitempty"`
+
+	// name
+	Name string `json:"name,omitempty"`
 }
 
 // Validate validates this resource tf provider configuration

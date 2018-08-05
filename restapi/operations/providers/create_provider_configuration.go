@@ -31,7 +31,7 @@ func NewCreateProviderConfiguration(ctx *middleware.Context, handler CreateProvi
 	return &CreateProviderConfiguration{Context: ctx, Handler: handler}
 }
 
-/*CreateProviderConfiguration swagger:route PUT /tf/provider/{name}/configuration/{id} providers createProviderConfiguration
+/*CreateProviderConfiguration swagger:route PUT /tf/provider/{provider-name}/configurations providers createProviderConfiguration
 
 Create a Terraform Provider Configuration
 

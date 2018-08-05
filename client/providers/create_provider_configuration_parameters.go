@@ -64,21 +64,16 @@ for the create provider configuration operation typically these are written to a
 */
 type CreateProviderConfigurationParams struct {
 
-	/*ID
-	  Configuration for a Terraform Provider
+	/*ProviderName
+	  Terraform Provider Name
 
 	*/
-	ID string
-	/*Name
-	  Terraform Provider ID
-
-	*/
-	Name string
-	/*TerraformProvider
+	ProviderName string
+	/*TerraformProviderConfiguration
 	  A terraform module
 
 	*/
-	TerraformProvider *models.ResourceTfProviderConfiguration
+	TerraformProviderConfiguration *models.ResourceTfProviderConfiguration
 
 	timeout    time.Duration
 	Context    context.Context
@@ -118,37 +113,26 @@ func (o *CreateProviderConfigurationParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the create provider configuration params
-func (o *CreateProviderConfigurationParams) WithID(id string) *CreateProviderConfigurationParams {
-	o.SetID(id)
+// WithProviderName adds the providerName to the create provider configuration params
+func (o *CreateProviderConfigurationParams) WithProviderName(providerName string) *CreateProviderConfigurationParams {
+	o.SetProviderName(providerName)
 	return o
 }
 
-// SetID adds the id to the create provider configuration params
-func (o *CreateProviderConfigurationParams) SetID(id string) {
-	o.ID = id
+// SetProviderName adds the providerName to the create provider configuration params
+func (o *CreateProviderConfigurationParams) SetProviderName(providerName string) {
+	o.ProviderName = providerName
 }
 
-// WithName adds the name to the create provider configuration params
-func (o *CreateProviderConfigurationParams) WithName(name string) *CreateProviderConfigurationParams {
-	o.SetName(name)
+// WithTerraformProviderConfiguration adds the terraformProviderConfiguration to the create provider configuration params
+func (o *CreateProviderConfigurationParams) WithTerraformProviderConfiguration(terraformProviderConfiguration *models.ResourceTfProviderConfiguration) *CreateProviderConfigurationParams {
+	o.SetTerraformProviderConfiguration(terraformProviderConfiguration)
 	return o
 }
 
-// SetName adds the name to the create provider configuration params
-func (o *CreateProviderConfigurationParams) SetName(name string) {
-	o.Name = name
-}
-
-// WithTerraformProvider adds the terraformProvider to the create provider configuration params
-func (o *CreateProviderConfigurationParams) WithTerraformProvider(terraformProvider *models.ResourceTfProviderConfiguration) *CreateProviderConfigurationParams {
-	o.SetTerraformProvider(terraformProvider)
-	return o
-}
-
-// SetTerraformProvider adds the terraformProvider to the create provider configuration params
-func (o *CreateProviderConfigurationParams) SetTerraformProvider(terraformProvider *models.ResourceTfProviderConfiguration) {
-	o.TerraformProvider = terraformProvider
+// SetTerraformProviderConfiguration adds the terraformProviderConfiguration to the create provider configuration params
+func (o *CreateProviderConfigurationParams) SetTerraformProviderConfiguration(terraformProviderConfiguration *models.ResourceTfProviderConfiguration) {
+	o.TerraformProviderConfiguration = terraformProviderConfiguration
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -159,18 +143,13 @@ func (o *CreateProviderConfigurationParams) WriteToRequest(r runtime.ClientReque
 	}
 	var res []error
 
-	// path param id
-	if err := r.SetPathParam("id", o.ID); err != nil {
+	// path param provider-name
+	if err := r.SetPathParam("provider-name", o.ProviderName); err != nil {
 		return err
 	}
 
-	// path param name
-	if err := r.SetPathParam("name", o.Name); err != nil {
-		return err
-	}
-
-	if o.TerraformProvider != nil {
-		if err := r.SetBodyParam(o.TerraformProvider); err != nil {
+	if o.TerraformProviderConfiguration != nil {
+		if err := r.SetBodyParam(o.TerraformProviderConfiguration); err != nil {
 			return err
 		}
 	}

@@ -42,7 +42,7 @@ type GetProviderConfigurationParams struct {
 	  Required: true
 	  In: path
 	*/
-	Name string
+	ProviderName string
 	/*A terraform module
 	  In: body
 	*/
@@ -63,8 +63,8 @@ func (o *GetProviderConfigurationParams) BindRequest(r *http.Request, route *mid
 		res = append(res, err)
 	}
 
-	rName, rhkName, _ := route.Params.GetOK("name")
-	if err := o.bindName(rName, rhkName, route.Formats); err != nil {
+	rProviderName, rhkProviderName, _ := route.Params.GetOK("provider-name")
+	if err := o.bindProviderName(rProviderName, rhkProviderName, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -105,8 +105,8 @@ func (o *GetProviderConfigurationParams) bindID(rawData []string, hasKey bool, f
 	return nil
 }
 
-// bindName binds and validates parameter Name from path.
-func (o *GetProviderConfigurationParams) bindName(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindProviderName binds and validates parameter ProviderName from path.
+func (o *GetProviderConfigurationParams) bindProviderName(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -115,7 +115,7 @@ func (o *GetProviderConfigurationParams) bindName(rawData []string, hasKey bool,
 	// Required: true
 	// Parameter is provided by construction from the route
 
-	o.Name = raw
+	o.ProviderName = raw
 
 	return nil
 }

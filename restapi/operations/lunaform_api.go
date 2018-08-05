@@ -511,7 +511,7 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/tf/provider/{name}/configuration/{id}"] = providers.NewCreateProviderConfiguration(o.context, o.ProvidersCreateProviderConfigurationHandler)
+	o.handlers["PUT"]["/tf/provider/{provider-name}/configurations"] = providers.NewCreateProviderConfiguration(o.context, o.ProvidersCreateProviderConfigurationHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -556,7 +556,7 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/tf/provider/{name}/configuration/{id}"] = providers.NewGetProviderConfiguration(o.context, o.ProvidersGetProviderConfigurationHandler)
+	o.handlers["GET"]["/tf/provider/{provider-name}/configuration/{id}"] = providers.NewGetProviderConfiguration(o.context, o.ProvidersGetProviderConfigurationHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -576,7 +576,7 @@ func (o *LunaformAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/tf/provider/{name}/configurations"] = providers.NewListProviderConfigurations(o.context, o.ProvidersListProviderConfigurationsHandler)
+	o.handlers["GET"]["/tf/provider/{provider-name}/configurations"] = providers.NewListProviderConfigurations(o.context, o.ProvidersListProviderConfigurationsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

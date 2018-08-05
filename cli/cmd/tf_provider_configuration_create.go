@@ -17,6 +17,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform/client/providers"
+	"github.com/getlunaform/lunaform/models"
 )
 
 var (
@@ -35,14 +36,35 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		params := providers.NewCreate
-		lunaformClient.Providers.CreateProvider()
+		params := providers.NewCreateProviderConfigurationParams().
+			WithProviderName(tfProviderConfigurationCreateProviderNameFlag).
+			WithTerraformProviderConfiguration(
+			&models.ResourceTfProviderConfiguration{
+				Name: tfProviderConfigurationCreateNameFlag,
+			})
+		provOk, provCreated, err := lunaformClient.Providers.CreateProviderConfiguration(
+			params,
+			authHandler,
+		)
+
+		if provOk != nil {
+			handleOutput(cmd, provOk.Payload, useHal, err)
+		} else if provCreated != nil {
+			handleOutput(cmd, provCreated.Payload, useHal, err)
+		} else {
+			if err1, hasPayload := err.(*providers.CreateProviderConfigurationInternalServerError); hasPayload {
+				handleOutput(cmd, err1.Payload, useHal, err)
+			} else {
+				handleOutput(cmd, nil, useHal, err)
+			}
+		}
+
 	},
 }
 
 func init() {
 	flags := tfProviderConfigurationCreateCmd.Flags()
-	flags.StringVar(&tfProviderCreateNameFlag,
+	flags.StringVar(&tfProviderConfigurationCreateNameFlag,
 		"name", "", "Configuration Name")
 	flags.StringVar(&tfProviderConfigurationCreateProviderNameFlag,
 		"provider-name", "", "Terraform provider name")

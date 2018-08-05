@@ -14,7 +14,7 @@ import (
 
 // ListProviderConfigurationsURL generates an URL for the list provider configurations operation
 type ListProviderConfigurationsURL struct {
-	Name string
+	ProviderName string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -40,13 +40,13 @@ func (o *ListProviderConfigurationsURL) SetBasePath(bp string) {
 func (o *ListProviderConfigurationsURL) Build() (*url.URL, error) {
 	var result url.URL
 
-	var _path = "/tf/provider/{name}/configurations"
+	var _path = "/tf/provider/{provider-name}/configurations"
 
-	name := o.Name
-	if name != "" {
-		_path = strings.Replace(_path, "{name}", name, -1)
+	providerName := o.ProviderName
+	if providerName != "" {
+		_path = strings.Replace(_path, "{provider-name}", providerName, -1)
 	} else {
-		return nil, errors.New("Name is required on ListProviderConfigurationsURL")
+		return nil, errors.New("ProviderName is required on ListProviderConfigurationsURL")
 	}
 
 	_basePath := o._basePath

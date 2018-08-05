@@ -143,6 +143,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.ProvidersDeleteProviderHandler = DeleteTfProviderController(idp, oh, db)
 
 	// Controllers for /tf/provider configurations
+	api.ProvidersCreateProviderConfigurationHandler = CreateTfProviderConfigurationController(idp, oh, db)
 	api.ProvidersListProviderConfigurationsHandler = ListTfProviderConfigurationController(idp, oh, db)
 	api.ProvidersGetProviderConfigurationHandler = GetTfProviderConfigurationController(idp, oh, db)
 

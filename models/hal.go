@@ -6,6 +6,11 @@ type HalLinkable interface {
 	Clean() interface{}
 }
 
+func (c ResourceTfProviderConfiguration) Clean() interface{} {
+	c.Links = nil
+	return c
+}
+
 func (m ResourceTfModule) Clean() interface{} {
 	m.Links = nil
 	return m
@@ -118,7 +123,7 @@ func (list *ResourceList) Clean() interface{} {
 	return rscs
 }
 
-func (p *ResourceListTfProvider) Clean() interface{}{
+func (p *ResourceListTfProvider) Clean() interface{} {
 	provs := make([]interface{}, len(p.Providers))
 	for i, prov := range p.Providers {
 		provs[i] = prov.Clean()

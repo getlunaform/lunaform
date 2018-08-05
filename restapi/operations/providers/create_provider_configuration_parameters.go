@@ -33,20 +33,15 @@ type CreateProviderConfigurationParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*Configuration for a Terraform Provider
+	/*Terraform Provider Name
 	  Required: true
 	  In: path
 	*/
-	ID string
-	/*Terraform Provider ID
-	  Required: true
-	  In: path
-	*/
-	Name string
+	ProviderName string
 	/*A terraform module
 	  In: body
 	*/
-	TerraformProvider *models.ResourceTfProviderConfiguration
+	TerraformProviderConfiguration *models.ResourceTfProviderConfiguration
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -58,13 +53,8 @@ func (o *CreateProviderConfigurationParams) BindRequest(r *http.Request, route *
 
 	o.HTTPRequest = r
 
-	rID, rhkID, _ := route.Params.GetOK("id")
-	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
-	rName, rhkName, _ := route.Params.GetOK("name")
-	if err := o.bindName(rName, rhkName, route.Formats); err != nil {
+	rProviderName, rhkProviderName, _ := route.Params.GetOK("provider-name")
+	if err := o.bindProviderName(rProviderName, rhkProviderName, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -72,7 +62,7 @@ func (o *CreateProviderConfigurationParams) BindRequest(r *http.Request, route *
 		defer r.Body.Close()
 		var body models.ResourceTfProviderConfiguration
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
-			res = append(res, errors.NewParseError("terraformProvider", "body", "", err))
+			res = append(res, errors.NewParseError("terraformProviderConfiguration", "body", "", err))
 		} else {
 			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
@@ -80,7 +70,7 @@ func (o *CreateProviderConfigurationParams) BindRequest(r *http.Request, route *
 			}
 
 			if len(res) == 0 {
-				o.TerraformProvider = &body
+				o.TerraformProviderConfiguration = &body
 			}
 		}
 	}
@@ -90,8 +80,8 @@ func (o *CreateProviderConfigurationParams) BindRequest(r *http.Request, route *
 	return nil
 }
 
-// bindID binds and validates parameter ID from path.
-func (o *CreateProviderConfigurationParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindProviderName binds and validates parameter ProviderName from path.
+func (o *CreateProviderConfigurationParams) bindProviderName(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -100,22 +90,7 @@ func (o *CreateProviderConfigurationParams) bindID(rawData []string, hasKey bool
 	// Required: true
 	// Parameter is provided by construction from the route
 
-	o.ID = raw
-
-	return nil
-}
-
-// bindName binds and validates parameter Name from path.
-func (o *CreateProviderConfigurationParams) bindName(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: true
-	// Parameter is provided by construction from the route
-
-	o.Name = raw
+	o.ProviderName = raw
 
 	return nil
 }

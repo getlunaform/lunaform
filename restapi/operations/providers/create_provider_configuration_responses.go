@@ -25,7 +25,7 @@ type CreateProviderConfigurationOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ResourceTfWorkspace `json:"body,omitempty"`
+	Payload *models.ResourceTfProviderConfiguration `json:"body,omitempty"`
 }
 
 // NewCreateProviderConfigurationOK creates CreateProviderConfigurationOK with default headers values
@@ -35,13 +35,13 @@ func NewCreateProviderConfigurationOK() *CreateProviderConfigurationOK {
 }
 
 // WithPayload adds the payload to the create provider configuration o k response
-func (o *CreateProviderConfigurationOK) WithPayload(payload *models.ResourceTfWorkspace) *CreateProviderConfigurationOK {
+func (o *CreateProviderConfigurationOK) WithPayload(payload *models.ResourceTfProviderConfiguration) *CreateProviderConfigurationOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create provider configuration o k response
-func (o *CreateProviderConfigurationOK) SetPayload(payload *models.ResourceTfWorkspace) {
+func (o *CreateProviderConfigurationOK) SetPayload(payload *models.ResourceTfProviderConfiguration) {
 	o.Payload = payload
 }
 
@@ -69,7 +69,7 @@ type CreateProviderConfigurationCreated struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ResourceTfWorkspace `json:"body,omitempty"`
+	Payload *models.ResourceTfProviderConfiguration `json:"body,omitempty"`
 }
 
 // NewCreateProviderConfigurationCreated creates CreateProviderConfigurationCreated with default headers values
@@ -79,13 +79,13 @@ func NewCreateProviderConfigurationCreated() *CreateProviderConfigurationCreated
 }
 
 // WithPayload adds the payload to the create provider configuration created response
-func (o *CreateProviderConfigurationCreated) WithPayload(payload *models.ResourceTfWorkspace) *CreateProviderConfigurationCreated {
+func (o *CreateProviderConfigurationCreated) WithPayload(payload *models.ResourceTfProviderConfiguration) *CreateProviderConfigurationCreated {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create provider configuration created response
-func (o *CreateProviderConfigurationCreated) SetPayload(payload *models.ResourceTfWorkspace) {
+func (o *CreateProviderConfigurationCreated) SetPayload(payload *models.ResourceTfProviderConfiguration) {
 	o.Payload = payload
 }
 

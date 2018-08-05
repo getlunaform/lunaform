@@ -75,16 +75,16 @@ func NewCreateProviderConfigurationOK() *CreateProviderConfigurationOK {
 OK
 */
 type CreateProviderConfigurationOK struct {
-	Payload *models.ResourceTfWorkspace
+	Payload *models.ResourceTfProviderConfiguration
 }
 
 func (o *CreateProviderConfigurationOK) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{name}/configuration/{id}][%d] createProviderConfigurationOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{provider-name}/configurations][%d] createProviderConfigurationOK  %+v", 200, o.Payload)
 }
 
 func (o *CreateProviderConfigurationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ResourceTfWorkspace)
+	o.Payload = new(models.ResourceTfProviderConfiguration)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -104,16 +104,16 @@ func NewCreateProviderConfigurationCreated() *CreateProviderConfigurationCreated
 Created
 */
 type CreateProviderConfigurationCreated struct {
-	Payload *models.ResourceTfWorkspace
+	Payload *models.ResourceTfProviderConfiguration
 }
 
 func (o *CreateProviderConfigurationCreated) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{name}/configuration/{id}][%d] createProviderConfigurationCreated  %+v", 201, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{provider-name}/configurations][%d] createProviderConfigurationCreated  %+v", 201, o.Payload)
 }
 
 func (o *CreateProviderConfigurationCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ResourceTfWorkspace)
+	o.Payload = new(models.ResourceTfProviderConfiguration)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -137,7 +137,7 @@ type CreateProviderConfigurationBadRequest struct {
 }
 
 func (o *CreateProviderConfigurationBadRequest) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{name}/configuration/{id}][%d] createProviderConfigurationBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{provider-name}/configurations][%d] createProviderConfigurationBadRequest  %+v", 400, o.Payload)
 }
 
 func (o *CreateProviderConfigurationBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -166,7 +166,7 @@ type CreateProviderConfigurationNotFound struct {
 }
 
 func (o *CreateProviderConfigurationNotFound) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{name}/configuration/{id}][%d] createProviderConfigurationNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{provider-name}/configurations][%d] createProviderConfigurationNotFound  %+v", 404, o.Payload)
 }
 
 func (o *CreateProviderConfigurationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -195,7 +195,7 @@ type CreateProviderConfigurationInternalServerError struct {
 }
 
 func (o *CreateProviderConfigurationInternalServerError) Error() string {
-	return fmt.Sprintf("[PUT /tf/provider/{name}/configuration/{id}][%d] createProviderConfigurationInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PUT /tf/provider/{provider-name}/configurations][%d] createProviderConfigurationInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *CreateProviderConfigurationInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

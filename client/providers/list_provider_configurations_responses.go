@@ -25,6 +25,13 @@ type ListProviderConfigurationsReader struct {
 func (o *ListProviderConfigurationsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
+	case 200:
+		result := NewListProviderConfigurationsOK()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return result, nil
+
 	case 404:
 		result := NewListProviderConfigurationsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -44,6 +51,35 @@ func (o *ListProviderConfigurationsReader) ReadResponse(response runtime.ClientR
 	}
 }
 
+// NewListProviderConfigurationsOK creates a ListProviderConfigurationsOK with default headers values
+func NewListProviderConfigurationsOK() *ListProviderConfigurationsOK {
+	return &ListProviderConfigurationsOK{}
+}
+
+/*ListProviderConfigurationsOK handles this case with default header values.
+
+OK
+*/
+type ListProviderConfigurationsOK struct {
+	Payload *models.ResponseListTfProviderConfiguration
+}
+
+func (o *ListProviderConfigurationsOK) Error() string {
+	return fmt.Sprintf("[GET /tf/provider/{provider-name}/configurations][%d] listProviderConfigurationsOK  %+v", 200, o.Payload)
+}
+
+func (o *ListProviderConfigurationsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ResponseListTfProviderConfiguration)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
 // NewListProviderConfigurationsNotFound creates a ListProviderConfigurationsNotFound with default headers values
 func NewListProviderConfigurationsNotFound() *ListProviderConfigurationsNotFound {
 	return &ListProviderConfigurationsNotFound{}
@@ -58,7 +94,7 @@ type ListProviderConfigurationsNotFound struct {
 }
 
 func (o *ListProviderConfigurationsNotFound) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{name}/configurations][%d] listProviderConfigurationsNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{provider-name}/configurations][%d] listProviderConfigurationsNotFound  %+v", 404, o.Payload)
 }
 
 func (o *ListProviderConfigurationsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -87,7 +123,7 @@ type ListProviderConfigurationsInternalServerError struct {
 }
 
 func (o *ListProviderConfigurationsInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{name}/configurations][%d] listProviderConfigurationsInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{provider-name}/configurations][%d] listProviderConfigurationsInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *ListProviderConfigurationsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

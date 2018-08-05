@@ -34,7 +34,7 @@ type ListProviderConfigurationsParams struct {
 	  Required: true
 	  In: path
 	*/
-	Name string
+	ProviderName string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -46,8 +46,8 @@ func (o *ListProviderConfigurationsParams) BindRequest(r *http.Request, route *m
 
 	o.HTTPRequest = r
 
-	rName, rhkName, _ := route.Params.GetOK("name")
-	if err := o.bindName(rName, rhkName, route.Formats); err != nil {
+	rProviderName, rhkProviderName, _ := route.Params.GetOK("provider-name")
+	if err := o.bindProviderName(rProviderName, rhkProviderName, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -57,8 +57,8 @@ func (o *ListProviderConfigurationsParams) BindRequest(r *http.Request, route *m
 	return nil
 }
 
-// bindName binds and validates parameter Name from path.
-func (o *ListProviderConfigurationsParams) bindName(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindProviderName binds and validates parameter ProviderName from path.
+func (o *ListProviderConfigurationsParams) bindProviderName(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -67,7 +67,7 @@ func (o *ListProviderConfigurationsParams) bindName(rawData []string, hasKey boo
 	// Required: true
 	// Parameter is provided by construction from the route
 
-	o.Name = raw
+	o.ProviderName = raw
 
 	return nil
 }

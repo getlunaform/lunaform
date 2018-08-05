@@ -65,7 +65,7 @@ func (a *Client) CreateProviderConfiguration(params *CreateProviderConfiguration
 	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "create-provider-configuration",
 		Method:             "PUT",
-		PathPattern:        "/tf/provider/{name}/configuration/{id}",
+		PathPattern:        "/tf/provider/{provider-name}/configurations",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},
@@ -158,7 +158,7 @@ func (a *Client) GetProviderConfiguration(params *GetProviderConfigurationParams
 	_, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "get-provider-configuration",
 		Method:             "GET",
-		PathPattern:        "/tf/provider/{name}/configuration/{id}",
+		PathPattern:        "/tf/provider/{provider-name}/configuration/{id}",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},
@@ -178,16 +178,16 @@ func (a *Client) GetProviderConfiguration(params *GetProviderConfigurationParams
 /*
 ListProviderConfigurations List Configurations for s Terraform Provider
 */
-func (a *Client) ListProviderConfigurations(params *ListProviderConfigurationsParams, authInfo runtime.ClientAuthInfoWriter) error {
+func (a *Client) ListProviderConfigurations(params *ListProviderConfigurationsParams, authInfo runtime.ClientAuthInfoWriter) (*ListProviderConfigurationsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListProviderConfigurationsParams()
 	}
 
-	_, err := a.transport.Submit(&runtime.ClientOperation{
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "list-provider-configurations",
 		Method:             "GET",
-		PathPattern:        "/tf/provider/{name}/configurations",
+		PathPattern:        "/tf/provider/{provider-name}/configurations",
 		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
 		Schemes:            []string{"http", "https"},
@@ -198,9 +198,9 @@ func (a *Client) ListProviderConfigurations(params *ListProviderConfigurationsPa
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return result.(*ListProviderConfigurationsOK), nil
 
 }
 

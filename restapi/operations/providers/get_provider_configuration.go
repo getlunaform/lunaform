@@ -31,7 +31,7 @@ func NewGetProviderConfiguration(ctx *middleware.Context, handler GetProviderCon
 	return &GetProviderConfiguration{Context: ctx, Handler: handler}
 }
 
-/*GetProviderConfiguration swagger:route GET /tf/provider/{name}/configuration/{id} providers getProviderConfiguration
+/*GetProviderConfiguration swagger:route GET /tf/provider/{provider-name}/configuration/{id} providers getProviderConfiguration
 
 Get Configuration for Provider
 

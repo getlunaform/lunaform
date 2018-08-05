@@ -226,7 +226,7 @@ paths:
           $ref: "#/responses/404"
         500:
           $ref: "#/responses/500"
-  /tf/provider/{name}/configurations:
+  /tf/provider/{provider-name}/configurations:
     get:
       tags:
         - providers
@@ -237,7 +237,7 @@ paths:
         - api-key: []
       parameters:
         - in: path
-          name: name
+          name: provider-name
           required: true
           type: string
           description: Terraform Provider Name
@@ -246,36 +246,15 @@ paths:
           $ref: "#/responses/404"
         500:
           $ref: "#/responses/500"
-  /tf/provider/{name}/configuration/{id}:
-    get:
-      tags:
-        - providers
-      description: Get Configuration for Provider
-      operationId: get-provider-configuration
-      produces: ["application/vnd.lunaform.v1+json"]
-      security:
-        - api-key: []
-      parameters:
-        - in: path
-          name: name
-          required: true
-          type: string
-          description: Terraform Provider ID
-        - in: path
-          name: id
-          required: true
-          type: string
-          description: Configuration for a Terraform Provider
-        - in: body
-          name: terraform-provider
-          description: A terraform module
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-provider-configuration
           schema:
-            $ref: "#/definitions/resource-tf-provider-configuration"
-      responses:
-        404:
-          $ref: "#/responses/404"
-        500:
-          $ref: "#/responses/500"
+            $ref: "#/definitions/response-list-tf-provider-configuration"
     put:
       tags:
         - providers
@@ -287,7 +266,52 @@ paths:
         - api-key: []
       parameters:
         - in: path
-          name: name
+          name: provider-name
+          required: true
+          type: string
+          description: Terraform Provider Name
+        - in: body
+          name: terraform-provider-configuration
+          description: A terraform module
+          schema:
+            $ref: "#/definitions/resource-tf-provider-configuration"
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-provider-configuration
+          schema:
+            $ref: "#/definitions/resource-tf-provider-configuration"
+        201:
+          description: Created
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-provider-configuration
+          schema:
+            $ref: "#/definitions/resource-tf-provider-configuration"
+        400:
+          $ref: "#/responses/400"
+        404:
+          $ref: "#/responses/404"
+        500:
+          $ref: "#/responses/500"
+  /tf/provider/{provider-name}/configuration/{id}:
+    get:
+      tags:
+        - providers
+      description: Get Configuration for Provider
+      operationId: get-provider-configuration
+      produces: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: provider-name
           required: true
           type: string
           description: Terraform Provider ID
@@ -302,26 +326,6 @@ paths:
           schema:
             $ref: "#/definitions/resource-tf-provider-configuration"
       responses:
-        200:
-          description: OK
-          examples:
-            application/vnd.lunaform.v1+json:
-              _links:
-                $ref: "#/definitions/hal-rsc-links"
-              name: my-tf-module
-          schema:
-            $ref: "#/definitions/resource-tf-workspace"
-        201:
-          description: Created
-          examples:
-            application/vnd.lunaform.v1+json:
-              _links:
-                $ref: "#/definitions/hal-rsc-links"
-              name: my-tf-module
-          schema:
-            $ref: "#/definitions/resource-tf-workspace"
-        400:
-          $ref: "#/responses/400"
         404:
           $ref: "#/responses/404"
         500:
@@ -904,6 +908,8 @@ definitions:
         properties:
           provider:
             $ref: "#/definitions/resource-tf-provider"
+      name:
+        type: string
       configuration:
         type: object
   resource-tf-module:
@@ -1150,3 +1156,24 @@ definitions:
         type: string
       configuration:
         type: object
+  response-list-tf-provider-configuration:
+    type: object
+    required:
+      - _links
+      - _embedded
+    description: List of tf provider configurations
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        $ref: "#/definitions/resource-list-tf-provider-configuration"
+  resource-list-tf-provider-configuration:
+    type: object
+    readOnly: true
+    required:
+      - provider-configurations
+    properties:
+      provider-configurations:
+        type: array
+        items:
+          $ref: "#/definitions/resource-tf-provider-configuration"

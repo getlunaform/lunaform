@@ -44,8 +44,6 @@ func printError(errResponse interface{}) {
 func handleOutput(action *cobra.Command, v models.HalLinkable, hal bool, err error) {
 	if serverError, isServerError := v.(*models.ServerError); isServerError {
 		handleServerError(serverError)
-	} else if err != nil {
-		handlerError(err)
 	} else {
 
 		payload := map[string]interface{}{

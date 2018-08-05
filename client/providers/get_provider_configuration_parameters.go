@@ -69,11 +69,11 @@ type GetProviderConfigurationParams struct {
 
 	*/
 	ID string
-	/*Name
+	/*ProviderName
 	  Terraform Provider ID
 
 	*/
-	Name string
+	ProviderName string
 	/*TerraformProvider
 	  A terraform module
 
@@ -129,15 +129,15 @@ func (o *GetProviderConfigurationParams) SetID(id string) {
 	o.ID = id
 }
 
-// WithName adds the name to the get provider configuration params
-func (o *GetProviderConfigurationParams) WithName(name string) *GetProviderConfigurationParams {
-	o.SetName(name)
+// WithProviderName adds the providerName to the get provider configuration params
+func (o *GetProviderConfigurationParams) WithProviderName(providerName string) *GetProviderConfigurationParams {
+	o.SetProviderName(providerName)
 	return o
 }
 
-// SetName adds the name to the get provider configuration params
-func (o *GetProviderConfigurationParams) SetName(name string) {
-	o.Name = name
+// SetProviderName adds the providerName to the get provider configuration params
+func (o *GetProviderConfigurationParams) SetProviderName(providerName string) {
+	o.ProviderName = providerName
 }
 
 // WithTerraformProvider adds the terraformProvider to the get provider configuration params
@@ -164,8 +164,8 @@ func (o *GetProviderConfigurationParams) WriteToRequest(r runtime.ClientRequest,
 		return err
 	}
 
-	// path param name
-	if err := r.SetPathParam("name", o.Name); err != nil {
+	// path param provider-name
+	if err := r.SetPathParam("provider-name", o.ProviderName); err != nil {
 		return err
 	}
 

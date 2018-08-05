@@ -58,7 +58,7 @@ type GetProviderConfigurationNotFound struct {
 }
 
 func (o *GetProviderConfigurationNotFound) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{name}/configuration/{id}][%d] getProviderConfigurationNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{provider-name}/configuration/{id}][%d] getProviderConfigurationNotFound  %+v", 404, o.Payload)
 }
 
 func (o *GetProviderConfigurationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -87,7 +87,7 @@ type GetProviderConfigurationInternalServerError struct {
 }
 
 func (o *GetProviderConfigurationInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /tf/provider/{name}/configuration/{id}][%d] getProviderConfigurationInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /tf/provider/{provider-name}/configuration/{id}][%d] getProviderConfigurationInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *GetProviderConfigurationInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
