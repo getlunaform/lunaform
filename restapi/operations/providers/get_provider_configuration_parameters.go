@@ -9,9 +9,12 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/getlunaform/lunaform/models"
 )
 
 // NewGetProviderConfigurationParams creates a new GetProviderConfigurationParams object
@@ -40,6 +43,10 @@ type GetProviderConfigurationParams struct {
 	  In: path
 	*/
 	Name string
+	/*A terraform module
+	  In: body
+	*/
+	TerraformProvider *models.ResourceTfProviderConfiguration
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -61,6 +68,22 @@ func (o *GetProviderConfigurationParams) BindRequest(r *http.Request, route *mid
 		res = append(res, err)
 	}
 
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body models.ResourceTfProviderConfiguration
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			res = append(res, errors.NewParseError("terraformProvider", "body", "", err))
+		} else {
+			// validate body object
+			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			if len(res) == 0 {
+				o.TerraformProvider = &body
+			}
+		}
+	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

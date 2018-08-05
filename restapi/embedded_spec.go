@@ -456,6 +456,14 @@ func init() {
             "name": "id",
             "in": "path",
             "required": true
+          },
+          {
+            "description": "A terraform module",
+            "name": "terraform-provider",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-provider-configuration"
+            }
           }
         ],
         "responses": {
@@ -1513,6 +1521,25 @@ func init() {
         },
         "type": {
           "type": "string"
+        }
+      }
+    },
+    "resource-tf-provider-configuration": {
+      "description": "A Terraform provider configuration",
+      "type": "object",
+      "properties": {
+        "_embedded": {
+          "properties": {
+            "provider": {
+              "$ref": "#/definitions/resource-tf-provider"
+            }
+          }
+        },
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        },
+        "configuration": {
+          "type": "object"
         }
       }
     },
@@ -2276,6 +2303,14 @@ func init() {
             "name": "id",
             "in": "path",
             "required": true
+          },
+          {
+            "description": "A terraform module",
+            "name": "terraform-provider",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-provider-configuration"
+            }
           }
         ],
         "responses": {
@@ -3399,6 +3434,25 @@ func init() {
         },
         "type": {
           "type": "string"
+        }
+      }
+    },
+    "resource-tf-provider-configuration": {
+      "description": "A Terraform provider configuration",
+      "type": "object",
+      "properties": {
+        "_embedded": {
+          "properties": {
+            "provider": {
+              "$ref": "#/definitions/resource-tf-provider"
+            }
+          }
+        },
+        "_links": {
+          "$ref": "#/definitions/hal-rsc-links"
+        },
+        "configuration": {
+          "type": "object"
         }
       }
     },

@@ -266,6 +266,11 @@ paths:
           required: true
           type: string
           description: Configuration for a Terraform Provider
+        - in: body
+          name: terraform-provider
+          description: A terraform module
+          schema:
+            $ref: "#/definitions/resource-tf-provider-configuration"
       responses:
         404:
           $ref: "#/responses/404"
@@ -839,6 +844,18 @@ definitions:
         type: string
       type:
         type: string
+  resource-tf-provider-configuration:
+    type: object
+    description: A Terraform provider configuration
+    properties:
+      _links:
+        $ref: "#/definitions/hal-rsc-links"
+      _embedded:
+        properties:
+          provider:
+            $ref: "#/definitions/resource-tf-provider"
+      configuration:
+        type: object
   resource-tf-module:
     type: object
     required:
