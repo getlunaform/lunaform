@@ -54,6 +54,41 @@ func (a *Client) CreateProvider(params *CreateProviderParams, authInfo runtime.C
 }
 
 /*
+CreateProviderConfiguration Create a Terraform Provider Configuration
+*/
+func (a *Client) CreateProviderConfiguration(params *CreateProviderConfigurationParams, authInfo runtime.ClientAuthInfoWriter) (*CreateProviderConfigurationOK, *CreateProviderConfigurationCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateProviderConfigurationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "create-provider-configuration",
+		Method:             "PUT",
+		PathPattern:        "/tf/provider/{name}/configuration/{id}",
+		ProducesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		ConsumesMediaTypes: []string{"application/vnd.lunaform.v1+json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &CreateProviderConfigurationReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+	switch value := result.(type) {
+	case *CreateProviderConfigurationOK:
+		return value, nil, nil
+	case *CreateProviderConfigurationCreated:
+		return nil, value, nil
+	}
+	return nil, nil, nil
+
+}
+
+/*
 DeleteProvider Delete a terraform provider
 */
 func (a *Client) DeleteProvider(params *DeleteProviderParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteProviderNoContent, error) {

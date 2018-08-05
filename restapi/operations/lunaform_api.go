@@ -52,6 +52,9 @@ func NewLunaformAPI(spec *loads.Document) *LunaformAPI {
 		ProvidersCreateProviderHandler: providers.CreateProviderHandlerFunc(func(params providers.CreateProviderParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation ProvidersCreateProvider has not yet been implemented")
 		}),
+		ProvidersCreateProviderConfigurationHandler: providers.CreateProviderConfigurationHandlerFunc(func(params providers.CreateProviderConfigurationParams, principal *models.ResourceAuthUser) middleware.Responder {
+			return middleware.NotImplemented("operation ProvidersCreateProviderConfiguration has not yet been implemented")
+		}),
 		StateBackendsCreateStateBackendHandler: state_backends.CreateStateBackendHandlerFunc(func(params state_backends.CreateStateBackendParams, principal *models.ResourceAuthUser) middleware.Responder {
 			return middleware.NotImplemented("operation StateBackendsCreateStateBackend has not yet been implemented")
 		}),
@@ -172,6 +175,8 @@ type LunaformAPI struct {
 	ModulesCreateModuleHandler modules.CreateModuleHandler
 	// ProvidersCreateProviderHandler sets the operation handler for the create provider operation
 	ProvidersCreateProviderHandler providers.CreateProviderHandler
+	// ProvidersCreateProviderConfigurationHandler sets the operation handler for the create provider configuration operation
+	ProvidersCreateProviderConfigurationHandler providers.CreateProviderConfigurationHandler
 	// StateBackendsCreateStateBackendHandler sets the operation handler for the create state backend operation
 	StateBackendsCreateStateBackendHandler state_backends.CreateStateBackendHandler
 	// WorkspacesCreateWorkspaceHandler sets the operation handler for the create workspace operation
@@ -289,6 +294,10 @@ func (o *LunaformAPI) Validate() error {
 
 	if o.ProvidersCreateProviderHandler == nil {
 		unregistered = append(unregistered, "providers.CreateProviderHandler")
+	}
+
+	if o.ProvidersCreateProviderConfigurationHandler == nil {
+		unregistered = append(unregistered, "providers.CreateProviderConfigurationHandler")
 	}
 
 	if o.StateBackendsCreateStateBackendHandler == nil {
@@ -498,6 +507,11 @@ func (o *LunaformAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/tf/providers"] = providers.NewCreateProvider(o.context, o.ProvidersCreateProviderHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/tf/provider/{name}/configuration/{id}"] = providers.NewCreateProviderConfiguration(o.context, o.ProvidersCreateProviderConfigurationHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

@@ -474,6 +474,87 @@ func init() {
             "$ref": "#/responses/500"
           }
         }
+      },
+      "put": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "Create a Terraform Provider Configuration",
+        "consumes": [
+          "application/vnd.lunaform.v1+json"
+        ],
+        "produces": [
+          "application/vnd.lunaform.v1+json"
+        ],
+        "tags": [
+          "providers"
+        ],
+        "operationId": "create-provider-configuration",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Terraform Provider ID",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Configuration for a Terraform Provider",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "A terraform module",
+            "name": "terraform-provider",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-provider-configuration"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-workspace"
+            },
+            "examples": {
+              "application/vnd.lunaform.v1+json": {
+                "_links": {
+                  "$ref": "#/definitions/hal-rsc-links"
+                },
+                "name": "my-tf-module"
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-workspace"
+            },
+            "examples": {
+              "application/vnd.lunaform.v1+json": {
+                "_links": {
+                  "$ref": "#/definitions/hal-rsc-links"
+                },
+                "name": "my-tf-module"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          },
+          "404": {
+            "$ref": "#/responses/404"
+          },
+          "500": {
+            "$ref": "#/responses/500"
+          }
+        }
       }
     },
     "/tf/provider/{name}/configurations": {
@@ -2314,6 +2395,96 @@ func init() {
           }
         ],
         "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "description": "Create a Terraform Provider Configuration",
+        "consumes": [
+          "application/vnd.lunaform.v1+json"
+        ],
+        "produces": [
+          "application/vnd.lunaform.v1+json"
+        ],
+        "tags": [
+          "providers"
+        ],
+        "operationId": "create-provider-configuration",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Terraform Provider ID",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Configuration for a Terraform Provider",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "A terraform module",
+            "name": "terraform-provider",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-provider-configuration"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-workspace"
+            },
+            "examples": {
+              "application/vnd.lunaform.v1+json": {
+                "_links": {
+                  "$ref": "#/definitions/hal-rsc-links"
+                },
+                "name": "my-tf-module"
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/resource-tf-workspace"
+            },
+            "examples": {
+              "application/vnd.lunaform.v1+json": {
+                "_links": {
+                  "$ref": "#/definitions/hal-rsc-links"
+                },
+                "name": "my-tf-module"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server-error"
+            }
+          },
           "404": {
             "description": "Not Found",
             "schema": {

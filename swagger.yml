@@ -276,6 +276,56 @@ paths:
           $ref: "#/responses/404"
         500:
           $ref: "#/responses/500"
+    put:
+      tags:
+        - providers
+      description: Create a Terraform Provider Configuration
+      operationId: create-provider-configuration
+      produces: ["application/vnd.lunaform.v1+json"]
+      consumes: ["application/vnd.lunaform.v1+json"]
+      security:
+        - api-key: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          type: string
+          description: Terraform Provider ID
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Configuration for a Terraform Provider
+        - in: body
+          name: terraform-provider
+          description: A terraform module
+          schema:
+            $ref: "#/definitions/resource-tf-provider-configuration"
+      responses:
+        200:
+          description: OK
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-module
+          schema:
+            $ref: "#/definitions/resource-tf-workspace"
+        201:
+          description: Created
+          examples:
+            application/vnd.lunaform.v1+json:
+              _links:
+                $ref: "#/definitions/hal-rsc-links"
+              name: my-tf-module
+          schema:
+            $ref: "#/definitions/resource-tf-workspace"
+        400:
+          $ref: "#/responses/400"
+        404:
+          $ref: "#/responses/404"
+        500:
+          $ref: "#/responses/500"
   /tf/modules:
     get:
       tags:
