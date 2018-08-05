@@ -31,6 +31,14 @@ func (d ResourceTfDeployment) Clean() interface{} {
 	return d
 }
 
+func (p ResourceTfProvider) Clean() interface{} {
+	return map[string]interface{}{
+		"name":   p.Name,
+		"type":   p.Type,
+		"stacks": p.Embedded.Stacks,
+	}
+}
+
 func (r Resource) Clean() interface{} {
 	r.Links = nil
 	return r
@@ -110,6 +118,14 @@ func (list *ResourceList) Clean() interface{} {
 	return rscs
 }
 
+func (p *ResourceListTfProvider) Clean() interface{}{
+	provs := make([]interface{}, len(p.Providers))
+	for i, prov := range p.Providers {
+		provs[i] = prov.Clean()
+	}
+	return provs
+}
+
 func (m *ResponseListTfModules) Clean() interface{} {
 	return m.Embedded.Clean()
 }
@@ -132,6 +148,10 @@ func (m *ResponseListTfDeployments) Clean() interface{} {
 
 func (m *ResponseListResources) Clean() interface{} {
 	return m.Embedded.Clean()
+}
+
+func (p *ResponseListTfProviders) Clean() interface{} {
+	return p.Embedded.Clean()
 }
 
 func (se *ServerError) Clean() interface{} {

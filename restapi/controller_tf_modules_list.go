@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-// ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
+// ListTfModulesController provides a list of modules
 var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
@@ -21,7 +21,7 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 		if err != nil {
 			return err
 		}
-		
+
 		return operations.NewListModulesOK().WithPayload(&models.ResponseListTfModules{
 			Links:    helpers.HalRootRscLinks(ch),
 			Embedded: modules,

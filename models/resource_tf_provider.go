@@ -19,7 +19,7 @@ import (
 type ResourceTfProvider struct {
 
 	// embedded
-	Embedded *ResourceListTfProvider `json:"_embedded,omitempty"`
+	Embedded *ResourceListTfStack `json:"_embedded,omitempty"`
 
 	// links
 	Links *hal.HalRscLinks `json:"_links,omitempty"`

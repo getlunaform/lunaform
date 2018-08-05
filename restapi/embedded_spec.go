@@ -1503,7 +1503,7 @@ func init() {
       "type": "object",
       "properties": {
         "_embedded": {
-          "$ref": "#/definitions/resource-list-tf-provider"
+          "$ref": "#/definitions/resource-list-tf-stack"
         },
         "_links": {
           "$ref": "#/definitions/hal-rsc-links"
@@ -3389,7 +3389,7 @@ func init() {
       "type": "object",
       "properties": {
         "_embedded": {
-          "$ref": "#/definitions/resource-list-tf-provider"
+          "$ref": "#/definitions/resource-list-tf-stack"
         },
         "_links": {
           "$ref": "#/definitions/hal-rsc-links"

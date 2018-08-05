@@ -12,14 +12,14 @@ type CommonServerErrorResponder struct {
 	code    int
 }
 
-func NewServerError(code int32, errorString string) (r *CommonServerErrorResponder) {
+func NewServerError(code int, errorString string) (r *CommonServerErrorResponder) {
 	return &CommonServerErrorResponder{
 		Payload: &models.ServerError{
 			Message: swag.String(errorString),
 			Status: swag.String(http.StatusText(
 				int(code),
 			)),
-			StatusCode: &code,
+			StatusCode: swag.Int32(int32(code)),
 		},
 		code: int(code),
 	}

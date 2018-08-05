@@ -65,7 +65,7 @@
   branch = "master"
   name = "github.com/getlunaform/go-terraform"
   packages = ["."]
-  revision = "c5c78848cff1dbbb586a81a95ab6977042e701e4"
+  revision = "bcb6bdd551d221031468d9649b863b8e751f286b"
 
 [[projects]]
   name = "github.com/go-openapi/analysis"
