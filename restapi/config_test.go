@@ -102,7 +102,7 @@ func init() {
 	return
 }
 
-func TestConfiguration_loadFromFile(t *testing.T) {
+func Test_configurationloadFromFile(t *testing.T) {
 	type args struct {
 		path string
 	}

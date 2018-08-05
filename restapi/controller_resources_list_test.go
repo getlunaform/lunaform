@@ -44,6 +44,11 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 						HalRscLinks: map[string]*hal.HalHref{
 							"lf:self": {Href: "/tf/workspaces"}},
 					}},
+				{Name: swag.String("providers"),
+					Links: &hal.HalRscLinks{
+						HalRscLinks: map[string]*hal.HalHref{
+							"lf:self": {Href: "/tf/providers"}},
+					}},
 			}},
 			ch: helpers.ContextHelper{
 				Endpoint: "/tf",

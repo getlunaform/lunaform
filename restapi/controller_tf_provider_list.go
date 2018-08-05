@@ -13,8 +13,8 @@ import (
 func ListTfProvidersController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.ListProvidersHandlerFunc {
 	return func(params operation.ListProvidersParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
-		providers := make([]*models.ResourceTfProvider, 0)
-		if code, err := buildListTfProvidersResponse(db, &providers); err != nil {
+		providers, code, err := buildListTfProvidersResponse(db)
+		if err != nil {
 			return NewServerError(code, err.Error())
 		}
 
@@ -30,9 +30,10 @@ func ListTfProvidersController(idp identity.Provider, ch helpers.ContextHelper, 
 	}
 }
 
-func buildListTfProvidersResponse(db database.Database, providers *[]*models.ResourceTfProvider) (errCode int, err error) {
+func buildListTfProvidersResponse(db database.Database) (providers []*models.ResourceTfProvider, errCode int, err error) {
+	providers = make([]*models.ResourceTfProvider, 0)
 	if err := db.List(DB_TABLE_TF_PROVIDER, &providers); err != nil {
-		return http.StatusInternalServerError, err
+		return nil, http.StatusInternalServerError, err
 	}
 	return
 }
