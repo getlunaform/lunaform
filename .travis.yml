@@ -8,17 +8,16 @@ addons:
     # needed for the nfpm pipe:
     - rpm
     - swagger
-    - glide
     sources:
     - sourceline: deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main
-    - sourceline: ppa:masterminds/glide
 
 # needed for the docker pipe
 services:
 - docker
 
 before_install:
-- glide install
+- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+- dep ensure
 
 script:
 - make generate test-coverage
