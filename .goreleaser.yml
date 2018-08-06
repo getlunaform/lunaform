@@ -3,14 +3,14 @@ builds:
   - binary: lunaform
     main: ./cmd/lunaform-server/main.go
     goos:
-      - windows
+#      - windows
       - darwin
       - linux
     goarch:
       - amd64
   - binary: lunaform-client
     goos:
-      - windows
+#      - windows
       - darwin
       - linux
     goarch:
