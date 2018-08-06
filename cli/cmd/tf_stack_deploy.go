@@ -23,13 +23,17 @@ import (
 	"github.com/spf13/cobra"
 	"strings"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/strfmt"
 )
 
-var tfStackCreateCmdModuleFlag string
-var tfStackCreateCmdModuleIdFlag string
-var tfStackCreateCmdNameFlag string
-var tfStackCreateCmdWorkspaceFlag string
-var tfStackCreateCmdStringSlice []string
+var (
+	tfStackCreateCmdModuleFlag               string
+	tfStackCreateCmdModuleIdFlag             string
+	tfStackCreateCmdNameFlag                 string
+	tfStackCreateCmdWorkspaceFlag            string
+	tfStackCreateCmdStringSlice              []string
+	tfStackCreateCmdProviderConfigurationIds []string
+)
 
 // tfStackCreateCmd represents the tfStackCreate command
 var tfStackCreateCmd = &cobra.Command{
@@ -85,12 +89,17 @@ to quickly create a Cobra application.`,
 
 		params := stacks.NewDeployStackParams().WithTerraformStack(
 			&models.ResourceTfStack{
-				ModuleID:  swag.String(module.ID),
-				Name:      swag.String(tfStackCreateCmdNameFlag),
-				Workspace: tfStackCreateCmdWorkspaceFlag,
-				Variables: parseVariableOptions(tfStackCreateCmdStringSlice),
+				Name:                      swag.String(tfStackCreateCmdNameFlag),
+				Variables:                 parseVariableOptions(tfStackCreateCmdStringSlice),
+				ModuleID:                  module.ID,
+				WorkspaceName:             tfStackCreateCmdWorkspaceFlag,
+				ProviderConfigurationsIds: tfStackCreateCmdProviderConfigurationIds,
 			},
 		)
+
+		if err = params.TerraformStack.Validate(strfmt.Default); err != nil {
+			handleOutput(cmd, nil, useHal, err)
+		}
 
 		if stack, err := lunaformClient.Stacks.DeployStack(params, authHandler); err == nil {
 			handleOutput(cmd, stack.Payload, useHal, err)
@@ -120,7 +129,8 @@ func init() {
 	flags.StringVar(&tfStackCreateCmdNameFlag, "name", "", "Name of the deployed terraform module")
 	flags.StringVar(&tfStackCreateCmdWorkspaceFlag, "workspace", "", "Terraform workspace to deploy into.")
 
-	flags.StringSliceVar(&tfStackCreateCmdStringSlice, "var", []string{""}, "Module variables")
+	flags.StringSliceVar(&tfStackCreateCmdStringSlice, "var", []string{}, "Module variables")
+	flags.StringSliceVar(&tfStackCreateCmdProviderConfigurationIds, "provider-configurations", []string{}, "Provider Configuration IDs")
 
 	tfStackCreateCmd.MarkFlagRequired("name")
 	tfStackCreateCmd.MarkFlagRequired("workspace")

@@ -6,9 +6,14 @@ type HalLinkable interface {
 	Clean() interface{}
 }
 
-func (c ResourceTfProviderConfiguration) Clean() interface{} {
-	c.Links = nil
-	return c
+func (c ResourceTfProviderConfiguration) Clean() (out interface{}) {
+	out = map[string]interface{}{
+		"configuration": c.Configuration,
+		"id":            c.ID,
+		"name":          c.Name,
+		"provider":      c.Embedded.Provider,
+	}
+	return out
 }
 
 func (m ResourceTfModule) Clean() interface{} {

@@ -1030,7 +1030,6 @@ definitions:
     type: object
     required:
       - name
-      - module-id
     description: A TF stack
     properties:
       _links:
@@ -1041,22 +1040,32 @@ definitions:
             type: array
             items:
               $ref: "#/definitions/resource-tf-deployment"
+          provider-configurations:
+            type: array
+            items:
+              $ref: "#/definitions/resource-tf-provider-configuration"
           workspace:
             $ref: "#/definitions/resource-tf-workspace"
+          module:
+            $ref: "#/definitions/resource-tf-module"
       id:
         type: string
       name:
         type: string
+      workspace-name:
+        type: string
       module-id:
         type: string
+      provider-configurations-ids:
+        type: array
+        items:
+          type: string
       status:
         type: string
         enum:
           - DEPLOYING
           - SUCCESS
           - FAIL
-      workspace:
-        type: string
       variables:
         type: object
         additionalProperties:

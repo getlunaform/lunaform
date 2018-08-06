@@ -16,10 +16,14 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"fmt"
 	"github.com/getlunaform/lunaform/client/stacks"
 )
 
-var tfStackDestroyIdFlag string
+var (
+	tfStackDestroyIdFlag  string
+	tfStackDestroyIdsFlag []string
+)
 
 // tfStackUndeployCmd represents the tfStackUndeploy command
 var tfStackDestroyCmd = &cobra.Command{
@@ -32,15 +36,35 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		lunaformClient.Stacks.UndeployStack(
-			stacks.NewUndeployStackParams().WithID(tfStackDestroyIdFlag),
-			authHandler,
-		)
+
+		var err error
+
+		if tfStackDestroyIdFlag == "" && tfStackDestroyIdsFlag == nil {
+			handlerError(fmt.Errorf("`--id` or `--ids` must be provided"))
+		} else if tfStackDestroyIdFlag != "" {
+			tfStackDestroyIdsFlag = append(tfStackDestroyIdsFlag, tfStackDestroyIdFlag)
+		}
+
+		for _, id := range tfStackDestroyIdsFlag {
+			if _, err = lunaformClient.Stacks.UndeployStack(
+				stacks.NewUndeployStackParams().WithID(id),
+				authHandler,
+			); err != nil {
+				break
+			}
+		}
+
+		if err != nil {
+			handleOutput(cmd, nil, useHal, err)
+		}
 	},
 }
 
 func init() {
-	tfStackDestroyCmd.Flags().StringVar(&tfStackDestroyIdFlag, "id", "",
+	flags := tfStackDestroyCmd.Flags()
+	flags.StringVar(&tfStackDestroyIdFlag, "id", "",
 		"ID of the terraform module in lunaform")
-	tfStackDestroyCmd.MarkFlagRequired("id")
+	flags.StringSliceVar(&tfStackDestroyIdsFlag, "ids", []string{},
+		"List of comma separated IDs for lunaform stacks")
+
 }

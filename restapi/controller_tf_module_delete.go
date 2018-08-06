@@ -17,8 +17,9 @@ var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHel
 	return operations.DeleteModuleHandlerFunc(func(params operations.DeleteModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
-		if err := buildDeleteTfModuleResponse(db, params.ID); err == nil {
-			r = operations.NewDeleteModuleNoContent()
+		r = operations.NewDeleteModuleNoContent()
+		if err := buildDeleteTfModuleResponse(db, params.ID); err != nil {
+			r = err
 		}
 
 		return

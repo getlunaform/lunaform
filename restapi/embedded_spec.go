@@ -1707,8 +1707,7 @@ func init() {
       "description": "A TF stack",
       "type": "object",
       "required": [
-        "name",
-        "module-id"
+        "name"
       ],
       "properties": {
         "_embedded": {
@@ -1717,6 +1716,15 @@ func init() {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/resource-tf-deployment"
+              }
+            },
+            "module": {
+              "$ref": "#/definitions/resource-tf-module"
+            },
+            "provider-configurations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/resource-tf-provider-configuration"
               }
             },
             "workspace": {
@@ -1736,6 +1744,12 @@ func init() {
         "name": {
           "type": "string"
         },
+        "provider-configurations-ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "status": {
           "type": "string",
           "enum": [
@@ -1750,7 +1764,7 @@ func init() {
             "type": "string"
           }
         },
-        "workspace": {
+        "workspace-name": {
           "type": "string"
         }
       }
@@ -3814,8 +3828,7 @@ func init() {
       "description": "A TF stack",
       "type": "object",
       "required": [
-        "name",
-        "module-id"
+        "name"
       ],
       "properties": {
         "_embedded": {
@@ -3824,6 +3837,15 @@ func init() {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/resource-tf-deployment"
+              }
+            },
+            "module": {
+              "$ref": "#/definitions/resource-tf-module"
+            },
+            "provider-configurations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/resource-tf-provider-configuration"
               }
             },
             "workspace": {
@@ -3843,6 +3865,12 @@ func init() {
         "name": {
           "type": "string"
         },
+        "provider-configurations-ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "status": {
           "type": "string",
           "enum": [
@@ -3857,7 +3885,7 @@ func init() {
             "type": "string"
           }
         },
-        "workspace": {
+        "workspace-name": {
           "type": "string"
         }
       }

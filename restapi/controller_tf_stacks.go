@@ -79,27 +79,6 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 	})
 }
 
-var DeleteTfStackController = func(
-	idp identity.Provider, ch helpers.ContextHelper,
-	db database.Database,
-	workerPool *workers.TfAgentPool,
-) operations.UndeployStackHandlerFunc {
-	return operations.UndeployStackHandlerFunc(func(params operations.UndeployStackParams, p *models.ResourceAuthUser) (r middleware.Responder) {
-		ch.SetRequest(params.HTTPRequest)
-
-		db.Delete(DB_TABLE_TF_STACK, params.ID)
-
-		stack := &models.ResourceTfStack{}
-		if err := db.Read(DB_TABLE_TF_STACK, params.ID, stack); err != nil {
-			if _, stackNotFound := err.(database.RecordDoesNotExistError); stackNotFound {
-				return operations.NewUndeployStackNoContent()
-			} else {
-				return NewServerError(http.StatusInternalServerError, err.Error())
-			}
-		}
-		return NewServerError(http.StatusInternalServerError, "Could not delete stack.")
-	})
-}
 
 var ListTfStackDeploymentsController = func(
 	idp identity.Provider, ch helpers.ContextHelper,

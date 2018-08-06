@@ -39,6 +39,7 @@ type TfAgentPool struct {
 	db            database.Database
 	pool          *workerpool.WorkerPool
 	scratchFolder string
+	debug         bool
 }
 
 func NewAgentPool(maxWorkers int) *TfAgentPool {
@@ -47,6 +48,10 @@ func NewAgentPool(maxWorkers int) *TfAgentPool {
 		maxWorkers:    maxWorkers,
 		scratchFolder: tempdir,
 	}
+}
+
+func (p *TfAgentPool) SetDebug() {
+	p.debug = true
 }
 
 func (p *TfAgentPool) Shutdown() bool {
@@ -64,11 +69,9 @@ func (p *TfAgentPool) WithDB(db database.Database) *TfAgentPool {
 }
 
 func (p *TfAgentPool) DoInit(a *TfActionInit) {
-	p.pool.Submit(
-		a.BuildJob(p.scratchFolder))
+	a.BuildJob(p.scratchFolder)
 }
 
 func (p *TfAgentPool) DoPlan(a *TfActionPlan) {
-	p.pool.Submit(
-		a.BuildJob(p.scratchFolder))
+	a.BuildJob(p.scratchFolder)
 }

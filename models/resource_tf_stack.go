@@ -32,12 +32,14 @@ type ResourceTfStack struct {
 	ID string `json:"id,omitempty"`
 
 	// module id
-	// Required: true
-	ModuleID *string `json:"module-id"`
+	ModuleID string `json:"module-id,omitempty"`
 
 	// name
 	// Required: true
 	Name *string `json:"name"`
+
+	// provider configurations ids
+	ProviderConfigurationsIds []string `json:"provider-configurations-ids"`
 
 	// status
 	// Enum: [DEPLOYING SUCCESS FAIL]
@@ -46,8 +48,8 @@ type ResourceTfStack struct {
 	// variables
 	Variables map[string]string `json:"variables,omitempty"`
 
-	// workspace
-	Workspace string `json:"workspace,omitempty"`
+	// workspace name
+	WorkspaceName string `json:"workspace-name,omitempty"`
 }
 
 // Validate validates this resource tf stack
@@ -59,10 +61,6 @@ func (m *ResourceTfStack) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLinks(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateModuleID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -111,15 +109,6 @@ func (m *ResourceTfStack) validateLinks(formats strfmt.Registry) error {
 			}
 			return err
 		}
-	}
-
-	return nil
-}
-
-func (m *ResourceTfStack) validateModuleID(formats strfmt.Registry) error {
-
-	if err := validate.Required("module-id", "body", m.ModuleID); err != nil {
-		return err
 	}
 
 	return nil
@@ -205,6 +194,12 @@ type ResourceTfStackEmbedded struct {
 	// deployments
 	Deployments []*ResourceTfDeployment `json:"deployments"`
 
+	// module
+	Module *ResourceTfModule `json:"module,omitempty"`
+
+	// provider configurations
+	ProviderConfigurations []*ResourceTfProviderConfiguration `json:"provider-configurations"`
+
 	// workspace
 	Workspace *ResourceTfWorkspace `json:"workspace,omitempty"`
 }
@@ -214,6 +209,14 @@ func (m *ResourceTfStackEmbedded) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDeployments(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateModule(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateProviderConfigurations(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -242,6 +245,49 @@ func (m *ResourceTfStackEmbedded) validateDeployments(formats strfmt.Registry) e
 			if err := m.Deployments[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("_embedded" + "." + "deployments" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *ResourceTfStackEmbedded) validateModule(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Module) { // not required
+		return nil
+	}
+
+	if m.Module != nil {
+		if err := m.Module.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("_embedded" + "." + "module")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *ResourceTfStackEmbedded) validateProviderConfigurations(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ProviderConfigurations) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.ProviderConfigurations); i++ {
+		if swag.IsZero(m.ProviderConfigurations[i]) { // not required
+			continue
+		}
+
+		if m.ProviderConfigurations[i] != nil {
+			if err := m.ProviderConfigurations[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("_embedded" + "." + "provider-configurations" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

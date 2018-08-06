@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
+	"github.com/go-openapi/errors"
 )
 
 func handlerError(err error) {
@@ -28,6 +29,34 @@ func handlerError(err error) {
 
 func handleServerError(err *models.ServerError) {
 	printError(err)
+}
+
+func handleCompositeError(err *errors.CompositeError) {
+	errors := []string{}
+	for _, errElem := range flattenComposite(err).Errors {
+		errors = append(errors, errElem.Error())
+	}
+	printError(errors)
+}
+
+func flattenComposite(errs *errors.CompositeError) *errors.CompositeError {
+	var res []error
+	for _, er := range errs.Errors {
+		switch e := er.(type) {
+		case *errors.CompositeError:
+			if len(e.Errors) > 0 {
+				flat := flattenComposite(e)
+				if len(flat.Errors) > 0 {
+					res = append(res, flat.Errors...)
+				}
+			}
+		default:
+			if e != nil {
+				res = append(res, e)
+			}
+		}
+	}
+	return errors.CompositeValidationError(res...)
 }
 
 func handleApiError(err *runtime.APIError) {
@@ -64,6 +93,8 @@ func handleOutput(action *cobra.Command, v models.HalLinkable, hal bool, err err
 		handleServerError(serverError)
 	} else if apiError, isApiError := err.(*runtime.APIError); isApiError {
 		handleApiError(apiError)
+	} else if compositeError, isCompositeError := err.(*errors.CompositeError); isCompositeError {
+		handleCompositeError(compositeError)
 	} else if err != nil {
 		handlerError(err)
 	} else {

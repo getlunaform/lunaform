@@ -10,7 +10,6 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"strings"
 	"net/http"
-	"github.com/go-openapi/swag"
 	"fmt"
 )
 
@@ -25,43 +24,50 @@ var CreateTfStackController = func(
 		tfs := params.TerraformStack
 		tfs.ID = idGenerator.MustGenerate()
 
-		workspace := models.ResourceTfWorkspace{
-			Name: swag.String(params.TerraformStack.Workspace),
+		if tfs.Embedded == nil {
+			tfs.Embedded = &models.ResourceTfStackEmbedded{
+				Deployments:            []*models.ResourceTfDeployment{},
+				Module:                 &models.ResourceTfModule{},
+				ProviderConfigurations: make([]*models.ResourceTfProviderConfiguration, 0),
+				Workspace:              &models.ResourceTfWorkspace{},
+			}
+
 		}
-		if err := db.Read(DB_TABLE_TF_WORKSPACE, tfs.Workspace, &workspace); err != nil {
+		workspace := tfs.Embedded.Workspace
+		module := tfs.Embedded.Module
+
+		if err := db.Read(DB_TABLE_TF_WORKSPACE, tfs.WorkspaceName, &workspace); err != nil {
 			return NewServerError(
 				http.StatusBadRequest,
-				fmt.Sprintf("Could not find workspace with name'%s'", params.TerraformStack.Workspace),
+				fmt.Sprintf("Could not find workspace with name'%s'", *workspace.Name),
 			)
 		}
+		tfs.WorkspaceName = "" // Clear the input values
 
-		module := models.ResourceTfModule{
-			ID: *params.TerraformStack.ModuleID,
-		}
-		if err := db.Read(DB_TABLE_TF_MODULE, module.ID, &module); err != nil {
+		if err := db.Read(DB_TABLE_TF_MODULE, tfs.ModuleID, &module); err != nil {
 			return NewServerError(
 				http.StatusBadRequest,
-				fmt.Sprintf("Could not find module with id '%s'", *params.TerraformStack.ModuleID),
+				fmt.Sprintf("Could not find module with id '%s'", module.ID),
 			)
 		}
+		tfs.ModuleID = ""
 
-		dep := NewTfDeployment(*workspace.Name)
-
-		tfs.Embedded = &models.ResourceTfStackEmbedded{
-			Deployments: []*models.ResourceTfDeployment{dep},
-			Workspace:   &workspace,
+		// Do this so that we don't have nested JSON and end up with a stack overflow.
+		tfs.Embedded.Module = &models.ResourceTfModule{
+			Name: tfs.Embedded.Module.Name,
+			ID:   tfs.Embedded.Module.ID,
 		}
 
-		go func() {
+		dep := NewTfDeployment(tfs.WorkspaceName)
 
-			workerPool.DoPlan(&workers.TfActionPlan{
-				Stack:      tfs,
-				Deployment: dep,
-				Module:     &module,
-				DoInit:     true,
-			})
+		tfs.Embedded.Deployments = append(tfs.Embedded.Deployments, dep)
 
-		}()
+		go workerPool.DoPlan(&workers.TfActionPlan{
+			Stack:      tfs,
+			Deployment: dep,
+			Module:     module,
+			DoInit:     true,
+		})
 
 		if err := db.Create(DB_TABLE_TF_STACK, tfs.ID, tfs); err != nil {
 			return operations.NewDeployStackBadRequest()
