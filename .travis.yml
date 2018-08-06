@@ -20,7 +20,7 @@ before_install:
 - dep ensure
 
 script:
-- make generate test-coverage
+- make test-coverage
 
 after_success:
 # docker login is required if you want to push docker images.
