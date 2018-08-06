@@ -98,12 +98,24 @@ func (bs *BuildSpace) MustPlanPath(full bool) (path string) {
 	return path
 }
 
+func (bs *BuildSpace) MustProviderFilePath(full bool) (path string) {
+	path, err := bs.ProviderFilePath(full)
+	if err != nil {
+		panic(err)
+	}
+	return path
+}
+
 func (bs *BuildSpace) PlanPath(full bool) (path string, err error) {
 	return bs.deploymentFile("deployment.plan", full)
 }
 
 func (bs *BuildSpace) VarFilePath(full bool) (path string, err error) {
 	return bs.deploymentFile("terraform.tfvars", full)
+}
+
+func (bs *BuildSpace) ProviderFilePath(full bool) (path string, err error) {
+	return bs.deploymentFile("providers.tf", full)
 }
 
 func (bs *BuildSpace) deploymentFile(fileName string, full bool) (path string, err error) {

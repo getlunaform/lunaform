@@ -10,6 +10,7 @@ import (
 func newProviderFile(filePath string) *ProviderFile {
 	return &ProviderFile{
 		filePath: filePath,
+		Providers: map[string]interface{}{},
 	}
 }
 

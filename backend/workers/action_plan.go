@@ -40,8 +40,24 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) {
 		return
 	}
 
+	providerFilePath, err := bs.ProviderFilePath(true)
+	if err != nil {
+		fmt.Print(logs.Error(err))
+		return
+	}
+
+	providers := newProviderFile(providerFilePath)
+	for _, conf := range a.Stack.Embedded.ProviderConfigurations {
+		providers.Providers[*conf.Embedded.Provider.Name] = conf.Configuration
+	}
+
+	if err := providers.WriteToFile(); err != nil {
+		fmt.Print(logs.Error(err))
+		return
+	}
+
 	tf := goterraform.NewTerraformClient().WithWorkingDirectory(
-		bs.MustStackDir(true),
+		bs.MustDeploymentDirectory(true),
 	)
 
 	action := tf.Plan(&goterraform.TerraformPlanParams{

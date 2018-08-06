@@ -21,7 +21,7 @@ func (a *TfActionInit) BuildJob(scratchFolder string) {
 	}
 
 	action := goterraform.NewTerraformClient().
-		WithWorkingDirectory(bs.MustStackDir(true)).
+		WithWorkingDirectory(bs.MustDeploymentDirectory(true)).
 		Init(params).
 		Initialise()
 

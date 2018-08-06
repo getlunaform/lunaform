@@ -62,6 +62,17 @@ var CreateTfStackController = func(
 
 		tfs.Embedded.Deployments = append(tfs.Embedded.Deployments, dep)
 
+		for _, providerConfigurationId := range tfs.ProviderConfigurationsIds {
+			provConf := models.ResourceTfProviderConfiguration{}
+			if err := db.Read(DB_TABLE_TF_PROVIDER_CONFIGURATION, providerConfigurationId, &provConf); err != nil {
+				return NewServerError(
+					http.StatusBadRequest,
+					fmt.Sprintf("Could not find provider configuration with id '%s'", providerConfigurationId),
+				)
+			}
+			tfs.Embedded.ProviderConfigurations = append(tfs.Embedded.ProviderConfigurations, &provConf)
+		}
+
 		go workerPool.DoPlan(&workers.TfActionPlan{
 			Stack:      tfs,
 			Deployment: dep,
