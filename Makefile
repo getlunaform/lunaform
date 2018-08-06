@@ -25,6 +25,7 @@ CUR_DIR_NAME=$(notdir ${CURDIR})
 MODEL_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-models-go
 CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-go
 JS_CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-js
+PY_CLIENT_PACKAGE?=${GOROOT}/src/github.com/getlunaform/lunaform-client-py
 
 EXISTING_MODELS?=github.com/getlunaform/lunaform-models-go
 
@@ -117,6 +118,9 @@ clean-client-js:
 
 generate-client-js:
 	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(JS_CLIENT_PACKAGE) generate
+
+generate-client-py:
+	SRC_YAML=$(SRC_YAML) $(MAKE) -C $(PY_CLIENT_PACKAGE) generate
 
 ################
 # Test targets #
