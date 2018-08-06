@@ -13,6 +13,7 @@ ENVIRONMENT?=DEVELOPMENT
 BUILD_ID?=$(ENVIRONMENT)
 
 GOROOT?=${HOME}/go
+PACKAGE="github.com/getlunaform/lunaform"
 
 GO_TARGETS= ./restapi ./models ./helpers
 GOR_TARGETS= ./restapi/... ./models/... ./helpers/...
@@ -39,7 +40,7 @@ generate: generate-server generate-client-go generate-model
 default: clean generate build
 
 update-vendor:
-	glide update
+	dep ensure
 
 ##################
 # Server targets #
@@ -130,8 +131,8 @@ test:
 	go test $(GOR_TARGETS)
 
 test-coverage:
-	@sh $(CWD)/scripts/test-coverage.sh $(CWD) "$(GO_TARGETS)"
-	go tool cover -html=$(CWD)/profile.out -o $(CWD)/coverage.html
+	sh ${CURDIR}/scripts/test-coverage.sh ${CURDIR} $(GO_TARGETS)
+	go tool cover -html=${CURDIR}/profile.out -o ${CURDIR}/coverage.html
 
 validate-swagger:
 	${SWAGGER_BIN} validate $(SRC_YAML)
@@ -142,7 +143,7 @@ format:
 lint:
 	diff -u <(echo -n) <(gofmt -d -s $(shell find server -type d))
 #	diff -u <(echo -n) <(gofmt -d -s $(shell find backend -type d))
-	golint -set_exit_status . $(shell glide novendor)
+#	golint -set_exit_status . $(shell glide novendor)
 
 
 ##################

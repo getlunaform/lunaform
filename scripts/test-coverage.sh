@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 
 OUTPUT_PATH="${1}"
+shift;
 
 echo "mode: atomic" > ${OUTPUT_PATH}/profile.out
 
-non_vendor=$(glide novendor)
-all_packages=$(go list ${non_vendor})
+all_packages=$@
 
 for d in ${all_packages}; do
-
-    find ${GOPATH}/src/${d} -maxdepth 0 -type f -name "*.go" -exec false {} \+
 
     if [ $? -ne 1 ]; then
         go test -v -coverprofile=profile.txt -covermode=atomic $d
