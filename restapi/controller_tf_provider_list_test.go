@@ -5,6 +5,7 @@ import (
 
 	"github.com/getlunaform/lunaform/models"
 	"github.com/stretchr/testify/assert"
+	"github.com/go-openapi/swag"
 )
 
 func Test_buildListTfProvidersResponse(t *testing.T) {
@@ -18,9 +19,9 @@ func Test_buildListTfProvidersResponse(t *testing.T) {
 		{
 			name: "base",
 			providers: []*models.ResourceTfProvider{{
-				Name: "one",
+				Name: swag.String("one"),
 			}, {
-				Name: "two",
+				Name: swag.String("two"),
 			}},
 		},
 	} {
@@ -28,7 +29,7 @@ func Test_buildListTfProvidersResponse(t *testing.T) {
 
 			db := getTestingDB([]map[string]string{})
 			for _, prov := range tt.providers {
-				err := db.Create(DB_TABLE_TF_PROVIDER, prov.Name, prov)
+				err := db.Create(DB_TABLE_TF_PROVIDER, *prov.Name, prov)
 				assert.NoError(t, err)
 			}
 

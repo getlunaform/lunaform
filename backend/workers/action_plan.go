@@ -6,53 +6,87 @@ import (
 	"fmt"
 	"os"
 	"golang.org/x/sys/unix"
+	"github.com/getlunaform/lunaform/models"
 )
 
-func (a *TfActionPlan) BuildJob(scratchFolder string) {
+type TfActionPlan struct {
+	Module     *models.ResourceTfModule
+	Stack      *models.ResourceTfStack
+	Deployment *models.ResourceTfDeployment
+	log        *goterraform.OutputLog
+	bs         *BuildSpace
+	DoInit     bool
+}
 
-	logs := goterraform.NewOutputLogs()
+func (tap *TfActionPlan) Type() TFActionType {
+	return TfActionPlanType
+}
 
-	if a.DoInit {
-		init := &TfActionInit{
-			Module:     a.Module,
-			Stack:      a.Stack,
-			Deployment: a.Deployment,
+func NewTfActionPlan(doInit bool) *TfActionPlan {
+	return &TfActionPlan{
+		DoInit: doInit,
+		log:    goterraform.NewOutputLogs(),
+	}
+}
+
+func (tap *TfActionPlan) WithStack(stack *models.ResourceTfStack) *TfActionPlan {
+	tap.Stack = stack
+	return tap
+}
+
+func (tap *TfActionPlan) WithDeployment(deployment *models.ResourceTfDeployment) *TfActionPlan {
+	tap.Deployment = deployment
+	return tap
+}
+
+func (tap *TfActionPlan) BuildJob(scratchFolder string) (err error) {
+
+	if tap.log == nil {
+		tap.log = goterraform.NewOutputLogs()
+	}
+
+	if tap.DoInit {
+		action := newTfActionInit().
+			WithStack(tap.Stack).
+			WithDeployment(tap.Deployment).
+			WithLogs(tap.log)
+		if err = action.BuildJob(scratchFolder); err != nil {
+			return
 		}
-		init.BuildJob(scratchFolder)
 	}
 
 	bs := NewBuildSpace(scratchFolder).
-		WithModule(a.Module).
-		WithStack(a.Stack).
-		WithDeployment(a.Deployment)
+		WithStack(tap.Stack).
+		WithDeployment(tap.Deployment).
+		WithModule(tap.Module)
 
 	varFilePath, err := bs.VarFilePath(true)
 	if err != nil {
-		fmt.Print(logs.Error(err))
+		fmt.Print(tap.log.Error(err))
 		return
 	}
 
 	vars := newVariableFile(varFilePath)
 
-	vars.Parse(a.Stack.Variables)
-	if err := vars.WriteToFile(); err != nil {
-		fmt.Print(logs.Error(err))
+	vars.Parse(tap.Stack.Variables)
+	if err = vars.WriteToFile(); err != nil {
+		fmt.Print(tap.log.Error(err))
 		return
 	}
 
 	providerFilePath, err := bs.ProviderFilePath(true)
 	if err != nil {
-		fmt.Print(logs.Error(err))
+		fmt.Print(tap.log.Error(err))
 		return
 	}
 
 	providers := newProviderFile(providerFilePath)
-	for _, conf := range a.Stack.Embedded.ProviderConfigurations {
+	for _, conf := range tap.Stack.Embedded.ProviderConfigurations {
 		providers.Providers[*conf.Embedded.Provider.Name] = conf.Configuration
 	}
 
-	if err := providers.WriteToFile(); err != nil {
-		fmt.Print(logs.Error(err))
+	if err = providers.WriteToFile(); err != nil {
+		fmt.Print(tap.log.Error(err))
 		return
 	}
 
@@ -66,29 +100,30 @@ func (a *TfActionPlan) BuildJob(scratchFolder string) {
 		VarFile: swag.StringSlice([]string{varFilePath}),
 	}).Initialise()
 
-	if err := action.InitLogger(logs); err != nil {
+	if err = action.InitLogger(tap.log); err != nil {
 		fmt.Printf(
 			"An error occured initialising task logger: %s", err.Error())
 		return
 	}
 
-	if err := os.MkdirAll(bs.MustDeploymentDirectory(true), 0700); err != nil {
+	if err = os.MkdirAll(bs.MustDeploymentDirectory(true), 0700); err != nil {
 		if pathErr, isPathErr := err.(*os.PathError); isPathErr {
 			if pathErr.Err != unix.EEXIST {
-				fmt.Print(logs.Error(err))
+				fmt.Print(tap.log.Error(err))
 				return
 			}
 		}
 	}
 
-	if err := action.Cmd.Start(); err != nil {
-		fmt.Print(logs.Error(err))
+	if err = action.Cmd.Start(); err != nil {
+		fmt.Print(tap.log.Error(err))
 		return
 	}
 
-	if err := action.Cmd.Wait(); err != nil {
-		fmt.Print(logs.Error(err))
+	if err = action.Cmd.Wait(); err != nil {
+		fmt.Print(tap.log.Error(err))
 		return
 	}
 
+	return
 }

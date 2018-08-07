@@ -8,6 +8,7 @@ import (
 	"github.com/getlunaform/lunaform/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/models/hal"
+	"github.com/go-openapi/swag"
 )
 
 func Test_buildCreateTfProviderResponse(t *testing.T) {
@@ -29,7 +30,7 @@ func Test_buildCreateTfProviderResponse(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			db := getTestingDB([]map[string]string{})
-			prov := models.ResourceTfProvider{Name: "mock-provider"}
+			prov := models.ResourceTfProvider{Name: swag.String("mock-provider")}
 
 			gotErrCode, err := buildCreateTfProviderResponse(&prov, db, tt.args.ch)
 
@@ -37,7 +38,7 @@ func Test_buildCreateTfProviderResponse(t *testing.T) {
 			assert.Equal(t, tt.wantErrCode, gotErrCode)
 
 			readProv := models.ResourceTfProvider{}
-			err = db.Read(DB_TABLE_TF_PROVIDER, prov.Name, &readProv)
+			err = db.Read(DB_TABLE_TF_PROVIDER, *prov.Name, &readProv)
 
 			readProv.Links = &hal.HalRscLinks{
 				Curies: []*hal.HalCurie{

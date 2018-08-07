@@ -5,6 +5,7 @@ import (
 
 	"github.com/getlunaform/lunaform/models"
 	"github.com/stretchr/testify/assert"
+	"github.com/go-openapi/swag"
 )
 
 func Test_buildGetTfProviderResponse(t *testing.T) {
@@ -16,15 +17,15 @@ func Test_buildGetTfProviderResponse(t *testing.T) {
 	}{
 		{
 			name:         "base",
-			wantProvider: &models.ResourceTfProvider{Name: "mock"},
+			wantProvider: &models.ResourceTfProvider{Name: swag.String("mock")},
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			db := getTestingDB([]map[string]string{})
-			err := db.Create(DB_TABLE_TF_PROVIDER, tt.wantProvider.Name, tt.wantProvider)
+			err := db.Create(DB_TABLE_TF_PROVIDER, *tt.wantProvider.Name, tt.wantProvider)
 			assert.NoError(t, err)
 
-			gotProvider, gotErrCode, err := buildGetTfProviderResponse(db, tt.wantProvider.Name)
+			gotProvider, gotErrCode, err := buildGetTfProviderResponse(db, *tt.wantProvider.Name)
 			assert.Equal(t, tt.wantProvider, gotProvider)
 			assert.Equal(t, tt.wantErrCode, gotErrCode)
 			assert.Equal(t, tt.wantErr, err)

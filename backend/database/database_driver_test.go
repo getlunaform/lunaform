@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	dbTestType       = "test-type"
+	dbTestType       = DBTableRecordType("test-type")
 	dbTestKey        = "test-key"
 	dbDuplicateKey   = "duplicate"
 	dbNonexistantKey = "no-such-key"

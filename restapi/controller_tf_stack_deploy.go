@@ -73,12 +73,11 @@ var CreateTfStackController = func(
 			tfs.Embedded.ProviderConfigurations = append(tfs.Embedded.ProviderConfigurations, &provConf)
 		}
 
-		go workerPool.DoPlan(&workers.TfActionPlan{
-			Stack:      tfs,
-			Deployment: dep,
-			Module:     module,
-			DoInit:     true,
-		})
+		go workerPool.DoPlan(
+			workers.NewTfActionPlan(true).
+				WithDeployment(dep).
+				WithStack(tfs),
+		)
 
 		if err := db.Create(DB_TABLE_TF_STACK, tfs.ID, tfs); err != nil {
 			return operations.NewDeployStackBadRequest()
