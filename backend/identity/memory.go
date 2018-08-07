@@ -40,7 +40,7 @@ func (mip memoryIdentityProvider) CreateUser(newUser *User) (user *User, err err
 
 	newUser.IsEditable = true
 	newUser.Idp = mip
-	user.Password, err = mip.hashPassword(newUser.Password)
+	newUser.Password, err = mip.hashPassword(newUser.Password)
 
 	mip.users[newUser.Username] = newUser
 

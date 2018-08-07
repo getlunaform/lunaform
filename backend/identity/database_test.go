@@ -8,6 +8,6 @@ import (
 
 func TestDatabaseIdP(t *testing.T) {
 	idp, err := NewDatabaseIdentityProvider(database.Database{})
-	assert.EqualError(t, err, "Database IdP Not Implemented")
-	assert.Nil(t, idp)
+	assert.NoError(t, err)
+	assert.NotNil(t, idp)
 }
