@@ -26,11 +26,12 @@ func HalSelfLink(links *hal.HalRscLinks, href string) *hal.HalRscLinks {
 		links = newHalRscLinks()
 	}
 
-	if href == "" {
-		href = "/"
+	noRscLinks := (links.HalRscLinks == nil) || (len(links.HalRscLinks) == 0)
+	if noRscLinks {
+		links.HalRscLinks = map[string]*hal.HalHref{
+			"lf:self": {Href: href},
+		}
 	}
-
-	links.HalRscLinks["lf:self"] = &hal.HalHref{Href: href}
 
 	return links
 }

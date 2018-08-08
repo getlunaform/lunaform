@@ -64,9 +64,6 @@ func NewJSONDBDriver(dbFile string) (d Driver, err error) {
 
 // Close the file pointer
 func (jdb jsonDatabase) Close() (err error) {
-	jdb.lock()
-	defer jdb.unlock()
-
 	return jdb.Flush(nil)
 }
 

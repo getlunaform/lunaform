@@ -250,8 +250,10 @@ variable "string" {
 		t.Run(tt.name, func(t *testing.T) {
 			vf := &VariableFile{
 				Variables: tt.variables,
+				fileType:  VARIABLE_FILE_TYPE_TF,
 			}
-			assert.Equal(t, tt.want, string(vf.Byte()))
+			got := vf.String()
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

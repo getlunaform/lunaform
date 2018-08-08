@@ -52,8 +52,8 @@ func TestManagedIdentityProvider(t *testing.T) {
 
 			t.Run("I get an error trying to create a user in my IdP if they already exist", func(*testing.T) {
 				user1, err := idp.CreateUser(&identity.User{Username: "test-user", Password: "test-password"})
-				assert.NotNil(t, user1)
-				assert.NoError(t, err)
+				assert.Nil(t, user1)
+				assert.EqualError(t, err, "User 'test-user' already exists")
 
 				_, err = idp.CreateUser(&identity.User{Username: "test-user", Password: "test-password"})
 				assert.EqualError(t, err, "User 'test-user' already exists")
@@ -63,10 +63,11 @@ func TestManagedIdentityProvider(t *testing.T) {
 			t.Run("I can change a users password", func(*testing.T) {
 
 				admin, _ := idp.ReadUser("admin")
+				admin.Logout()
 				assert.True(t, admin.IsEditable)
 
 				err := admin.ChangePassword("new_password")
-				assert.NotNil(t, err)
+				assert.EqualError(t, err, "Could not change password on 'admin' as user is not logged in")
 
 				admin.Login("password")
 				err = admin.ChangePassword("new_password")
@@ -74,7 +75,7 @@ func TestManagedIdentityProvider(t *testing.T) {
 
 				admin1, _ := idp.ReadUser("admin")
 				assert.True(t, admin.LoggedIn())
-				assert.False(t, admin1.LoggedIn())
+				assert.True(t, admin1.LoggedIn())
 				admin1.Login("new_password")
 				assert.True(t, admin1.LoggedIn())
 

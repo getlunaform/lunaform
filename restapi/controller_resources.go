@@ -13,7 +13,7 @@ func buildResourceGroupResponse(rscs []string, ch helpers.ContextHelper) (rsclis
 	for i, rsc := range rscs {
 		rsclist.Resources[i] = &models.Resource{
 			Name:  swag.String(rsc),
-			Links: helpers.HalSelfLink(nil, ch.Endpoint+"/"+rsc),
+			Links: helpers.HalSelfLink(nil, ch.EndpointSingular+"/"+rsc),
 		}
 	}
 	return

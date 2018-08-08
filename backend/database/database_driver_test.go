@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"path/filepath"
 )
 
 var (
@@ -39,8 +41,13 @@ func TestDriverInterface(t *testing.T) {
 	})
 
 	// Test JSON Database bootstrap
-	f := mockFile{}
-	dbJSON, err := NewJSONDBDriver(f)
+	//f := mockFile{}
+	f, err := ioutil.TempFile("", "")
+	assert.NoError(t, err)
+	thepath, err := filepath.Abs(f.Name())
+	assert.NoError(t, err)
+
+	dbJSON, err := NewJSONDBDriver(thepath)
 	t.Run("DB does not error", func(t *testing.T) {
 		assert.NoError(t, err)
 	})

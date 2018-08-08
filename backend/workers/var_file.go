@@ -116,7 +116,8 @@ func (vf *VariableFile) Byte() []byte {
 	if err != nil {
 		panic(err)
 	}
-	return tpl.Bytes()
+	b := tpl.Bytes()
+	return b
 }
 
 func (vf *VariableFile) String() string {

@@ -69,11 +69,10 @@ func (mip memoryIdentityProvider) ReadUser(username string) (user *User, err err
 			Idp:        mip,
 		}
 		mip.users[user.Username] = user
+		user.Logout()
 	} else {
 		user = existingUser
 	}
-
-	user.Logout()
 
 	return user, err
 }

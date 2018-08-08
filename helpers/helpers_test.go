@@ -21,8 +21,7 @@ func TestHALSelfLink(t *testing.T) {
 		rootLink := hal.HalRscLinks{}
 		l := HalSelfLink(&rootLink, test.url)
 
-		assert.Equal(t, test.url, l.HalRscLinks["lf:self"])
-
+		assert.Equal(t, &hal.HalHref{Href: test.url}, l.HalRscLinks["lf:self"])
 	}
 }
 
@@ -47,11 +46,10 @@ func TestHALRootRscLinks(t *testing.T) {
 			OperationID: test.opid,
 		})
 		assert.NotNil(t, l)
-		assert.NotNil(t, l.HalRscLinks[""])
-		assert.NotNil(t, l.HalRscLinks[""])
+		assert.NotNil(t, l.HalRscLinks["doc:my-operation"])
+		assert.NotNil(t, l.Curies)
 
-		assert.Equal(t, test.fqe, l.HalRscLinks[""])
-		assert.Equal(t, test.docURL, l.HalRscLinks[""])
+		assert.Equal(t, &hal.HalHref{Href: "/" + test.opid}, l.HalRscLinks["doc:my-operation"])
 	}
 }
 
