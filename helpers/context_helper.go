@@ -1,17 +1,18 @@
 package helpers
 
 import (
-	"github.com/go-openapi/runtime/middleware"
 	"net/http"
 	"strings"
 	"errors"
+	"github.com/go-openapi/runtime/middleware"
+	"fmt"
 )
 
 // ContextHelper is split into its own little function, as test it is really difficult due to the un-exported nature
 // of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
 // ctx.LookupRoute. Doing it this way, means we can mock it in tests.
 type ContextHelper struct {
-	ctx              *middleware.Context
+	ctx              BasePathContext
 	Request          *http.Request
 	ServerURL        string
 	Endpoint         string
@@ -22,16 +23,28 @@ type ContextHelper struct {
 	PathParts        []string
 }
 
-func NewContextHelperWithContext(ctx *middleware.Context) *ContextHelper {
-	return NewContextHelper(ctx).
-		WithBasePath(ctx.BasePath())
+type BasePathContext interface {
+	BasePath() string
+	LookupRoute(*http.Request) (*middleware.MatchedRoute, bool)
+}
+
+func NewContextHelperWithContext(ctx BasePathContext) (*ContextHelper, error) {
+	ctxHelper, err := NewContextHelper(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return ctxHelper.
+		WithBasePath(ctx.BasePath()), nil
 }
 
 // NewContextHelper to easily get URL parts for generating HAL resources
-func NewContextHelper(ctx *middleware.Context) *ContextHelper {
+func NewContextHelper(ctx BasePathContext) (*ContextHelper, error) {
+	if ctx == nil {
+		return nil, fmt.Errorf("context must not be 'nil'")
+	}
 	return &ContextHelper{
 		ctx: ctx,
-	}
+	}, nil
 }
 
 func (ch *ContextHelper) WithBasePath(basePath string) *ContextHelper {
