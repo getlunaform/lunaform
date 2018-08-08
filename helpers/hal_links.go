@@ -28,10 +28,10 @@ func HalSelfLink(links *hal.HalRscLinks, href string) *hal.HalRscLinks {
 
 	noRscLinks := (links.HalRscLinks == nil) || (len(links.HalRscLinks) == 0)
 	if noRscLinks {
-		links.HalRscLinks = map[string]*hal.HalHref{
-			"lf:self": {Href: href},
-		}
+		links.HalRscLinks = map[string]*hal.HalHref{}
 	}
+
+	links.HalRscLinks["lf:self"] = &hal.HalHref{Href: href}
 
 	return links
 }
@@ -39,6 +39,11 @@ func HalSelfLink(links *hal.HalRscLinks, href string) *hal.HalRscLinks {
 func HalDocLink(links *hal.HalRscLinks, operationId string) *hal.HalRscLinks {
 	if links == nil {
 		links = newHalRscLinks()
+	}
+
+	noRscLinks := (links.HalRscLinks == nil) || (len(links.HalRscLinks) == 0)
+	if noRscLinks {
+		links.HalRscLinks = map[string]*hal.HalHref{}
 	}
 
 	links.HalRscLinks["doc:"+operationId] = &hal.HalHref{Href: "/" + operationId}

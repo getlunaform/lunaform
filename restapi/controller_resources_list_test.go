@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/go-openapi/swag"
 	"github.com/getlunaform/lunaform/models/hal"
-	"github.com/go-openapi/strfmt"
 )
 
 func Test_buildResourceGroupRootResponse(t *testing.T) {
@@ -62,7 +61,8 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 					}},
 			}},
 			ch: &helpers.ContextHelper{
-				Endpoint: "/tf",
+				Endpoint:         "/tf",
+				EndpointSingular: "/tf",
 			},
 		},
 		{
@@ -76,17 +76,17 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 				{Name: swag.String("providers"),
 					Links: &hal.HalRscLinks{
 						HalRscLinks: map[string]*hal.HalHref{
-							"lf:self": &hal.HalHref{Href: "/identity/providers"}},
+							"lf:self": {Href: "/identity/providers"}},
 					}},
 				{Name: swag.String("users"),
 					Links: &hal.HalRscLinks{
 						HalRscLinks: map[string]*hal.HalHref{
-							"lf:self": &hal.HalHref{Href: "/identity/users"}},
-						Curies: []*hal.HalCurie{},
+							"lf:self": {Href: "/identity/users"}},
 					}},
 			}},
 			ch: &helpers.ContextHelper{
-				Endpoint: "/identity",
+				Endpoint:         "/identity",
+				EndpointSingular: "/identity",
 			},
 		},
 		{
@@ -96,19 +96,11 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 					Links: &hal.HalRscLinks{
 						HalRscLinks: map[string]*hal.HalHref{
 							"lf:self": {Href: "/vcs/git"}},
-						Curies: []*hal.HalCurie{{
-							Href:      strfmt.URI("/{rel}"),
-							Name:      "lf",
-							Templated: true,
-						}, {
-							Href:      strfmt.URI("/docs#operation/{rel}"),
-							Name:      "lf",
-							Templated: true,
-						}},
 					}},
 			}},
 			ch: &helpers.ContextHelper{
-				Endpoint: "/vcs",
+				Endpoint:         "/vcs",
+				EndpointSingular: "/vcs",
 			},
 		},
 	} {

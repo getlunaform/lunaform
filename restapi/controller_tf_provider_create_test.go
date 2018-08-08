@@ -26,7 +26,10 @@ func Test_buildCreateTfProviderResponse(t *testing.T) {
 		{
 			name: "base",
 			args: args{
-				ch: helpers.NewContextHelper(api.Context()),
+				ch: &helpers.ContextHelper{
+					EndpointSingular: "/",
+					Endpoint:         "/",
+				},
 			},
 		},
 	} {

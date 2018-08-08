@@ -30,7 +30,7 @@ func buildCreateTfProviderResponse(provider *models.ResourceTfProvider, db datab
 		return http.StatusInternalServerError, err
 	}
 	provider.Links = helpers.HalAddCuries(ch, helpers.HalSelfLink(
-		helpers.HalDocLink(nil, ch.OperationID),
+		helpers.HalDocLink(helpers.HalSelfLink(nil, ch.EndpointSingular), ch.OperationID),
 		ch.Endpoint,
 	))
 

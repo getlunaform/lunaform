@@ -18,8 +18,10 @@ func Test_buildTfModuleControllerCreateResponse(t *testing.T) {
 		{
 			name: "base",
 			ch: &helpers.ContextHelper{
-				ServerURL: "http://example.com/api",
-				BasePath:  "/api",
+				ServerURL:        "http://example.com/api",
+				BasePath:         "/api",
+				Endpoint:         "/",
+				EndpointSingular: "/",
 			},
 		},
 	} {
@@ -46,10 +48,10 @@ func Test_buildTfModuleControllerCreateResponse(t *testing.T) {
 			}}, mod.Links.Curies)
 
 			assert.Equal(t, map[string]*hal.HalHref{
-				"doc:": {
+				"lf:self": {
 					Href: "/",
 				},
-				"lf:self": {
+				"doc:": {
 					Href: "/",
 				},
 			}, mod.Links.HalRscLinks)

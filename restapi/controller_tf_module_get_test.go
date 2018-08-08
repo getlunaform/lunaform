@@ -34,7 +34,10 @@ func Test_buildGetTfModuleResponse(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			db := getTestingDB([]map[string]string{})
-			ch := &helpers.ContextHelper{}
+			ch := &helpers.ContextHelper{
+				EndpointSingular: "/",
+				Endpoint:         "/",
+			}
 
 			if tt.module != nil {
 				err := db.Create(DB_TABLE_TF_MODULE, tt.moduleId, tt.module)
