@@ -103,7 +103,7 @@ func TestContextHelper_ParseRequest(t *testing.T) {
 		wantCh *ContextHelper
 	}{
 		{
-			name: "base",
+			name: "base-plural",
 			args: args{
 				host:       "www.example.com",
 				basePath:   "/mock",
@@ -115,6 +115,25 @@ func TestContextHelper_ParseRequest(t *testing.T) {
 				Endpoint:         "/my-resources",
 				EndpointSingular: "/my-resource",
 				FQEndpoint:       "https://www.example.com/mock/my-resources",
+				BasePath:         "/mock",
+				PathParts:        []string{"my-resources"},
+			},
+		},
+		{
+			name: "base-singural",
+			args: args{
+				host:       "www.example.com",
+				basePath:   "/mock",
+				requestUri: "/mock/my-resource",
+				hasTls:     true,
+			},
+			wantCh: &ContextHelper{
+				ServerURL:        "https://www.example.com/mock",
+				Endpoint:         "/my-resource",
+				EndpointSingular: "/my-resource",
+				FQEndpoint:       "https://www.example.com/mock/my-resource",
+				BasePath:         "/mock",
+				PathParts:        []string{"my-resource"},
 			},
 		},
 	} {

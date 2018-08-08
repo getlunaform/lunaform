@@ -7,6 +7,20 @@ import (
 	"errors"
 )
 
+// ContextHelper is split into its own little function, as test it is really difficult due to the un-exported nature
+// of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
+// ctx.LookupRoute. Doing it this way, means we can mock it in tests.
+type ContextHelper struct {
+	ctx              *middleware.Context
+	Request          *http.Request
+	ServerURL        string
+	Endpoint         string
+	EndpointSingular string
+	FQEndpoint       string
+	OperationID      string
+	BasePath         string
+	PathParts        []string
+}
 
 func NewContextHelperWithContext(ctx *middleware.Context) *ContextHelper {
 	return NewContextHelper(ctx).
@@ -23,21 +37,6 @@ func NewContextHelper(ctx *middleware.Context) *ContextHelper {
 func (ch *ContextHelper) WithBasePath(basePath string) *ContextHelper {
 	ch.BasePath = basePath
 	return ch
-}
-
-// ContextHelper is split into its own little function, as test it is really difficult due to the un-exported nature
-// of the majority of the `MatchedRoute` struct, which means it's very difficult to generate a mock response to
-// ctx.LookupRoute. Doing it this way, means we can mock it in tests.
-type ContextHelper struct {
-	ctx              *middleware.Context
-	Request          *http.Request
-	ServerURL        string
-	Endpoint         string
-	EndpointSingular string
-	FQEndpoint       string
-	OperationID      string
-	BasePath         string
-	PathParts        []string
 }
 
 // SetRequest and calculate the api parts from the combination of the request and the API. This is used to generate HAL resources
@@ -69,7 +68,12 @@ func (ch *ContextHelper) ParseRequest(host string, basePath string,
 	if strings.HasSuffix(ch.Endpoint, "s") {
 		ch.EndpointSingular = strings.TrimSuffix(ch.Endpoint, "s")
 	}
-	ch.PathParts = strings.Split(ch.FQEndpoint, "/")
+
+	ch.BasePath = basePath
+
+	ch.PathParts = strings.Split(
+		strings.TrimPrefix(ch.Endpoint, "/"),
+		"/")
 }
 
 func (ch *ContextHelper) urlPrefix(host string, uri string, https bool) string {
@@ -79,4 +83,3 @@ func (ch *ContextHelper) urlPrefix(host string, uri string, https bool) string {
 	}
 	return strings.TrimSuffix(prefix+"://"+host+uri, "/")
 }
-
