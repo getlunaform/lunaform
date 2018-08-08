@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/getlunaform/lunaform/models/hal"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_newHalRscLinks(t *testing.T) {
@@ -12,20 +13,22 @@ func Test_newHalRscLinks(t *testing.T) {
 		name string
 		want *hal.HalRscLinks
 	}{
-		// TODO: Add test cases.
+		{
+			name: "basic",
+			want: &hal.HalRscLinks{HalRscLinks: map[string]*hal.HalHref{}},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := newHalRscLinks(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("newHalRscLinks() = %v, want %v", got, tt.want)
-			}
+			got := newHalRscLinks()
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
 
 func TestHalRootRscLinks(t *testing.T) {
 	type args struct {
-		ch ContextHelper
+		ch *ContextHelper
 	}
 	tests := []struct {
 		name      string
@@ -44,64 +47,85 @@ func TestHalRootRscLinks(t *testing.T) {
 }
 
 func TestHalSelfLink(t *testing.T) {
-	type args struct {
+	for _, tt := range []struct {
+		name  string
 		links *hal.HalRscLinks
 		href  string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *hal.HalRscLinks
+		want  *hal.HalRscLinks
 	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
+		{
+			name:  "nil-hal-src-links",
+			links: nil,
+			href:  "/my-mock",
+			want: &hal.HalRscLinks{
+				HalRscLinks: map[string]*hal.HalHref{
+					"lf:self": {Href: "/my-mock"},
+				},
+			},
+		},
+	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := HalSelfLink(tt.args.links, tt.args.href); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HalSelfLink() = %v, want %v", got, tt.want)
-			}
+			got := HalSelfLink(tt.links, tt.href)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
 
-func TestHalDocLink(t *testing.T) {
-	type args struct {
+func Test_halDocLink(t *testing.T) {
+	for _, tt := range []struct {
+		name        string
 		links       *hal.HalRscLinks
 		operationId string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *hal.HalRscLinks
+		want        *hal.HalRscLinks
 	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
+		{
+			name:        "nil-hal-src-links",
+			links:       nil,
+			operationId: "my-mock",
+			want: &hal.HalRscLinks{
+				HalRscLinks: map[string]*hal.HalHref{
+					"doc:my-mock": {
+						Href: "/my-mock",
+					},
+				},
+			},
+		},
+	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := HalDocLink(tt.args.links, tt.args.operationId); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HalDocLink() = %v, want %v", got, tt.want)
-			}
+			got := HalDocLink(tt.links, tt.operationId)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
 
-func TestHalAddCuries(t *testing.T) {
-	type args struct {
-		ch    ContextHelper
+func Test_halAddCuries(t *testing.T) {
+
+	for _, tt := range []struct {
+		name  string
+		ch    *ContextHelper
 		links *hal.HalRscLinks
-	}
-	tests := []struct {
-		name string
-		args args
-		want *hal.HalRscLinks
+		want  *hal.HalRscLinks
 	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
+		{
+			name:  "nil-hal-src-links",
+			links: nil,
+			ch:    &ContextHelper{},
+			want: &hal.HalRscLinks{
+				Curies: []*hal.HalCurie{{
+					Href:      "/{rel}",
+					Name:      "lf",
+					Templated: true,
+				}, {
+					Href:      "/docs#operation/{rel}",
+					Name:      "doc",
+					Templated: true,
+				}},
+			},
+		},
+	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := HalAddCuries(tt.args.ch, tt.args.links); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HalAddCuries() = %v, want %v", got, tt.want)
-			}
+			got := HalAddCuries(tt.ch, tt.links)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

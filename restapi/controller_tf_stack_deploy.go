@@ -14,7 +14,7 @@ import (
 )
 
 var CreateTfStackController = func(
-	idp identity.Provider, ch helpers.ContextHelper,
+	idp identity.Provider, ch *helpers.ContextHelper,
 	db database.Database,
 	workerPool *workers.TfAgentPool,
 ) operations.DeployStackHandlerFunc {
@@ -37,7 +37,7 @@ var CreateTfStackController = func(
 		module := tfs.Embedded.Module
 
 		if err := db.Read(DB_TABLE_TF_WORKSPACE, tfs.WorkspaceName, &workspace); err != nil {
-			return NewServerError(
+			return NewServerErrorResponse(
 				http.StatusBadRequest,
 				fmt.Sprintf("Could not find workspace with name'%s'", *workspace.Name),
 			)
@@ -45,7 +45,7 @@ var CreateTfStackController = func(
 		tfs.WorkspaceName = "" // Clear the input values
 
 		if err := db.Read(DB_TABLE_TF_MODULE, tfs.ModuleID, &module); err != nil {
-			return NewServerError(
+			return NewServerErrorResponse(
 				http.StatusBadRequest,
 				fmt.Sprintf("Could not find module with id '%s'", module.ID),
 			)
@@ -65,7 +65,7 @@ var CreateTfStackController = func(
 		for _, providerConfigurationId := range tfs.ProviderConfigurationsIds {
 			provConf := models.ResourceTfProviderConfiguration{}
 			if err := db.Read(DB_TABLE_TF_PROVIDER_CONFIGURATION, providerConfigurationId, &provConf); err != nil {
-				return NewServerError(
+				return NewServerErrorResponse(
 					http.StatusBadRequest,
 					fmt.Sprintf("Could not find provider configuration with id '%s'", providerConfigurationId),
 				)

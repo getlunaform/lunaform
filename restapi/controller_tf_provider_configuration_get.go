@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-func GetTfProviderConfigurationController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.GetProviderConfigurationHandlerFunc {
+func GetTfProviderConfigurationController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.GetProviderConfigurationHandlerFunc {
 	return func(params operation.GetProviderConfigurationParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
 		provider, errCode, err := buildGetTfProviderConfigurationResponse(db, params.ID)
 		if err != nil {
-			return NewServerError(errCode, err.Error())
+			return NewServerErrorResponse(errCode, err.Error())
 		}
 		provider.Links = helpers.HalAddCuries(ch, helpers.HalSelfLink(
 			helpers.HalDocLink(nil, ch.OperationID),

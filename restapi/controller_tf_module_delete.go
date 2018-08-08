@@ -13,7 +13,7 @@ import (
 	"net/http"
 )
 
-var DeleteTfModuleController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.DeleteModuleHandlerFunc {
+var DeleteTfModuleController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.DeleteModuleHandlerFunc {
 	return operations.DeleteModuleHandlerFunc(func(params operations.DeleteModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -33,7 +33,7 @@ var buildDeleteTfModuleResponse = func(db database.Database, moduleId string) (*
 		if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {
 			return nil
 		} else {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 	}
 
@@ -43,7 +43,7 @@ var buildDeleteTfModuleResponse = func(db database.Database, moduleId string) (*
 			for _, stk := range module.Embedded.Stacks {
 				stackIds = append(stackIds, stk.ID)
 			}
-			return NewServerError(
+			return NewServerErrorResponse(
 				http.StatusUnprocessableEntity,
 				fmt.Sprintf(
 					"Could not delete module as it is relied up by stacks ['%s']",
@@ -54,7 +54,7 @@ var buildDeleteTfModuleResponse = func(db database.Database, moduleId string) (*
 	}
 
 	if err := db.Delete(DB_TABLE_TF_MODULE, moduleId); err != nil {
-		return NewServerError(http.StatusUnprocessableEntity, err.Error())
+		return NewServerErrorResponse(http.StatusUnprocessableEntity, err.Error())
 	}
 
 	return nil

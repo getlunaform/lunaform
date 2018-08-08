@@ -11,7 +11,7 @@ func newHalRscLinks() *hal.HalRscLinks {
 	}
 }
 
-func HalRootRscLinks(ch ContextHelper) (links *hal.HalRscLinks) {
+func HalRootRscLinks(ch *ContextHelper) (links *hal.HalRscLinks) {
 	links = newHalRscLinks()
 
 	HalAddCuries(ch, links)
@@ -46,7 +46,7 @@ func HalDocLink(links *hal.HalRscLinks, operationId string) *hal.HalRscLinks {
 	return links
 }
 
-func HalAddCuries(ch ContextHelper, links *hal.HalRscLinks) *hal.HalRscLinks {
+func HalAddCuries(ch *ContextHelper, links *hal.HalRscLinks) *hal.HalRscLinks {
 	if links == nil {
 		links = &hal.HalRscLinks{}
 	}

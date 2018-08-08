@@ -2,7 +2,6 @@ package restapi
 
 import (
 	"github.com/getlunaform/lunaform/models"
-	"github.com/go-openapi/swag"
 	"net/http"
 	"github.com/go-openapi/runtime"
 )
@@ -12,16 +11,10 @@ type CommonServerErrorResponder struct {
 	code    int
 }
 
-func NewServerError(code int, errorString string) (r *CommonServerErrorResponder) {
+func NewServerErrorResponse(code int, errorString string) (r *CommonServerErrorResponder) {
 	return &CommonServerErrorResponder{
-		Payload: &models.ServerError{
-			Message: swag.String(errorString),
-			Status: swag.String(http.StatusText(
-				int(code),
-			)),
-			StatusCode: swag.Int32(int32(code)),
-		},
-		code: int(code),
+		Payload: models.NewServerError(int32(code), errorString),
+		code:    int(code),
 	}
 }
 

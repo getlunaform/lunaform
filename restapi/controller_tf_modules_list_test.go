@@ -13,7 +13,7 @@ import (
 func Test_buildListTfModules(t *testing.T) {
 	type args struct {
 		db database.Database
-		ch helpers.ContextHelper
+		ch *helpers.ContextHelper
 	}
 	tests := []struct {
 		name    string

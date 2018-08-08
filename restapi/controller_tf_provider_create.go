@@ -10,18 +10,18 @@ import (
 	"net/http"
 )
 
-func CreateTfProviderController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.CreateProviderHandlerFunc {
+func CreateTfProviderController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.CreateProviderHandlerFunc {
 	return func(params operation.CreateProviderParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
 		if code, err := buildCreateTfProviderResponse(params.TerraformProvider, db, ch); err != nil {
-			return NewServerError(code, err.Error())
+			return NewServerErrorResponse(code, err.Error())
 		}
 		return operation.NewCreateProviderCreated().WithPayload(params.TerraformProvider)
 	}
 }
 
-func buildCreateTfProviderResponse(provider *models.ResourceTfProvider, db database.Database, ch helpers.ContextHelper) (errCode int, err error) {
+func buildCreateTfProviderResponse(provider *models.ResourceTfProvider, db database.Database, ch *helpers.ContextHelper) (errCode int, err error) {
 	provider.Embedded = &models.ResourceListTfStack{
 		Stacks: make([]*models.ResourceTfStack, 0),
 	}

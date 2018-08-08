@@ -2,11 +2,8 @@ package helpers
 
 import (
 	"net/http"
-	"reflect"
 	"testing"
 
-	"github.com/getlunaform/lunaform/models"
-	"github.com/go-openapi/runtime/middleware"
 	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/models/hal"
 )
@@ -40,7 +37,7 @@ func TestHALRootRscLinks(t *testing.T) {
 			docURL: "http://example.com/docs#operation/my-operation",
 		},
 	} {
-		l := HalRootRscLinks(ContextHelper{
+		l := HalRootRscLinks(&ContextHelper{
 			FQEndpoint:  test.fqe,
 			ServerURL:   test.server,
 			OperationID: test.opid,
@@ -69,47 +66,6 @@ func TestUrlPrefix(t *testing.T) {
 			test.prefix,
 			ch.urlPrefix(test.host, test.uri, test.https),
 		)
-	}
-}
-
-func TestNewServerError(t *testing.T) {
-	type args struct {
-		code        int32
-		errorString string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *models.ServerError
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewServerError(tt.args.code, tt.args.errorString); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewServerError() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestNewContextHelper(t *testing.T) {
-	type args struct {
-		ctx *middleware.Context
-	}
-	tests := []struct {
-		name string
-		args args
-		want ContextHelper
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewContextHelper(tt.args.ctx); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewContextHelper() = %v, want %v", got, tt.want)
-			}
-		})
 	}
 }
 
@@ -203,18 +159,39 @@ func TestContainsString(t *testing.T) {
 		s []string
 		e string
 	}
-	tests := []struct {
+	for _, tt := range []struct {
 		name string
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
+		{
+			name: "basic-pass",
+			args: args{
+				s: []string{"one", "two", "three"},
+				e: "two",
+			},
+			want: true,
+		},
+		{
+			name: "basic-fail",
+			args: args{
+				s: []string{"one", "two", "three"},
+				e: "four",
+			},
+			want: false,
+		},
+		{
+			name: "empty",
+			args: args{
+				s: []string{},
+				e: "",
+			},
+			want: false,
+		},
+	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ContainsString(tt.args.s, tt.args.e); got != tt.want {
-				t.Errorf("ContainsString() = %v, want %v", got, tt.want)
-			}
+			got := ContainsString(tt.args.s, tt.args.e)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

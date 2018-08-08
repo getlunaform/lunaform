@@ -12,13 +12,13 @@ import (
 	"net/http"
 )
 
-var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListWorkspacesHandlerFunc {
+var ListTfWorkspacesController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListWorkspacesHandlerFunc {
 	return operations.ListWorkspacesHandlerFunc(func(params operations.ListWorkspacesParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		workspaces := []*models.ResourceTfWorkspace{}
 		if err := db.List(DB_TABLE_TF_WORKSPACE, &workspaces); err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 
 		for _, workspace := range workspaces {
@@ -35,7 +35,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch helpers.ContextH
 	})
 }
 
-var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.CreateWorkspaceHandlerFunc {
+var CreateTfWorkspaceController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.CreateWorkspaceHandlerFunc {
 	return operations.CreateWorkspaceHandlerFunc(func(params operations.CreateWorkspaceParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -50,14 +50,14 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 				if err := db.Create(DB_TABLE_TF_WORKSPACE, params.Name, tfw); err == nil {
 					r = operations.NewCreateWorkspaceCreated().WithPayload(tfw)
 				} else {
-					r = NewServerError(http.StatusBadRequest, err.Error())
+					r = NewServerErrorResponse(http.StatusBadRequest, err.Error())
 				}
 			} else {
-				r = NewServerError(http.StatusInternalServerError, err.Error())
+				r = NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 			}
 		} else {
 			if err := db.Update(DB_TABLE_TF_WORKSPACE, params.Name, existingWorkspace); err != nil {
-				r = NewServerError(http.StatusInternalServerError, err.Error())
+				r = NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 			} else {
 				r = operations.NewCreateWorkspaceOK().WithPayload(tfw)
 			}
@@ -67,15 +67,15 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch helpers.Context
 	})
 }
 
-var GetTfWorkspaceController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.DescribeWorkspaceHandlerFunc {
+var GetTfWorkspaceController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.DescribeWorkspaceHandlerFunc {
 	return operations.DescribeWorkspaceHandlerFunc(func(params operations.DescribeWorkspaceParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		workspace := &models.ResourceTfWorkspace{}
 		if err := db.Read(DB_TABLE_TF_WORKSPACE, params.Name, workspace); err != nil {
-			r = NewServerError(http.StatusInternalServerError, err.Error())
+			r = NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		} else if workspace == nil {
-			r = NewServerError(http.StatusNotFound, "Could not find workspace with name '"+params.Name+"'")
+			r = NewServerErrorResponse(http.StatusNotFound, "Could not find workspace with name '"+params.Name+"'")
 		} else {
 			workspace.Links = helpers.HalRootRscLinks(ch)
 			r = operations.NewDescribeWorkspaceOK().WithPayload(workspace)

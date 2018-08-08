@@ -13,11 +13,11 @@ import (
 func Test_buildTfModuleControllerCreateResponse(t *testing.T) {
 	for _, tt := range []struct {
 		name string
-		ch   helpers.ContextHelper
+		ch   *helpers.ContextHelper
 	}{
 		{
 			name: "base",
-			ch: helpers.ContextHelper{
+			ch: &helpers.ContextHelper{
 				ServerURL: "http://example.com/api",
 				BasePath:  "/api",
 			},

@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func GetTfModuleController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
+func GetTfModuleController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.GetModuleHandlerFunc {
 	return operations.GetModuleHandlerFunc(func(params operations.GetModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -24,11 +24,11 @@ func GetTfModuleController(idp identity.Provider, ch helpers.ContextHelper, db d
 	})
 }
 
-func buildGetTfModuleResponse(moduleId string, module *models.ResourceTfModule, db database.Database, ch helpers.ContextHelper) *CommonServerErrorResponder {
+func buildGetTfModuleResponse(moduleId string, module *models.ResourceTfModule, db database.Database, ch *helpers.ContextHelper) *CommonServerErrorResponder {
 	if err := db.Read(DB_TABLE_TF_MODULE, moduleId, module); err != nil {
-		return NewServerError(http.StatusInternalServerError, err.Error())
+		return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 	} else if module == nil {
-		return NewServerError(http.StatusNotFound, "Could not find module with id '"+moduleId+"'")
+		return NewServerErrorResponse(http.StatusNotFound, "Could not find module with id '"+moduleId+"'")
 	} else {
 
 		module.Embedded = &models.ResourceListTfStack{

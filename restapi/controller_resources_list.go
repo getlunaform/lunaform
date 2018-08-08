@@ -8,7 +8,7 @@ import (
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListResourcesController = func(ch helpers.ContextHelper) resources.ListResourcesHandlerFunc {
+var ListResourcesController = func(ch *helpers.ContextHelper) resources.ListResourcesHandlerFunc {
 	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -19,7 +19,7 @@ var ListResourcesController = func(ch helpers.ContextHelper) resources.ListResou
 	})
 }
 
-func buildResourceGroupRootResponse(group string, ch helpers.ContextHelper) (rsclist *models.ResourceList) {
+func buildResourceGroupRootResponse(group string, ch *helpers.ContextHelper) (rsclist *models.ResourceList) {
 	var rsc []string
 	switch group {
 	case "tf":

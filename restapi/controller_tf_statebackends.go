@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.CreateStateBackendHandlerFunc {
+var CreateTfStateBackendsController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.CreateStateBackendHandlerFunc {
 	return operations.CreateStateBackendHandlerFunc(func(params operations.CreateStateBackendParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -20,7 +20,7 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 		statebackend.ID = idGenerator.MustGenerate()
 
 		if err := db.Create(DB_TABLE_TF_STATEBACKEND, statebackend.ID, statebackend); err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 
 		statebackend.Links = helpers.HalSelfLink(
@@ -31,13 +31,13 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 	})
 }
 
-var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListStateBackendsHandlerFunc {
+var ListTfStateBackendsController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListStateBackendsHandlerFunc {
 	return operations.ListStateBackendsHandlerFunc(func(params operations.ListStateBackendsParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		statebackends := []*models.ResourceTfStateBackend{}
 		if err := db.List(DB_TABLE_TF_STATEBACKEND, &statebackends); err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 
 		return operations.NewListStateBackendsOK().WithPayload(&models.ResponseListTfStateBackends{
@@ -49,16 +49,16 @@ var ListTfStateBackendsController = func(idp identity.Provider, ch helpers.Conte
 	})
 }
 
-var UpdateTfStateBackendsController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.UpdateStateBackendHandlerFunc {
+var UpdateTfStateBackendsController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.UpdateStateBackendHandlerFunc {
 	return operations.UpdateStateBackendHandlerFunc(func(params operations.UpdateStateBackendParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		statebackend := &models.ResourceTfStateBackend{}
 		if err := db.Read(DB_TABLE_TF_STATEBACKEND, params.ID, statebackend); err != nil {
 			if _, notFound := err.(database.RecordDoesNotExistError); notFound {
-				return NewServerError(http.StatusNotFound, err.Error())
+				return NewServerErrorResponse(http.StatusNotFound, err.Error())
 			} else {
-				return NewServerError(http.StatusInternalServerError, err.Error())
+				return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 			}
 		}
 
@@ -71,7 +71,7 @@ var UpdateTfStateBackendsController = func(idp identity.Provider, ch helpers.Con
 		}
 
 		if err := db.Update(DB_TABLE_TF_STATEBACKEND, params.ID, statebackend); err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 
 		return operations.NewUpdateStateBackendOK().WithPayload(statebackend)

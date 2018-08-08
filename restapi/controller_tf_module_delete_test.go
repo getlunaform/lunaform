@@ -54,7 +54,7 @@ func Test_buildDeleteTfModuleResponse(t *testing.T) {
 					},
 				},
 			},
-			wantErr: NewServerError(
+			wantErr: NewServerErrorResponse(
 				http.StatusUnprocessableEntity,
 				"Could not delete module as it is relied up by stacks ['1','2','3']",
 			),

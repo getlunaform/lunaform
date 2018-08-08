@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-func DeleteTfProviderConfigurationController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.DeleteProviderConfigurationHandlerFunc {
+func DeleteTfProviderConfigurationController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.DeleteProviderConfigurationHandlerFunc {
 	return func(params operation.DeleteProviderConfigurationParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
 		errCode, err := buildDeleteTfProviderConfigurationResponse(db, params.ID)
 		if err != nil {
-			return NewServerError(errCode, err.Error())
+			return NewServerErrorResponse(errCode, err.Error())
 		}
 		return operation.NewDeleteProviderConfigurationNoContent()
 	}

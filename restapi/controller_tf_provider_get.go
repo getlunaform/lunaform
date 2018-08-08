@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-func GetTfProviderController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.GetProviderHandlerFunc {
+func GetTfProviderController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.GetProviderHandlerFunc {
 	return func(params operation.GetProviderParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
 		prov, code, err := buildGetTfProviderResponse(db, params.Name)
 		if err != nil {
-			return NewServerError(code, err.Error())
+			return NewServerErrorResponse(code, err.Error())
 		}
 
 		prov.Links = helpers.HalAddCuries(ch, helpers.HalSelfLink(

@@ -25,7 +25,7 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 
 	for _, tt := range []struct {
 		name        string
-		ch          helpers.ContextHelper
+		ch          *helpers.ContextHelper
 		wantRsclist *models.ResourceList
 	}{
 		{
@@ -61,7 +61,7 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 							"lf:self": {Href: "/tf/providers"}},
 					}},
 			}},
-			ch: helpers.ContextHelper{
+			ch: &helpers.ContextHelper{
 				Endpoint: "/tf",
 			},
 		},
@@ -85,7 +85,7 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 						Curies: []*hal.HalCurie{},
 					}},
 			}},
-			ch: helpers.ContextHelper{
+			ch: &helpers.ContextHelper{
 				Endpoint: "/identity",
 			},
 		},
@@ -107,7 +107,7 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 						}},
 					}},
 			}},
-			ch: helpers.ContextHelper{
+			ch: &helpers.ContextHelper{
 				Endpoint: "/vcs",
 			},
 		},

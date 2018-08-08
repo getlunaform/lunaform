@@ -16,7 +16,7 @@ func Test_buildResourceGroupResponse(t *testing.T) {
 		name        string
 		resources   []string
 		wantRsclist *models.ResourceList
-		ch          helpers.ContextHelper
+		ch          *helpers.ContextHelper
 	}{
 		{
 			name:      "base",
@@ -37,6 +37,7 @@ func Test_buildResourceGroupResponse(t *testing.T) {
 						}}},
 				},
 			},
+			ch: helpers.NewContextHelper(api.Context()),
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

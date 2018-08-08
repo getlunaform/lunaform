@@ -13,7 +13,7 @@ import (
 )
 
 // ListTfModulesController provides a list of modules
-var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
+var ListTfModulesController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -29,10 +29,10 @@ var ListTfModulesController = func(idp identity.Provider, ch helpers.ContextHelp
 	})
 }
 
-func buildListTfModules(db database.Database, ch helpers.ContextHelper) (m *models.ResourceListTfModule, err middleware.Responder) {
+func buildListTfModules(db database.Database, ch *helpers.ContextHelper) (m *models.ResourceListTfModule, err middleware.Responder) {
 	modules := make([]*models.ResourceTfModule, 0)
 	if err := db.List(DB_TABLE_TF_MODULE, &modules); err != nil {
-		return nil, NewServerError(http.StatusInternalServerError, err.Error())
+		return nil, NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 	}
 	for _, module := range modules {
 		module.GenerateLinks(strings.TrimSuffix(ch.Endpoint, "s"))

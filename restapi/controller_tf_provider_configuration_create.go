@@ -11,12 +11,12 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.CreateProviderConfigurationHandlerFunc {
+func CreateTfProviderConfigurationController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.CreateProviderConfigurationHandlerFunc {
 	return func(params operation.CreateProviderConfigurationParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
 		if params.ProviderConfiguration == nil {
-			return NewServerError(
+			return NewServerErrorResponse(
 				http.StatusBadRequest,
 				"Missing configuration body",
 			)
@@ -27,7 +27,7 @@ func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.C
 			params.ProviderName,
 			db, ch,
 		); err != nil {
-			return NewServerError(errCode, err.Error())
+			return NewServerErrorResponse(errCode, err.Error())
 		}
 
 		return operation.NewCreateProviderConfigurationCreated().
@@ -35,7 +35,7 @@ func CreateTfProviderConfigurationController(idp identity.Provider, ch helpers.C
 	}
 }
 
-func buildCreateTfProviderConfigurationResponse(config *models.ResourceTfProviderConfiguration, providerName string, db database.Database, ch helpers.ContextHelper) (errCode int, err error) {
+func buildCreateTfProviderConfigurationResponse(config *models.ResourceTfProviderConfiguration, providerName string, db database.Database, ch *helpers.ContextHelper) (errCode int, err error) {
 	config.Embedded = &models.ResourceTfProviderConfigurationEmbedded{
 		Provider: &models.ResourceTfProvider{
 			Name: swag.String(providerName),

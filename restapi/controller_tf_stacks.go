@@ -22,14 +22,14 @@ const (
 	TF_DEPLOYMENT_STATUS_FAIL              = "failed"
 )
 
-var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
+var ListTfStacksController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
 	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
 		stacks := make([]*models.ResourceTfStack, 0)
 		err := db.List(DB_TABLE_TF_STACK, &stacks)
 		if err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 
 		for _, stack := range stacks {
@@ -48,7 +48,7 @@ var ListTfStacksController = func(idp identity.Provider, ch helpers.ContextHelpe
 
 
 
-var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operations.GetStackHandlerFunc {
+var GetTfStackController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.GetStackHandlerFunc {
 	return operations.GetStackHandlerFunc(func(params operations.GetStackParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -57,9 +57,9 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 		stack := &models.ResourceTfStack{}
 
 		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		} else if stack == nil {
-			return NewServerError(http.StatusNotFound, "Could not find stack with id '"+id+"'")
+			return NewServerErrorResponse(http.StatusNotFound, "Could not find stack with id '"+id+"'")
 		} else {
 			stack.Links = helpers.HalSelfLink(
 				helpers.HalDocLink(nil, ch.OperationID),
@@ -81,7 +81,7 @@ var GetTfStackController = func(idp identity.Provider, ch helpers.ContextHelper,
 
 
 var ListTfStackDeploymentsController = func(
-	idp identity.Provider, ch helpers.ContextHelper,
+	idp identity.Provider, ch *helpers.ContextHelper,
 	db database.Database,
 	workerPool *workers.TfAgentPool,
 ) operations.ListDeploymentsHandlerFunc {
@@ -94,9 +94,9 @@ var ListTfStackDeploymentsController = func(
 		deployments := &models.ResponseListTfDeployments{}
 
 		if err := db.Read(DB_TABLE_TF_STACK, id, stack); err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		} else if stack == nil {
-			return NewServerError(http.StatusNotFound, "Could not find stack with id '"+id+"'")
+			return NewServerErrorResponse(http.StatusNotFound, "Could not find stack with id '"+id+"'")
 		}
 		deployments.Embedded.Deployments = stack.Embedded.Deployments
 		deployments.Embedded.Stack = stack

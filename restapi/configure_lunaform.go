@@ -91,7 +91,7 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	oh := helpers.NewContextHelper(api.Context())
+	oh := helpers.NewContextHelperWithContext(api.Context())
 
 	api.APIKeyAuth = func(s string) (p *models.ResourceAuthUser, err error) {
 		user := models.ResourceAuthUser{}

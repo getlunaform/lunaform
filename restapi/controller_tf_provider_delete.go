@@ -11,12 +11,12 @@ import (
 	"fmt"
 )
 
-func DeleteTfProviderController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.DeleteProviderHandlerFunc {
+func DeleteTfProviderController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.DeleteProviderHandlerFunc {
 	return func(params operation.DeleteProviderParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 
 		if errCode, err := buildDeleteTfProviderResponse(db, params.Name); err != nil {
-			return NewServerError(errCode, err.Error())
+			return NewServerErrorResponse(errCode, err.Error())
 		}
 
 		return operation.NewDeleteProviderNoContent()

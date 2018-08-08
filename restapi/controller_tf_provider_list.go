@@ -10,12 +10,12 @@ import (
 	"net/http"
 )
 
-func ListTfProvidersController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.ListProvidersHandlerFunc {
+func ListTfProvidersController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.ListProvidersHandlerFunc {
 	return func(params operation.ListProvidersParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 		providers, code, err := buildListTfProvidersResponse(db)
 		if err != nil {
-			return NewServerError(code, err.Error())
+			return NewServerErrorResponse(code, err.Error())
 		}
 
 		return operation.NewListProvidersOK().WithPayload(&models.ResponseListTfProviders{

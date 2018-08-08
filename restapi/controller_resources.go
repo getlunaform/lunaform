@@ -6,7 +6,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-func buildResourceGroupResponse(rscs []string, ch helpers.ContextHelper) (rsclist *models.ResourceList) {
+func buildResourceGroupResponse(rscs []string, ch *helpers.ContextHelper) (rsclist *models.ResourceList) {
 	rsclist = &models.ResourceList{
 		Resources: make([]*models.Resource, len(rscs)),
 	}

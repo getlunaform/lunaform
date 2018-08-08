@@ -13,7 +13,7 @@ import (
 )
 
 func Test_resourceGroupsController(t *testing.T) {
-	oh := helpers.NewContextHelper(api.Context())
+	oh := helpers.NewContextHelperWithContext(api.Context())
 	requestHost := "example.com"
 
 	for _, test := range []struct {

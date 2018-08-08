@@ -13,7 +13,7 @@ import (
 )
 
 var DeleteTfStackController = func(
-	idp identity.Provider, ch helpers.ContextHelper,
+	idp identity.Provider, ch *helpers.ContextHelper,
 	db database.Database,
 	workerPool *workers.TfAgentPool,
 ) operations.UndeployStackHandlerFunc {
@@ -25,7 +25,7 @@ var DeleteTfStackController = func(
 			if _, stackNotFound := err.(database.RecordDoesNotExistError); stackNotFound {
 				return operations.NewUndeployStackNoContent()
 			} else {
-				return NewServerError(http.StatusInternalServerError, err.Error())
+				return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 			}
 		}
 
@@ -33,10 +33,10 @@ var DeleteTfStackController = func(
 		module := models.ResourceTfModule{}
 		if err := db.Read(DB_TABLE_TF_MODULE, module.ID, &module); err != nil {
 			if _, stackNotFound := err.(database.RecordDoesNotExistError); stackNotFound {
-				return NewServerError(http.StatusBadRequest, fmt.Sprintf(
+				return NewServerErrorResponse(http.StatusBadRequest, fmt.Sprintf(
 					"Could not find module '%s' for stack '%s'", module.ID, stack.ID))
 			}
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 
 		for i, moduleStack := range module.Embedded.Stacks {
@@ -46,11 +46,11 @@ var DeleteTfStackController = func(
 			}
 		}
 		if err := db.Update(DB_TABLE_TF_MODULE, module.ID, module); err != nil {
-			return NewServerError(http.StatusInternalServerError, err.Error())
+			return NewServerErrorResponse(http.StatusInternalServerError, err.Error())
 		}
 
 		db.Delete(DB_TABLE_TF_STACK, stack.ID)
 
-		return NewServerError(http.StatusInternalServerError, "Could not delete stack.")
+		return NewServerErrorResponse(http.StatusInternalServerError, "Could not delete stack.")
 	})
 }

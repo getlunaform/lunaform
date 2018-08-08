@@ -12,12 +12,12 @@ import (
 	"strings"
 )
 
-func ListTfProviderConfigurationController(idp identity.Provider, ch helpers.ContextHelper, db database.Database) operation.ListProviderConfigurationsHandlerFunc {
+func ListTfProviderConfigurationController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.ListProviderConfigurationsHandlerFunc {
 	return func(params operation.ListProviderConfigurationsParams, user *models.ResourceAuthUser) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 		providers, code, err := buildListTfProviderConfigurationResponse(db)
 		if err != nil {
-			return NewServerError(code, err.Error())
+			return NewServerErrorResponse(code, err.Error())
 		}
 
 		return operation.NewListProviderConfigurationsOK().WithPayload(&models.ResponseListTfProviderConfiguration{
