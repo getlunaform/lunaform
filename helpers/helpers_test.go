@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/models/hal"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHALSelfLink(t *testing.T) {

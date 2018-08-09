@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform/client/providers"
 	"github.com/getlunaform/lunaform/models"
+	"github.com/spf13/cobra"
 )
 
 var tfProviderConfigurationDeleteProviderNameFlag string

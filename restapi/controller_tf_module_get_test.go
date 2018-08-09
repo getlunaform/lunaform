@@ -3,10 +3,10 @@ package restapi
 import (
 	"testing"
 
-	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/helpers"
-	"github.com/stretchr/testify/assert"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/models/hal"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_buildGetTfModuleResponse(t *testing.T) {

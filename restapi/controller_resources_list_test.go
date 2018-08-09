@@ -5,9 +5,9 @@ import (
 
 	"github.com/getlunaform/lunaform/helpers"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/stretchr/testify/assert"
-	"github.com/go-openapi/swag"
 	"github.com/getlunaform/lunaform/models/hal"
+	"github.com/go-openapi/swag"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_buildResourceGroupRootResponse(t *testing.T) {
@@ -105,7 +105,7 @@ func Test_buildResourceGroupRootResponse(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRsclist := buildResourceGroupRootResponse(tt.name, tt.ch);
+			gotRsclist := buildResourceGroupRootResponse(tt.name, tt.ch)
 			assert.Equal(t, tt.wantRsclist, gotRsclist)
 		})
 	}

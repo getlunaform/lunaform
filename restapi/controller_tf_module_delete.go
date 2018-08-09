@@ -1,16 +1,16 @@
 package restapi
 
 import (
-	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/runtime/middleware"
 
+	"fmt"
 	"github.com/getlunaform/lunaform/helpers"
 	operations "github.com/getlunaform/lunaform/restapi/operations/modules"
-	"strings"
-	"fmt"
 	"net/http"
+	"strings"
 )
 
 var DeleteTfModuleController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.DeleteModuleHandlerFunc {
@@ -27,7 +27,7 @@ var DeleteTfModuleController = func(idp identity.Provider, ch *helpers.ContextHe
 	})
 }
 
-var buildDeleteTfModuleResponse = func(db database.Database, moduleId string) (*CommonServerErrorResponder) {
+var buildDeleteTfModuleResponse = func(db database.Database, moduleId string) *CommonServerErrorResponder {
 	module := &models.ResourceTfModule{}
 	if err := db.Read(DB_TABLE_TF_MODULE, moduleId, module); err != nil {
 		if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {

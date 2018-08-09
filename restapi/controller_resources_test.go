@@ -5,13 +5,15 @@ import (
 
 	"github.com/getlunaform/lunaform/helpers"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/stretchr/testify/assert"
-	"github.com/go-openapi/swag"
 	"github.com/getlunaform/lunaform/models/hal"
+	"github.com/go-openapi/swag"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_buildResourceGroupResponse(t *testing.T) {
 
+	ctxHelper, err := helpers.NewContextHelper(api.Context())
+	assert.NoError(t, err)
 	for _, tt := range []struct {
 		name        string
 		resources   []string
@@ -37,7 +39,7 @@ func Test_buildResourceGroupResponse(t *testing.T) {
 						}}},
 				},
 			},
-			ch: helpers.NewContextHelper(api.Context()),
+			ch: ctxHelper,
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

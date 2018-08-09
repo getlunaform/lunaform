@@ -6,8 +6,6 @@ import (
 	"os"
 )
 
-
-
 type TfAgentPool struct {
 	maxWorkers    int
 	db            database.Database

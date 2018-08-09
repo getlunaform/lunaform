@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/getlunaform/lunaform/helpers"
-	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/go-openapi/strfmt"
 	"github.com/getlunaform/lunaform/models/hal"
+	"github.com/go-openapi/strfmt"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_buildTfModuleControllerCreateResponse(t *testing.T) {

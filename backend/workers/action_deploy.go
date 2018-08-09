@@ -1,8 +1,8 @@
 package workers
 
 import (
-	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/go-terraform"
+	"github.com/getlunaform/lunaform/models"
 )
 
 type TfActionDeploy struct {

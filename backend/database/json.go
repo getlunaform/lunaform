@@ -3,10 +3,10 @@ package database
 import (
 	"encoding/json"
 	"io"
-	"os"
-	"time"
 	"io/ioutil"
+	"os"
 	"sync"
+	"time"
 )
 
 // jsonDatabase stores data on disk in json files.

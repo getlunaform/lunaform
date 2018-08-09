@@ -59,7 +59,7 @@ type Configuration struct {
 	Host    string
 	Port    string
 	Schemes []string
-	Log struct {
+	Log     struct {
 		Level string
 	}
 	ApiKey string
@@ -178,4 +178,3 @@ func getJwwLogLevel(string) jww.Threshold {
 	logLevel := strings.ToUpper(config.Log.Level)
 	return logLevelMapping[logLevel]
 }
-

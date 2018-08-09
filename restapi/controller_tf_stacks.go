@@ -1,15 +1,15 @@
 package restapi
 
 import (
-	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/backend/identity"
 	"github.com/getlunaform/lunaform/backend/workers"
 	"github.com/getlunaform/lunaform/helpers"
+	"github.com/getlunaform/lunaform/models"
 	operations "github.com/getlunaform/lunaform/restapi/operations/stacks"
 	"github.com/go-openapi/runtime/middleware"
-	"strings"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -46,8 +46,6 @@ var ListTfStacksController = func(idp identity.Provider, ch *helpers.ContextHelp
 	})
 }
 
-
-
 var GetTfStackController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.GetStackHandlerFunc {
 	return operations.GetStackHandlerFunc(func(params operations.GetStackParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
@@ -78,7 +76,6 @@ var GetTfStackController = func(idp identity.Provider, ch *helpers.ContextHelper
 		}
 	})
 }
-
 
 var ListTfStackDeploymentsController = func(
 	idp identity.Provider, ch *helpers.ContextHelper,

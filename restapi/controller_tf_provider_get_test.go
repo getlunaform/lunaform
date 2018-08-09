@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/getlunaform/lunaform/models"
-	"github.com/stretchr/testify/assert"
 	"github.com/go-openapi/swag"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_buildGetTfProviderResponse(t *testing.T) {

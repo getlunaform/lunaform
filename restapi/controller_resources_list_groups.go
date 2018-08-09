@@ -2,9 +2,9 @@ package restapi
 
 import (
 	"github.com/getlunaform/lunaform/helpers"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/restapi/operations/resources"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/getlunaform/lunaform/models"
 )
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.

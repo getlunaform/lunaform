@@ -15,10 +15,10 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"encoding/json"
 	"github.com/getlunaform/lunaform/client/providers"
 	"github.com/getlunaform/lunaform/models"
-	"encoding/json"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -51,10 +51,10 @@ to quickly create a Cobra application.`,
 		params := providers.NewCreateProviderConfigurationParams().
 			WithProviderName(tfProviderConfigurationCreateProviderNameFlag).
 			WithProviderConfiguration(
-			&models.ResourceTfProviderConfiguration{
-				Name:          String(tfProviderConfigurationCreateNameFlag),
-				Configuration: configuration,
-			})
+				&models.ResourceTfProviderConfiguration{
+					Name:          String(tfProviderConfigurationCreateNameFlag),
+					Configuration: configuration,
+				})
 
 		provider, err := lunaformClient.Providers.CreateProviderConfiguration(
 			params,

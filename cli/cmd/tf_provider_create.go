@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform/client/providers"
 	"github.com/getlunaform/lunaform/models"
+	"github.com/spf13/cobra"
 )
 
 var tfProviderCreateNameFlag string
@@ -35,8 +35,8 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		params := providers.NewCreateProviderParams().
 			WithTerraformProvider(&models.ResourceTfProvider{
-			Name: String(tfProviderCreateNameFlag),
-		})
+				Name: String(tfProviderCreateNameFlag),
+			})
 		prov, err := lunaformClient.Providers.CreateProvider(
 			params,
 			authHandler,

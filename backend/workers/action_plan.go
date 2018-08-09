@@ -1,12 +1,12 @@
 package workers
 
 import (
-	"github.com/getlunaform/go-terraform"
-	"github.com/go-openapi/swag"
 	"fmt"
-	"os"
-	"golang.org/x/sys/unix"
+	"github.com/getlunaform/go-terraform"
 	"github.com/getlunaform/lunaform/models"
+	"github.com/go-openapi/swag"
+	"golang.org/x/sys/unix"
+	"os"
 )
 
 type TfActionPlan struct {

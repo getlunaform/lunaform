@@ -1,14 +1,14 @@
 package restapi
 
 import (
+	"fmt"
+	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/backend/identity"
 	"github.com/getlunaform/lunaform/helpers"
-	"github.com/getlunaform/lunaform/backend/database"
-	operation "github.com/getlunaform/lunaform/restapi/operations/providers"
 	"github.com/getlunaform/lunaform/models"
+	operation "github.com/getlunaform/lunaform/restapi/operations/providers"
 	"github.com/go-openapi/runtime/middleware"
 	"net/http"
-	"fmt"
 )
 
 func DeleteTfProviderController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.DeleteProviderHandlerFunc {

@@ -15,14 +15,15 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform/client/providers"
+	"github.com/spf13/cobra"
 )
 
 var (
 	tfProviderConfigurationGetFlagId           string
 	tfProviderConfigurationGetFlagProviderName string
 )
+
 // tfProviderConfigurationGetCmd represents the tfProviderConfigurationGet command
 var tfProviderConfigurationGetCmd = &cobra.Command{
 	Use:   "get-configuration",

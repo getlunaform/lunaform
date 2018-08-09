@@ -1,15 +1,15 @@
 package restapi
 
 import (
-	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/backend/identity"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/runtime/middleware"
 
 	"github.com/getlunaform/lunaform/helpers"
 	operations "github.com/getlunaform/lunaform/restapi/operations/modules"
-	"strings"
 	"net/http"
+	"strings"
 )
 
 // ListTfModulesController provides a list of modules

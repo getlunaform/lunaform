@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	jww "github.com/spf13/jwalterweatherman"
 
+	"fmt"
 	"github.com/getlunaform/lunaform/restapi/operations"
 	"github.com/go-openapi/swag"
-	"github.com/spf13/viper"
 	"github.com/mitchellh/go-homedir"
-	"fmt"
+	"github.com/spf13/viper"
 	"os"
 )
 

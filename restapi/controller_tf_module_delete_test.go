@@ -3,10 +3,10 @@ package restapi
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/models"
 	"github.com/go-openapi/swag"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 )
 

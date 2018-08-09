@@ -20,10 +20,10 @@ import (
 	"github.com/getlunaform/lunaform/client/modules"
 	"github.com/getlunaform/lunaform/client/stacks"
 	"github.com/getlunaform/lunaform/models"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 	"github.com/spf13/cobra"
 	"strings"
-	"github.com/go-openapi/swag"
-	"github.com/go-openapi/strfmt"
 )
 
 var (

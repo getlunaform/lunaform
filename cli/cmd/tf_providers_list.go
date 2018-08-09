@@ -15,8 +15,8 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform/client/providers"
+	"github.com/spf13/cobra"
 )
 
 // tfProvidersListCmd represents the tfProvidersList command

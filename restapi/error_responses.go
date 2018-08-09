@@ -2,8 +2,8 @@ package restapi
 
 import (
 	"github.com/getlunaform/lunaform/models"
-	"net/http"
 	"github.com/go-openapi/runtime"
+	"net/http"
 )
 
 type CommonServerErrorResponder struct {

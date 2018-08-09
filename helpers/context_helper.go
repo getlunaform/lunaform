@@ -1,11 +1,11 @@
 package helpers
 
 import (
+	"errors"
+	"fmt"
+	"github.com/go-openapi/runtime/middleware"
 	"net/http"
 	"strings"
-	"errors"
-	"github.com/go-openapi/runtime/middleware"
-	"fmt"
 )
 
 // ContextHelper is split into its own little function, as test it is really difficult due to the un-exported nature
@@ -63,7 +63,7 @@ func (ch *ContextHelper) SetRequest(req *http.Request) (err error) {
 	)
 
 	r, matched := ch.ctx.LookupRoute(ch.Request)
-	if ! matched {
+	if !matched {
 		return errors.New("could not find route for request")
 	}
 	ch.OperationID = r.Operation.ID

@@ -2,10 +2,10 @@ package restapi
 
 import (
 	"github.com/getlunaform/lunaform/backend/database"
-	"github.com/go-openapi/runtime/middleware"
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/helpers"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func getTestingDB(content []map[string]string) database.Database {
@@ -19,6 +19,8 @@ func getTestingDB(content []map[string]string) database.Database {
 
 func Test_newContextHelperWithContext(t *testing.T) {
 
+	ctxHelper, err := helpers.NewContextHelper(api.Context())
+	assert.NoError(t, err)
 	for _, tt := range []struct {
 		name string
 		ctx  *middleware.Context
@@ -27,13 +29,12 @@ func Test_newContextHelperWithContext(t *testing.T) {
 		{
 			name: "base",
 			ctx:  api.Context(),
-			want: helpers.NewContextHelper(
-				api.Context(),
-			).WithBasePath("/api"),
+			want: ctxHelper.WithBasePath("/api"),
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			got := helpers.NewContextHelperWithContext(tt.ctx)
+			got, err := helpers.NewContextHelperWithContext(tt.ctx)
+			assert.NoError(t, err)
 			assert.Equal(t, tt.want, got)
 		})
 	}

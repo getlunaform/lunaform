@@ -1,15 +1,15 @@
 package workers
 
 import (
-	"strings"
 	"fmt"
-	"sort"
 	"io/ioutil"
+	"sort"
+	"strings"
 )
 
 func newProviderFile(filePath string) *ProviderFile {
 	return &ProviderFile{
-		filePath: filePath,
+		filePath:  filePath,
 		Providers: map[string]interface{}{},
 	}
 }

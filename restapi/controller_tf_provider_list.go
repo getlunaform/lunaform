@@ -1,11 +1,11 @@
 package restapi
 
 import (
-	"github.com/getlunaform/lunaform/helpers"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/backend/identity"
-	operation "github.com/getlunaform/lunaform/restapi/operations/providers"
+	"github.com/getlunaform/lunaform/helpers"
 	"github.com/getlunaform/lunaform/models"
+	operation "github.com/getlunaform/lunaform/restapi/operations/providers"
 	"github.com/go-openapi/runtime/middleware"
 	"net/http"
 )

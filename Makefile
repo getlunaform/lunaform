@@ -150,7 +150,7 @@ lint:
 # Docker targets #
 ##################
 build-docker:
-	GOOS=linux $(MAKE) lunaform
+	GOOS=linux $(MAKE) build-server
 	docker build -t lunaform .
 
 run-docker: build-docker

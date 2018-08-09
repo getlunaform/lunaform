@@ -16,8 +16,8 @@ package cmd
 
 import (
 	"github.com/getlunaform/lunaform/client/modules"
-	"github.com/spf13/cobra"
 	"github.com/getlunaform/lunaform/models"
+	"github.com/spf13/cobra"
 )
 
 var tfModuleDeleteIdFlag string

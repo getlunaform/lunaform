@@ -1,10 +1,10 @@
 package identity
 
 import (
-	"github.com/getlunaform/lunaform/backend/database"
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 	"fmt"
+	"github.com/getlunaform/lunaform/backend/database"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (

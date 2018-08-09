@@ -3,11 +3,11 @@ package restapi
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/backend/identity"
 	"github.com/getlunaform/lunaform/backend/workers"
 	"github.com/getlunaform/lunaform/helpers"
+	"github.com/getlunaform/lunaform/models"
 	"github.com/getlunaform/lunaform/restapi/operations"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
@@ -91,7 +91,10 @@ func configureAPI(api *operations.LunaformAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	oh := helpers.NewContextHelperWithContext(api.Context())
+	oh, err := helpers.NewContextHelperWithContext(api.Context())
+	if err != nil {
+		panic(err)
+	}
 
 	api.APIKeyAuth = func(s string) (p *models.ResourceAuthUser, err error) {
 		user := models.ResourceAuthUser{}

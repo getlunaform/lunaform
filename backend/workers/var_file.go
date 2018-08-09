@@ -1,12 +1,12 @@
 package workers
 
 import (
-	"text/template"
 	"bytes"
-	"strings"
 	"fmt"
 	"io/ioutil"
 	"reflect"
+	"strings"
+	"text/template"
 )
 
 const (

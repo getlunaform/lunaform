@@ -38,8 +38,8 @@ func Test_newContextHelperWithContext(t *testing.T) {
 			args: args{
 				ctx: nil,
 			},
-			want:    &ContextHelper{},
-			wantErr: "",
+			want:    nil,
+			wantErr: "context must not be 'nil'",
 			fail:    true,
 		},
 		{
@@ -48,7 +48,8 @@ func Test_newContextHelperWithContext(t *testing.T) {
 				ctx: &mockBasePathContext{mockPath: "my-pass"},
 			},
 			want: &ContextHelper{
-				ctx: &mockBasePathContext{mockPath: "my-pass"},
+				ctx:      &mockBasePathContext{mockPath: "my-pass"},
+				BasePath: "my-pass",
 			},
 		},
 	}

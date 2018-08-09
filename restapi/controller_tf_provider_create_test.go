@@ -6,9 +6,9 @@ import (
 	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/helpers"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/stretchr/testify/assert"
 	"github.com/getlunaform/lunaform/models/hal"
 	"github.com/go-openapi/swag"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_buildCreateTfProviderResponse(t *testing.T) {

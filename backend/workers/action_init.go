@@ -1,11 +1,11 @@
 package workers
 
 import (
-	"github.com/getlunaform/go-terraform"
 	"fmt"
-	"os"
-	"github.com/go-openapi/swag"
+	"github.com/getlunaform/go-terraform"
 	"github.com/getlunaform/lunaform/models"
+	"github.com/go-openapi/swag"
+	"os"
 )
 
 type TfActionInit struct {

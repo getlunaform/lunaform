@@ -1,14 +1,14 @@
 package restapi
 
 import (
+	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/backend/identity"
 	"github.com/getlunaform/lunaform/helpers"
-	"github.com/getlunaform/lunaform/backend/database"
 	"github.com/getlunaform/lunaform/models"
-	"github.com/go-openapi/runtime/middleware"
 	operation "github.com/getlunaform/lunaform/restapi/operations/providers"
-	"net/http"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
+	"net/http"
 )
 
 func CreateTfProviderConfigurationController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operation.CreateProviderConfigurationHandlerFunc {
