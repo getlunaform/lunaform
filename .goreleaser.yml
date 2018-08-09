@@ -1,6 +1,9 @@
 ---
+git:
+  short_hash: true
+
 builds:
-  - binary: lunaform
+  - binary: lunaform-server
     main: ./cmd/lunaform-server/main.go
     goos:
 #      - windows
@@ -8,7 +11,7 @@ builds:
       - linux
     goarch:
       - amd64
-  - binary: lunaform-client
+  - binary: lunaform
     goos:
 #      - windows
       - darwin
@@ -18,8 +21,11 @@ builds:
     main: ./cli/main.go
     ldflags:
       - -X github.com/drewsonne/lunaform/cli/cmd.version={{.Version}}
-git:
-  short_hash: true
+
+dockers:
+  - binary: lunaform-server
+    image: drewsonne/lunaform-server
+
 
 brew:
   name: lunaform
