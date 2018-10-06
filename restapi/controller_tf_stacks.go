@@ -22,7 +22,7 @@ const (
 	TF_DEPLOYMENT_STATUS_FAIL              = "failed"
 )
 
-var ListTfStacksController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
+func ListTfStacksController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListStacksHandlerFunc {
 	return operations.ListStacksHandlerFunc(func(params operations.ListStacksParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -46,7 +46,7 @@ var ListTfStacksController = func(idp identity.Provider, ch *helpers.ContextHelp
 	})
 }
 
-var GetTfStackController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.GetStackHandlerFunc {
+func GetTfStackController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.GetStackHandlerFunc {
 	return operations.GetStackHandlerFunc(func(params operations.GetStackParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -77,7 +77,7 @@ var GetTfStackController = func(idp identity.Provider, ch *helpers.ContextHelper
 	})
 }
 
-var ListTfStackDeploymentsController = func(
+func ListTfStackDeploymentsController(
 	idp identity.Provider, ch *helpers.ContextHelper,
 	db database.Database,
 	workerPool *workers.TfAgentPool,

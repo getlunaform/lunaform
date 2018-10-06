@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var CreateTfStateBackendsController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.CreateStateBackendHandlerFunc {
+func CreateTfStateBackendsController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.CreateStateBackendHandlerFunc {
 	return operations.CreateStateBackendHandlerFunc(func(params operations.CreateStateBackendParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -31,7 +31,7 @@ var CreateTfStateBackendsController = func(idp identity.Provider, ch *helpers.Co
 	})
 }
 
-var ListTfStateBackendsController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListStateBackendsHandlerFunc {
+func ListTfStateBackendsController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListStateBackendsHandlerFunc {
 	return operations.ListStateBackendsHandlerFunc(func(params operations.ListStateBackendsParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -49,7 +49,7 @@ var ListTfStateBackendsController = func(idp identity.Provider, ch *helpers.Cont
 	})
 }
 
-var UpdateTfStateBackendsController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.UpdateStateBackendHandlerFunc {
+func UpdateTfStateBackendsController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.UpdateStateBackendHandlerFunc {
 	return operations.UpdateStateBackendHandlerFunc(func(params operations.UpdateStateBackendParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 

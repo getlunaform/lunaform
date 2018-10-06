@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var CreateTfStackController = func(
+func CreateTfStackController(
 	idp identity.Provider, ch *helpers.ContextHelper,
 	db database.Database,
 	workerPool *workers.TfAgentPool,

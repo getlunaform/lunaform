@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var DeleteTfModuleController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.DeleteModuleHandlerFunc {
+func DeleteTfModuleController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.DeleteModuleHandlerFunc {
 	return operations.DeleteModuleHandlerFunc(func(params operations.DeleteModuleParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -27,7 +27,7 @@ var DeleteTfModuleController = func(idp identity.Provider, ch *helpers.ContextHe
 	})
 }
 
-var buildDeleteTfModuleResponse = func(db database.Database, moduleId string) *CommonServerErrorResponder {
+func buildDeleteTfModuleResponse(db database.Database, moduleId string) *CommonServerErrorResponder {
 	module := &models.ResourceTfModule{}
 	if err := db.Read(DB_TABLE_TF_MODULE, moduleId, module); err != nil {
 		if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {

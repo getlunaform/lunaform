@@ -8,7 +8,7 @@ import (
 )
 
 // ListResourcesController provides a list of resources under the identity tag. This is an exploratory read-only endpoint.
-var ListResourcesController = func(ch *helpers.ContextHelper) resources.ListResourcesHandlerFunc {
+func ListResourcesController(ch *helpers.ContextHelper) resources.ListResourcesHandlerFunc {
 	return resources.ListResourcesHandlerFunc(func(params resources.ListResourcesParams) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 

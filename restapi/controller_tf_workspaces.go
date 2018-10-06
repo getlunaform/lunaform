@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var ListTfWorkspacesController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListWorkspacesHandlerFunc {
+func ListTfWorkspacesController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListWorkspacesHandlerFunc {
 	return operations.ListWorkspacesHandlerFunc(func(params operations.ListWorkspacesParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -35,7 +35,7 @@ var ListTfWorkspacesController = func(idp identity.Provider, ch *helpers.Context
 	})
 }
 
-var CreateTfWorkspaceController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.CreateWorkspaceHandlerFunc {
+func CreateTfWorkspaceController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.CreateWorkspaceHandlerFunc {
 	return operations.CreateWorkspaceHandlerFunc(func(params operations.CreateWorkspaceParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
@@ -67,7 +67,7 @@ var CreateTfWorkspaceController = func(idp identity.Provider, ch *helpers.Contex
 	})
 }
 
-var GetTfWorkspaceController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.DescribeWorkspaceHandlerFunc {
+func GetTfWorkspaceController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.DescribeWorkspaceHandlerFunc {
 	return operations.DescribeWorkspaceHandlerFunc(func(params operations.DescribeWorkspaceParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 

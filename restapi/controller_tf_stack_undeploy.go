@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-var DeleteTfStackController = func(
+func DeleteTfStackController(
 	idp identity.Provider, ch *helpers.ContextHelper,
 	db database.Database,
 	workerPool *workers.TfAgentPool,

@@ -8,7 +8,7 @@ import (
 )
 
 // ListResourceGroupsController provides a list of resource groups. This is an exploratory read-only endpoint.
-var ListResourceGroupsController = func(ch *helpers.ContextHelper) resources.ListResourceGroupsHandlerFunc {
+func ListResourceGroupsController(ch *helpers.ContextHelper) resources.ListResourceGroupsHandlerFunc {
 	return resources.ListResourceGroupsHandlerFunc(func(params resources.ListResourceGroupsParams) middleware.Responder {
 		ch.SetRequest(params.HTTPRequest)
 

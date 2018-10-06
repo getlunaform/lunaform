@@ -13,7 +13,7 @@ import (
 )
 
 // ListTfModulesController provides a list of modules
-var ListTfModulesController = func(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
+func ListTfModulesController(idp identity.Provider, ch *helpers.ContextHelper, db database.Database) operations.ListModulesHandlerFunc {
 	return operations.ListModulesHandlerFunc(func(params operations.ListModulesParams, p *models.ResourceAuthUser) (r middleware.Responder) {
 		ch.SetRequest(params.HTTPRequest)
 
