@@ -8,15 +8,13 @@ addons:
     packages:
     # needed for the nfpm pipe:
     - rpm
-    sources:
-    - sourceline: deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main
 
 # needed for the docker pipe
 services:
 - docker
 
 before_install:
-- sudo apt-get install swagger --allow-unauthenticated -y
+- sudo curl -o /usr/bin/swagger https://github.com/go-swagger/go-swagger/releases/download/v0.17.0/swagger_linux_amd64
 - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 - dep ensure
 
