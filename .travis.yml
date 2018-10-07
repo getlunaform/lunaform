@@ -20,9 +20,11 @@ before_install:
 
 jobs:
   include:
+    - stage: compile
+      script: make build
     - stage: test
       script: make test-coverage
-    - stage: build
+    - stage: deploy
       script: make build
       after_success:
       # docker login is required if you want to push docker images.
