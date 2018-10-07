@@ -16,7 +16,7 @@ services:
 - docker
 
 before_install:
-- apt-get install swagger -y
+- sudo apt-get install swagger -y
 - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 - dep ensure
 
