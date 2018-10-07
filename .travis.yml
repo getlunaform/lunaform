@@ -15,6 +15,7 @@ services:
 
 before_install:
 - sudo curl -o /usr/bin/swagger https://github.com/go-swagger/go-swagger/releases/download/v0.17.0/swagger_linux_amd64
+- go mod vendor
 
 jobs:
   include:
