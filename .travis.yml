@@ -19,19 +19,22 @@ before_install:
 - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 - dep ensure
 
-script:
-- make test-coverage
+jobs:
+  include:
+    - stage: test
+      script: make test-coverage
+    - stage: build
+      script: make build
+      after_success:
+      # docker login is required if you want to push docker images.
+      # DOCKER_PASSWORD should be a secret in your .travis.yml configuration.
+      - test -n "$TRAVIS_TAG" && docker login -u=myuser -p="$DOCKER_PASSWORD"
 
-after_success:
-# docker login is required if you want to push docker images.
-# DOCKER_PASSWORD should be a secret in your .travis.yml configuration.
-- test -n "$TRAVIS_TAG" && docker login -u=myuser -p="$DOCKER_PASSWORD"
-
-# calls goreleaser
-deploy:
-- provider: script
-  skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
-  on:
-    tags: true
-    condition: $TRAVIS_OS_NAME = linux
+      # calls goreleaser
+      deploy:
+      - provider: script
+        skip_cleanup: true
+        script: curl -sL https://git.io/goreleaser | bash
+        on:
+          tags: true
+          condition: $TRAVIS_OS_NAME = linux

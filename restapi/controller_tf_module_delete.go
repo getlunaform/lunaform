@@ -18,7 +18,7 @@ func DeleteTfModuleController(idp identity.Provider, ch *helpers.ContextHelper, 
 		ch.SetRequest(params.HTTPRequest)
 
 		r = operations.NewDeleteModuleNoContent()
-		if err := buildDeleteTfModuleResponse(db, params.ID); err != nil {
+		if err := deleteTfModule(db, params.ID); err != nil {
 			r = err
 		}
 
@@ -27,7 +27,7 @@ func DeleteTfModuleController(idp identity.Provider, ch *helpers.ContextHelper, 
 	})
 }
 
-func buildDeleteTfModuleResponse(db database.Database, moduleId string) *CommonServerErrorResponder {
+func deleteTfModule(db database.Database, moduleId string) *CommonServerErrorResponder {
 	module := &models.ResourceTfModule{}
 	if err := db.Read(DB_TABLE_TF_MODULE, moduleId, module); err != nil {
 		if _, moduleNotFound := err.(database.RecordDoesNotExistError); moduleNotFound {
