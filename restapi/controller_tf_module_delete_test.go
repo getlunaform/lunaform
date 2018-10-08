@@ -68,7 +68,7 @@ func Test_buildDeleteTfModuleResponse(t *testing.T) {
 				assert.NoError(t, err)
 			}
 
-			got := buildDeleteTfModuleResponse(db, tt.moduleId)
+			got := deleteTfModule(db, tt.moduleId)
 			assert.Equal(t, tt.wantErr, got)
 
 			if tt.wantErr == nil {

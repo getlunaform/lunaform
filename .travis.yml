@@ -1,37 +1,43 @@
 language: go
 go:
-  - "1.10.x"
+  - "1.11.x"
+
+env:
+  - GO111MODULE=on
 
 addons:
   apt:
+    update: true
     packages:
     # needed for the nfpm pipe:
     - rpm
-    - swagger
-    sources:
-    - sourceline: deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main
 
 # needed for the docker pipe
 services:
 - docker
 
 before_install:
-- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-- dep ensure
+- sudo curl -o /usr/bin/swagger https://github.com/go-swagger/go-swagger/releases/download/v0.17.0/swagger_linux_amd64
+- go mod vendor
 
-script:
-- make test-coverage
+jobs:
+  include:
+    - stage: compile
+      script: make build
+    - stage: test
+      script: make test-coverage
+    - stage: deploy
+      script: make build
+      after_success:
+      # docker login is required if you want to push docker images.
+      # DOCKER_PASSWORD should be a secret in your .travis.yml configuration.
+      - test -n "$TRAVIS_TAG" && docker login -u=myuser -p="$DOCKER_PASSWORD"
 
-after_success:
-# docker login is required if you want to push docker images.
-# DOCKER_PASSWORD should be a secret in your .travis.yml configuration.
-- test -n "$TRAVIS_TAG" && docker login -u=myuser -p="$DOCKER_PASSWORD"
-
-# calls goreleaser
-deploy:
-- provider: script
-  skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
-  on:
-    tags: true
-    condition: $TRAVIS_OS_NAME = linux
+      # calls goreleaser
+      deploy:
+      - provider: script
+        skip_cleanup: true
+        script: curl -sL https://git.io/goreleaser | bash
+        on:
+          tags: true
+          condition: $TRAVIS_OS_NAME = linux
